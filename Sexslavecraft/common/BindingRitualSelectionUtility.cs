@@ -59,7 +59,11 @@ namespace SexSlaveCraft
         public static bool IsPreview(RitualRoleAssignments assignments)
             => previewDepth > 0 || IsWindow(assignments);
 
+        /// <summary>逐个候选只读取本窗口登记。开窗和编辑事件另外核对整套手选钩子。</summary>
         public static bool IsWindow(RitualRoleAssignments assignments)
+            => Harmony_BindingRitualAutoFill.Matched && IsRegistered(assignments);
+
+        internal static bool IsRegistered(RitualRoleAssignments assignments)
             => assignments != null && windows.TryGetValue(assignments, out _);
 
         /// <summary>开窗建表、开窗前的存在性检查及原版基础条件查询使用显式预览作用域。</summary>

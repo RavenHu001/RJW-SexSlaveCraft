@@ -20,6 +20,8 @@ namespace SexSlaveCraft
     internal static class Harmony_SSCPnaSpearGlowDraw
     {
         private const int UnsupportedDrawLayoutWarning = 0x53534344;
+        /// <summary>记录本次包装方法是否找到了绘制锚点。上游补丁引发重建时重新计算，供诊断刷新读取。</summary>
+        internal static bool Matched { get; private set; }
 
         internal static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
@@ -27,7 +29,8 @@ namespace SexSlaveCraft
             MethodInfo original = AccessTools.Method(typeof(Graphics), nameof(Graphics.DrawMesh),
                 new[] { typeof(Mesh), typeof(Matrix4x4), typeof(Material), typeof(int) });
             MethodInfo replacement = AccessTools.Method(typeof(Harmony_SSCPnaSpearGlowDraw), nameof(DrawWeapon));
-            if (original == null || replacement == null || codes.Count(c => c.Calls(original)) != 1)
+            Matched = original != null && replacement != null && codes.Count(c => c.Calls(original)) == 1;
+            if (!Matched)
             {
                 Log.WarningOnce("[SSC PNA glow] Unsupported DrawEquipmentAiming layout. Skipping SSC weapon draw effects; existing drawing is preserved.",
                     UnsupportedDrawLayoutWarning);

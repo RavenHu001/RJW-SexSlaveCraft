@@ -55,32 +55,81 @@ namespace SexSlaveCraft
         }
     }
 
-    [HarmonyPatch(typeof(Verb_MeleeAttack), "GetDodgeChance")]
     internal static class Harmony_SSCPnaWhipCooperativeDodge
     {
-        internal static bool Prefix(Verb_MeleeAttack __instance, LocalTargetInfo target, ref float __result)
+        internal static bool Prefix(Verb_MeleeAttack __instance, LocalTargetInfo __0, ref float __result)
         {
-            if (!SSCPnaWhipCooperationUtility.Allows(__instance, target.Thing as Pawn)) return true;
+            if (!Harmony_SSCPnaWhipCooperativeThreat.Ready || !SSCPnaWhipCooperationUtility.Allows(__instance, __0.Thing as Pawn)) return true;
             // 只跳过目标这一层闪避；GetNonMissChance 和攻击者的随机失手完全沿用原版。
             __result = 0f;
             return false;
         }
     }
 
-    [HarmonyPatch(typeof(Verb_MeleeAttack), "TryCastShot")]
     internal static class Harmony_SSCPnaWhipCooperativeThreat
     {
+        // installed 表示两个钩子均已完成注册。matched 表示当前 TryCastShot 包装方法具备两处威胁改写。
+        private static bool installed;
+        private static bool matched;
+        internal static bool Ready => installed && matched;
+
+        /// <summary>同批安装免闪避和威胁改写。两处均已注册且威胁 IL 匹配时，才开放鞭束协作。</summary>
+        internal static void Register(Harmony harmony)
+        {
+            installed = false;
+            MethodInfo cast = AccessTools.DeclaredMethod(typeof(Verb_MeleeAttack), "TryCastShot", Type.EmptyTypes);
+            MethodInfo dodge = AccessTools.DeclaredMethod(typeof(Verb_MeleeAttack), "GetDodgeChance", new[] { typeof(LocalTargetInfo) });
+            if (cast?.IsStatic != false || cast.ReturnType != typeof(bool) ||
+                dodge?.IsStatic != false || dodge.ReturnType != typeof(float))
+            {
+                Log.WarningOnce("[SSC PNA whip] Unsupported melee method signature. SSC whip cooperation is disabled.", 0x53535753);
+                return;
+            }
+
+            MethodInfo transpiler = AccessTools.DeclaredMethod(typeof(Harmony_SSCPnaWhipCooperativeThreat), nameof(Transpiler));
+            MethodInfo prefix = AccessTools.DeclaredMethod(typeof(Harmony_SSCPnaWhipCooperativeDodge), nameof(Harmony_SSCPnaWhipCooperativeDodge.Prefix));
+            try
+            {
+                harmony.Patch(cast, transpiler: new HarmonyMethod(transpiler));
+                harmony.Patch(dodge, prefix: new HarmonyMethod(prefix));
+                installed = true;
+            }
+            catch (Exception error)
+            {
+                Log.WarningOnce($"[SSC PNA whip] Could not install melee hooks. SSC whip cooperation is disabled. {error.GetBaseException().Message}",
+                    0x53535749);
+                // 只按补丁方法撤回本组。即使清理失败，Ready 仍为 false，残留钩子会按原版行为处理。
+                foreach (var (target, patch) in new[] { (cast, transpiler), (dodge, prefix) })
+                {
+                    try { harmony.Unpatch(target, patch); }
+                    catch (Exception cleanup)
+                    {
+                        Log.WarningOnce($"[SSC PNA whip] Could not remove {patch.Name}. {cleanup.GetBaseException().Message}",
+                            0x53535752);
+                    }
+                }
+            }
+        }
+
         internal static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             var codes = instructions.ToList();
             FieldInfo threat = AccessTools.Field(typeof(Pawn_MindState), nameof(Pawn_MindState.meleeThreat));
             FieldInfo tick = AccessTools.Field(typeof(Pawn_MindState), nameof(Pawn_MindState.lastMeleeThreatHarmTick));
-            // 1.7.4982 在命中／闪避前各写一次；布局不符时显式报错，不猜局部变量或覆盖整段出手逻辑。
-            if (threat == null || tick == null || codes.Count(c => c.StoresField(threat)) != 1 ||
-                codes.Count(c => c.StoresField(tick)) != 1)
-                throw new InvalidOperationException("[SSC PNA whip] Unexpected TryCastShot threat field layout.");
             MethodInfo setThreat = AccessTools.Method(typeof(Harmony_SSCPnaWhipCooperativeThreat), nameof(SetThreat));
             MethodInfo setTick = AccessTools.Method(typeof(Harmony_SSCPnaWhipCooperativeThreat), nameof(SetThreatTick));
+            int threatWrites = threat == null ? 0 : codes.Count(c => c.StoresField(threat));
+            int tickWrites = tick == null ? 0 : codes.Count(c => c.StoresField(tick));
+            // 威胁角色和时间戳由同一次攻击写入。确认两处字段类型和写入锚点后再改写，避免只改一处。
+            matched = threat?.FieldType == typeof(Pawn) && tick?.FieldType == typeof(int) &&
+                setThreat != null && setTick != null && threatWrites == 1 && tickWrites == 1;
+            if (!matched)
+            {
+                Log.WarningOnce($"[SSC PNA whip] Unsupported TryCastShot layout (threat writes: {threatWrites}/1, tick writes: {tickWrites}/1). SSC whip cooperation is disabled.",
+                    0x5353574C);
+                foreach (CodeInstruction code in codes) yield return code;
+                yield break;
+            }
             foreach (CodeInstruction code in codes)
             {
                 MethodInfo setter = code.StoresField(threat) ? setThreat : code.StoresField(tick) ? setTick : null;
@@ -93,13 +142,13 @@ namespace SexSlaveCraft
 
         internal static void SetThreat(Pawn_MindState state, Pawn attacker, Verb_MeleeAttack verb)
         {
-            if (!SSCPnaWhipCooperationUtility.Allows(verb, state.pawn)) state.meleeThreat = attacker;
+            if (!Ready || !SSCPnaWhipCooperationUtility.Allows(verb, state.pawn)) state.meleeThreat = attacker;
         }
 
         internal static void SetThreatTick(Pawn_MindState state, int tick, Verb_MeleeAttack verb)
         {
             // 不在命中后恢复旧值：伤害回调可在出手返回前查询威胁，必须直接阻止本次登记。
-            if (!SSCPnaWhipCooperationUtility.Allows(verb, state.pawn)) state.lastMeleeThreatHarmTick = tick;
+            if (!Ready || !SSCPnaWhipCooperationUtility.Allows(verb, state.pawn)) state.lastMeleeThreatHarmTick = tick;
         }
     }
 }

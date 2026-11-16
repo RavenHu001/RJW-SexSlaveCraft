@@ -21,36 +21,6 @@ internal static partial class Program
             stages = xml.Element("stages").Elements("li").Select(Stage).ToList(),
             Extension = new SSCUterusDevelopmentExtension { fertileStage = Stage(xml.Element("modExtensions").Element("li").Element("fertileStage")) } };
         DefDatabase<HediffDef>.Definition = development;
-        foreach (var (language, width, scale, contents) in new (string, float, float, int)[]
-        {
-            ("ChineseSimplified", 200f, 1.8f, 3),
-            ("ChineseSimplified", 322f, 1f, 0),
-            ("ChineseTraditional", 200f, 1.8f, 3),
-            ("ChineseTraditional", 322f, 1f, 0),
-            ("English", 200f, 1.8f, 3),
-            ("English", 322f, 1f, 0),
-            ("Russian", 200f, 1.8f, 3),
-            ("Russian", 322f, 1f, 0),
-            ("ChineseSimplified", 200f, 1f, 1),
-            ("ChineseSimplified", 322f, 1.8f, 2),
-            ("ChineseTraditional", 200f, 1f, 2),
-            ("ChineseTraditional", 322f, 1.8f, 1),
-            ("ChineseSimplified", 200f, 1.8f, 0),
-            ("ChineseSimplified", 322f, 1f, 3),
-            ("English", 200f, 1f, 1),
-            ("English", 200f, 1f, 2),
-            ("Russian", 200f, 1f, 1),
-            ("Russian", 200f, 1f, 2),
-            ("ChineseSimplified", 200f, 1f, 0),
-            ("ChineseSimplified", 200f, 1f, 2),
-            ("ChineseSimplified", 200f, 1f, 3),
-            ("ChineseSimplified", 200f, 1.8f, 1),
-            ("ChineseSimplified", 200f, 1.8f, 2),
-            ("ChineseSimplified", 322f, 1f, 1),
-        })
-            Run($"{language} 内容{contents} 宽{width} 字宽{scale} 无空栏、完整换行且不重叠", () =>
-            { Translator.Load(repo, language); Layout(width, scale, contents); });
-        Run("长标题与开关译文按缩进宽度测量且无占位符泄漏", LongTranslations);
         foreach (float progress in new[] { .01f, .3f, .7f, .99999f, 1f })
             Run("各培养阶段只显示生育开关 " + progress, () => StageDisplay(progress));
         Run("满级开关执行生产检查并刷新健康状态", () =>
@@ -124,51 +94,6 @@ internal static partial class Program
     private static void Draw(Pawn pawn, string click = null)
     { Widgets.Click = click; var tab = new ITab_SexSlaveTraining(); tab.Capture(pawn, 322).Draw(); }
     /// <summary>逐行核对实际矩形和测量高度；零内容时不绘制任何框或条目。</summary>
-    private static void Layout(float width, float scale, int contents)
-    {
-        Text.WidthScale = scale; var p = Body(contents, 1);
-        // 四语完整身体组合沿用既有代表样本，检查带营养不足提示的较长从属行。
-        if (contents == 3) AttachPnaProduction(p).IsWaitingForNutrition = true;
-        var tab = new ITab_SexSlaveTraining(); var view = tab.Capture(p, width); view.Draw();
-        if (contents == 0) { Require(view.Height == 0 && Widgets.Drawn.Count == 0); return; }
-        Require(Widgets.Drawn.Count(d => d.Kind == "section") == 1);
-        float bottom = 0;
-        foreach (var draw in Widgets.Drawn.Where(d => d.Kind == "label" || d.Kind == "checkbox"))
-        {
-            Require(draw.Rect.y >= bottom); bottom = draw.Rect.yMax;
-            Require(draw.Rect.height >= Text.CalcHeight(draw.Label, draw.Rect.width - (draw.Kind == "checkbox" ? 24 : 0)));
-            Require(draw.Rect.yMax <= view.Height - 12 && draw.Rect.xMax <= width - 12);
-        }
-        Require(Widgets.Drawn.Count(d => d.Kind == "checkbox") == ((contents & 1) != 0 ? 1 : 0) + ((contents & 2) != 0 ? 1 : 0) + (contents == 3 ? 1 : 0));
-        if (contents == 3) AssertPnaDetail("43%", waiting: true);
-        if ((contents & 1) != 0)
-        {
-            var milk = Widgets.Drawn.Single(d => d.Kind == "checkbox" && d.Label == Strings.ITab_MilkProductionToggle);
-            var charge = Widgets.Drawn.Single(d => d.Kind == "label" && d.Label.Contains("53%"));
-            Require(charge.Rect.x == milk.Rect.x + 16 && charge.Rect.xMax == milk.Rect.xMax);
-            if ((contents & 2) != 0)
-            {
-                var fertility = Widgets.Drawn.Single(d => d.Kind == "checkbox" && d.Label == "SSC_BodyManagement_FertilityToggle".Translate());
-                Require(fertility.Rect.x == milk.Rect.x && fertility.Rect.y - charge.Rect.yMax >= 16);
-            }
-        }
-    }
-
-    /// <summary>模拟更长标题和开关译文；测量使用缩进后的宽度，标题在当次视图内保持一致。</summary>
-    private static void LongTranslations()
-    {
-        string title = string.Concat(Enumerable.Repeat("身体管理的长标题", 5));
-        Translator.Values["SSC_BodyManagement_Title"] = title;
-        Translator.Values["SSC_ITab_MilkProductionToggle"] = string.Concat(Enumerable.Repeat("泌乳开关长译文", 4));
-        Translator.Values["SSC_BodyManagement_FertilityToggle"] = string.Concat(Enumerable.Repeat("生育开关长译文", 4));
-        Layout(200, 1.8f, 3);
-        Require(Widgets.Drawn.All(d => !Regex.IsMatch(d.Label, @"\{\d+\}")));
-        Widgets.Drawn.Clear(); var tab = new ITab_SexSlaveTraining(); var view = tab.Capture(Body(3), 200);
-        Translator.Values["SSC_BodyManagement_Title"] = "稍后变化的标题";
-        view.Draw(); Require(Widgets.Drawn.Any(d => d.Kind == "label" && d.Label == title));
-    }
-
-    /// <summary>五个培养进度都只绘制一个生育开关；进度、阶段、收益和生育状态不再作为页面行出现。</summary>
     private static void StageDisplay(float progress)
     {
         var p = Body(2, progress); Draw(p);

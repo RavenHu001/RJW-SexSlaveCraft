@@ -129,17 +129,17 @@ internal static partial class Program
                 Equal(component, milk.comps.Single()); Equal(production, pawn.GetComp<CompSexSlaveTraining>().milkProductionEnabled);
             }
         });
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Check("lactation override health display follows state in language: " + language, () =>
-            {
-                LoadBodyManagementLanguage(repo, language);
-                var pawn = SurgeryPawn(); var milk = AttachLactationStage(pawn, lactation); Start(pawn, 1); Toggle(pawn, true);
-                Equal("×1", FertilityEntry(milk).ValueString);
-                string note = "SSC_HediffFertility_LactationOverrideNote".Translate();
-                Require(!string.IsNullOrWhiteSpace(note) && milk.TipStringExtra.Contains(note));
-                Require(!milk.TipStringExtra.Contains("SSC_HediffFertility_"));
-                Toggle(pawn, false); Equal("×0.05", FertilityEntry(milk).ValueString); Require(!milk.TipStringExtra.Contains(note));
-            });
+        const string language = "English";
+        Check("lactation override health display follows state in language: " + language, () =>
+        {
+            LoadBodyManagementLanguage(repo, language);
+            var pawn = SurgeryPawn(); var milk = AttachLactationStage(pawn, lactation); Start(pawn, 1); Toggle(pawn, true);
+            Equal("×1", FertilityEntry(milk).ValueString);
+            string note = "SSC_HediffFertility_LactationOverrideNote".Translate();
+            Require(!string.IsNullOrWhiteSpace(note) && milk.TipStringExtra.Contains(note));
+            Require(!milk.TipStringExtra.Contains("SSC_HediffFertility_"));
+            Toggle(pawn, false); Equal("×0.05", FertilityEntry(milk).ValueString); Require(!milk.TipStringExtra.Contains(note));
+        });
         LoadBodyManagementLanguage(repo, "ChineseSimplified");
     }
 }

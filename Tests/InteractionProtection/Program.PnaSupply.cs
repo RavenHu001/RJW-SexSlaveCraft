@@ -12,9 +12,15 @@ internal static partial class Program
         foreach (bool forced in new[] { false, true })
             Run("PNA 普通/强迫完成共用一次认领，保留原经验 forced=" + forced, () =>
             {
-                ResetSexAwards(); var p = People(); var d = Driver(p.a, p.b, rape: forced); Begin(d); d.ticks_left = 0;
+                ResetSexAwards(); var p = People(); var d = Driver(p.a, p.b, rape: forced); Begin(d);
+                Assert(d.StartCalls == 1 && d.Sexprops != null && d.Sexprops.isRape == forced, "任务必须按实际许可开始");
+                d.ticks_left = 0;
                 d.Sexprops.isRevese = true; d.Sexprops.usedCondom = true;
-                SexUtility.ProcessSex(d.Sexprops); SexUtility.ProcessSex(d.Sexprops);
+                SexUtility.ProcessSex(d.Sexprops);
+                Assert(TrainerSpecializationProgressUtility.InitiatedSexAwards == 1 &&
+                    TrainerSpecializationProgressUtility.LastInitiator == p.a &&
+                    TrainerSpecializationProgressUtility.LastRecipient == p.b, "经验按任务方向归属");
+                SexUtility.ProcessSex(d.Sexprops);
                 Assert(TrainerSpecializationProgressUtility.InitiatedSexAwards == 1, "经验不重复");
                 Assert(SSCPnaSexSupplyUtility.Calls.Count == 2 && SSCPnaSexSupplyUtility.Calls[0] == (p.a, p.b) &&
                     SSCPnaSexSupplyUtility.Calls[1] == (p.b, p.a), "反向动作/避孕套不改变双方逐方向分发");
@@ -22,10 +28,12 @@ internal static partial class Program
         Run("PNA 过早及跳过原结算不消费，正常完成后才分发", () =>
         {
             ResetSexAwards(); var p = People(); var d = Driver(p.a, p.b, rape: false); Begin(d);
-            SexUtility.ProcessSex(d.Sexprops); d.ticks_left = 0;
+            SexUtility.ProcessSex(d.Sexprops);
+            Assert(SSCPnaSexSupplyUtility.Calls.Count == 0 && TrainerSpecializationProgressUtility.InitiatedSexAwards == 0, "计时未结束不得提前认领");
+            d.ticks_left = 0;
             SSCTrainerInitiatedSexProgressHook.Postfix(d.Sexprops, false);
-            Assert(SSCPnaSexSupplyUtility.Calls.Count == 0, "不得提前分发");
-            SexUtility.ProcessSex(d.Sexprops); Assert(SSCPnaSexSupplyUtility.Calls.Count == 2, "正常完成仍可领取");
+            Assert(SSCPnaSexSupplyUtility.Calls.Count == 0 && TrainerSpecializationProgressUtility.InitiatedSexAwards == 0, "跳过原方法不得认领");
+            SexUtility.ProcessSex(d.Sexprops); Assert(SSCPnaSexSupplyUtility.Calls.Count == 2 && TrainerSpecializationProgressUtility.InitiatedSexAwards == 1, "正常完成仍可领取");
         });
         Run("PNA 已领取存档恢复不再分发", () =>
         {

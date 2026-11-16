@@ -99,3 +99,28 @@
 | 调教与结算 | 有 **2 条** `Daily training completed:`，评分分别为 **-5.80** 和 **70.00**，均为 `cooldownStarted=True`。 | 6317、137640 |
 
 本机 CE 组合的启动、警告去重和调教结算验收通过。原汇报整合包尚待修复版实机反馈。
+
+同日，三批启动隔离复核修正版在 RimWorld `1.7.5011 rev24` 的本机 CE 组合复测通过。日志确认 SSC 注册成功、绘制失配只告警一次，以及日常调教完成并结算。 [复核修正版 CE 实机验收](../Completed/SSC启动补丁注册隔离与诊断验收.md#复核修正版-ce-实机验收)
+
+## 2026-11-15 本机 Cat Hero 开启的换 DLL 对照
+
+两次均加载 `Autosave-1`，读档日志中的 **64 个启用模组及顺序完全一致**。Cat Hero（`LZ.CatHero`）启用，Combat Extended 未启用。两次结果按本机 Waylith 的轮转日志记录。
+
+| DLL | 结果 | 日志行 |
+| --- | --- | --- |
+| 绘制容错测试版 | 失配只警告一次，SSC 补丁注册成功，同一配对正常到达 SSC 开始确认。此次日志未记录完整结算。 | `Player-prev.log` 3519、3561、5825、6734、6811 |
+| `v2.5.0` 正式版 | 绘制 Transpiler 抛出 `Unexpected DrawEquipmentAiming draw call layout`，SSC 静态初始化中断。日常调教接收任务启动 **802 次**，无开始确认或完成记录。 | `Player.log` 3508–3510、5567、5595、6360 起 |
+
+这次对照确认修复在本机启用 Cat Hero 的模组组合中阻断了启动失败和自动重派。Cat Hero 的 Transpiler 在此前隔离探针中已能单独移除 SSC 所需的绘制锚点。本机这两轮均启用 Cat Hero，原汇报环境的实际 Transpiler 执行顺序和首个改写者仍待确认。
+
+## Samury242 的独立汇报
+
+新汇报的 RimWorld 为 **1.7.5005 rev1082**，SSC 为 **2.5.0**。读档清单有 674 项，包含 Combat Extended 和 RIMMSqol。启动日志确认 CE 已初始化，清单中未见 Cat Hero。材料保存在本地 Issue #44 汇报目录的 `Samury242/` 子目录。
+
+| 证据 | 核对结果 |
+| --- | --- |
+| `Player.log` 17758–17774、18275–18291 | `Harmony_SSCPnaSpearGlowDraw.Transpiler` 对 `DrawEquipmentAiming` 抛出 `Unexpected DrawEquipmentAiming draw call layout`，SSC 初始化批次中断。全日志无 SSC 注册成功记录。 |
+| `Player.log` 30901–35801 | 同一配对启动接收任务 **155 次**，历时约 **21.6 秒**，间隔中位数 **45 毫秒**。未见开始确认或日常调教完成记录。 |
+| `output_log.txt` 4163、`Player.log` 20321–20336 | `DrawEquipmentAiming` 的已登记 Transpiler 清单依次列出 CE 和 RIMMSqol。HugsLib 导出正文截断至 10,000 行，启动异常及循环细节来自完整的 `Player.log`。 |
+
+本机 RIMMSqol 1.7 程序集中的 `PanwRenderer_DrawEquipmentAiming.Transpiler` 也会把首条四参数 `Graphics.DrawMesh` 替换成自身的 `DrawEquipment`，与 CE 都具有消耗 SSC 锚点的条件。清单记录了已登记的补丁，现场逐个 Transpiler 的 IL 变化仍未采样。对照原汇报者的 1,033 项模组清单，未发现 RIMMSqol。这次汇报与已知的初始化故障一致，待 Samury242 用原组合复测现有绘制容错 DLL。

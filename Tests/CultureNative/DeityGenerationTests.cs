@@ -10,7 +10,14 @@ internal static partial class Program
 {
     private static void DeityGenerationTests(string repo, string language)
     {
-        foreach (string cultureName in new[] { "Astropolitan", "Corunan", "Rustican", "Kriminul" })
+        string[] cultures = language switch
+        {
+            "English" => new[] { "Astropolitan", "Corunan", "Rustican", "Kriminul" },
+            "ChineseSimplified" => new[] { "Astropolitan" },
+            "ChineseTraditional" => new[] { "Corunan" },
+            _ => new[] { "Rustican" }
+        };
+        foreach (string cultureName in cultures)
             Check("native deity fill uses only its related SSC meme: " + cultureName + ": " + language, () =>
             {
                 // 结构模因已有一名关联神明，下一名由原版未用候选选择必定关联 SSC，不能借结构规则补缺。
@@ -53,6 +60,7 @@ internal static partial class Program
                     Require(sawSSC);
                 }
         });
+        if (language != "English") return;
         Check("native deity grammar rejects a missing related-meme concept: " + language, () =>
         {
             // 负例只在内存移除新增关键词，重现玩家日志中的独立请求；不能靠额外加入其他模因规则让它通过。

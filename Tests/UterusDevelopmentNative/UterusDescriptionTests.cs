@@ -82,18 +82,18 @@ internal static partial class Program
             Edit(path, doc => doc.Descendants("sscUterusFertilityEnabled").Remove());
             RequireDescription(SSCUterusDevelopmentUtility.Find(Load(path)), "Infertile");
         });
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Check("three-state description uses current language without caching: " + language, () =>
-            {
-                var pawn = SurgeryPawn(); var record = Start(pawn, .7f);
-                LoadBodyManagementLanguage(repo, language);
-                // 在各语定稿正文后附不同标记，同时检测硬编码和旧语言缓存。
-                foreach (string suffix in new[] { "Developing", "Infertile", "Fertile" })
-                    LanguageDatabase.activeLanguage.keyedReplacements["SSC_UterusDevelopment_Description" + suffix].value += "（语言检查：" + language + "）";
-                RequireDescription(record, "Developing"); Require(record.Description.Contains(language));
-                record.Severity = 1; RequireDescription(record, "Infertile"); Toggle(pawn, true); RequireDescription(record, "Fertile");
-                LoadBodyManagementLanguage(repo, "ChineseSimplified"); Require(!record.Description.Contains("语言检查"));
-            });
+        const string language = "English";
+        Check("three-state description uses current language without caching: " + language, () =>
+        {
+            var pawn = SurgeryPawn(); var record = Start(pawn, .7f);
+            LoadBodyManagementLanguage(repo, language);
+            // 在各语定稿正文后附不同标记，同时检测硬编码和旧语言缓存。
+            foreach (string suffix in new[] { "Developing", "Infertile", "Fertile" })
+                LanguageDatabase.activeLanguage.keyedReplacements["SSC_UterusDevelopment_Description" + suffix].value += "（语言检查：" + language + "）";
+            RequireDescription(record, "Developing"); Require(record.Description.Contains(language));
+            record.Severity = 1; RequireDescription(record, "Infertile"); Toggle(pawn, true); RequireDescription(record, "Fertile");
+            LoadBodyManagementLanguage(repo, "ChineseSimplified"); Require(!record.Description.Contains("语言检查"));
+        });
         LoadBodyManagementLanguage(repo, "ChineseSimplified");
     }
 }

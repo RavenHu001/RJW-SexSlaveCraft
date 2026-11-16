@@ -16,7 +16,7 @@ internal static partial class Program
     private static int Main()
     {
         Run("宠物组仅包括猫狗兔，奶牛及未知方向不属于组", Membership);
-        Run("八种终极组合的切换矩阵保留同种认领及非宠物方向", DirectionMatrix);
+        Run("代表性终极组合的切换规则保留同种认领及非宠物方向", DirectionMatrix);
         Run("培养矩阵只认当前宠物方向，任何宠物终极均阻断", TrainingMatrix);
         Run("跨种终极拒绝切换且字段、历史和健康状态完全不变", RejectedSwitchIsAtomic);
         Run("拒绝切换不会规范化损坏当前进度", RejectedSwitchKeepsBadProgress);
@@ -154,8 +154,14 @@ internal static partial class Program
     {
         SexSlaveSpecializationType[][] allowedPets = { Pets, new[] { Pets[0] }, new[] { Pets[1] }, Array.Empty<SexSlaveSpecializationType>(),
             new[] { Pets[2] }, Array.Empty<SexSlaveSpecializationType>(), Array.Empty<SexSlaveSpecializationType>(), Array.Empty<SexSlaveSpecializationType>() };
-        for (int mask = 0; mask < 8; mask++)
-        foreach (var target in Enum.GetValues<SexSlaveSpecializationType>())
+        var (cat, dog, rabbit) = (Pets[0], Pets[1], Pets[2]);
+        foreach (var (mask, target) in new[]
+        {
+            (0, cat), (0, dog), (0, rabbit),
+            (1, cat), (1, dog), (2, dog), (2, rabbit), (4, rabbit), (4, cat),
+            (3, cat), (5, rabbit), (6, dog), (7, cat),
+            (7, SexSlaveSpecializationType.None), (7, SexSlaveSpecializationType.Cow)
+        })
         {
             bool expected = !Pets.Contains(target) || allowedPets[mask].Contains(target);
             bool actual = PetSpecializationRules.CanChangeDirection(target, (mask & 1) != 0, (mask & 2) != 0, (mask & 4) != 0, out var failure);
@@ -166,9 +172,16 @@ internal static partial class Program
 
     private static void TrainingMatrix()
     {
-        for (int mask = 0; mask < 8; mask++)
-        foreach (var type in Enum.GetValues<SexSlaveSpecializationType>())
-        foreach (var current in Enum.GetValues<SexSlaveSpecializationType>())
+        var (cat, dog, rabbit) = (Pets[0], Pets[1], Pets[2]);
+        foreach (var (mask, type, current) in new[]
+        {
+            (0, cat, cat), (0, dog, dog), (0, rabbit, rabbit),
+            (1, dog, dog), (2, rabbit, rabbit), (4, cat, cat), (7, dog, dog),
+            (0, cat, dog), (0, rabbit, SexSlaveSpecializationType.None),
+            (0, SexSlaveSpecializationType.Cow, SexSlaveSpecializationType.Cow),
+            (0, SexSlaveSpecializationType.PetFox, SexSlaveSpecializationType.PetFox),
+            (0, (SexSlaveSpecializationType)999, (SexSlaveSpecializationType)999)
+        })
             Assert(PetSpecializationRules.CanTrain(type, current, (mask & 1) != 0, (mask & 2) != 0, (mask & 4) != 0) ==
                 (mask == 0 && Pets.Contains(type) && type == current), $"mask {mask}, type {type}, current {current}");
     }

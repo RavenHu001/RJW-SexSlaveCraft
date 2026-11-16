@@ -94,59 +94,61 @@ internal static partial class Program
                 }
             }
         });
-        foreach (string name in StoryNames)
-            Check("native full description framework and generic fallback " + name + ": " + language, () =>
-            {
-                // 使用实际框架 segments 和规则，补足真实职位／仪式 token；不手工串接段落结果。
-                var pattern = DefDatabase<IdeoStoryPatternDef>.GetNamed(name);
-                var structure = namingStructures.First(s => s.descriptionMaker?.patterns?.Any(p => p.def == pattern) == true);
-                foreach (bool with in new[] { true, false })
+        if (language == "English")
+            foreach (string name in StoryNames)
+                Check("native full description framework and generic fallback " + name + ": " + language, () =>
                 {
-                    var ideo = NamingIdeo(with, structure); AddNamingTokens(ideo);
-                    bool sawSSC = false;
-                    for (int seed = 0; seed < 8; seed++)
+                    // 使用实际框架 segments 和规则，补足真实职位／仪式 token；不手工串接段落结果。
+                    var pattern = DefDatabase<IdeoStoryPatternDef>.GetNamed(name);
+                    var structure = namingStructures.First(s => s.descriptionMaker?.patterns?.Any(p => p.def == pattern) == true);
+                    foreach (bool with in new[] { true, false })
                     {
-                        // ResolveDescription 执行框架及解析；GetNewDescription 另测结构的真实框架选择。
-                        string text = Seeded(seed, () =>
+                        var ideo = NamingIdeo(with, structure); AddNamingTokens(ideo);
+                        bool sawSSC = false;
+                        for (int seed = 0; seed < 8; seed++)
                         {
-                            var result = (IdeoDescriptionResult)AccessTools.Method(DescriptionUtility, "ResolveDescription").Invoke(null, new object[] { ideo, pattern, true });
-                            return result.text;
-                        });
-                        ValidGenerated(text); Require(!text.Contains("%%"));
-                        sawSSC |= text.Contains("SSCTESTDESC");
-                        if (!with) Require(!text.Contains("SSCTESTDESC"));
-                        // 重复位置必须遵守单条 uses=1，并允许框架的通用／其他模因内容补足。
-                        foreach (string marker in new[] { "SSCTESTDESC02", "SSCTESTDESC08" })
-                            Require(text.Split(marker).Length <= 2, text);
+                            // ResolveDescription 执行框架及解析；GetNewDescription 另测结构的真实框架选择。
+                            string text = Seeded(seed, () =>
+                            {
+                                var result = (IdeoDescriptionResult)AccessTools.Method(DescriptionUtility, "ResolveDescription").Invoke(null, new object[] { ideo, pattern, true });
+                                return result.text;
+                            });
+                            ValidGenerated(text); Require(!text.Contains("%%"));
+                            sawSSC |= text.Contains("SSCTESTDESC");
+                            if (!with) Require(!text.Contains("SSCTESTDESC"));
+                            // 重复位置必须遵守单条 uses=1，并允许框架的通用／其他模因内容补足。
+                            foreach (string marker in new[] { "SSCTESTDESC02", "SSCTESTDESC08" })
+                                Require(text.Split(marker).Length <= 2, text);
+                        }
+                        if (with) Require(sawSSC);
+                        ideo.RegenerateDescription(true); ValidGenerated(ideo.description);
                     }
-                    if (with) Require(sawSSC);
-                    ideo.RegenerateDescription(true); ValidGenerated(ideo.description);
-                }
-            });
-        Check("native description locks, templates, Scribe and meme removal: " + language, () =>
-        {
-            var ideo = NamingIdeo(true); AddNamingTokens(ideo);
-            // 原版允许混合其他来源；固定种子中选一个确有 SSC 段落的正例，再验证锁定与移除后的消退。
-            for (int seed = 0; seed < 8; seed++)
+                });
+        if (language == "English")
+            Check("native description locks, templates, Scribe and meme removal: " + language, () =>
             {
-                Seeded(seed, () => { ideo.RegenerateDescription(true); return ideo.description; });
-                if (ideo.description.Contains("SSCTESTDESC")) break;
-            }
-            string generated = ideo.description, template = ideo.descriptionTemplate;
-            Require(!string.IsNullOrEmpty(template));
-            Require(generated.Contains("SSCTESTDESC"));
-            // 未重新生成时保留历史文字；移除模因不清洗已保存模板。
-            ideo.memes.Remove(mainMeme); Equal(generated, ideo.description);
-            ideo.descriptionLocked = true; ideo.RegenerateDescription(true); Equal(generated, ideo.description);
-            // XML 保存加载会规范化 CRLF／LF；只规范换行后比较全文，不能 trim 或删除内容掩盖变化。
-            var loaded = NamingRoundtrip(ideo);
-            Equal(generated.Replace("\r\n", "\n"), loaded.description.Replace("\r\n", "\n"));
-            Equal(template.Replace("\r\n", "\n"), loaded.descriptionTemplate.Replace("\r\n", "\n")); Require(loaded.descriptionLocked);
-            loaded.RegenerateDescription(true); Equal(generated.Replace("\r\n", "\n"), loaded.description.Replace("\r\n", "\n"));
-            // force 指重新抽取原版模板，不能越过锁；明确解锁后才能检查新候选已隔离。
-            loaded.descriptionLocked = false; loaded.RegenerateDescription(true);
-            ValidGenerated(loaded.description); Require(!loaded.description.Contains("SSCTESTDESC"));
-        });
+                var ideo = NamingIdeo(true); AddNamingTokens(ideo);
+                // 原版允许混合其他来源；固定种子中选一个确有 SSC 段落的正例，再验证锁定与移除后的消退。
+                for (int seed = 0; seed < 8; seed++)
+                {
+                    Seeded(seed, () => { ideo.RegenerateDescription(true); return ideo.description; });
+                    if (ideo.description.Contains("SSCTESTDESC")) break;
+                }
+                string generated = ideo.description, template = ideo.descriptionTemplate;
+                Require(!string.IsNullOrEmpty(template));
+                Require(generated.Contains("SSCTESTDESC"));
+                // 未重新生成时保留历史文字；移除模因不清洗已保存模板。
+                ideo.memes.Remove(mainMeme); Equal(generated, ideo.description);
+                ideo.descriptionLocked = true; ideo.RegenerateDescription(true); Equal(generated, ideo.description);
+                // XML 保存加载会规范化 CRLF／LF；只规范换行后比较全文，不能 trim 或删除内容掩盖变化。
+                var loaded = NamingRoundtrip(ideo);
+                Equal(generated.Replace("\r\n", "\n"), loaded.description.Replace("\r\n", "\n"));
+                Equal(template.Replace("\r\n", "\n"), loaded.descriptionTemplate.Replace("\r\n", "\n")); Require(loaded.descriptionLocked);
+                loaded.RegenerateDescription(true); Equal(generated.Replace("\r\n", "\n"), loaded.description.Replace("\r\n", "\n"));
+                // force 指重新抽取原版模板，不能越过锁；明确解锁后才能检查新候选已隔离。
+                loaded.descriptionLocked = false; loaded.RegenerateDescription(true);
+                ValidGenerated(loaded.description); Require(!loaded.description.Contains("SSCTESTDESC"));
+            });
     }
 
     private static void AddNamingTokens(Ideo ideo)

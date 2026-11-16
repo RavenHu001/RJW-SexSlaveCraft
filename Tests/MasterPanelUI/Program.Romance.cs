@@ -9,25 +9,38 @@ internal static partial class Program
     /// <summary>复用既有四语 UI 宿主，验证两个板块的真实几何、门槛和原上下文提交。</summary>
     private static void RunRomanceUiTests()
     {
-        foreach (string language in Languages)
+        // 四语各留一档，另用英文覆盖中栏、俄文覆盖宽栏。
+        foreach (var (language, width) in new[]
+        {
+            ("ChineseSimplified", 260f), ("ChineseTraditional", 352f), ("English", 260f),
+            ("English", 352f), ("Russian", 260f), ("Russian", 560f)
+        })
         {
             LoadLanguage(language);
             foreach (var node in XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, "Keyed/SSC_Romance.xml")).Root.Elements()) Translation.Entries[node.Name.LocalName] = node.Value;
             LoadResetLanguage(language);
-            foreach (float width in new[] { 260f, 352f, 560f })
-                Run($"浪漫双板块 {language}/{width} 边界/长姓名/长译文不重叠", () =>
+            Run($"浪漫双板块 {language}/{width} 边界/长姓名/长译文不重叠", () =>
+            {
+                var pawn = RomanceUiPawn(); pawn.LabelShort = new string('长', 40); pawn.BoundMaster.LabelShort = new string('M', 60);
+                var (height, frames) = DrawRomanceUi(pawn, width);
+                Assert(frames.Length == 2 && frames[0].Rect.yMax + 14 <= frames[1].Rect.y && frames[1].Rect.yMax <= height);
+                Assert(Widgets.Items.Count(i => i.Kind == "romance-checkbox") == 5);
+                var buttons = Widgets.Items.Where(i => i.Kind == "romance-button").ToArray();
+                Assert(buttons.Length == 3 && buttons[0].Rect.y > Widgets.Items.Where(i => i.Kind == "romance-checkbox").Max(i => i.Rect.yMax));
+                Assert(buttons[0].Rect.yMax <= buttons[1].Rect.y && buttons[1].Rect.yMax <= buttons[2].Rect.y);
+                foreach (var item in Widgets.Items.Where(i => i.Kind is "label" or "romance-checkbox" or "romance-button" or "romance-target" or "romance-surface"))
+                    Assert(frames.Any(f => item.Rect.x >= f.Rect.x && item.Rect.xMax <= f.Rect.xMax + .01f && item.Rect.y >= f.Rect.y && item.Rect.yMax <= f.Rect.yMax + .01f), item.Kind + ": outside section");
+                Assert(RomanceUiOrigins.Stack.Count == 0);
+                var resetButtons = Widgets.Items.Where(i => i.Kind == "reset-button").ToArray(); Assert(resetButtons.Length == 2);
+                for (int i = 0; i < 2; i++)
                 {
-                    var pawn = RomanceUiPawn(); pawn.LabelShort = new string('长', 40); pawn.BoundMaster.LabelShort = new string('M', 60);
-                    var (height, frames) = DrawRomanceUi(pawn, width);
-                    Assert(frames.Length == 2 && frames[0].Rect.yMax + 14 <= frames[1].Rect.y && frames[1].Rect.yMax <= height);
-                    Assert(Widgets.Items.Count(i => i.Kind == "romance-checkbox") == 5);
-                    var buttons = Widgets.Items.Where(i => i.Kind == "romance-button").ToArray();
-                    Assert(buttons.Length == 3 && buttons[0].Rect.y > Widgets.Items.Where(i => i.Kind == "romance-checkbox").Max(i => i.Rect.yMax));
-                    Assert(buttons[0].Rect.yMax <= buttons[1].Rect.y && buttons[1].Rect.yMax <= buttons[2].Rect.y);
-                    foreach (var item in Widgets.Items.Where(i => i.Kind is "label" or "romance-checkbox" or "romance-button" or "romance-target" or "romance-surface"))
-                        Assert(frames.Any(f => item.Rect.x >= f.Rect.x && item.Rect.xMax <= f.Rect.xMax + .01f && item.Rect.y >= f.Rect.y && item.Rect.yMax <= f.Rect.yMax + .01f), item.Kind + ": outside section");
-                    Assert(RomanceUiOrigins.Stack.Count == 0);
-                });
+                    var title = Widgets.Items.Single(item => item.Kind == "label" && item.Text == Translation.Translate(i == 0 ? "SSC_Romance_SexSection" : "SSC_Romance_RomanceSection"));
+                    Assert(Math.Abs(title.Rect.y - resetButtons[i].Rect.y) < .01f);
+                    Assert(title.Rect.xMax + 7f <= resetButtons[i].Rect.x && resetButtons[i].Rect.xMax <= frames[i].Rect.xMax);
+                    Assert(resetButtons[i].Rect.height >= Text.CalcHeight(resetButtons[i].Text, resetButtons[i].Rect.width - 12f));
+                    Assert(resetButtons[i].Disabled);
+                }
+            });
         }
         LoadLanguage("English");
         foreach (var node in XDocument.Load(SscTestPaths.Combine(repo, "Languages/English/Keyed/SSC_Romance.xml")).Root.Elements()) Translation.Entries[node.Name.LocalName] = node.Value;

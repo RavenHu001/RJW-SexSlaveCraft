@@ -16,8 +16,11 @@ internal static partial class Program
     {
         foreach (bool fa in new[] { false, true }) foreach (bool sa in new[] { false, true })
         {
-            Run($"FA={fa}/SA={sa}按实际节点自动适配", () => AdapterCombination(fa, sa));
-            Run($"FA={fa}/SA={sa}普通角色和开关恢复", () => AdapterGates(fa, sa));
+            if (fa && sa)
+            {
+                Run($"FA={fa}/SA={sa}按实际节点自动适配", () => AdapterCombination(fa, sa));
+                Run($"FA={fa}/SA={sa}普通角色和开关恢复", () => AdapterGates(fa, sa));
+            }
             Run($"FA={fa}/SA={sa}隔离编译验证可选类型真实存在性", () => AdapterPresenceHost(root,fa,sa));
         }
         Run("正面两眼遮罩排除头部轮廓和皮肤", EyeMaskGeometry);

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
 using RimWorld;
@@ -9,9 +10,13 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    [HarmonyPatch(typeof(PregnancyUtility), nameof(PregnancyUtility.ApplyBirthOutcome))]
+    [HarmonyPatch]
     internal static class Harmony_FertilityNativeBirth
     {
+        // 前置按名字接收分娩对象与父方。与生成改写共用预检，防止接口改名时只装上一侧。
+        internal static MethodBase TargetMethod() => SSCFertilityGenerationPatches.NativeTarget();
+        internal static bool Prepare() => TargetMethod() != null;
+
         /// <summary>原版真实出生参数提供临时亲代与原人格凭据，不固定受孕时资格。</summary>
         internal static void Prefix(Thing birtherThing, Pawn father, out SSCFertilityBirthUtility.Scope __state)
             => __state = SSCFertilityBirthUtility.Begin(birtherThing as Pawn, father, true);

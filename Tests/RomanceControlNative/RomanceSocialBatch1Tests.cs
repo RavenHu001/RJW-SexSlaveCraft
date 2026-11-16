@@ -28,7 +28,8 @@ internal static partial class Program
                     Require(!subject.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCCompositeRomance>().Any());
                     if (record != null) Equal(SSCRomanceCommandStatus.Completed, record.Status);
                 }
-                finally { owner.CreateClassProcessor(hook).Patch(); }
+                // 只恢复实际卸载的 worker；重复为其他 worker 安装会破坏原生账本就绪检查。
+                finally { owner.Patch(worker, transpiler: new HarmonyMethod(transform)); }
             });
         Check("social facts one interaction retains both controlled POVs", () =>
         {
@@ -138,10 +139,13 @@ internal static partial class Program
     }
 
     /// <summary>只阻止 SSC 新记忆的原版准入，实际原生互动、心情和日志构造全部照常执行。</summary>
-    private static bool SocialDenyComposite(ThoughtDef def, ref bool __result)
+    private static bool socialCompositeDenied;
+
+    private static bool SocialDenyComposite(Thought_Memory __0)
     {
-        if (def.defName != Thought_MemorySSCCompositeRomance.ShortDefName && def.defName != Thought_MemorySSCCompositeRomance.LongDefName) return true;
-        __result = false; return false;
+        if (__0 is not Thought_MemorySSCCompositeRomance) return true;
+        socialCompositeDenied = true;
+        return false;
     }
 
     /// <summary>原生 Scribe 保存同条日志并恢复原参与者引用；不会重放互动、生成命令或分配心情事件。</summary>

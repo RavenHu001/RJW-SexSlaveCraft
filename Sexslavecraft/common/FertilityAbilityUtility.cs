@@ -65,6 +65,7 @@ namespace SexSlaveCraft
         public static bool CanUse(Pawn p, out string reason)
         {
             reason = "SSC_FertilitySkill_Unavailable";
+            if (!SSCSceneHookAvailability.SharedReady || !SSCSceneHookAvailability.DriverReady(typeof(JobDriver_FertilityConception))) return false;
             if (p == null || p.Dead || p.Destroyed || !p.Spawned || p.abilities == null || SSCPersonalityRuntimeUtility.IsMutating(p)) return false;
             if (!FertilitySpecializationUtility.HasFinalState(p) || !FertilitySpecializationUtility.MeetsConditions(p, out _)) return false;
             if (!ModsConfig.BiotechActive) { reason = "SSC_FertilitySkill_Biotech"; return false; }

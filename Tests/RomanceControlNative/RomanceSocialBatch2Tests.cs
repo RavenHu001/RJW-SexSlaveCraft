@@ -58,17 +58,14 @@ internal static partial class Program
                     AssertSocialHistorySave(repo, ev, a, b, subject, record);
                 });
             foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "Russian", "English" })
-                Check("social grammar actual DefInjected and thirteen roots " + language, () =>
+                Check("social grammar actual DefInjected interaction " + language, () =>
                 {
                     InjectSocialLogLanguage(repo, language);
-                    foreach (int ev in Enumerable.Range(1, 13))
-                    {
-                        var (a, b, subject, _) = SocialLogEvent(ev);
-                        var text = ((PlayLogEntry_SSCRomance)moodLastLog).BackgroundTextFromPOV(subject);
-                        Equal(CopyLogExpected(repo, language, ev, a, b), CopyPlainText(text));
-                    }
-                    var rel = $"Languages/{language}/DefInjected/RulePackDef/SSC_RomanceLogs.xml";
-                    Require(File.ReadAllBytes(Path.Combine(repo, "1.7", rel)).SequenceEqual(File.ReadAllBytes(Path.Combine(repo, "Sexslavecraft", rel))));
+                    // 独立文案入口检查每语的十三个语法根；这里保留一次真实互动接线。
+                    const int ev = 1;
+                    var (a, b, subject, _) = SocialLogEvent(ev);
+                    var text = ((PlayLogEntry_SSCRomance)moodLastLog).BackgroundTextFromPOV(subject);
+                    Equal(CopyLogExpected(repo, language, ev, a, b), CopyPlainText(text));
                 });
             SocialLogHistoryAndFeedbackTests(repo, boundary);
             SocialLogBatch2ReviewTests(repo, boundary);
@@ -187,22 +184,37 @@ internal static partial class Program
                 if (ev == 7) Equal(0, socialLogLetters.Count);
                 else { Require(CopyEventTextPresent(repo, socialLogLetters.Single().Text.ToString(), ev)); Require(!CopyEventTextPresent(repo, socialLogLetters.Single().Text.ToString(), passive)); }
             });
-        foreach (int ev in Enumerable.Range(1, 13))
-        foreach (bool denied in new[] { false, true })
+        var admitMemory = AccessTools.Method(typeof(MemoryThoughtHandler), nameof(MemoryThoughtHandler.TryGainMemory),
+            new[] { typeof(Thought_Memory), typeof(Pawn) });
+        // 每类事件仍实际结算与渲染，两个失败模式沿被动／命令和各原版行为交替选样。
+        foreach (var (ev, denied) in new[]
+        {
+            (1, true), (2, false), (3, false), (4, true), (5, false),
+            (6, false), (7, true), (8, true), (9, false), (10, true),
+            (11, true), (12, false), (13, true)
+        })
             Check($"social grammar render survives mood admission {ev}/{denied}", () =>
             {
-                if (denied) boundary.Patch(AccessTools.Method(typeof(ThoughtUtility), nameof(ThoughtUtility.CanGetThought)), prefix: new HarmonyMethod(typeof(Program), nameof(SocialDenyComposite)));
+                socialCompositeDenied = false;
+                if (denied) boundary.Patch(admitMemory, prefix: new HarmonyMethod(typeof(Program), nameof(SocialDenyComposite)));
                 try
                 {
-                    var (_, _, subject, record) = SocialLogEvent(ev, false, (a, b, s) => { if (!denied) s.needs.mood = null; });
+                    var (_, _, subject, record) = SocialLogEvent(ev, false, (a, b, s) =>
+                    {
+                        // 亲近样本有实际候选，避免零值结果绕过拒绝钩子。
+                        socialOpinionValue = 60;
+                        if (!denied) s.needs.mood = null;
+                    });
                     var fact = ((PlayLogEntry_SSCRomance)moodLastLog).BackgroundFromPOV(subject);
                     Equal((SSCRomanceCompositeEvent)ev, fact.Kind);
                     Require(subject.needs.mood == null || !subject.needs.mood.thoughts.memories.Memories.OfType<Thought_MemorySSCCompositeRomance>().Any());
+                    if (denied) Require(socialCompositeDenied, "Composite admission was never reached for event " + ev);
+                    else Require(subject.needs.mood == null);
                     Equal(1, playLogCalls);
                     if (record != null) Equal(SSCRomanceCommandStatus.Completed, record.Status);
                     Require(CopyEventTextPresent(repo, ((PlayLogEntry_SSCRomance)moodLastLog).ToGameStringFromPOV(subject), ev));
                 }
-                finally { if (denied) boundary.Unpatch(AccessTools.Method(typeof(ThoughtUtility), nameof(ThoughtUtility.CanGetThought)), AccessTools.Method(typeof(Program), nameof(SocialDenyComposite))); }
+                finally { if (denied) boundary.Unpatch(admitMemory, AccessTools.Method(typeof(Program), nameof(SocialDenyComposite))); }
             });
         Check("social grammar extra packs and display are side effect free", () =>
         {

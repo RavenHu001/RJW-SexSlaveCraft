@@ -173,10 +173,13 @@ internal static partial class Program
     /// <summary>终极能力读独立成果，不把当前训练方向、身份或主人绑定重新作为资格。</summary>
     private static void CrossDirectionQualification()
     {
+        var identities = Enum.GetValues<PawnIdentity>();
+        int sample = 0;
         foreach (var direction in Enum.GetValues<SexSlaveSpecializationType>())
-        foreach (var identity in Enum.GetValues<PawnIdentity>())
-        foreach (bool drafted in new[] { false, true })
         {
+            // 按方向轮换身份与征召，六种身份／征召配对各有代表。
+            var identity = identities[sample % identities.Length];
+            bool drafted = sample++ % 2 != 0;
             var caster = Pawn(direction, .13f); caster.health.AddHediff(CatFinal); caster.Training.pawnIdentity = identity; caster.Drafted = drafted;
             Check(PetCatAbilityUtility.CanUse(caster, out _) && caster.BoundMaster == null, "terminal qualification depends on training state");
             TickGrant(caster); Check(caster.abilities.GetAbility(SSCDefOf.SSC_PetCatComfort).CanCast, "ability imposed drafted gate");

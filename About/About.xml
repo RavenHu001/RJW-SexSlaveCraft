@@ -7,13 +7,11 @@
 		<li>1.7</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.5.0 (TieJin Modify)
-原「调教」标签打开可拖动的六页管理窗口，随地图或殖民者栏的单选切换。
-在「关系」页可为同一受训者追加、撤销、定位多名调教员，或逐人启用工作。旧单人指派会迁入名单。日常调教同一时间只接受一个任务。
+    <description>SexSlaveCraft 2.5.1 (TieJin Modify)
+新增 PNA 雾气迫击炮弹、IED 和可调半径及档位的发烟器。修复 WOWGAG 复用命令列表时的闪烁及选择按钮。补丁加载可跳过注册失败项，日常调教在必要钩子缺失时暂停派发，设置中可查看跳过与回退原因。
 新内容面向 RimWorld 1.7。1.6 使用 SSC 2.4.1。Harmony 和 RJW 先于 SSC，文化与仪式需要 Ideology。
 
-The Training tab opens a movable six-page window that follows single selection on the map or colonist bar.
-Manage multiple trainers for each trainee in Relationships. Add, remove, locate, or enable work for individual trainers. Old single-trainer assignments migrate on load, and each trainee can have one active daily Training job.
+Adds PNA mist mortar shells, IEDs and an emitter with adjustable radius and mode. Fixes command flicker and selection when WOWGAG reuses the command list. SSC continues loading when a patch fails to register and blocks affected Daily Training jobs when required hooks are missing. Diagnostics shows why patches were skipped or fell back.
 New content targets RimWorld 1.7. The 1.6 component uses SSC 2.4.1. Load Harmony and RJW before SSC. Culture and rituals require Ideology.
 
 [AI 辅助生成 / Partly AI-assisted]</description>

@@ -27,6 +27,13 @@ namespace SexSlaveCraft
         internal static bool CanStart(Pawn actor, IntVec3 destination, out string reason)
         {
             reason = null;
+#if SSC_RW17
+            if (!SSCSceneHookAvailability.SharedReady || !SSCSceneHookAvailability.DriverReady(typeof(JobDriver_SelfTraining)))
+            {
+                reason = "SSC_SelfTraining_CannotStart".Translate();
+                return false;
+            }
+#endif
             if (actor == null || actor.Dead || actor.Destroyed || !actor.Spawned || actor.Map == null ||
                 actor.health?.Downed == true || actor.Drafted || actor.IsBurning() || actor.IsFighting())
             {

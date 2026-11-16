@@ -16,52 +16,54 @@ internal static partial class Program
 
     private static void DynamicDescriptionTests(string language)
     {
-        foreach (Gender gender in new[] { Gender.Male, Gender.Female })
+        Gender mythGender = language is "English" or "Russian" ? Gender.Female : Gender.Male;
+        Check("native SSC dynamic myth names and template refresh " + mythGender + ": " + language, () =>
         {
-            Check("native SSC dynamic myth names and template refresh " + gender + ": " + language, () =>
+            var ideo = NamingIdeo(true); AddNamingTokens(ideo);
+            var foundation = (IdeoFoundation_Deity)ideo.foundation;
+            foundation.SetDeities(new() { new() { name = "SSCFIRSTDEITY", type = "god", gender = mythGender },
+                new() { name = "SSCSECONDDEITY", type = "god", gender = mythGender } });
+            var pattern = DefDatabase<IdeoStoryPatternDef>.GetNamed("TheistMyth");
+            var evaluator = DescriptionRequest(ideo, pattern);
+            foreach (string key in new[] { "creation", "episode" })
             {
-                var ideo = NamingIdeo(true); AddNamingTokens(ideo);
-                var foundation = (IdeoFoundation_Deity)ideo.foundation;
-                foundation.SetDeities(new() { new() { name = "SSCFIRSTDEITY", type = "god", gender = gender },
-                    new() { name = "SSCSECONDDEITY", type = "god", gender = gender } });
-                var pattern = DefDatabase<IdeoStoryPatternDef>.GetNamed("TheistMyth");
-                var evaluator = DescriptionRequest(ideo, pattern);
-                foreach (string key in new[] { "creation", "episode" })
+                string segment = (string)AccessTools.Method(evaluator.GetType(), "NextSegment").Invoke(evaluator,
+                    new object[] { key, "meme_SSC_MasterSlaveOrder", false });
+                ValidGenerated(segment); Require(segment.Contains("SSCFIRSTDEITY")); Require(!segment.Contains("SSCSECONDDEITY"));
+            }
+            // 不强制正常故事选中 SSC；先找到确有该段的真实模板，再检查神名变动后的非强制刷新。
+            IdeoDescriptionResult result = null;
+            for (int seed = 0; seed < 32; seed++)
+            {
+                Seeded(seed, () =>
                 {
-                    string segment = (string)AccessTools.Method(evaluator.GetType(), "NextSegment").Invoke(evaluator,
-                        new object[] { key, "meme_SSC_MasterSlaveOrder", false });
-                    ValidGenerated(segment); Require(segment.Contains("SSCFIRSTDEITY")); Require(!segment.Contains("SSCSECONDDEITY"));
-                }
-                // 不强制正常故事选中 SSC；先找到确有该段的真实模板，再检查神名变动后的非强制刷新。
-                IdeoDescriptionResult result = null;
-                for (int seed = 0; seed < 32; seed++)
-                {
-                    Seeded(seed, () =>
-                    {
-                        result = (IdeoDescriptionResult)AccessTools.Method(DescriptionUtility, "ResolveDescription")
-                            .Invoke(null, new object[] { ideo, pattern, true });
-                        return result.text;
-                    });
-                    if (ContainsAuthoredCreation(result.template)) break;
-                }
-                Require(ContainsAuthoredCreation(result.template), "No SSC creation selected");
-                Require(result.text.Contains("SSCFIRSTDEITY"));
-                ideo.descriptionTemplate = result.template;
-                Require(ideo.descriptionTemplate.Contains("%%deity0_name%%"));
-                foundation.SetDeities(new() { new() { name = "SSCRENAMEDDEITY", type = "god", gender = gender } });
-                var refreshed = (IdeoDescriptionResult)AccessTools.Method(DescriptionUtility, "ResolveDescription")
-                    .Invoke(null, new object[] { ideo, pattern, false });
-                ValidGenerated(refreshed.text); Require(refreshed.text.Contains("SSCRENAMEDDEITY"));
-                Equal(result.template, refreshed.template);
-                Require(ContainsAuthoredCreation(refreshed.template));
-                Require(!refreshed.text.Contains("SSCFIRSTDEITY") && !refreshed.text.Contains("%%"));
-                // 同样包含神名的原版故事必须不能通过 SSC 来源判断。
-                var plain = NamingIdeo(false);
-                ((IdeoFoundation_Deity)plain.foundation).SetDeities(new() { new() { name = "SSCFIRSTDEITY", type = "god", gender = gender } });
-                var vanilla = (IdeoDescriptionResult)AccessTools.Method(DescriptionUtility, "ResolveDescription")
-                    .Invoke(null, new object[] { plain, pattern, true });
-                Require(vanilla.text.Contains("SSCFIRSTDEITY")); Require(!ContainsAuthoredCreation(vanilla.template));
-            });
+                    result = (IdeoDescriptionResult)AccessTools.Method(DescriptionUtility, "ResolveDescription")
+                        .Invoke(null, new object[] { ideo, pattern, true });
+                    return result.text;
+                });
+                if (ContainsAuthoredCreation(result.template)) break;
+            }
+            Require(ContainsAuthoredCreation(result.template), "No SSC creation selected");
+            Require(result.text.Contains("SSCFIRSTDEITY"));
+            ideo.descriptionTemplate = result.template;
+            Require(ideo.descriptionTemplate.Contains("%%deity0_name%%"));
+            foundation.SetDeities(new() { new() { name = "SSCRENAMEDDEITY", type = "god", gender = mythGender } });
+            var refreshed = (IdeoDescriptionResult)AccessTools.Method(DescriptionUtility, "ResolveDescription")
+                .Invoke(null, new object[] { ideo, pattern, false });
+            ValidGenerated(refreshed.text); Require(refreshed.text.Contains("SSCRENAMEDDEITY"));
+            Equal(result.template, refreshed.template);
+            Require(ContainsAuthoredCreation(refreshed.template));
+            Require(!refreshed.text.Contains("SSCFIRSTDEITY") && !refreshed.text.Contains("%%"));
+            // 同样包含神名的原版故事必须不能通过 SSC 来源判断。
+            var plain = NamingIdeo(false);
+            ((IdeoFoundation_Deity)plain.foundation).SetDeities(new() { new() { name = "SSCFIRSTDEITY", type = "god", gender = mythGender } });
+            var vanilla = (IdeoDescriptionResult)AccessTools.Method(DescriptionUtility, "ResolveDescription")
+                .Invoke(null, new object[] { plain, pattern, true });
+            Require(vanilla.text.Contains("SSCFIRSTDEITY")); Require(!ContainsAuthoredCreation(vanilla.template));
+        });
+        var founderGenders = language == "English" ? new[] { Gender.Male, Gender.Female } : new[] { mythGender };
+        foreach (Gender gender in founderGenders)
+        {
             Check("native SSC founder aliases stay consistent " + gender + ": " + language, () =>
             {
                 var ideo = NamingIdeo(true);

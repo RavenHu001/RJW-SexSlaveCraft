@@ -109,6 +109,15 @@ namespace SexSlaveCraft
             if (!SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request)) return false;
             if (HasStarted(driver, request) && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
                 SSCIdentityUtility.IsSexSlave(request.Receiver))) return true;
+#if SSC_RW17
+            // 只拒绝已确认失配的驱动的新请求。已具备有效凭据的场景优先沿用原收尾路径。
+            if (!CanStartWithInstalledHooks(driver, ordered))
+            {
+                allowed = false;
+                State(driver).Rejected = true;
+                return true;
+            }
+#endif
             allowed = Evaluate(driver, request, out SSCRestrictionDecision decision, out string reason, ordered);
             LogDecision(driver, request, decision, "Reserve", allowed, reason);
             State(driver).Rejected = !allowed;
@@ -137,6 +146,15 @@ namespace SexSlaveCraft
 #endif
             if (HasStarted(driver, request) && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
                 SSCIdentityUtility.IsSexSlave(request.Receiver))) return true;
+#if SSC_RW17
+            // 在途任务也可能来自读档或绕过常规派发的调用。准备检查继续用现有拒绝清理，防止遗留等待任务。
+            if (!CanStartWithInstalledHooks(driver))
+            {
+                allowed = false;
+                Reject(driver, request, "SSC_Restrictions_CommandRejected".Translate());
+                return true;
+            }
+#endif
             allowed = Evaluate(driver, request, out SSCRestrictionDecision decision, out string reason);
             LogDecision(driver, request, decision, phase, allowed, reason);
             if (!allowed && driver is JobDriver_SexBaseReciever persistent && OnaholeCompatibilityUtility.IsBeOnaholeDriver(persistent))
@@ -168,6 +186,15 @@ namespace SexSlaveCraft
         }
 
 #if SSC_RW17
+        private static bool CanStartWithInstalledHooks(JobDriver_Sex driver, bool ordered = false)
+        {
+            if (driver is JobDriver_Training)
+                return SSCSceneHookAvailability.CanStartDaily(ordered || driver.job?.playerForced == true);
+            if ((driver is JobDriver_SelfTraining or JobDriver_FertilityConception or JobDriver_PetAffectionFollowup) &&
+                !SSCSceneHookAvailability.SharedReady) return false;
+            return SSCSceneHookAvailability.DriverReady(driver.GetType());
+        }
+
         internal static bool CheckDailyTrainingApproach(JobDriver_Training driver)
             => !TryCheck(driver, "Approach", out bool allowed) || allowed;
 #endif

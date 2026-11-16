@@ -1,12 +1,19 @@
 # 更新日志 / Changelog — SexSlaveCraft（TieJin 接续版 / TieJin continuation）
 
-## 未发布 / Unreleased
+## [2.5.1] — 2026-11-15 — 正式版 / Release — PNA 雾气与兼容修复 / PNA Mist and Compatibility
+
+从 `v2.5.0` 后至 `5d9c999d`，纳入 32 个非合并提交、1 个合并提交和 193 个净变更路径。面向 RimWorld 1.7。[双语说明](Docs/Releases/2.5.1/2.5.1发布说明.md) · [提交归并](Docs/Releases/2.5.1/2.5.1开发归并核对.md) · [验证记录](Docs/Releases/2.5.1/2.5.1版本验证.md)
 
 - **PNA 雾气炮弹与 IED（RimWorld 1.7）。** 两者共用 5 格爆炸，对每个有效目标即时增加 25 个百分点的 PNA 负荷。炮弹和 IED 使用紫色的原版烟雾系列贴图。
 - **PNA 发烟器。** 半径可在 5～10 格之间调节，档位独立设置。低档的持续输入与自然消退形成平衡，高档可将覆盖范围内的有效目标堆到满负荷。发烟器使用独立的单格贴图。
 - 三项功能均已通过实机验收。精简后复跑 `PnaLoad` 379/379、发烟器原生专项 23/23。 [回归与验收记录](Docs/Development/Completed/催情发烟器/PNA发烟器测试版实机验收.md#pna-mist-regression)
+- **主从关系命令栏。** 修复 WOWGAG 命令列表复用时的主从卡片闪烁及两个选择按钮的交互。
+- **补丁加载与日常调教循环。** SSC 启动时隔离补丁注册。模组冲突导致某个补丁或兼容组注册失败时，跳过失败项并继续加载其余补丁。日常调教派发前会检查所需钩子，缺失时停止派发受影响的任务，避免调教反复开始、退出和重派。
+- **诊断。** 增加补丁注册状态、筛选及跳过／回退原因，支持刷新和复制报告。11 月 15 日的本机 Combat Extended 组合通过调教、仪式选角和诊断复测。
 
 RimWorld 1.7 gains PNA mist mortar shells and IEDs. Both use the same five-tile blast and instantly raise each eligible target’s PNA load by 25 percentage points. Both use purple-tinted vanilla smoke textures. The PNA mist emitter has its own single-tile sprite and separate controls for radius (5–10 tiles) and mode. Low mode settles at an equilibrium with natural decay, while high mode can bring eligible targets to full load. All three features passed in-game acceptance. After test cleanup, the PnaLoad and native emitter suites passed 379/379 and 23/23 respectively.
+
+The update fixes relationship command flicker with WOWGAG. If a mod conflict causes a patch or compatibility group to fail registration at startup, SSC skips the failed patch or group and continues loading the rest. Daily Training checks its required hooks before issuing jobs. When a hook is missing, SSC blocks the affected jobs to prevent them from repeatedly starting, aborting and being assigned again. Diagnostics now shows registration and fallback details. The changes passed scoped in-game checks on development builds. The validation record tracks the formal release checks and remaining compatibility cases.
 
 ## [2.5.0] — 2026-11-12 — 调教管理 / Training Management
 

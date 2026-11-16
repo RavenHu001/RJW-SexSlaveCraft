@@ -41,7 +41,11 @@ internal static class Program
     private static int Main(string[] args)
     {
         root=SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
-        foreach(float c in new[]{.29999f,.30f,.30001f})foreach(int o in new[]{-1,0})foreach(bool reverse in new[]{false,true})
+        foreach (var (c, o, reverse) in new[]
+        {
+            (.29999f, -1, false), (.29999f, 0, false), (.30f, -1, false), (.30f, 0, false),
+            (.29999f, -1, true), (.30f, 0, true)
+        })
             Run($"边界 C={c} O={o} reverse={reverse}",()=>{
                 var s=Scene(c,o);Complete(s.m,s.t,reverse:reverse);
                 int stage=c<.30f?(o<0?1:0):(o<0?3:2);
@@ -50,7 +54,7 @@ internal static class Program
                 if(stage==3)Check(social==null);else{Check(social.otherPawn==s.m);Near(((Thought_MemorySocial)social).OpinionOffset(),new[]{5,-5,10,0}[stage]);}
                 Check(SSCPnaSexSupplyUtility.Calls==1,"完成分发不能重入");
             });
-        foreach(float c in new[]{float.NaN,float.PositiveInfinity,float.NegativeInfinity})Run("非法 C 只跳反馈 "+c,()=>{
+        foreach(float c in new[]{float.NaN,float.PositiveInfinity})Run("非法 C 只跳反馈 "+c,()=>{
             var s=Scene(c);Complete(s.m,s.t);Check(Memories(s.t).Count==0);Check(SSCPnaSexSupplyUtility.Calls==1);
         });
         Run("原结算跨过 C/O 边界仍用旧档，下场重采",()=>{

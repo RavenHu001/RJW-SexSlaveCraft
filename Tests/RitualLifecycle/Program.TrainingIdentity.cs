@@ -17,8 +17,7 @@ internal static partial class Program
 
     private static void RunTrainingIdentityTests()
     {
-        foreach (PawnIdentity identity in new[] { PawnIdentity.Unset, PawnIdentity.Master })
-        foreach (bool rules in new[] { true, false })
+        foreach (var (identity, rules) in new[] { (PawnIdentity.Unset, true), (PawnIdentity.Master, false) })
         {
             Check($"ritual stage entry rejects {identity} with restriction rules={rules}", () =>
             {

@@ -109,23 +109,24 @@ internal static partial class Program
             var original = Translation.Keys.ToDictionary(entry => entry.Key, entry => entry.Value);
             try
             {
-                foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
+                foreach (var (language, mint, assigned) in new[]
+                {
+                    ("ChineseSimplified", false, false), ("ChineseSimplified", true, true),
+                    ("ChineseTraditional", false, true), ("English", true, false),
+                    ("Russian", false, false), ("Russian", true, true)
+                })
                 {
                     foreach (var key in XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, "Keyed/SSC_SharedBed.xml")).Root.Elements())
                         Translation.Keys[key.Name.LocalName] = key.Value;
-                    foreach (bool mint in new[] { false, true })
-                    foreach (bool assigned in new[] { false, true })
-                    {
-                        var f = Setup(); f.bed.OwnersForReading.Clear(); Widgets.Labels.Clear(); Widgets.Boxes.Clear();
-                        if (mint) new DubsMintMenus.Dialog_AssignBuildingOwner(Comp(f.bed)).DoRow(new Rect(20, 0, 600, 60), f.partner, assigned);
-                        else new Dialog_AssignBuildingOwner(Comp(f.bed)).Draw(f.partner, assigned);
-                        Assert(Widgets.Labels.Count == 3 && Widgets.Boxes.Count == 3);
-                        Assert(Widgets.Labels[2].rect.x == (mint ? 80 : 0));
-                        Assert(Widgets.Labels[2].rect.xMax < Widgets.Labels[0].rect.x);
-                        Assert(Widgets.Labels[0].rect.xMax < Widgets.Labels[1].rect.x);
-                        Assert(Widgets.Boxes[2].rect.xMax <= (mint ? 445 : 200));
-                        Assert(Widgets.Labels.All(item => item.rect.width > 0));
-                    }
+                    var f = Setup(); f.bed.OwnersForReading.Clear(); Widgets.Labels.Clear(); Widgets.Boxes.Clear();
+                    if (mint) new DubsMintMenus.Dialog_AssignBuildingOwner(Comp(f.bed)).DoRow(new Rect(20, 0, 600, 60), f.partner, assigned);
+                    else new Dialog_AssignBuildingOwner(Comp(f.bed)).Draw(f.partner, assigned);
+                    Assert(Widgets.Labels.Count == 3 && Widgets.Boxes.Count == 3);
+                    Assert(Widgets.Labels[2].rect.x == (mint ? 80 : 0));
+                    Assert(Widgets.Labels[2].rect.xMax < Widgets.Labels[0].rect.x);
+                    Assert(Widgets.Labels[0].rect.xMax < Widgets.Labels[1].rect.x);
+                    Assert(Widgets.Boxes[2].rect.xMax <= (mint ? 445 : 200));
+                    Assert(Widgets.Labels.All(item => item.rect.width > 0));
                 }
             }
             finally { Translation.Keys = original; }

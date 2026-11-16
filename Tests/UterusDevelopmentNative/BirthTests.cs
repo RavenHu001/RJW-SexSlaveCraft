@@ -182,8 +182,9 @@ internal static partial class Program
             var codes = PatchProcessor.GetOriginalInstructions(method).ToList();
             var generate = AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.GeneratePawn), new[] { typeof(PawnGenerationRequest) });
             int at = codes.FindIndex(c => c.Calls(generate)); Require(at >= 0);
+            // 跳转到生成调用时应先压入已验证的分娩参数，再执行 SSC 包装器。
             var label = new DynamicMethod("birth_labels", typeof(void), Type.EmptyTypes).GetILGenerator().DefineLabel(); codes[at].labels.Add(label);
-            var rewritten = Harmony_FertilityNativeGeneration.Transpiler(codes, method).ToList();
+            var rewritten = Harmony_FertilityNativeGeneration.Transpiler(codes).ToList();
             Require(rewritten[at].labels.Contains(label)); Require(rewritten[at + 2].Calls(AccessTools.Method(typeof(SSCFertilityGenerationPatches), "GenerateNative")));
             foreach (Type type in new[] { typeof(Harmony_FertilityNativeGeneration), typeof(Harmony_FertilityRjwGeneration), typeof(Harmony_FertilityNativeBirth),
                 typeof(Harmony_FertilityLaborBirthScope), typeof(Harmony_FertilityRitualBirthScope), typeof(Harmony_FertilityRjwBirth) })

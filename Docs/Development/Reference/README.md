@@ -1,6 +1,6 @@
 # 现行开发规范与参考
 
-**当前开发基线为 SSC 2.5.0。** 窗口与名单的交付记录见[完成索引](../Completed/README.md#ssc-250-completed)，受测产物见[版本验证](../../Releases/2.5.0/2.5.0版本验证.md)。
+**当前正式版本为 SSC 2.5.1。** 兼容、界面与 PNA 的受测构建见[版本验证](../../Releases/2.5.1/2.5.1版本验证.md#ssc-251-release)。2.5.0 的窗口与名单见[完成索引](../Completed/README.md#ssc-250-completed)。
 
 2026-11-02：[第八项凝胶生产及四步功能](../Completed/堕落凝胶/堕落凝胶四步开发完成核对.md)已实机验收；现行能力开关规范继续留Reference，分步记录归Completed，交付设计归Archive。未改人格／身体保存归属或扩大到发布门禁。
 

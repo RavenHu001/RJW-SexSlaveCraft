@@ -94,19 +94,21 @@ internal static partial class Program
             Check("fix: native health menu shows disabled surgery with reason: " + rejection, () =>
             {
                 var patient = SurgeryPawn(); var bill = SurgeryBill(patient);
+                var doctor = SurgeryPawn(PawnIdentity.Unset);
+                Require(bill.PawnAllowedToStartAnew(doctor));
                 if (rejection == "underage") patient.ageTracker.AgeBiologicalTicks = 17L * GenDate.TicksPerYear;
                 else ChangeSurgeryPatient(patient, rejection, bill);
                 var report = uterusSurgery.Worker.AvailableReport(patient);
                 Require(!report.Accepted && !report.Reason.NullOrEmpty());
                 var option = NativeSurgeryMenu(patient).Single();
                 Require(option.Disabled && option.Label.Contains(report.Reason), option.Label);
-                Require(!bill.PawnAllowedToStartAnew(SurgeryPawn(PawnIdentity.Unset)));
+                Require(!bill.PawnAllowedToStartAnew(doctor));
                 // 菜单布尔值此时仅表示有效身体候选，不能代替接单或结果入口的完整资格检查。
                 Require(uterusSurgery.Worker.AvailableOnNow(patient, patient.RaceProps.body.corePart));
                 ResetSurgeryResult(1);
                 try
                 {
-                    uterusSurgery.Worker.ApplyOnPawn(patient, bill.Part, SurgeryPawn(PawnIdentity.Unset), new(), bill);
+                    uterusSurgery.Worker.ApplyOnPawn(patient, bill.Part, doctor, new(), bill);
                     Equal(0, surgeryRolls); Equal(0, tales);
                 }
                 finally { forcedQuality = null; }

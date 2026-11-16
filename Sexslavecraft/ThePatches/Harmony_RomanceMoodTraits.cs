@@ -1,6 +1,7 @@
 // AI 辅助生成：特质与基因变化后的局部协调，不修改原版特质或抑制规则。
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using HarmonyLib;
@@ -22,16 +23,24 @@ namespace SexSlaveCraft
         }
         private static readonly ConditionalWeakTable<Pawn, Scope> scopes = new ConditionalWeakTable<Pawn, Scope>();
 
+        /// <summary>确认特质与基因的各个变更入口齐全。缺项时保留原生操作，并跳过 SSC 的协调观察。</summary>
+        public static bool Prepare()
+        {
+            if (TargetMethods().All(method => method != null)) return true;
+            Log.WarningOnce("[SSC Romance] Trait or gene change target unavailable. Mood trait observers skipped.", 0x53535254);
+            return false;
+        }
+
         /// <summary>覆盖原生添加、移除、基因抑制及直接覆盖；不通过每 Tick 或恶堕需求轮询。</summary>
         public static IEnumerable<MethodBase> TargetMethods()
         {
             yield return AccessTools.Method(typeof(TraitSet), nameof(TraitSet.GainTrait), new[] { typeof(Trait), typeof(bool) });
             yield return AccessTools.Method(typeof(TraitSet), nameof(TraitSet.RemoveTrait), new[] { typeof(Trait), typeof(bool) });
-            yield return AccessTools.Method(typeof(TraitSet), nameof(TraitSet.RecalculateSuppression));
+            yield return AccessTools.Method(typeof(TraitSet), nameof(TraitSet.RecalculateSuppression), Type.EmptyTypes);
             yield return AccessTools.Method(typeof(Pawn_GeneTracker), "AddGene", new[] { typeof(Gene), typeof(bool) });
-            yield return AccessTools.Method(typeof(Pawn_GeneTracker), nameof(Pawn_GeneTracker.RemoveGene));
-            yield return AccessTools.Method(typeof(Pawn_GeneTracker), "CheckForOverrides");
-            yield return AccessTools.Method(typeof(Gene), nameof(Gene.OverrideBy));
+            yield return AccessTools.Method(typeof(Pawn_GeneTracker), nameof(Pawn_GeneTracker.RemoveGene), new[] { typeof(Gene) });
+            yield return AccessTools.Method(typeof(Pawn_GeneTracker), "CheckForOverrides", Type.EmptyTypes);
+            yield return AccessTools.Method(typeof(Gene), nameof(Gene.OverrideBy), new[] { typeof(Gene) });
         }
 
         /// <summary>只捕获当前原 TraitSet 与人格，异常观察不能阻断原版操作。</summary>

@@ -17,4 +17,24 @@
   <SSC_Diagnostics_Refresh>Повторить проверку</SSC_Diagnostics_Refresh>
   <SSC_Diagnostics_Copy>Копировать отчёт</SSC_Diagnostics_Copy>
   <SSC_Diagnostics_Copied>Скопировано</SSC_Diagnostics_Copied>
+  <SSC_Diagnostics_PatchRegistration>Состояние регистрации патчей</SSC_Diagnostics_PatchRegistration>
+  <SSC_Diagnostics_PatchWaiting>Ожидает установки</SSC_Diagnostics_PatchWaiting>
+  <SSC_Diagnostics_PatchReady>Готово</SSC_Diagnostics_PatchReady>
+  <SSC_Diagnostics_PatchSkipped>Пропущено</SSC_Diagnostics_PatchSkipped>
+  <SSC_Diagnostics_PatchFallback>Включён резервный режим</SSC_Diagnostics_PatchFallback>
+  <SSC_Diagnostics_PatchFailed>Ошибка регистрации</SSC_Diagnostics_PatchFailed>
+  <SSC_Diagnostics_PatchDailyTraining>Жизненный цикл ежедневной тренировки</SSC_Diagnostics_PatchDailyTraining>
+  <SSC_Diagnostics_PatchWeaponDrawing>Отрисовка оружия PNA</SSC_Diagnostics_PatchWeaponDrawing>
+  <SSC_Diagnostics_PatchWeaponDrawingFallback>Инструкции отрисовки не совпали. Эффекты оружия SSC отключены, прежняя отрисовка сохранена.</SSC_Diagnostics_PatchWeaponDrawingFallback>
+  <SSC_Diagnostics_TrainingHooksUnavailable>Ежедневную тренировку нельзя назначить, пока необходимые патчи недоступны.</SSC_Diagnostics_TrainingHooksUnavailable>
+  <SSC_Diagnostics_Overview>Обзор</SSC_Diagnostics_Overview>
+  <SSC_Diagnostics_PatchAll>Все состояния</SSC_Diagnostics_PatchAll>
+  <SSC_Diagnostics_PatchFilter>{0} ({1})</SSC_Diagnostics_PatchFilter>
+  <SSC_Diagnostics_PatchEmpty>Нет патчей с таким состоянием.</SSC_Diagnostics_PatchEmpty>
+  <SSC_Diagnostics_SkipMissingDependency>Не найдена необходимая необязательная зависимость.</SSC_Diagnostics_SkipMissingDependency>
+  <SSC_Diagnostics_SkipUnsupportedTarget>Не найден поддерживаемый метод или интерфейс.</SSC_Diagnostics_SkipUnsupportedTarget>
+  <SSC_Diagnostics_SkipConditionsNotMet>Подходящая цель не найдена или не выполнено условие установки.</SSC_Diagnostics_SkipConditionsNotMet>
+  <SSC_Diagnostics_OrderedTrainingUnavailable>Ручное назначение ежедневной тренировки недоступно без нужного патча.</SSC_Diagnostics_OrderedTrainingUnavailable>
+  <SSC_Diagnostics_PatchRitualSelectionFallback>Патчи или инструкции для выбора ролей SSC недоступны. Ритуалы, которые можно начать, используют стандартный выбор ролей.</SSC_Diagnostics_PatchRitualSelectionFallback>
+  <SSC_Diagnostics_PatchWhipCooperationFallback>Патчи или инструкции для совместимости удара кнутом PNA недоступны. Сохранено прежнее поведение ближнего боя.</SSC_Diagnostics_PatchWhipCooperationFallback>
 </LanguageData>

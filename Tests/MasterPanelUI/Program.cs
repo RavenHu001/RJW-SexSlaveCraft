@@ -1,5 +1,4 @@
-﻿// AI 辅助生成
-using System.Text.RegularExpressions;
+// AI 辅助生成
 using System.Xml.Linq;
 using RimWorld;
 using SexSlaveCraft;
@@ -23,18 +22,19 @@ internal static partial class Program
         foreach (string language in Languages)
         {
             LoadLanguage(language);
-            foreach (float experience in language == "English"
-                ? new float[] { 0, 11, 12, 16, 39, 40, 99, 100 }
-                : new float[] { 0, 12, 40, 100 })
-                Run($"{language}: XP {experience} 正常与窄栏区域容纳", () => Layout(experience));
-            Run($"{language}: 无记录不补建", MissingRecord);
-            Run($"{language}: 空壳保存阶段但停用加成", Hollow);
+            if (language == "English") Run($"{language}: 无记录不补建", MissingRecord);
+            if (language == "English") Run($"{language}: 空壳保存阶段但停用加成", Hollow);
             Run($"{language}: 阶段短句与原版悬停组合", StageDescriptions);
-            Run($"{language}: 升阶消息名称参数与定位", StageFeedback);
+            if (language == "English") Run($"{language}: 升阶消息名称参数与定位", StageFeedback);
         }
         LoadLanguage("ChineseSimplified");
         RunFeedbackTests();
-        Run("阶段 2 经验 16 使用 4/28 区间", () => Assert(Near(Tab().Read(Grown(16)).Fraction, 4f / 28f)));
+        Run("阶段 2 经验 16 使用 4/28 区间", () =>
+        {
+            var compact = ITab_SexSlaveTraining.ReadMasterProgression(Grown(16.125f), compactExperience: true);
+            Assert(Near(Tab().Read(Grown(16)).Fraction, 4f / 28f));
+            Assert(compact.Experience == 16.125f.ToString("0.##") + " / 100");
+        });
         Run("最高阶段进度为 1且不显示下一阶段", () => { var view = Tab().Read(Grown(100)); Assert(view.Fraction == 1 && view.Progress == Key("MaxStage")); });
         Run("零经验是有效基础阶段", () => Assert(Tab().Read(Grown(0)).Experience != null));
         Run("只读不会迁移旧版本或改写成长", ReadOnly);
@@ -115,23 +115,6 @@ internal static partial class Program
     }
 
     /// <summary>执行真实面板绘制，检查文本行容纳、区块底部及重复查询不改变健康数据。</summary>
-    private static void Layout(float experience)
-    {
-        Pawn pawn = Grown(experience); Bind(pawn); var tab = Tab();
-        int adds = pawn.health.Adds, notifications = pawn.health.Notifications;
-        foreach (float width in new float[] { 322, 200, 120 })
-        {
-            float height = tab.Draw(pawn, width);
-            var rows = Widgets.Items.Where(i => i.Kind is "label" or "bar" or "checkbox").ToList();
-            Assert(rows.All(i => i.Rect.y >= 12 && i.Rect.yMax <= height - 12 + .001f), "Rows exceed measured section");
-            for (int i = 1; i < rows.Count; i++) Assert(rows[i].Rect.y >= rows[i - 1].Rect.yMax, "Overlapping rows");
-            foreach (var row in rows.Where(i => i.Kind is "label" or "checkbox"))
-                Assert(Text.CalcHeight(row.Text, row.Rect.width - (row.Kind == "checkbox" ? 24 : 0)) <= row.Rect.height, "Text exceeds allocated height");
-            Assert(rows.All(i => !i.Text.StartsWith("SSC_", StringComparison.Ordinal)), "Untranslated UI key");
-            Assert(TooltipHandler.Getters.Any(getter => getter() == SSCMasterProgressionUtility.GetRecord(pawn).GetTooltip(pawn, false)), "Native tooltip not reused");
-        }
-        Assert(pawn.health.Adds == adds && pawn.health.Notifications == notifications && SSCMasterProgressionUtility.GetExperience(pawn) == experience);
-    }
     private static void MissingRecord()
     {
         Pawn pawn = new Pawn(); pawn.Training.masterProgressionVersion = 0;

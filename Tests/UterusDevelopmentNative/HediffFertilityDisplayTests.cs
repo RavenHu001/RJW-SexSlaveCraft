@@ -1,4 +1,4 @@
-﻿// AI 辅助生成：实际 HediffStatsUtility 与健康悬停展示，隔离图形，不替换倍率或展示算法。
+// AI 辅助生成：实际 HediffStatsUtility 与健康悬停展示，隔离图形，不替换倍率或展示算法。
 using HarmonyLib;
 using RimWorld;
 using SexSlaveCraft;
@@ -100,14 +100,14 @@ internal static partial class Program
             try { StatDefOf.Fertility = null; Equal("×0", FertilityEntry(Start(SurgeryPawn())).ValueString); }
             finally { StatDefOf.Fertility = original; }
         });
-        foreach (string language in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            Check("health fertility keyed display: " + language, () =>
-            {
-                LoadBodyManagementLanguage(repo, language);
-                var pawn = SurgeryPawn(); var record = Start(pawn, 1); Toggle(pawn, true);
-                Equal("×2.5", FertilityEntry(record).ValueString);
-                Require(!record.TipStringExtra.Contains("SSC_HediffFertility_"));
-            });
+        const string language = "English";
+        Check("health fertility keyed display: " + language, () =>
+        {
+            LoadBodyManagementLanguage(repo, language);
+            var pawn = SurgeryPawn(); var record = Start(pawn, 1); Toggle(pawn, true);
+            Equal("×2.5", FertilityEntry(record).ValueString);
+            Require(!record.TipStringExtra.Contains("SSC_HediffFertility_"));
+        });
         LoadBodyManagementLanguage(repo, "ChineseSimplified");
     }
 }

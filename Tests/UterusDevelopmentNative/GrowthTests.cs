@@ -35,12 +35,12 @@ internal static partial class Program
             (50f, 2f, 2f, .10f), (.01f, 1f, 1f, .000005f), (10000f, 2f, 2f, .10f) })
             Check("batch3 fixed score/factors and cap: " + input, () =>
                 Near(input.Item4, SSCUterusDevelopmentGrowthUtility.CalculateGain(input.Item1, input.Item2, input.Item3)));
-        foreach (float value in new[] { 0f, -1f, float.NaN, float.PositiveInfinity, float.NegativeInfinity })
-        {
+        foreach (float value in new[] { 0f, float.NaN })
             Check("batch3 invalid score yields zero: " + value, () => Near(0, SSCUterusDevelopmentGrowthUtility.CalculateGain(value, 1, 1)));
+        foreach (float value in new[] { -1f, float.PositiveInfinity })
             Check("batch3 invalid corruption factor yields zero: " + value, () => Near(0, SSCUterusDevelopmentGrowthUtility.CalculateGain(50, value, 1)));
+        foreach (float value in new[] { 0f, float.NegativeInfinity })
             Check("batch3 invalid chain factor yields zero: " + value, () => Near(0, SSCUterusDevelopmentGrowthUtility.CalculateGain(50, 1, value)));
-        }
     }
 
     private static BodyPartRecord SetupGrowthGenitals(Pawn pawn)

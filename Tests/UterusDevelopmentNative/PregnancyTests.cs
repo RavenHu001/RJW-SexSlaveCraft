@@ -189,25 +189,20 @@ internal static partial class Program
                 Require(SSCUterusPregnancyUtility.IsSupported(h));
             });
         foreach (string name in pregnancyNames)
-        {
             Check("batch4 PostMake never grants early and actual Add reads then-current toggle: " + name, () =>
             {
-                var p = NewPawn(); Start(p, 1); var h = NewPregnancy(p, name, false);
+                var p = NewPawn(); var body = Start(p, 1); var h = NewPregnancy(p, name, false);
                 Require(!h.TryGetComp<HediffComp_SSCUterusPregnancy>().IsShortened); Toggle(p, true);
                 h.PostAdd(null); Require(!h.TryGetComp<HediffComp_SSCUterusPregnancy>().IsShortened);
                 p.health.AddHediff(h, p.RaceProps.body.corePart); Require(h.TryGetComp<HediffComp_SSCUterusPregnancy>().IsShortened);
+                p.health.RemoveHediff(body); h.PostAdd(null); Require(h.TryGetComp<HediffComp_SSCUterusPregnancy>().IsShortened);
             });
+        foreach (string name in new[] { "PregnantHuman", "RJW_pregnancy" })
             Check("batch4 normal existing pregnancy never gains on later enable or repeated Add: " + name, () =>
             {
                 var p = NewPawn(); Start(p, 1); var h = NewPregnancy(p, name); Toggle(p, true);
                 h.PostAdd(null); Require(!h.TryGetComp<HediffComp_SSCUterusPregnancy>().IsShortened);
             });
-            Check("batch4 shortened pregnancy keeps frozen grant after development is removed: " + name, () =>
-            {
-                var p = NewPawn(); var body = Start(p, 1); Toggle(p, true); var h = NewPregnancy(p, name);
-                p.health.RemoveHediff(body); h.PostAdd(null); Require(h.TryGetComp<HediffComp_SSCUterusPregnancy>().IsShortened);
-            });
-        }
         Check("batch4 wrong Def or nonregular pregnancy types never become supported", () =>
         {
             var p = NewPawn(); Start(p, 1); Toggle(p, true);

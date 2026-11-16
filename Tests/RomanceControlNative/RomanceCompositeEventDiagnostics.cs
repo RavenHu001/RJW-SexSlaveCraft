@@ -22,6 +22,8 @@ internal static partial class Program
             Require(line.Contains("branch=" + branch.Id + " ") && line.Contains("value=" + branch.Value + " ") && line.Contains("native=committed"));
             Require(line.Contains("semantic=" + SSCRomanceMoodSemantics.Of(branch.Event) + " ") && line.Contains(" order=") && line.Contains(" removed="));
             Require(line.Contains(branch.Value == 0 ? "result=Zero" : "result=Added"));
+            if ((int)branch.Event >= 11)
+                Require(line.Contains("decisionKnown=False original=unknown accepted=unknown"));
             Require(!line.Contains("corruption", StringComparison.OrdinalIgnoreCase));
         }
         finally

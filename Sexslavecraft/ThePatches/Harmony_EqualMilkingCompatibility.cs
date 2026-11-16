@@ -1,8 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HarmonyLib;
 using RimWorld;
 using Verse;
@@ -11,32 +7,51 @@ namespace SexSlaveCraft
 {
     public static class EqualMilkingCompatibility
     {
+        /// <summary>外部查询和原生挤取兼容入口都挂接成功后，才允许查询后置补充 SSC 泌乳状态。</summary>
+        internal static bool Installed { get; private set; }
+
         // 检测Equal Milking是否加载
         public static bool IsEqualMilkingLoaded()
         {
-            return ModLister.GetActiveModWithIdentifier("EqualMilking") != null
+            return ModLister.GetActiveModWithIdentifier("akaster.equalmilking") != null
+                || ModLister.GetActiveModWithIdentifier("EqualMilking") != null
                 || Type.GetType("EqualMilking.Helpers.ExtensionHelper, EqualMilking") != null;
+        }
+
+        internal static void Register(Harmony harmony)
+        {
+            Installed = false;
+            Installed = SSCOptionalPatchGroup.Install(harmony, "Equal Milking", () =>
+            {
+                var helper = SoftDependencyUtility.FindOptionalType("EqualMilking.Helpers.ExtensionHelper");
+                // 模组已启用但 Helper 缺失时继续走签名检查，留下可辨认的失配日志。
+                if (helper == null && !IsEqualMilkingLoaded()) return null;
+                // 当前程序集使用全局类型名，同时接受旧命名空间。用真实组件类型核对返回签名。
+                var comp = helper?.Assembly.GetType("HediffComp_EqualMilkingLactating")
+                    ?? helper?.Assembly.GetType("EqualMilking.HediffComp_EqualMilkingLactating");
+                if (comp == null || !typeof(HediffComp).IsAssignableFrom(comp))
+                    throw new TypeLoadException("HediffComp_EqualMilkingLactating");
+                return new[]
+                {
+                    (SSCOptionalPatchGroup.RequireTarget(helper, "IsLactating", typeof(bool), true, typeof(Pawn)), typeof(Patch_IsLactating), HarmonyPatchType.Postfix),
+                    (SSCOptionalPatchGroup.RequireTarget(helper, "LactatingHediff", typeof(Hediff), true, typeof(Pawn)), typeof(Patch_LactatingHediff), HarmonyPatchType.Postfix),
+                    (SSCOptionalPatchGroup.RequireTarget(helper, "LactatingHediffComp", comp, true, typeof(Pawn)), typeof(Patch_LactatingHediffComp), HarmonyPatchType.Postfix),
+                    (SSCOptionalPatchGroup.RequireTarget(typeof(HediffComp_Chargeable), "GreedyConsume", typeof(float), false, typeof(float)), typeof(Patch_GreedyConsume), HarmonyPatchType.Prefix)
+                };
+            });
         }
     }
 
     // ==============================================================
     // 核心补丁：让IsLactating()识别SSC_Lactating_SubState
     // ==============================================================
-    [HarmonyPatch("EqualMilking.Helpers.ExtensionHelper", "IsLactating")]
     public static class Patch_IsLactating
     {
-        // 🔥 新增：条件性加载
-        public static bool Prepare()
-        {
-            return EqualMilkingCompatibility.IsEqualMilkingLoaded();
-        }
-        
-        [HarmonyPostfix]
-        public static void Postfix(Pawn pawn, ref bool __result)
+        public static void Postfix([HarmonyArgument(0)] Pawn pawn, ref bool __result)
         {
             try
             {
-                if (!__result && pawn != null && !HumanCattleBridgeUtility.IsLoaded)
+                if (EqualMilkingCompatibility.Installed && !__result && pawn != null && !HumanCattleBridgeUtility.IsLoaded)
                 {
                     // 检查是否有SSC_Lactating_SubState hediff
                     __result = pawn.health?.hediffSet?.HasHediff(global::SexSlaveCraft.SSCDefOf.SSC_Lactating_SubState) ?? false;
@@ -52,21 +67,13 @@ namespace SexSlaveCraft
     // ==============================================================
     // 扩展补丁：让LactatingHediff()能获取SSC_Lactating_SubState
     // ==============================================================
-    [HarmonyPatch("EqualMilking.Helpers.ExtensionHelper", "LactatingHediff")]
     public static class Patch_LactatingHediff
     {
-        // 🔥 新增：条件性加载
-        public static bool Prepare()
-        {
-            return EqualMilkingCompatibility.IsEqualMilkingLoaded();
-        }
-        
-        [HarmonyPostfix]
-        public static void Postfix(Pawn pawn, ref Hediff __result)
+        public static void Postfix([HarmonyArgument(0)] Pawn pawn, ref Hediff __result)
         {
             try
             {
-                if (__result == null && pawn != null && !HumanCattleBridgeUtility.IsLoaded)
+                if (EqualMilkingCompatibility.Installed && __result == null && pawn != null && !HumanCattleBridgeUtility.IsLoaded)
                 {
                     __result = pawn.health?.hediffSet?.GetFirstHediffOfDef(global::SexSlaveCraft.SSCDefOf.SSC_Lactating_SubState);
                 }
@@ -82,21 +89,13 @@ namespace SexSlaveCraft
     // 扩展补丁：让LactatingHediffComp()能获取SSC_Lactating_SubState的comp
     // 返回null不影响挤奶机核心功能，但可以避免某些UI错误
     // ==============================================================
-    [HarmonyPatch("EqualMilking.Helpers.ExtensionHelper", "LactatingHediffComp")]
     public static class Patch_LactatingHediffComp
     {
-        // 🔥 新增：条件性加载
-        public static bool Prepare()
-        {
-            return EqualMilkingCompatibility.IsEqualMilkingLoaded();
-        }
-        
-        [HarmonyPostfix]
-        public static void Postfix(Pawn pawn, ref object __result)
+        public static void Postfix([HarmonyArgument(0)] Pawn pawn, ref object __result)
         {
             try
             {
-                if (__result == null && pawn != null && !HumanCattleBridgeUtility.IsLoaded)
+                if (EqualMilkingCompatibility.Installed && __result == null && pawn != null && !HumanCattleBridgeUtility.IsLoaded)
                 {
                     var hediff = pawn.health?.hediffSet?.GetFirstHediffOfDef(global::SexSlaveCraft.SSCDefOf.SSC_Lactating_SubState);
                     if (hediff != null)
@@ -117,17 +116,9 @@ namespace SexSlaveCraft
     // ==============================================================
     // 可选补丁：处理GreedyConsume的兼容性（如果未来需要）
     // ==============================================================
-    [HarmonyPatch(typeof(HediffComp_Chargeable), "GreedyConsume")]
     public static class Patch_GreedyConsume
     {
-        // 🔥 新增：条件性加载（这个补丁也只在EqualMilking存在时应用）
-        public static bool Prepare()
-        {
-            return EqualMilkingCompatibility.IsEqualMilkingLoaded();
-        }
-        
-        [HarmonyPrefix]
-        public static bool Prefix(HediffComp_Chargeable __instance, ref float __result, float desiredCharge)
+        public static bool Prefix(HediffComp_Chargeable __instance)
         {
             try
             {

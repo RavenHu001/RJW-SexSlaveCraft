@@ -1,5 +1,9 @@
 # 版本发布与验证索引
 
+**2.5.1 于 2026-11-15 正式发布。** 完整门禁通过 52 套、6350/6350 项。 [下载 2.5.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.1) · [正式发布归档](2.5.1/2.5.1版本验证.md#ssc-251-release)
+
+2.5.1 的实施与验收从[完成索引](../Development/Completed/README.md#ssc-251-completed)阅读，独立兼容反馈从[待验收清单](../Development/Verification/README.md#ssc-251-open-checks)追踪。
+
 **2.5.0 于 2026-11-12 正式发布。** 完整门禁通过 52 套、6544/6544 项。 [下载 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0) · [正式发布归档](2.5.0/2.5.0版本验证.md#ssc-250-release) · [实施与验收](../Development/Completed/调教管理/README.md)
 
 **2.4.10 修订版于 2026-11-09 发布。** 完整门禁通过 52 套、6535/6535 项。 [下载修订版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2) · [修订版归档](2.4.10/2.4.10版本验证.md#2410-修订版发布归档)
@@ -18,6 +22,7 @@
 
 | 版本 | 发布说明与公告 | 验证记录 |
 | --- | --- | --- |
+| **2.5.1（2026-11-15）** | [双语说明](2.5.1/2.5.1发布说明.md) · [下载 2.5.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.1) · [开发归并](2.5.1/2.5.1开发归并核对.md) | [正式发布归档](2.5.1/2.5.1版本验证.md#ssc-251-release) |
 | **2.5.0（2026-11-12）** | [双语说明](2.5.0/2.5.0发布说明.md) · [下载 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0) · [开发归并](2.5.0/2.5.0开发归并核对.md) | [正式发布归档](2.5.0/2.5.0版本验证.md#ssc-250-release) |
 | **2.4.10 修订版（r2）** | [双语说明](2.4.10/2.4.10发布说明.md) · [下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2) | [修订版归档](2.4.10/2.4.10版本验证.md#2410-修订版发布归档) |
 | **2.4.10（2026-11-09 首发）** | [双语说明](2.4.10/2.4.10发布说明.md) · [开发归并核对](2.4.10/2.4.10开发归并核对.md) | [正式发布与分批验证](2.4.10/2.4.10版本验证.md#2026-11-09-2410-正式发布归档) |

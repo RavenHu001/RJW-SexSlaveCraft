@@ -17,4 +17,24 @@
   <SSC_Diagnostics_Refresh>Refresh checks</SSC_Diagnostics_Refresh>
   <SSC_Diagnostics_Copy>Copy diagnostics</SSC_Diagnostics_Copy>
   <SSC_Diagnostics_Copied>Copied</SSC_Diagnostics_Copied>
+  <SSC_Diagnostics_PatchRegistration>Patch registration status</SSC_Diagnostics_PatchRegistration>
+  <SSC_Diagnostics_PatchWaiting>Pending installation</SSC_Diagnostics_PatchWaiting>
+  <SSC_Diagnostics_PatchReady>Ready</SSC_Diagnostics_PatchReady>
+  <SSC_Diagnostics_PatchSkipped>Skipped</SSC_Diagnostics_PatchSkipped>
+  <SSC_Diagnostics_PatchFallback>Fallback active</SSC_Diagnostics_PatchFallback>
+  <SSC_Diagnostics_PatchFailed>Registration failed</SSC_Diagnostics_PatchFailed>
+  <SSC_Diagnostics_PatchDailyTraining>Daily training lifecycle</SSC_Diagnostics_PatchDailyTraining>
+  <SSC_Diagnostics_PatchWeaponDrawing>PNA weapon drawing</SSC_Diagnostics_PatchWeaponDrawing>
+  <SSC_Diagnostics_PatchWeaponDrawingFallback>The draw instructions did not match. SSC weapon effects are disabled and existing drawing is preserved.</SSC_Diagnostics_PatchWeaponDrawingFallback>
+  <SSC_Diagnostics_TrainingHooksUnavailable>Daily training cannot be assigned because required patches are unavailable.</SSC_Diagnostics_TrainingHooksUnavailable>
+  <SSC_Diagnostics_Overview>Overview</SSC_Diagnostics_Overview>
+  <SSC_Diagnostics_PatchAll>All statuses</SSC_Diagnostics_PatchAll>
+  <SSC_Diagnostics_PatchFilter>{0} ({1})</SSC_Diagnostics_PatchFilter>
+  <SSC_Diagnostics_PatchEmpty>No patches with this status.</SSC_Diagnostics_PatchEmpty>
+  <SSC_Diagnostics_SkipMissingDependency>The required optional dependency was not detected.</SSC_Diagnostics_SkipMissingDependency>
+  <SSC_Diagnostics_SkipUnsupportedTarget>No supported target method or interface was found.</SSC_Diagnostics_SkipUnsupportedTarget>
+  <SSC_Diagnostics_SkipConditionsNotMet>No eligible target was found or an installation requirement was not met.</SSC_Diagnostics_SkipConditionsNotMet>
+  <SSC_Diagnostics_OrderedTrainingUnavailable>The manual daily training command is unavailable because its patch is missing.</SSC_Diagnostics_OrderedTrainingUnavailable>
+  <SSC_Diagnostics_PatchRitualSelectionFallback>The patches or instructions required for SSC ritual role selection are unavailable. Rituals that can start use vanilla role selection.</SSC_Diagnostics_PatchRitualSelectionFallback>
+  <SSC_Diagnostics_PatchWhipCooperationFallback>The patches or instructions required for PNA whip cooperation are unavailable. Existing melee behavior is preserved.</SSC_Diagnostics_PatchWhipCooperationFallback>
 </LanguageData>

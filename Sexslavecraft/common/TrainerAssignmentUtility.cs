@@ -219,6 +219,15 @@ namespace SexSlaveCraft
         internal static bool CanStartDailyTraining(Pawn targetPawn, Pawn trainer, bool forced, out string reason)
         {
             reason = null;
+#if SSC_RW17
+            // 此入口同时供自动候选、手动命令与驱动预约使用。统一前置拒绝可避免创建接收任务后才发现缺少开始凭据。
+            if (!SSCSceneHookAvailability.CanStartDaily(forced))
+            {
+                reason = (forced && SSCSceneHookAvailability.CanStartDaily(false)
+                    ? "SSC_Diagnostics_OrderedTrainingUnavailable" : "SSC_Diagnostics_TrainingHooksUnavailable").Translate();
+                return false;
+            }
+#endif
             if (!SSCIdentityUtility.IsSexSlave(targetPawn))
             {
                 reason = "SSC_Training_TargetIdentityRequired".Translate();

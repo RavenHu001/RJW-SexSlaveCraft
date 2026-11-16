@@ -61,8 +61,7 @@ internal static partial class Program
 #endif
         });
 
-        foreach (bool forced in new[] { false, true })
-        foreach (string work in new[] { "HaulToCell", "Ingest", "LayDown", "WatchTelevision" })
+        foreach (var (forced, work) in new[] { (false, "HaulToCell"), (true, "Ingest") })
             Run($"人格排泄 {(forced ? "手动" : "自动")}发起期间阻止 {work} 抢占", () =>
             {
                 var pair = ExcretionPair(forced);

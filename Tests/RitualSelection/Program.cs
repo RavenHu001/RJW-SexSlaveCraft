@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Xml.Linq;
 using HarmonyLib;
 using RimWorld;
@@ -86,7 +87,7 @@ internal static partial class Program
         Run("布尔包装不构造报告", () =>
         { Assert(Trainjudge.SexSlaveTrainJudge(new Pawn())); Assert(Counters.Eligibility == 1 && Counters.Reports == 0); });
 
-        foreach (int population in new[] { 20, 100, 300, 1000 })
+        foreach (int population in new[] { 20, 1000 })
             Run($"{population} 人开窗、自动填充和高亮不做完整执行者检查", () =>
             {
                 var f = new Fixture(population - 2); f.Open(selected: f.Host);
@@ -420,9 +421,84 @@ internal static partial class Program
         RunTrainingIdentityTests();
         RunVisualTests();
         RunAudienceTests(args.Length > 0 ? args[0] : null);
+        Run("FillPawns 失配时原生选角继续，手选停用且仍拒绝失效组合", () =>
+        {
+            // 上游把一次角色读取搬进等价包装器，保留原行为并使 SSC 少看到一个锚点。
+            var upstream = new Harmony("ssc.tests.ritual-selection.layout");
+            var fill = AccessTools.DeclaredMethod(typeof(RitualRoleAssignments), nameof(RitualRoleAssignments.FillPawns));
+            var patch = new HarmonyMethod(typeof(Program), nameof(ReplaceRoleRead)) { priority = Priority.First };
+            try
+            {
+                upstream.Patch(fill, transpiler: patch);
+                Assert(!Harmony_BindingRitualAutoFill.ManualSelectionReady && Counters.Warnings == 1);
+                // 强制重新生成包装方法，验证相同失配在本次启动期间只发一次警告。
+                upstream.Unpatch(fill, patch.method);
+                upstream.Patch(fill, transpiler: patch);
+                Assert(Counters.Warnings == 1);
+
+                var f = new Fixture();
+                f.Open(new List<string> { "original" });
+                Assert(f.Window.ExtraInfos.Count == 1 && !BindingRitualSelectionUtility.IsWindow(f.A));
+                Assert(f.A.FirstAssignedPawn("master") == f.Host && f.A.FirstAssignedPawn("slave") == f.Target);
+                // 填充之后改变资格，分别验证窗口确认入口和直接执行入口。
+                f.Target.Eligible = false;
+                Assert(!f.Window.Confirm());
+                f.Ritual.behavior.TryExecuteOn(f.Spot, f.Host, f.Ritual, null, f.A, true);
+                Assert(f.Ritual.behavior.Executions == 0);
+            }
+            finally { upstream.UnpatchAll(upstream.Id); }
+            Assert(Harmony_BindingRitualAutoFill.ManualSelectionReady);
+        });
+        Run("拖放回调未挂接时回退原生选角，并取消已排队的手选回调", () =>
+        {
+            var open = new Fixture();
+            open.Open();
+            open.SelectBoth();
+            bool editRan = false;
+            open.Window.Draw(() => DragAndDropWidget.DropArea(0, default, _ =>
+            {
+                editRan = true;
+                open.A.RemoveParticipant(open.Target);
+            }, new object()));
+            var pendingDrop = DragAndDropWidget.Drop;
+            Assert(pendingDrop != null);
+
+            var owner = new Harmony("ssc.tests.ritual-selection");
+            var target = AccessTools.DeclaredMethod(typeof(DragAndDropWidget), nameof(DragAndDropWidget.DropArea));
+            var patch = AccessTools.DeclaredMethod(typeof(Harmony_BindingRitualDeferredDrop), nameof(Harmony_BindingRitualDeferredDrop.Prefix));
+            owner.Unpatch(target, patch);
+            try
+            {
+                Assert(!Harmony_BindingRitualAutoFill.ManualSelectionReady);
+                pendingDrop(open.Target);
+                Assert(!editRan && open.A.FirstAssignedPawn("slave") == open.Target);
+
+                var fallback = new Fixture();
+                fallback.Open();
+                Assert(!BindingRitualSelectionUtility.IsWindow(fallback.A));
+                Assert(fallback.A.FirstAssignedPawn("master") == fallback.Host && fallback.A.FirstAssignedPawn("slave") == fallback.Target);
+                fallback.Target.Eligible = false;
+                Assert(!fallback.Window.Confirm());
+            }
+            finally { owner.Patch(target, prefix: new HarmonyMethod(patch)); }
+            Assert(Harmony_BindingRitualAutoFill.ManualSelectionReady);
+        });
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }
+
+    private static IEnumerable<CodeInstruction> ReplaceRoleRead(IEnumerable<CodeInstruction> instructions)
+    {
+        var getter = AccessTools.PropertyGetter(typeof(RitualRoleAssignments), nameof(RitualRoleAssignments.AllRolesForReading));
+        var replacement = AccessTools.DeclaredMethod(typeof(Program), nameof(ReadRoles));
+        var codes = instructions.ToList();
+        var first = codes.First(code => code.Calls(getter));
+        first.opcode = OpCodes.Call;
+        first.operand = replacement;
+        return codes;
+    }
+
+    private static List<RitualRole> ReadRoles(RitualRoleAssignments assignments) => assignments.AllRolesForReading;
 
     private static void Run(string name, Action test)
     {

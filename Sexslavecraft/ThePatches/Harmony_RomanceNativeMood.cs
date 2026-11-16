@@ -12,10 +12,24 @@ namespace SexSlaveCraft
 {
     internal static class SSCRomanceNativeMoodHooks
     {
-        internal static readonly MethodInfo DefGain = AccessTools.Method(typeof(MemoryThoughtHandler), "TryGainMemory", new[] { typeof(ThoughtDef), typeof(Pawn), typeof(Precept) });
-        internal static readonly MethodInfo ObjectGain = AccessTools.Method(typeof(MemoryThoughtHandler), "TryGainMemory", new[] { typeof(Thought_Memory), typeof(Pawn) });
-        internal static readonly MethodInfo MergeMethod = AccessTools.Method(typeof(Thought_Memory), "TryMergeWithExistingMemory");
+        internal static readonly MethodInfo DefGain = Resolve(typeof(MemoryThoughtHandler), "TryGainMemory", typeof(void), typeof(ThoughtDef), typeof(Pawn), typeof(Precept));
+        internal static readonly MethodInfo ObjectGain = Resolve(typeof(MemoryThoughtHandler), "TryGainMemory", typeof(void), typeof(Thought_Memory), typeof(Pawn));
+        internal static readonly MethodInfo MergeMethod = Resolve(typeof(Thought_Memory), "TryMergeWithExistingMemory", typeof(bool), typeof(bool).MakeByRefType());
+        // 只记录当前生成的包装方法中确实完成替换的目标。Harmony 登记存在时也可能已经回退原 IL。
         internal static readonly HashSet<MethodBase> Matched = new HashSet<MethodBase>();
+
+        private static MethodInfo Resolve(Type type, string name, Type result, params Type[] parameters)
+        {
+            var method = AccessTools.DeclaredMethod(type, name, parameters);
+            return method?.IsStatic == false && method.ReturnType == result ? method : null;
+        }
+
+        internal static bool Prepare(MethodInfo method)
+        {
+            if (method != null) return true;
+            Log.WarningOnce("[SSC Romance] Required memory signature unavailable. Native mood hooks are incomplete.", 0x5353524E);
+            return false;
+        }
 
         /// <summary>同时核对实际登记和锚点；外部卸载任何关键观察后不沿用旧能力标志。</summary>
         internal static bool Ready => SSCRomanceNativeMood.StageReady && Harmony_SSCRomanceMoodAdmissionTail.Ready &&
@@ -25,7 +39,7 @@ namespace SexSlaveCraft
             Harmony_SSCRomanceCommandWorker.TargetMethods().All(m => Installed(m, typeof(Harmony_SSCRomanceNativeWorker), false) &&
                 Has(m, typeof(Harmony_SSCRomanceMoodWorker), "frame"));
 
-        private static bool Installed(MethodBase method, Type hook, bool frames) => Matched.Contains(method) &&
+        private static bool Installed(MethodBase method, Type hook, bool frames) => method != null && Matched.Contains(method) &&
             Has(method, hook, "il") && (!frames || Has(method, hook, "frame"));
         private static bool Has(MethodBase method, Type hook, string kind)
         {
@@ -40,12 +54,16 @@ namespace SexSlaveCraft
             params (MethodInfo From, string To, int Count)[] replacements)
         {
             var codes = instructions.Select(c => new CodeInstruction(c)).ToList();
-            bool valid = !codes.Any(c => c.blocks.Count != 0) && replacements.All(r => codes.Count(c => c.Calls(r.From)) == r.Count);
+            // 先解析全部替换方法并复核每个调用次数。只有完整覆盖才能维护心情账本的增删和续期关系。
+            var destinations = replacements.Select(r => AccessTools.DeclaredMethod(typeof(SSCRomanceNativeMood), r.To)).ToArray();
+            bool valid = !codes.Any(c => c.blocks.Count != 0) && destinations.All(method => method != null) &&
+                replacements.All(r => r.From != null && codes.Count(c => c.Calls(r.From)) == r.Count);
+            // Harmony 重新生成包装方法时可能收到变化后的上游 IL，清除旧的匹配结果再决定是否重写。
             Matched.Remove(target);
             if (!valid) return codes;
-            foreach (var replacement in replacements)
-                foreach (var code in codes.Where(c => c.Calls(replacement.From)))
-                { code.opcode = OpCodes.Call; code.operand = AccessTools.Method(typeof(SSCRomanceNativeMood), replacement.To); }
+            for (int i = 0; i < replacements.Length; i++)
+                foreach (var code in codes.Where(c => c.Calls(replacements[i].From)))
+                { code.opcode = OpCodes.Call; code.operand = destinations[i]; }
             Matched.Add(target); return codes;
         }
     }
@@ -53,6 +71,7 @@ namespace SexSlaveCraft
     [HarmonyPatch]
     internal static class Harmony_SSCRomanceNativeWorker
     {
+        private static bool Prepare() => Harmony_SSCRomanceCommandWorker.PrepareTargets(TargetMethods());
         private static IEnumerable<MethodBase> TargetMethods() => Harmony_SSCRomanceCommandWorker.TargetMethods();
         /// <summary>仅包装三个原 worker 的已知调用点；求婚附带分手通过原生语句包观察，不重抽随机。</summary>
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
@@ -70,6 +89,7 @@ namespace SexSlaveCraft
     [HarmonyPatch]
     internal static class Harmony_SSCRomanceNativeDefinition
     {
+        private static bool Prepare() => SSCRomanceNativeMoodHooks.Prepare(SSCRomanceNativeMoodHooks.DefGain);
         private static MethodBase TargetMethod() => SSCRomanceNativeMoodHooks.DefGain;
         /// <summary>工厂回调之前占用唯一调用点；每个 Def 调用都压帧屏蔽外层身份。</summary>
         private static void Prefix(MemoryThoughtHandler __instance, ThoughtDef __0, Pawn __1, out SSCRomanceNativeMood.DefinitionCall __state)
@@ -85,6 +105,7 @@ namespace SexSlaveCraft
     [HarmonyPatch]
     internal static class Harmony_SSCRomanceNativeMemory
     {
+        private static bool Prepare() => SSCRomanceNativeMoodHooks.Prepare(SSCRomanceNativeMoodHooks.ObjectGain);
         private static MethodBase TargetMethod() => SSCRomanceNativeMoodHooks.ObjectGain;
         private static void Prefix(MemoryThoughtHandler __instance, Thought_Memory __0, Pawn __1, out SSCRomanceNativeMood.MemoryCall __state)
             => __state = SSCRomanceNativeMood.EnterMemory(__instance, __0, __1);
@@ -103,9 +124,11 @@ namespace SexSlaveCraft
                 (SSCRomanceNativeMoodHooks.DefGain, nameof(SSCRomanceNativeMood.GainChild), 1));
     }
 
-    [HarmonyPatch(typeof(Thought_Memory), nameof(Thought_Memory.TryMergeWithExistingMemory))]
+    [HarmonyPatch]
     internal static class Harmony_SSCRomanceNativeRenew
     {
+        private static bool Prepare() => SSCRomanceNativeMoodHooks.Prepare(SSCRomanceNativeMoodHooks.MergeMethod);
+        private static MethodBase TargetMethod() => SSCRomanceNativeMoodHooks.MergeMethod;
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, MethodBase __originalMethod)
             => SSCRomanceNativeMoodHooks.Rewrite(instructions, __originalMethod,
                 (AccessTools.Method(typeof(Thought_Memory), "Renew"), nameof(SSCRomanceNativeMood.Renew), 1));

@@ -4,10 +4,8 @@ using Verse;
 using HarmonyLib;
 using RimWorld;
 
-// EN: This file is SSC's Harmony startup entry.
-// EN: It installs every attribute-based patch first, then manually hooks the Binding Ritual fixes and the `全凝胶化完成` body-tint patch.
-// CN: 这个文件是 SSC 的 Harmony 启动入口。
-// CN: 它会先安装所有注解式补丁，再手动挂上“绑定仪式”修正和“全凝胶化完成”染色补丁。
+// SSC 的 Harmony 启动入口，依次安装注解补丁、主动注册的兼容组及仪式与凝胶手动钩子。
+// 1.7 的延迟适配仍由原生长事件队列调度，诊断状态随实际完成时机更新。
 namespace SexSlaveCraft
 {
     [StaticConstructorOnStartup]
@@ -18,16 +16,39 @@ namespace SexSlaveCraft
         {
             var harmony = new Harmony("SexSlaveCraft.training.patch"); 
             SSCLog.Important($"[SSC Harmony] 开始加载Harmony补丁...");
-            harmony.PatchAll();
 #if SSC_RW17
+            bool complete = SSCPatchRegistration.InstallAnnotated(harmony, typeof(ModStartup).Assembly);
+            SSCPatchRegistration.Install(SSCPatchRegistration.WhipCooperation, () =>
+            {
+                Harmony_SSCPnaWhipCooperativeThreat.Register(harmony);
+                return Harmony_SSCPnaWhipCooperativeThreat.Ready ? SSCPatchState.Ready : SSCPatchState.Fallback;
+            }, target: "RimWorld.Verb_MeleeAttack.TryCastShot");
+#else
+            harmony.PatchAll();
+            // 鞭束两处钩子作为一组安装。可选模组各自解析和注册，某组失配时仍能继续执行后面的安装入口。
+            // 沿用当前 Harmony owner，使依赖该 owner 的补丁顺序约束继续有效。
+            Harmony_SSCPnaWhipCooperativeThreat.Register(harmony);
+#endif
+            HumanCattleCompatibility.Register(harmony);
+            EqualMilkingCompatibility.Register(harmony);
+#if SSC_RW17
+            SSCFertilityGenerationPatches.RegisterMenstruation(harmony);
             // 等本轮静态构造／原有补丁注册完成后安装只读计时采样；不改变冻结版入口。
-            LongEventHandler.ExecuteWhenFinished(SSCOrgasmProgressPatches.Install);
+            SSCPatchRegistration.Schedule("Orgasm progress", SSCOrgasmProgressPatches.Install,
+                () => SSCOrgasmProgressPatches.RecoveryReady ? SSCPatchState.Ready : SSCPatchState.Fallback);
             // 可选 UAP 接入使用独立 owner，完整核对后才开放手动豁免；不随旧版 PatchAll 注册。
-            LongEventHandler.ExecuteWhenFinished(SSCUapGroupPatches.Install);
+            SSCPatchRegistration.Schedule("UAP group", SSCUapGroupPatches.Install,
+                () => SSCUapGroupApi.Ready ? SSCPatchState.Ready :
+                    SSCUapGroupApi.Dialog == null ? SSCPatchState.Skipped : SSCPatchState.Fallback,
+                SSCPatchSkipReason.MissingDependency);
             // 完整核对 RJW 评价与自愿入口后安装关系保底，保留原基础资格和主人侧意愿。
-            LongEventHandler.ExecuteWhenFinished(SSCMasterAttractionPatches.Install);
+            SSCPatchRegistration.Schedule("Master attraction", SSCMasterAttractionPatches.Install,
+                () => SSCMasterAttractionPatches.Ready ? SSCPatchState.Ready : SSCPatchState.Fallback);
             // 保留正在SSC调教中的受方倒地接收任务，仍执行原健康通知和其他中断条件。
-            LongEventHandler.ExecuteWhenFinished(SSCTrainingDownedPatches.Install);
+            SSCPatchRegistration.Schedule("Downed training receiver", SSCTrainingDownedPatches.Install,
+                () => SSCTrainingDownedPatches.Ready ? SSCPatchState.Ready : SSCPatchState.Fallback);
+            if (!complete) Log.Warning("[SSC Harmony] Registration completed with failures. See Diagnostics and Compatibility.");
+            else
 #endif
             SSCLog.Important("[SexSlaveCraft.training.patch] Harmony patches loaded successfully.");
 
@@ -141,16 +162,41 @@ namespace SexSlaveCraft
                     harmony.Patch(original, postfix: new HarmonyMethod(typeof(Harmony_FullGelatinizationBodyTint), nameof(Harmony_FullGelatinizationBodyTint.Postfix)));
                     SSCLog.Important("[SSC FullGel] Patch 注册成功: PawnRenderNode_Body.GraphicFor");
                 }
+                RecordManualPatch("FullGel body tint", "Verse.PawnRenderNode_Body.GraphicFor", original != null);
             }
-            catch (Exception ex) { Log.Error($"[SSC FullGel] PawnRenderNode_Body.GraphicFor 注册失败: {ex}"); }
+            catch (Exception ex)
+            {
+                RecordManualPatch("FullGel body tint", "Verse.PawnRenderNode_Body.GraphicFor", false, ex);
+                Log.Error($"[SSC FullGel] PawnRenderNode_Body.GraphicFor 注册失败: {ex}");
+            }
 
             // 头部在最终材质阶段只替换皮肤，保留 FA 本帧五官和原队列；FA 未安装时支持原版头部。
-            try { Harmony_FullGelatinizationHeadTint.Register(harmony); }
-            catch (Exception ex) { Log.Error($"[SSC FullGel] Head skin material hook 注册失败: {ex}"); }
+            try
+            {
+                Harmony_FullGelatinizationHeadTint.Register(harmony);
+                RecordManualPatch("FullGel head tint", "Verse.PawnRenderNodeWorker.GetFinalizedMaterial", true);
+            }
+            catch (Exception ex)
+            {
+                RecordManualPatch("FullGel head tint", "Verse.PawnRenderNodeWorker.GetFinalizedMaterial", false, ex);
+                Log.Error($"[SSC FullGel] Head skin material hook 注册失败: {ex}");
+            }
 
             // SA 的并行 GetGraphic 只取得原图；染色在最终材质阶段完成，避免工作线程访问 GraphicDatabase。
-            try { Harmony_FullGelatinizationBodyTint.RegisterSizedApparel(harmony); }
-            catch (Exception ex) { Log.Error($"[SSC FullGel] SizedApparel final material hook 注册失败: {ex}"); }
+            try
+            {
+                Harmony_FullGelatinizationBodyTint.RegisterSizedApparel(harmony);
+#if SSC_RW17
+                bool workerPresent = AccessTools.TypeByName("SizedApparel.SizedApparelRenderNodeWorker") != null;
+                RecordManualPatch("FullGel SizedApparel material", "Verse.PawnRenderNodeWorker.GetFinalizedMaterial",
+                    workerPresent, missingDependency: !workerPresent);
+#endif
+            }
+            catch (Exception ex)
+            {
+                RecordManualPatch("FullGel SizedApparel material", "Verse.PawnRenderNodeWorker.GetFinalizedMaterial", false, ex);
+                Log.Error($"[SSC FullGel] SizedApparel final material hook 注册失败: {ex}");
+            }
 
             try
             {
@@ -165,15 +211,38 @@ namespace SexSlaveCraft
                         harmony.Patch(original, postfix: new HarmonyMethod(typeof(Harmony_FullGelatinizationBodyTint), nameof(Harmony_FullGelatinizationBodyTint.SizedApparelApparelPostfix)));
                         SSCLog.Important("[SSC FullGel] Patch 注册成功: ApparelGraphicRecordGetter.TryGetGraphicApparel (SizedApparel soft depend)");
                     }
+                    RecordManualPatch("FullGel SizedApparel clothing", "Verse.ApparelGraphicRecordGetter.TryGetGraphicApparel", original != null);
                 }
                 else
                 {
+                    RecordManualPatch("FullGel SizedApparel clothing", "Verse.ApparelGraphicRecordGetter.TryGetGraphicApparel", false, missingDependency: true);
                     SSCLog.Important("[SSC FullGel] 未检测到 SizedApparel，跳过服装胸型图形软依赖补丁。");
                 }
             }
-            catch (Exception ex) { Log.Error($"[SSC FullGel] ApparelGraphicRecordGetter.TryGetGraphicApparel 注册失败: {ex}"); }
+            catch (Exception ex)
+            {
+                RecordManualPatch("FullGel SizedApparel clothing", "Verse.ApparelGraphicRecordGetter.TryGetGraphicApparel", false, ex);
+                Log.Error($"[SSC FullGel] ApparelGraphicRecordGetter.TryGetGraphicApparel 注册失败: {ex}");
+            }
 
             SSCLog.Important($"[SSC RitualFix] 补丁注册完成: {successCount}/9 成功");
+#if SSC_RW17
+            SSCPatchRegistration.Record("Binding ritual quality and UI",
+                successCount == 9 ? SSCPatchState.Ready : SSCPatchState.Failed,
+                detail: $"{successCount}/9");
+#endif
+        }
+
+        // 手动安装入口负责区分外部依赖是否存在。无异常且未安装时，依赖缺席与目标接口不适用分别记录。
+        private static void RecordManualPatch(string group, string target, bool installed, Exception error = null, bool missingDependency = false)
+        {
+#if SSC_RW17
+            SSCPatchRegistration.Record(group, error != null ? SSCPatchState.Failed :
+                installed ? SSCPatchState.Ready : SSCPatchState.Skipped,
+                target, "Manual install", error?.GetBaseException().GetType().Name,
+                error != null || installed ? SSCPatchSkipReason.None :
+                    missingDependency ? SSCPatchSkipReason.MissingDependency : SSCPatchSkipReason.UnsupportedTarget);
+#endif
         }
     }
 }

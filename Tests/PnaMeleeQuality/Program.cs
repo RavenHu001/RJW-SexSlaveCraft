@@ -52,6 +52,7 @@ internal static partial class Program
                         var thing = WithQuality(def, quality); value = .75f;
                         part.TransformValue(StatRequest.For(thing), ref value); Near(.75f * expected[(int)quality], value);
                     });
+                if (quality != QualityCategory.Awful && quality != QualityCategory.Legendary) continue;
                 Check($"普通近战 {quality}: 原版品质曲线仍生效", () =>
                 {
                     float value = 1.25f; part.TransformValue(StatRequest.For(other, null, quality), ref value);

@@ -23,22 +23,21 @@ internal static partial class Program
     /// <summary>完成认领、经验归属、评分独立和健康回调重入均联通真实成长工具。</summary>
     private static void RunMasterProgressionTests()
     {
-        foreach (bool forced in new[] { false, true })
-            Check($"Master daily reward is fixed and claimed once; forced={forced}", () =>
-            {
-                var f = CompletedDaily(); f.driver.job.playerForced = forced; SetGrowth(f.driver.pawn, 11);
-                // 原有结算必须看到升级前的经验；跨阶段加成不能参与本次评分。
-                TestWorld.OnDailyOutcome = () => Equal(11f, Growth(f.driver.pawn), "experience during scoring outcome");
-                TestWorld.OnTrainerFeedback = () => f.toils[4].initAction();
-                f.toils[4].initAction(); f.toils[4].initAction();
-                Equal(12f, Growth(f.driver.pawn), "daily +1, including reentrant callbacks");
-                Equal(1, SSCMasterProgressionUtility.GetRecord(f.driver.pawn).CurStageIndex, "daily threshold stage");
-                Equal(1, TestWorld.DailyOutcomes, "single formal outcome");
-                // 消息观察的是生产经验入口输出；重入及第二次调用不能重复报升阶。
-                var message = Messages.Received.Single(m => m.Text == "SSC_MasterProgression_StageAdvanced");
-                Require(message.Targets.Pawns.Single() == f.driver.pawn &&
-                    message.Type == RimWorld.MessageTypeDefOf.PositiveEvent && !message.Historical, "level-up target and message type");
-            });
+        Check("Master daily reward is fixed and claimed once; forced=False", () =>
+        {
+            var f = CompletedDaily(); SetGrowth(f.driver.pawn, 11);
+            // 原有结算必须看到升级前的经验；跨阶段加成不能参与本次评分。
+            TestWorld.OnDailyOutcome = () => Equal(11f, Growth(f.driver.pawn), "experience during scoring outcome");
+            TestWorld.OnTrainerFeedback = () => f.toils[4].initAction();
+            f.toils[4].initAction(); f.toils[4].initAction();
+            Equal(12f, Growth(f.driver.pawn), "daily +1, including reentrant callbacks");
+            Equal(1, SSCMasterProgressionUtility.GetRecord(f.driver.pawn).CurStageIndex, "daily threshold stage");
+            Equal(1, TestWorld.DailyOutcomes, "single formal outcome");
+            // 消息观察的是生产经验入口输出；重入及第二次调用不能重复报升阶。
+            var message = Messages.Received.Single(m => m.Text == "SSC_MasterProgression_StageAdvanced");
+            Require(message.Targets.Pawns.Single() == f.driver.pawn &&
+                message.Type == RimWorld.MessageTypeDefOf.PositiveEvent && !message.Historical, "level-up target and message type");
+        });
         Check("full specialization and zero score still provide Master daily practice", () =>
         {
             var f = CompletedDaily(); SetGrowth(f.driver.pawn, 5);

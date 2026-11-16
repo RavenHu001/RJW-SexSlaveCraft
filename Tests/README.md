@@ -1,5 +1,11 @@
 # 测试说明索引
 
+2026-11-15，第二轮精简净减 **238 项**，当前登记 52 套、5885 项（Core 5148／Special 737）。15 个关联宿主 **3619／3619**，独立浪漫文案 **102／102**。[第二轮实施与验证](../Docs/Development/Completed/2.5.1发布后测试精简与验证.md#第二轮测试精简)
+
+2026-11-15，2.5.1 发布后精简重复组合 **227 项**，首轮登记 52 套、6123 项（Core 5289／Special 834）。15 个受影响宿主共 **4218／4218**，独立浪漫文案 **138／138**。[实施与验证](../Docs/Development/Completed/2.5.1发布后测试精简与验证.md)
+
+**2.5.1 于 2026-11-15 正式发布。** 完整门禁通过 52 套、6350/6350 项。 两项资源检查及 56 项发布编排检查通过。[正式发布归档](../Docs/Releases/2.5.1/2.5.1版本验证.md#ssc-251-release)
+
 **2.5.0 于 2026-11-12 正式发布。** 完整门禁通过 52 套、6544/6544 项。 两项资源检查及 56 项发布编排检查通过。[正式发布归档](../Docs/Releases/2.5.0/2.5.0版本验证.md#ssc-250-release)
 
 2026-11-14，主从关系命令栏跨帧复用与原版按钮两批通过 BondOverviewUI 单套 All **234/234、237/237**，净增 4 项 Core。两批 1.7 隔离构建通过，维护者确认 WOWGAG 列表复用下显示和两个选择按钮正常。 [分批回归](BondOverviewUI/README.md#bond-gizmo-frame-reuse) · [实机验收](../Docs/Development/Completed/主从关系命令栏跨帧复用修复与验收.md)
@@ -372,13 +378,15 @@ pwsh -NoProfile -File Scripts/Test-KeyedLocalization.ps1
 pwsh -NoProfile -Command "& ./Scripts/Test-KeyedLocalization.ps1 -Files SSC_RomanceMood.xml,SSC_Romance.xml"
 ```
 
-默认检查浪漫心情、浪漫界面、身体管理、子宫开发、医美及通用Keyed六个文件的四语资源；支持`-RepositoryRoot`、`-RuntimeRoot`、`-Files`与`-PassThru`，不加载游戏或生产DLL。检查XML结构、重复／空键、格式合法性、完整键集及参数索引；浪漫分支和手术／身体消费合同另防四语共同漏键，不比较正文快照。
+默认检查浪漫心情、浪漫界面、身体管理、子宫开发、医美、通用键、健康生育提示和主人升阶八个 Keyed 文件，以及四语文化规则。可用 `-Files` 选择 Keyed 文件，指定文件时可加 `-CultureGrammar` 同时检查文化规则。消费合同覆盖固定键、参数、任务报告的 TargetA、文化语法和动态引用。默认轻检无需加载游戏或生产 DLL。
 
-五个专用文件完整对齐；混合文件`SSC_Keys.xml`仅对齐泌乳消费键`SSC_ITab_MilkProductionToggle`，报告用`ContractOnlyFiles`明确范围，其他键仍解析并检查结构／格式。其俄语已有的3个特化键缺失及15个设置键存放差异记录在[实施说明](../Docs/Development/Completed/测试199项与独立文案452项精简实现与验证.md#集中轻量资源校验)，不冒充本轮全文件对齐通过。默认实测24份XML／2588条解析键／1604条对齐键，条目数不计入机制测试数量。
+七个专用文件完整对齐；混合文件`SSC_Keys.xml`仅对齐泌乳消费键`SSC_ITab_MilkProductionToggle`，报告用`ContractOnlyFiles`明确范围，其他键仍解析并检查结构／格式。其俄语已有的3个特化键缺失及15个设置键存放差异记录在[实施说明](../Docs/Development/Completed/测试199项与独立文案452项精简实现与验证.md#集中轻量资源校验)，不冒充本轮全文件对齐通过。本轮默认实测 32 份 Keyed XML、2688 条解析键和 1704 条对齐键，另检查四份文化 DefInjected。条目数不计入机制测试数量。
 
 纯文案按受影响文件调用本脚本及既有镜像检查。发布入口在原有翻译预检后调用本脚本，随后仍执行All；本轮未调用发布或整仓回归入口，原两项镜像报告和发布All契约保持。
 
 ## 测试范围与计数
+
+当前 52 套、5885 项以 2.5.1 发布门禁 6350 项扣除两轮 227 和 238 项得出。以下先前统计保留原时点。 [第二轮实施与验证](../Docs/Development/Completed/2.5.1发布后测试精简与验证.md#第二轮测试精简)
 
 `PnaLoad` 整套由 583 项精简至 379 项，独立执行 All **379／379**、Core **368／368**、Special **11／11**。按本分支 6554 项历史全量扣除雾气系列前轮两项及本轮 204 项，当前登记 52 套、6348 项。本轮实跑范围为 `PnaLoad`。 [保留范围](PnaLoad/README.md)
 

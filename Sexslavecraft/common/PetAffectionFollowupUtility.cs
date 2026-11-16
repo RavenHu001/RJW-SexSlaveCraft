@@ -16,6 +16,12 @@ namespace SexSlaveCraft
         /// <summary>准备期间重新检查双方资格；地点和准备任务的归属由专用驱动检查。</summary>
         public static bool CanContinue(Pawn pet, Pawn master)
         {
+#if SSC_RW17
+            // 专用驱动虽覆盖虚方法，仍显式调用 Quickie 的预约和准备步骤，需一并核对基类钩子。
+            if (!SSCSceneHookAvailability.SharedReady ||
+                !SSCSceneHookAvailability.DriverReady(typeof(JobDriver_PetAffectionFollowup)) ||
+                !SSCSceneHookAvailability.DriverReady(typeof(JobDriver_SexQuick))) return false;
+#endif
             // 兔的既有亲昵仍可用，但本轮后续只开放生效的猫、狗；普通残留标签不授予资格。
             if (pet?.TryGetComp<CompSexSlaveTraining>() == null || master == null || pet == master ||
                 SSCBondUtility.GetBoundMaster(pet) != master ||

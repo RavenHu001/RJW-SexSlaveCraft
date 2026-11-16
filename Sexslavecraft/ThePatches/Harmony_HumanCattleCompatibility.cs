@@ -2,7 +2,6 @@ using System;
 using HarmonyLib;
 using RimWorld;
 using Verse;
-using System.Reflection;
 
 namespace SexSlaveCraft
 {
@@ -13,6 +12,8 @@ namespace SexSlaveCraft
         private static Type milkedTrackerType;
 
         public static bool IsLoaded => MilkedTrackerType != null;
+        /// <summary>三个外部钩子都安装后才接管 SSC 永久泌乳。安装失败后，残留前置仍放行原方法。</summary>
+        internal static bool Installed { get; private set; }
 
         private static Type MilkedTrackerType
         {
@@ -32,28 +33,40 @@ namespace SexSlaveCraft
             return SoftDependencyUtility.FindOptionalType(ChargeablePatchTypeName + "+" + nestedTypeName);
         }
 
+        internal static void Register(Harmony harmony)
+        {
+            Installed = false;
+            Installed = SSCOptionalPatchGroup.Install(harmony, "Human Cattle", () =>
+            {
+                var tick = DoopChargeablePatchType("CompPostTickInterval");
+                var before = DoopChargeablePatchType("CompPostMake_Pre");
+                var after = DoopChargeablePatchType("CompPostMake_Post");
+                // 跟踪器可作为依赖仍在的信号。外部改名导致钩子丢失时走失配处理。
+                if (tick == null && before == null && after == null && !IsLoaded) return null;
+                // Human Cattle 的入口本身是 Harmony 补丁方法，首参是 ref HediffComp_Chargeable。
+                var comp = typeof(HediffComp_Chargeable).MakeByRefType();
+                return new[]
+                {
+                    (SSCOptionalPatchGroup.RequireTarget(tick, "Prefix", typeof(bool), true, comp), typeof(Patch_HumanCattle_DoopsOwnTickPrefix), HarmonyPatchType.Prefix),
+                    (SSCOptionalPatchGroup.RequireTarget(before, "Prefix", typeof(bool), true, comp), typeof(Patch_HumanCattle_DoopsOwnPostMakePrePrefix), HarmonyPatchType.Prefix),
+                    (SSCOptionalPatchGroup.RequireTarget(after, "Postfix", typeof(void), true, comp), typeof(Patch_HumanCattle_DoopsOwnPostMakePostPrefix), HarmonyPatchType.Prefix)
+                };
+            });
+        }
+
         public static bool IsSSCPermaLactation(HediffComp_Chargeable comp)
         {
             return comp?.parent?.def == SSCDefOf.SSC_Lactating_SubState;
         }
     }
 
-    [HarmonyPatch]
     public static class Patch_HumanCattle_DoopsOwnTickPrefix
     {
-        public static bool Prepare() => HumanCattleCompatibility.DoopChargeablePatchType("CompPostTickInterval") != null;
-
-        public static MethodBase TargetMethod()
-        {
-            Type targetType = HumanCattleCompatibility.DoopChargeablePatchType("CompPostTickInterval");
-            return AccessTools.Method(targetType, "Prefix");
-        }
-
         public static bool Prefix(
             [HarmonyArgument(0)] ref HediffComp_Chargeable comp,
             ref bool __result)
         {
-            if (!HumanCattleCompatibility.IsSSCPermaLactation(comp)) return true;
+            if (!HumanCattleCompatibility.Installed || !HumanCattleCompatibility.IsSSCPermaLactation(comp)) return true;
 
             __result = true;
             return false;
@@ -61,42 +74,24 @@ namespace SexSlaveCraft
 
     }
 
-    [HarmonyPatch]
     public static class Patch_HumanCattle_DoopsOwnPostMakePrePrefix
     {
-        public static bool Prepare() => HumanCattleCompatibility.DoopChargeablePatchType("CompPostMake_Pre") != null;
-
-        public static MethodBase TargetMethod()
-        {
-            Type targetType = HumanCattleCompatibility.DoopChargeablePatchType("CompPostMake_Pre");
-            return AccessTools.Method(targetType, "Prefix");
-        }
-
         public static bool Prefix(
             [HarmonyArgument(0)] ref HediffComp_Chargeable comp,
             ref bool __result)
         {
-            if (!HumanCattleCompatibility.IsSSCPermaLactation(comp)) return true;
+            if (!HumanCattleCompatibility.Installed || !HumanCattleCompatibility.IsSSCPermaLactation(comp)) return true;
 
             __result = true;
             return false;
         }
     }
 
-    [HarmonyPatch]
     public static class Patch_HumanCattle_DoopsOwnPostMakePostPrefix
     {
-        public static bool Prepare() => HumanCattleCompatibility.DoopChargeablePatchType("CompPostMake_Post") != null;
-
-        public static MethodBase TargetMethod()
-        {
-            Type targetType = HumanCattleCompatibility.DoopChargeablePatchType("CompPostMake_Post");
-            return AccessTools.Method(targetType, "Postfix");
-        }
-
         public static bool Prefix([HarmonyArgument(0)] ref HediffComp_Chargeable comp)
         {
-            return !HumanCattleCompatibility.IsSSCPermaLactation(comp);
+            return !HumanCattleCompatibility.Installed || !HumanCattleCompatibility.IsSSCPermaLactation(comp);
         }
     }
 

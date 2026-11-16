@@ -17,4 +17,24 @@
   <SSC_Diagnostics_Refresh>重新檢查</SSC_Diagnostics_Refresh>
   <SSC_Diagnostics_Copy>複製診斷資訊</SSC_Diagnostics_Copy>
   <SSC_Diagnostics_Copied>已複製</SSC_Diagnostics_Copied>
+  <SSC_Diagnostics_PatchRegistration>補丁註冊狀態</SSC_Diagnostics_PatchRegistration>
+  <SSC_Diagnostics_PatchWaiting>等待安裝</SSC_Diagnostics_PatchWaiting>
+  <SSC_Diagnostics_PatchReady>已就緒</SSC_Diagnostics_PatchReady>
+  <SSC_Diagnostics_PatchSkipped>已略過</SSC_Diagnostics_PatchSkipped>
+  <SSC_Diagnostics_PatchFallback>已回退</SSC_Diagnostics_PatchFallback>
+  <SSC_Diagnostics_PatchFailed>註冊失敗</SSC_Diagnostics_PatchFailed>
+  <SSC_Diagnostics_PatchDailyTraining>日常調教生命週期</SSC_Diagnostics_PatchDailyTraining>
+  <SSC_Diagnostics_PatchWeaponDrawing>PNA 武器繪製</SSC_Diagnostics_PatchWeaponDrawing>
+  <SSC_Diagnostics_PatchWeaponDrawingFallback>繪製指令配置不符。SSC 武器繪製效果已停用，沿用現有繪製。</SSC_Diagnostics_PatchWeaponDrawingFallback>
+  <SSC_Diagnostics_TrainingHooksUnavailable>日常調教所需補丁未就緒，暫時無法派發日常調教。</SSC_Diagnostics_TrainingHooksUnavailable>
+  <SSC_Diagnostics_Overview>概況</SSC_Diagnostics_Overview>
+  <SSC_Diagnostics_PatchAll>全部狀態</SSC_Diagnostics_PatchAll>
+  <SSC_Diagnostics_PatchFilter>{0}（{1}）</SSC_Diagnostics_PatchFilter>
+  <SSC_Diagnostics_PatchEmpty>沒有符合此狀態的補丁。</SSC_Diagnostics_PatchEmpty>
+  <SSC_Diagnostics_SkipMissingDependency>未偵測到此相容功能所需的外部依賴。</SSC_Diagnostics_SkipMissingDependency>
+  <SSC_Diagnostics_SkipUnsupportedTarget>未找到適用的目標方法或介面。</SSC_Diagnostics_SkipUnsupportedTarget>
+  <SSC_Diagnostics_SkipConditionsNotMet>未找到可註冊的目標，或安裝前置條件未滿足。</SSC_Diagnostics_SkipConditionsNotMet>
+  <SSC_Diagnostics_OrderedTrainingUnavailable>手動日常調教命令所需補丁無法使用。</SSC_Diagnostics_OrderedTrainingUnavailable>
+  <SSC_Diagnostics_PatchRitualSelectionFallback>綁定儀式的 SSC 手選所需補丁或指令配置無法使用。儀式可以啟動時，沿用原版選角。</SSC_Diagnostics_PatchRitualSelectionFallback>
+  <SSC_Diagnostics_PatchWhipCooperationFallback>PNA 鞭束協作掛鉤或指令配置無法使用，沿用現有近戰行為。</SSC_Diagnostics_PatchWhipCooperationFallback>
 </LanguageData>
