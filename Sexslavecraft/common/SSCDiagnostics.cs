@@ -97,10 +97,6 @@ namespace SexSlaveCraft
         {
             // 优先看调教能否派发和武器绘制是否回退。其余先列出失败与回退，同类沿用稳定的名称顺序。
             return SSCPatchRegistration.Snapshot()
-                .OrderBy(entry => entry.Key == SSCPatchRegistration.DailyTraining ? 0 :
-                    entry.Key == nameof(Harmony_SSCPnaSpearGlowDraw) ? 1 :
-                    entry.Value.State == SSCPatchState.Failed ? 2 :
-                    entry.Value.State == SSCPatchState.Fallback ? 3 : 4)
                 .Select(entry =>
                 {
                     var (state, target, stage, detail, reason) = entry.Value;
@@ -108,9 +104,33 @@ namespace SexSlaveCraft
                     if (entry.Key == SSCPatchRegistration.DailyTraining)
                     {
                         label = "SSC_Diagnostics_PatchDailyTraining".Translate();
-                        if (state == SSCPatchState.Failed)
+                        if (!SSCSceneHookAvailability.CanStartDaily(false))
+                        {
+                            if (state == SSCPatchState.Ready) (state, stage) = (SSCPatchState.Fallback, "Verify");
                             detail = string.Join(" · ", new[] { detail, "SSC_Diagnostics_TrainingHooksUnavailable".Translate().ToString() }
                                 .Where(value => !string.IsNullOrEmpty(value)));
+                        }
+                        else if (!SSCSceneHookAvailability.OrderedReady)
+                            detail = "SSC_Diagnostics_OrderedTrainingUnavailable".Translate();
+                    }
+                    if (entry.Key == SSCPatchRegistration.SharedLifecycle && state == SSCPatchState.Ready &&
+                        SSCPatchRegistration.MissingSharedHook() is string missing)
+                        (state, stage, detail) = (SSCPatchState.Fallback, "Verify", missing);
+                    if (entry.Key == nameof(SSCRestrictionOrderedJobHook) && state == SSCPatchState.Ready &&
+                        !SSCSceneHookAvailability.OrderedReady)
+                        (state, stage, detail) = (SSCPatchState.Fallback, "Verify", "SSC_Diagnostics_OrderedTrainingUnavailable".Translate());
+                    if (entry.Key == nameof(Harmony_BindingRitualAutoFill) && state == SSCPatchState.Ready &&
+                        !Harmony_BindingRitualAutoFill.ManualSelectionReady)
+                    {
+                        (state, stage) = (SSCPatchState.Fallback, "Verify");
+                        detail = "SSC_Diagnostics_PatchRitualSelectionFallback".Translate();
+                    }
+                    if (entry.Key == SSCPatchRegistration.WhipCooperation &&
+                        (state == SSCPatchState.Ready || state == SSCPatchState.Fallback))
+                    {
+                        state = Harmony_SSCPnaWhipCooperativeThreat.Ready ? SSCPatchState.Ready : SSCPatchState.Fallback;
+                        if (state == SSCPatchState.Fallback)
+                            detail = "SSC_Diagnostics_PatchWhipCooperationFallback".Translate();
                     }
                     if (entry.Key == nameof(Harmony_SSCPnaSpearGlowDraw))
                     {
@@ -127,14 +147,20 @@ namespace SexSlaveCraft
                     // 跳过原因是注册端记录的分类，在这里才按当前语言生成文字。
                     string skip = state == SSCPatchState.Skipped && reason != SSCPatchSkipReason.None
                         ? ("SSC_Diagnostics_Skip" + reason).Translate().ToString() : null;
-                    return new PatchRow
+                    var row = new PatchRow
                     {
                         Label = label,
                         State = state,
                         Status = ("SSC_Diagnostics_Patch" + state).Translate(),
                         Notes = string.Join(" · ", new[] { skip, target, stage, detail }.Where(value => !string.IsNullOrEmpty(value)))
                     };
-                }).ToArray();
+                    return (entry.Key, Row: row);
+                })
+                .OrderBy(entry => entry.Key == SSCPatchRegistration.DailyTraining ? 0 :
+                    entry.Key == nameof(Harmony_SSCPnaSpearGlowDraw) ? 1 :
+                    entry.Row.State == SSCPatchState.Failed ? 2 :
+                    entry.Row.State == SSCPatchState.Fallback ? 3 : 4)
+                .Select(entry => entry.Row).ToArray();
         }
 #endif
 

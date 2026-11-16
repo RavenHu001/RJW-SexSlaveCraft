@@ -34,4 +34,7 @@
   <SSC_Diagnostics_SkipMissingDependency>未偵測到此相容功能所需的外部依賴。</SSC_Diagnostics_SkipMissingDependency>
   <SSC_Diagnostics_SkipUnsupportedTarget>未找到適用的目標方法或介面。</SSC_Diagnostics_SkipUnsupportedTarget>
   <SSC_Diagnostics_SkipConditionsNotMet>未找到可註冊的目標，或安裝前置條件未滿足。</SSC_Diagnostics_SkipConditionsNotMet>
+  <SSC_Diagnostics_OrderedTrainingUnavailable>手動日常調教命令所需補丁無法使用。</SSC_Diagnostics_OrderedTrainingUnavailable>
+  <SSC_Diagnostics_PatchRitualSelectionFallback>綁定儀式的 SSC 手選所需補丁或指令配置無法使用。儀式可以啟動時，沿用原版選角。</SSC_Diagnostics_PatchRitualSelectionFallback>
+  <SSC_Diagnostics_PatchWhipCooperationFallback>PNA 鞭束協作掛鉤或指令配置無法使用，沿用現有近戰行為。</SSC_Diagnostics_PatchWhipCooperationFallback>
 </LanguageData>

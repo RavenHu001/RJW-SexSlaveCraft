@@ -215,19 +215,16 @@ namespace SexSlaveCraft
             => trainer != null && target != null && trainer.Map != null && target.Map == trainer.Map &&
                 trainer.CanReserve(target, 1, 0);
 
-        // null 表示尚未运行真实启动安装器（也用于只加载业务代码的模型宿主）。
-        // 游戏启动先写入 false，待实际注册及核对完成才放行自动候选、菜单与预约。
-        internal static bool? DailyTrainingHooksReady { get; set; }
-
         // 预约与首个 Toil 共用的只读检查。身体兼容准备只由 WorkGiver 路径执行。
         internal static bool CanStartDailyTraining(Pawn targetPawn, Pawn trainer, bool forced, out string reason)
         {
             reason = null;
 #if SSC_RW17
             // 此入口同时供自动候选、手动命令与驱动预约使用。统一前置拒绝可避免创建接收任务后才发现缺少开始凭据。
-            if (DailyTrainingHooksReady == false)
+            if (!SSCSceneHookAvailability.CanStartDaily(forced))
             {
-                reason = "SSC_Diagnostics_TrainingHooksUnavailable".Translate();
+                reason = (forced && SSCSceneHookAvailability.CanStartDaily(false)
+                    ? "SSC_Diagnostics_OrderedTrainingUnavailable" : "SSC_Diagnostics_TrainingHooksUnavailable").Translate();
                 return false;
             }
 #endif

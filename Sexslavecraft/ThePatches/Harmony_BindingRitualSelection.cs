@@ -105,7 +105,7 @@ namespace SexSlaveCraft
                     bool accepted = original != null && original(assignments);
                     if (accepted) BindingRitualSelectionUtility.Forget(assignments);
                     // 原回调可能移除准备状态后返回失败。仍在手选模式的窗口需要重新登记才能继续选人。
-                    else if (manualSelection && Harmony_BindingRitualAutoFill.Matched)
+                    else if (manualSelection && Harmony_BindingRitualAutoFill.ManualSelectionReady)
                         BindingRitualSelectionUtility.Register(assignments, target);
                     return accepted;
                 }
@@ -123,13 +123,43 @@ namespace SexSlaveCraft
     {
         private static readonly MethodInfo target = AccessTools.DeclaredMethod(typeof(RitualRoleAssignments),
             nameof(RitualRoleAssignments.FillPawns), new[] { typeof(Dialog_BeginRitual.PawnFilter), typeof(TargetInfo) });
+        private static readonly MethodInfo candidateList = FindUnambiguousTarget(typeof(Dialog_BeginRitual),
+            nameof(Dialog_BeginRitual.CreateRitualRoleAssignments));
+        private static readonly (Type Patch, MethodBase Target)[] deferredEdits =
+        {
+            (typeof(Harmony_BindingRitualMenu), AccessTools.DeclaredConstructor(typeof(FloatMenu), new[] { typeof(List<FloatMenuOption>) })),
+            (typeof(Harmony_BindingRitualDeferredClick), FindUnambiguousTarget(typeof(DragAndDropWidget), nameof(DragAndDropWidget.Draggable))),
+            (typeof(Harmony_BindingRitualDeferredDrop), FindUnambiguousTarget(typeof(DragAndDropWidget), nameof(DragAndDropWidget.DropArea))),
+            (typeof(Harmony_BindingRitualDeferredGroup), FindUnambiguousTarget(typeof(DragAndDropWidget), nameof(DragAndDropWidget.NewGroup)))
+        };
 
         internal static bool Matched { get; private set; }
-        /// <summary>即使改写返回原指令，Harmony 仍会登记 Transpiler。手选还依赖窗口、角色变更和最终开场校验均已挂接。</summary>
+        /// <summary>原版延迟执行菜单和拖放回调。每条编辑路径都须进入同一个回滚范围，才可开启手选模式。</summary>
         internal static bool ManualSelectionReady => Matched && target != null &&
             Harmony.GetPatchInfo(target)?.Transpilers.Any(p => p.PatchMethod.DeclaringType == typeof(Harmony_BindingRitualAutoFill)) == true &&
             Harmony_BindingRitualWindow.Installed && Harmony_BindingRitualBeforeMutation.Installed &&
-            Harmony_BindingRitualAssignment.Installed && Harmony_BindingRitualStart.Installed;
+            Harmony_BindingRitualAssignment.Installed && Harmony_BindingRitualStart.Installed &&
+            CandidateListInstalled && deferredEdits.All(edit => edit.Target != null &&
+                Contains(Harmony.GetPatchInfo(edit.Target)?.Prefixes, edit.Patch));
+
+        private static bool CandidateListInstalled
+        {
+            get
+            {
+                var info = candidateList == null ? null : Harmony.GetPatchInfo(candidateList);
+                Type hook = typeof(Harmony_BindingRitualCandidateList);
+                return Contains(info?.Prefixes, hook) && Contains(info?.Postfixes, hook) && Contains(info?.Finalizers, hook);
+            }
+        }
+
+        private static bool Contains(IEnumerable<Patch> patches, Type hook)
+            => patches?.Any(patch => patch.PatchMethod.DeclaringType == hook) == true;
+
+        private static MethodInfo FindUnambiguousTarget(Type type, string name)
+        {
+            MethodInfo[] matches = AccessTools.GetDeclaredMethods(type).Where(method => method.Name == name).Take(2).ToArray();
+            return matches.Length == 1 ? matches[0] : null;
+        }
 
         public static bool Prepare()
         {

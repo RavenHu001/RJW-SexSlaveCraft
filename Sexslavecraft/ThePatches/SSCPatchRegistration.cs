@@ -19,6 +19,8 @@ namespace SexSlaveCraft
     {
         internal const string Owner = "SexSlaveCraft.training.patch";
         internal const string DailyTraining = "Daily training lifecycle";
+        internal const string WhipCooperation = "PNA whip cooperation";
+        internal const string SharedLifecycle = "RJW shared scene lifecycle";
         // 每组保留最近一次结果。窗口刷新或复制时读取整个副本，避免在枚举时遇到延迟安装写入。
         private static readonly Dictionary<string, (SSCPatchState State, string Target, string Stage, string Detail, SSCPatchSkipReason SkipReason)> results = new();
 
@@ -36,6 +38,12 @@ namespace SexSlaveCraft
         /// <summary>使用原 Harmony owner 和程序集类型顺序安装。故障边界落在补丁类或实际驱动，最后核对日常调教的整套必要钩子。</summary>
         internal static bool InstallAnnotated(Harmony harmony, Assembly assembly)
         {
+            // 绑定于扫描之前。缓存解析出的目标和补丁方法，每次准入读当前挂载，覆盖启动后发生的包装重建或卸载。
+            bool sharedInstalled = false;
+            SSCSceneHookAvailability.SharedHooks = () => sharedInstalled && MissingSharedHook(harmony.Id) == null;
+            SSCSceneHookAvailability.DailyReservation = () => DailyReservationHook.Installed(harmony.Id);
+            SSCSceneHookAvailability.OrderedJob = () => OrderedJobHook.Installed(harmony.Id);
+            SSCSceneHookAvailability.DriverHooks = DriverHooksAvailable;
             var lifecycle = new[]
             {
                 typeof(Patch_JobDriver_Sex_ProtectChainOfSexSlave), typeof(SSCRestrictionSceneSaveHook)
@@ -75,9 +83,9 @@ namespace SexSlaveCraft
                 }, () => Unpatch(harmony, new[] { type }), stage: "Resolve / install");
             }
             // 装完后核对实际挂载。成功调用安装器或找到目标签名都不足以证明 Start 凭据写入、保存和收尾可用。
-            bool ready = Install(DailyTraining, () =>
+            sharedInstalled = Install(SharedLifecycle, () =>
             {
-                VerifyTrainingHooks(harmony.Id);
+                foreach (RequiredHook hook in SharedHooks) hook.Require(harmony.Id);
                 return SSCPatchState.Ready;
             }, () =>
             {
@@ -86,15 +94,23 @@ namespace SexSlaveCraft
                 lock (results)
                     foreach (Type type in lifecycle)
                         if (results.TryGetValue(type.Name, out var row) && row.State == SSCPatchState.Ready)
-                            results[type.Name] = (SSCPatchState.Fallback, row.Target, "Rollback", DailyTraining, SSCPatchSkipReason.None);
+                            results[type.Name] = (SSCPatchState.Fallback, row.Target, "Rollback", SharedLifecycle, SSCPatchSkipReason.None);
             }, stage: "Verify");
-            TrainerAssignmentUtility.DailyTrainingHooksReady = ready;
+            // 自动任务只依赖共享生命周期和自身预约。命令前缀单独登记，失败时手动入口关闭，共享组仍保留。
+            bool ready = Install(DailyTraining, () =>
+            {
+                if (!sharedInstalled) throw new MissingMethodException(SharedLifecycle);
+                DailyReservationHook.Require(harmony.Id);
+                return SSCPatchState.Ready;
+            }, stage: "Verify");
             if (!ready)
                 Log.WarningOnce("[SSC Harmony] Daily training dispatch disabled because required lifecycle hooks are unavailable.", 0x53535452);
             return complete && ready;
         }
 
         private const string DerivedReservations = "RJW derived reservations";
+        private static readonly HashSet<Type> failedReservations = new();
+        private static readonly HashSet<Type> failedPreparation = new();
 
         private static SSCPatchSkipReason ResolveSkipReason(Type patchType)
         {
@@ -123,7 +139,7 @@ namespace SexSlaveCraft
                 return SSCPatchState.Ready;
             }, () => { if (method != null) harmony.Unpatch(method, patch); }, target);
             // 只有实际失败的驱动才进入限制系统的拒绝名单，继承正常预约实现的驱动照常工作。
-            if (!installed) SSCRestrictionJobGuard.UnavailableDriverHooks.Add(type);
+            if (!installed) failedReservations.Add(type);
             return installed;
         }
 
@@ -139,7 +155,7 @@ namespace SexSlaveCraft
                 harmony.Patch(method, postfix: new HarmonyMethod(patch));
                 return SSCPatchState.Ready;
             }, () => { if (method != null) harmony.Unpatch(method, patch); }, target))
-                SSCRestrictionJobGuard.UnavailableDriverHooks.Add(type);
+                failedPreparation.Add(type);
         }
 
         /// <summary>包住一次安装尝试及其回滚。返回值用于判断是否抛出故障，具体结果由诊断状态表示。</summary>
@@ -192,29 +208,80 @@ namespace SexSlaveCraft
             }, stage: "Delayed install"));
         }
 
-        /// <summary>核对预约、准备、原生 Start 与 End 和凭据存档。Start 前置检查资格，后置仅在原方法确实执行后记录凭据。</summary>
-        private static void VerifyTrainingHooks(string owner)
+        private static bool DriverHooksAvailable(Type driver)
+            => !InheritsFailedHook(driver, failedReservations, ReservationSlot, ReservationParameters) &&
+               !InheritsFailedHook(driver, failedPreparation, PreparationSlot, Type.EmptyTypes);
+
+        private static readonly Type[] ReservationParameters = { typeof(bool) };
+        private static readonly MethodInfo ReservationSlot = AccessTools.DeclaredMethod(typeof(JobDriver_Sex), "TryMakePreToilReservations", ReservationParameters);
+        private static readonly MethodInfo PreparationSlot = AccessTools.DeclaredMethod(typeof(JobDriver), "MakeNewToils", Type.EmptyTypes);
+
+        private static bool InheritsFailedHook(Type driver, HashSet<Type> failed, MethodInfo slot, Type[] parameters)
         {
-            Type lifecycle = typeof(Patch_JobDriver_Sex_ProtectChainOfSexSlave);
-            if (SSCRestrictionJobGuard.UnavailableDriverHooks.Contains(typeof(JobDriver_Training)))
-                throw new MissingMethodException(typeof(JobDriver_Training).FullName + ".TryMakePreToilReservations");
-            RequireHook(owner, typeof(JobDriver_Sex), "TryMakePreToilReservations", lifecycle, "Prefix");
-            RequireHook(owner, typeof(JobDriver), "TryActuallyStartNextToil", lifecycle, "NextToil_Prefix");
-            RequireHook(owner, typeof(JobDriver_SexBaseInitiator), "Start", lifecycle, "Start_Prefix");
-            RequireHook(owner, typeof(JobDriver_SexBaseInitiator), "Start", lifecycle, "Start_Postfix", true);
-            RequireHook(owner, typeof(JobDriver_SexBaseInitiator), "End", lifecycle, "End_Prefix");
-            RequireHook(owner, typeof(JobDriver_Sex), nameof(JobDriver_Sex.ExposeData), typeof(SSCRestrictionSceneSaveHook), "Postfix", true);
-            RequireHook(owner, typeof(Pawn_JobTracker), nameof(Pawn_JobTracker.TryTakeOrderedJob), typeof(SSCRestrictionOrderedJobHook), "Prefix");
+            if (failed.Count == 0) return false;
+            if (slot == null) return failed.Any(type => type.IsAssignableFrom(driver));
+            MethodInfo root = slot.GetBaseDefinition();
+            // 每类钩子单独沿虚方法槽定位实际实现。子类继承失配实现时同样拒绝，覆盖另一个钩子不能解除拒绝。
+            for (Type type = driver; type != null; type = type.BaseType)
+            {
+                MethodInfo implementation = AccessTools.DeclaredMethod(type, slot.Name, parameters);
+                if (implementation?.GetBaseDefinition() == root) return failed.Contains(type);
+                if (failed.Contains(type)) return true;
+            }
+            return false;
         }
 
-        // 同一宿主方法可能已被其他补丁占用，因此同时核对 owner、补丁声明类型、方法和前后置位置。
-        private static void RequireHook(string owner, Type originalType, string originalName, Type hook, string name, bool postfix = false)
+        private static readonly Type SceneHook = typeof(Patch_JobDriver_Sex_ProtectChainOfSexSlave);
+        private static readonly RequiredHook[] SharedHooks =
         {
-            MethodBase original = AccessTools.Method(originalType, originalName);
-            var info = original == null ? null : Harmony.GetPatchInfo(original);
-            var patches = postfix ? info?.Postfixes : info?.Prefixes;
-            if (patches?.Any(p => p.owner == owner && p.PatchMethod.DeclaringType == hook && p.PatchMethod.Name == name) != true)
-                throw new MissingMethodException(originalType.FullName + "." + originalName + " / " + hook.Name + "." + name);
+            new(typeof(JobDriver_Sex), "TryMakePreToilReservations", SceneHook, "Prefix"),
+            new(typeof(JobDriver), "TryActuallyStartNextToil", SceneHook, "NextToil_Prefix"),
+            new(typeof(JobDriver_SexBaseInitiator), "Start", SceneHook, "Start_Prefix"),
+            new(typeof(JobDriver_SexBaseInitiator), "Start", SceneHook, "Start_Postfix", true),
+            new(typeof(JobDriver_SexBaseInitiator), "End", SceneHook, "End_Prefix"),
+            new(typeof(JobDriver_Sex), nameof(JobDriver_Sex.ExposeData), typeof(SSCRestrictionSceneSaveHook), "Postfix", true)
+        };
+        private static readonly RequiredHook DailyReservationHook =
+            new(typeof(JobDriver_Training), "TryMakePreToilReservations", typeof(SSCRestrictionReservationHook), "Prefix");
+        private static readonly RequiredHook OrderedJobHook =
+            new(typeof(Pawn_JobTracker), nameof(Pawn_JobTracker.TryTakeOrderedJob), typeof(SSCRestrictionOrderedJobHook), "Prefix");
+
+        internal static string MissingSharedHook(string owner = Owner)
+        {
+            foreach (RequiredHook hook in SharedHooks)
+                if (!hook.Installed(owner)) return hook.Description;
+            return null;
+        }
+
+        // 核对实际挂载的方法、owner 和前后置位置，其他模组在同一目标上的补丁不能替代 SSC 钩子。
+        private sealed class RequiredHook
+        {
+            private readonly MethodBase target;
+            private readonly MethodInfo patch;
+            private readonly bool postfix;
+            internal string Description { get; }
+
+            internal RequiredHook(Type targetType, string targetName, Type patchType, string patchName, bool postfix = false)
+            {
+                // 这些 Harmony 注解按方法名挂载。上游新增同名重载时视为目标不明，留给安装器报告。
+                MethodInfo[] matches = AccessTools.GetDeclaredMethods(targetType).Where(method => method.Name == targetName).Take(2).ToArray();
+                target = matches.Length == 1 ? matches[0] : null;
+                patch = AccessTools.DeclaredMethod(patchType, patchName);
+                this.postfix = postfix;
+                Description = targetType.FullName + "." + targetName + " / " + patchType.Name + "." + patchName;
+            }
+
+            internal bool Installed(string owner)
+            {
+                var info = target == null ? null : Harmony.GetPatchInfo(target);
+                var patches = postfix ? info?.Postfixes : info?.Prefixes;
+                return patch != null && patches?.Any(p => p.owner == owner && p.PatchMethod == patch) == true;
+            }
+
+            internal void Require(string owner)
+            {
+                if (!Installed(owner)) throw new MissingMethodException(Description);
+            }
         }
 
         private static void Unpatch(Harmony harmony, Type[] types)

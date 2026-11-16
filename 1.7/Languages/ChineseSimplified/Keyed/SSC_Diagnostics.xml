@@ -34,4 +34,7 @@
   <SSC_Diagnostics_SkipMissingDependency>未检测到该适配所需的外部依赖。</SSC_Diagnostics_SkipMissingDependency>
   <SSC_Diagnostics_SkipUnsupportedTarget>未找到适用的目标方法或接口。</SSC_Diagnostics_SkipUnsupportedTarget>
   <SSC_Diagnostics_SkipConditionsNotMet>未找到可注册的目标，或安装前置条件未满足。</SSC_Diagnostics_SkipConditionsNotMet>
+  <SSC_Diagnostics_OrderedTrainingUnavailable>手动日常调教命令所需补丁不可用。</SSC_Diagnostics_OrderedTrainingUnavailable>
+  <SSC_Diagnostics_PatchRitualSelectionFallback>绑定仪式的 SSC 手选所需补丁或指令布局不可用。仪式可启动时，沿用原版选角。</SSC_Diagnostics_PatchRitualSelectionFallback>
+  <SSC_Diagnostics_PatchWhipCooperationFallback>PNA 鞭束协作钩子或指令布局不可用，沿用现有近战行为。</SSC_Diagnostics_PatchWhipCooperationFallback>
 </LanguageData>

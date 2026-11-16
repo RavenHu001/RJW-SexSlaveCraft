@@ -17,10 +17,8 @@ namespace SexSlaveCraft
             var harmony = new Harmony("SexSlaveCraft.training.patch"); 
             SSCLog.Important($"[SSC Harmony] 开始加载Harmony补丁...");
 #if SSC_RW17
-            // 实际核对前关闭日常调教准入。即使后续发现某个必要钩子没装上，也不会先派发再不断中止。
-            TrainerAssignmentUtility.DailyTrainingHooksReady = false;
             bool complete = SSCPatchRegistration.InstallAnnotated(harmony, typeof(ModStartup).Assembly);
-            SSCPatchRegistration.Install("PNA whip cooperation", () =>
+            SSCPatchRegistration.Install(SSCPatchRegistration.WhipCooperation, () =>
             {
                 Harmony_SSCPnaWhipCooperativeThreat.Register(harmony);
                 return Harmony_SSCPnaWhipCooperativeThreat.Ready ? SSCPatchState.Ready : SSCPatchState.Fallback;

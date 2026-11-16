@@ -76,10 +76,22 @@ namespace SexSlaveCraft
         { this.inner = inner; this.assignments = assignments; visuals = new BindingRitualSelectionVisuals(inner, assignments); }
 
         public void WindowUpdate() => inner.WindowUpdate();
-        public void DrawPawnList(Rect rect) => Run(this, () =>
+        public void DrawPawnList(Rect rect)
         {
-            using (visuals.BeginDraw()) inner.DrawPawnList(rect);
-        });
+            // 钩子在开窗后撤销时，整套窗口退回原控件。此前登记的延迟回调失去窗口凭据。
+            if (BindingRitualSelectionUtility.IsRegistered(assignments) && !Harmony_BindingRitualAutoFill.ManualSelectionReady)
+                BindingRitualSelectionUtility.Forget(assignments);
+            Run(this, () =>
+            {
+                using (visuals.BeginDraw()) inner.DrawPawnList(rect);
+            });
+        }
+
+        private void RunDeferred(Action action)
+        {
+            if (BindingRitualSelectionUtility.IsWindow(assignments) && Harmony_BindingRitualAutoFill.ManualSelectionReady)
+                Run(this, action);
+        }
 
         private static void Run(BindingRitualSelectionWidget widget, Action action)
         {
@@ -125,19 +137,19 @@ namespace SexSlaveCraft
         public static Action WrapDeferred(Action action)
         {
             BindingRitualSelectionWidget widget = current?.Widget;
-            return widget == null || action == null ? action : () => Run(widget, action);
+            return widget == null || action == null ? action : () => widget.RunDeferred(action);
         }
 
         public static Action<T> WrapDeferred<T>(Action<T> action)
         {
             BindingRitualSelectionWidget widget = current?.Widget;
-            return widget == null || action == null ? action : value => Run(widget, () => action(value));
+            return widget == null || action == null ? action : value => widget.RunDeferred(() => action(value));
         }
 
         public static Action<T1, T2> WrapDeferred<T1, T2>(Action<T1, T2> action)
         {
             BindingRitualSelectionWidget widget = current?.Widget;
-            return widget == null || action == null ? action : (first, second) => Run(widget, () => action(first, second));
+            return widget == null || action == null ? action : (first, second) => widget.RunDeferred(() => action(first, second));
         }
 
         public static void BeforeMutation(RitualRoleAssignments assignments, Pawn pawn, bool removingParticipant)

@@ -449,6 +449,40 @@ internal static partial class Program
             finally { upstream.UnpatchAll(upstream.Id); }
             Assert(Harmony_BindingRitualAutoFill.ManualSelectionReady);
         });
+        Run("拖放回调未挂接时回退原生选角，并取消已排队的手选回调", () =>
+        {
+            var open = new Fixture();
+            open.Open();
+            open.SelectBoth();
+            bool editRan = false;
+            open.Window.Draw(() => DragAndDropWidget.DropArea(0, default, _ =>
+            {
+                editRan = true;
+                open.A.RemoveParticipant(open.Target);
+            }, new object()));
+            var pendingDrop = DragAndDropWidget.Drop;
+            Assert(pendingDrop != null);
+
+            var owner = new Harmony("ssc.tests.ritual-selection");
+            var target = AccessTools.DeclaredMethod(typeof(DragAndDropWidget), nameof(DragAndDropWidget.DropArea));
+            var patch = AccessTools.DeclaredMethod(typeof(Harmony_BindingRitualDeferredDrop), nameof(Harmony_BindingRitualDeferredDrop.Prefix));
+            owner.Unpatch(target, patch);
+            try
+            {
+                Assert(!Harmony_BindingRitualAutoFill.ManualSelectionReady);
+                pendingDrop(open.Target);
+                Assert(!editRan && open.A.FirstAssignedPawn("slave") == open.Target);
+
+                var fallback = new Fixture();
+                fallback.Open();
+                Assert(!BindingRitualSelectionUtility.IsWindow(fallback.A));
+                Assert(fallback.A.FirstAssignedPawn("master") == fallback.Host && fallback.A.FirstAssignedPawn("slave") == fallback.Target);
+                fallback.Target.Eligible = false;
+                Assert(!fallback.Window.Confirm());
+            }
+            finally { owner.Patch(target, prefix: new HarmonyMethod(patch)); }
+            Assert(Harmony_BindingRitualAutoFill.ManualSelectionReady);
+        });
         Console.WriteLine($"结果：{passed}/{passed + failed} 项通过。");
         return failed == 0 ? 0 : 1;
     }

@@ -188,8 +188,9 @@ namespace SexSlaveCraft
                 var context = new TrainingJobUtility.JobContext(this);
                 Pawn target = originalTarget;
                 if (!ValidateTargetIdentityOrAbort(context, target)) return;
-                // 统一步骤守卫已在进入此回调前复查许可与指派，避免另外维护一套拒绝路径。
 #if SSC_RW17
+                // 共享步骤守卫本身也可能被撤销。交接前直接复查必要钩子，避免先启动另一方再发现无法写入凭据。
+                if (!CheckLifecycleBeforeScene()) return;
                 var occupancy = dailyOccupancy;
                 occupancy.EnterCallback();
                 bool started;
@@ -300,6 +301,8 @@ namespace SexSlaveCraft
                 string sceneSexType = Sexprops != null ? Sexprops.sexType.ToString() : "null";
                 SSCLog.Verbose($"[SSC_TRAIN] Start daily training scene: trainer={pawn.LabelShort}, slave={Partner.LabelShort}, sexType={sceneSexType}, selectedMode={(Partner.TryGetComp<CompSexSlaveTraining>()?.selectedMode.ToString() ?? "null")}");
 #if SSC_RW17
+                // 兼容调用返回后再核对一次实际挂载，缺少开始凭据时由现有清理回收本次接收任务。
+                if (!CheckLifecycleBeforeScene()) return;
                 var startOccupancy = dailyOccupancy;
                 startOccupancy.EnterCallback();
                 try { Start(); }
@@ -421,6 +424,13 @@ namespace SexSlaveCraft
         }
 
 #if SSC_RW17
+        private bool CheckLifecycleBeforeScene()
+        {
+            if (SSCSceneHookAvailability.CanStartDaily(job?.playerForced == true)) return true;
+            pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
+            return false;
+        }
+
         private void CaptureDailyReceiver(Pawn target)
         {
             var receiver = target.jobs?.curDriver as JobDriver_SexBaseReciever;

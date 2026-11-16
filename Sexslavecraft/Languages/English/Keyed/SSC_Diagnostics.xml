@@ -34,4 +34,7 @@
   <SSC_Diagnostics_SkipMissingDependency>The required optional dependency was not detected.</SSC_Diagnostics_SkipMissingDependency>
   <SSC_Diagnostics_SkipUnsupportedTarget>No supported target method or interface was found.</SSC_Diagnostics_SkipUnsupportedTarget>
   <SSC_Diagnostics_SkipConditionsNotMet>No eligible target was found or an installation requirement was not met.</SSC_Diagnostics_SkipConditionsNotMet>
+  <SSC_Diagnostics_OrderedTrainingUnavailable>The manual daily training command is unavailable because its patch is missing.</SSC_Diagnostics_OrderedTrainingUnavailable>
+  <SSC_Diagnostics_PatchRitualSelectionFallback>The patches or instructions required for SSC ritual role selection are unavailable. Rituals that can start use vanilla role selection.</SSC_Diagnostics_PatchRitualSelectionFallback>
+  <SSC_Diagnostics_PatchWhipCooperationFallback>The patches or instructions required for PNA whip cooperation are unavailable. Existing melee behavior is preserved.</SSC_Diagnostics_PatchWhipCooperationFallback>
 </LanguageData>
