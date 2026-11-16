@@ -31,9 +31,12 @@ namespace SexSlaveCraft
 
             float corruptionGain = TrainingOutcomeUtility.CalculateCorruptionGain(score);
 
+#if !SSC_RW17
             float chainCap = TrainingOutcomeUtility.GetChainCap(sexSlave);
             corruptionGain = Mathf.Clamp(corruptionGain, 0.01f, chainCap);
+#endif
 
+            // 单次收益由评分决定，需求裁剪实际入账。意志结算仍用本次评分给出的收益基准。
             CorruptionUtility.AddCorruption(sexSlave, corruptionGain);
 
             WillReductionUtility.ApplyWillReductionByCorruptionBand(master, sexSlave, corruptionGain, false);
@@ -75,12 +78,28 @@ namespace SexSlaveCraft
         }
 
         public static string ExecuteRitualOutcome(Pawn master, Pawn sexSlave, float quality, ThoughtDef ritualOutcomeMemory = null)
+#if SSC_RW17
+            => ExecuteRitualOutcome(master, sexSlave, quality, ritualOutcomeMemory,
+                new CorruptionProgressionUtility.RitualChainProgress(master, sexSlave, null));
+
+        internal static string ExecuteRitualOutcome(Pawn master, Pawn sexSlave, float quality, ThoughtDef ritualOutcomeMemory,
+            CorruptionProgressionUtility.RitualChainProgress progress)
+#endif
         {
             if (sexSlave == null || master == null) return "";
 
+#if SSC_RW17
+            // 绑定可优先消化满值分化待办，未建链时由本场结算退出统一处理。
+            using var imprintSettlement = SSCFullCorruptionImprint.BeginRitual(sexSlave);
+#endif
+            // 两种评分沿用各自的收益和记忆，整个结算共用仪式入口捕获的参与者和原锁链。
             if (SSCMod.settings?.useOldScoring ?? false)
             {
-                return ExecuteRitualOutcome_Legacy(master, sexSlave, quality, ritualOutcomeMemory);
+                return ExecuteRitualOutcome_Legacy(master, sexSlave, quality, ritualOutcomeMemory
+#if SSC_RW17
+                    , progress
+#endif
+                );
             }
 
             float finalScore = quality * SpecializationTrainingProgressUtility.RitualScorePerQuality;
@@ -89,16 +108,34 @@ namespace SexSlaveCraft
 
             CorruptionUtility.AddCorruption(sexSlave, corruptionGain);
 
+#if SSC_RW17
+            // 恶堕写入会同步特性。回调若使原参与者失效，余下的意志、记忆和经验结算在此中止。
+            if (!progress.CanContinueSettlement()) return "";
+#endif
             WillReductionUtility.ApplyWillReductionByCorruptionBand(master, sexSlave, corruptionGain, true);
-            string progressionMsg = CorruptionProgressionUtility.ProcessCorruptionProgression(master, sexSlave, true, finalScore);
+            string progressionMsg = CorruptionProgressionUtility.ProcessCorruptionProgression(master, sexSlave, true, finalScore
+#if SSC_RW17
+                , progress
+#endif
+            );
 
+#if SSC_RW17
+            // 建链、转奴和严重度写入均可触发游戏回调。记忆也可能触发回调，派发经验之前再检查。
+            if (!progress.CanContinueSettlement()) return "";
+#endif
             ApplyRitualMemories(finalLevel, master, sexSlave);
+#if SSC_RW17
+            if (!progress.CanContinueSettlement()) return "";
+#endif
             var memories = sexSlave.needs.mood?.thoughts.memories;
             if (memories != null)
             {
                 memories.TryGainMemory(CorruptionProgressionUtility.GetRitualEuphoriaThought(ritualOutcomeMemory), master);
             }
 
+#if SSC_RW17
+            if (!progress.CanContinueSettlement()) return "";
+#endif
             float virtualScore = quality * 1000f;
             float expMultiplier = 0.5f;
 
@@ -129,24 +166,45 @@ namespace SexSlaveCraft
             return sb.ToString();
         }
 
-        private static string ExecuteRitualOutcome_Legacy(Pawn master, Pawn sexSlave, float quality, ThoughtDef ritualOutcomeMemory)
+        private static string ExecuteRitualOutcome_Legacy(Pawn master, Pawn sexSlave, float quality, ThoughtDef ritualOutcomeMemory
+#if SSC_RW17
+            , CorruptionProgressionUtility.RitualChainProgress progress
+#endif
+        )
         {
             float finalScore = quality * SpecializationTrainingProgressUtility.RitualScorePerQuality;
             int finalLevel = (quality >= 0.8f) ? 3 : ((quality <= 0.25f) ? 1 : 2);
             float corruptionGain = quality * 0.08f * 2.0f;
+            // 旧评分保留主持者的成长倍率。发放收益后沿用与常规评分相同的仪式上下文与限阶规则。
             corruptionGain *= SSCMasterBondUtility.GetTrainingCorruptionMultiplier(master);
             CorruptionUtility.AddCorruption(sexSlave, corruptionGain);
 
+#if SSC_RW17
+            if (!progress.CanContinueSettlement()) return "";
+#endif
             WillReductionUtility.ApplyWillReductionByCorruptionBand(master, sexSlave, corruptionGain, true);
-            string progressionMsg = CorruptionProgressionUtility.ProcessCorruptionProgression(master, sexSlave, true, finalScore);
+            string progressionMsg = CorruptionProgressionUtility.ProcessCorruptionProgression(master, sexSlave, true, finalScore
+#if SSC_RW17
+                , progress
+#endif
+            );
 
+#if SSC_RW17
+            if (!progress.CanContinueSettlement()) return "";
+#endif
             LegacyTrainingUtility.ApplyMemories_Legacy(finalLevel, master, sexSlave, false);
+#if SSC_RW17
+            if (!progress.CanContinueSettlement()) return "";
+#endif
             var memories = sexSlave.needs.mood?.thoughts.memories;
             if (memories != null)
             {
                 memories.TryGainMemory(CorruptionProgressionUtility.GetRitualEuphoriaThought(ritualOutcomeMemory), master);
             }
 
+#if SSC_RW17
+            if (!progress.CanContinueSettlement()) return "";
+#endif
             float virtualScore = quality * 1000f;
             float expMultiplier = 0.5f;
             TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Handjob, virtualScore, expMultiplier);

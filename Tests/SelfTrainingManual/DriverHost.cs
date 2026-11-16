@@ -99,7 +99,6 @@ namespace Verse
         public bool Spawned = true, Reachable = true, NativeCanMasturbate = true, IsSlave = true;
         public bool AllowSelfTraining = true;
         public int Stage = 2;
-        public float ChainCap = 0.5f;
         public object Chain = new();
         public Pawn Master, Trainer;
         public string LabelShort = "actor";
@@ -313,7 +312,7 @@ namespace rjw
 }
 namespace SexSlaveCraft
 {
-    public class Need_Corruption { public float CurLevel; }
+    public class Need_Corruption { public float CurLevel; public float MaxLevel => 1f; }
     public static class SSCIdentityUtility
     {
         public static bool IsSexSlave(Pawn pawn) => pawn?.IsSlave == true;
@@ -343,7 +342,6 @@ namespace SexSlaveCraft
     {
         public static bool HasStartedScene(rjw.JobDriver_Masturbate driver, SSCInteractionKind kind) => driver.Started;
     }
-    public static class TrainingOutcomeUtility { public static float GetChainCap(Pawn pawn) => pawn.ChainCap; }
     public static class CorruptionUtility
     {
         public static int AddCalls;

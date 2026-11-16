@@ -66,6 +66,8 @@
     <Compile Include="common/SSCDailyTrainingOccupancy.cs" />
     <!-- 人格印记与停龄补丁仅编入1.7；共享入口通过SSC_RW17保留旧版本行为。 -->
     <Compile Include="common/SSCImprintUtility.cs" />
+    <Compile Include="common/SSCFullCorruptionImprint.cs" />
+    <Compile Include="common/SSCImprintLetters.cs" />
     <Compile Include="common/FertilitySpecializationUtility.cs" />
     <Compile Include="common/FertilityAbilityUtility.cs" />
     <Compile Include="common/FertilitySceneUtility.cs" />
@@ -173,6 +175,9 @@
     <Compile Include="common/Romance/SSCRomanceMoodGroups.cs" />
     <Compile Include="common/Romance/SSCRomanceMoodRequest.cs" />
     <Compile Include="ThePatches/Harmony_RomanceMoodHistory.cs" />
+    <Compile Include="ThePatches/Harmony_SexSlaveTraitDuplication.cs" />
+    <Compile Include="common/SSCCorruptionStages.cs" />
+    <Compile Include="ThePatches/Harmony_CorruptionNeedBar.cs" />
     <Compile Include="ThePatches/Harmony_RomanceMoodAdmissionTail.cs" />
     <Compile Include="common/Romance/SSCRomanceInteractionFacts.cs" />
     <Compile Include="common/Romance/SSCRomanceLogGrammar.cs" />

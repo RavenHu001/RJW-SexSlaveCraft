@@ -117,6 +117,9 @@ namespace SexSlaveCraft
         public static float GetChainStageMult(Pawn pawn)
         {
             Hediff chain = GetChainHediff(pawn);
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            return GetChainStage(chain).Stage switch { 4 => 2.0f, 3 => 1.6f, 2 => 1.3f, 1 => 1.1f, _ => 1f };
+#else
             if (chain == null) return 1.0f;
 
             float stageFloor = GetCurrentChainStageFloor(chain);
@@ -125,9 +128,16 @@ namespace SexSlaveCraft
             if (stageFloor >= 0.3f) return 1.3f;
             if (stageFloor >= 0.1f) return 1.1f;
             return 1.0f;
+#endif
         }
 
         public static float GetChainCap(Pawn pawn)
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            => 1f;
+
+        /// <summary>仅用于常规评分的装备及健康维护资格，沿用原阶段区间。</summary>
+        internal static float GetCorruptionMaintenanceStageUpper(Pawn pawn)
+#endif
         {
             Hediff chain = GetChainHediff(pawn);
             if (chain == null) return 0.12f;
@@ -137,6 +147,10 @@ namespace SexSlaveCraft
 
         public static float GetChainDecayFactor(Pawn pawn)
         {
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            // 1.7 各阶段共用基础衰减倍率。阶段硬下限由需求刷新单独应用。
+            return 1f;
+#else
             Hediff chain = GetChainHediff(pawn);
             if (chain == null) return 0.1f;
 
@@ -146,6 +160,7 @@ namespace SexSlaveCraft
             if (stageFloor >= 0.3f) return 0.3f;
             if (stageFloor >= 0.1f) return 0.1f;
             return 0.1f;
+#endif
         }
 
         public static float GetPartDecayFactor(Pawn pawn)
@@ -189,7 +204,7 @@ namespace SexSlaveCraft
         }
 
         /// <summary>
-        /// 返回当前锁链阶段的前一级起点，供自然衰减退阶使用；本方法只查询，不修改 Pawn。
+        /// 返回当前锁链阶段的前一级起点，供旧版本的自然衰减退阶使用。
         /// 使用当前锁链的 HediffDef 阶段表，而不是用严重度减去固定数值模拟“退一级”。
         /// 默认阶段表为 0.1、0.3、0.5、0.9，因此 0.9 档的前一级是 0.5，而非 0.8。
         /// 无锁链、尚未进入第一阶段或处于第一阶段时返回 0，表示没有更低的已定义阶段。
@@ -197,6 +212,9 @@ namespace SexSlaveCraft
         public static float GetPreviousChainStageFloor(Pawn pawn)
         {
             Hediff chain = GetChainHediff(pawn);
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            return GetChainStage(chain).Previous;
+#else
             if (chain == null) return 0f;
 
             // 先把连续严重度归入当前阶段：例如 0.8 的阶段底线是 0.5。
@@ -213,6 +231,7 @@ namespace SexSlaveCraft
             }
 
             return previousFloor;
+#endif
         }
 
         private static Hediff GetChainHediff(Pawn pawn)
@@ -223,6 +242,7 @@ namespace SexSlaveCraft
                 DefDatabase<HediffDef>.GetNamedSilentFail("Hediff_ChainOfSexSlave"));
         }
 
+        // 正阈值是各阶的起点。将 Def 值规范到 0～1 后去重、排序，阈值全缺时沿用默认四阶。
         private static List<float> GetChainStageThresholds(Hediff chain)
         {
             List<float> thresholds = chain?.def?.stages?
@@ -240,6 +260,36 @@ namespace SexSlaveCraft
             return thresholds;
         }
 
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+        /// <summary>
+        /// 根据实际锁链严重度判定阶段，供身份查询、成长倍率、需求和仪式共用。
+        /// 正好达到 Def 阈值即进入该阶，阈值下方的浮点余量仍归前一阶。
+        /// </summary>
+        /// <returns>
+        /// Stage 为已达到的正阈值数量。Floor 和 Previous 分别是本阶、前一阶起点，
+        /// 缺失的起点取 0。Next 是下一阶起点，无链或已到最高阶时为空。
+        /// 已挂链但尚未达到首个阈值时为零阶，Next 仍指向一阶起点。
+        /// </returns>
+        internal static (int Stage, float Floor, float Previous, float? Next) GetChainStage(Hediff chain)
+        {
+            if (chain == null) return (0, 0f, 0f, null);
+            List<float> thresholds = GetChainStageThresholds(chain);
+            int stage = 0;
+            while (stage < thresholds.Count && chain.Severity >= thresholds[stage]) stage++;
+            return (stage, stage > 0 ? thresholds[stage - 1] : 0f,
+                stage > 1 ? thresholds[stage - 2] : 0f,
+                stage < thresholds.Count ? thresholds[stage] : null);
+        }
+
+        private static float GetCurrentChainStageFloor(Hediff chain) => GetChainStage(chain).Floor;
+
+        private static float GetCurrentChainStageUpper(Hediff chain)
+        {
+            // 这是维护资格的旧区间。零阶保留 12% 的资格上界，仪式限阶直接使用实际阈值。
+            var stage = GetChainStage(chain);
+            return stage.Stage == 0 ? 0.12f : stage.Next ?? 1f;
+        }
+#else
         private static float GetCurrentChainStageFloor(Hediff chain)
         {
             if (chain == null) return 0f;
@@ -277,5 +327,6 @@ namespace SexSlaveCraft
 
             return 1f;
         }
+#endif
     }
 }

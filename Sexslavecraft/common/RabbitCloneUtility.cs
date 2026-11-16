@@ -101,6 +101,10 @@ namespace SexSlaveCraft
                 return false;
             }
 
+#if SSC_RW17
+            // 记录刚从原身复制的实例。初始化如果换掉印记，最终检查会排除旧实例。
+            Hediff inheritedImprint = SSCImprintUtility.Find(clone);
+#endif
             PrepareFreshRabbitCloneBody(source, clone);
             SpawnRabbitCloneNearSource(source, clone);
 
@@ -129,6 +133,10 @@ namespace SexSlaveCraft
                     clone, MessageTypeDefOf.PositiveEvent, false);
             }
 
+#if SSC_RW17
+            // 此时已生成分身并成功注册链接。链接失败会销毁分身并从上方退出，出生分支关闭普通消息时仍发印记信。
+            SSCImprintLetters.SendVisibleCopy(clone, inheritedImprint);
+#endif
             return true;
         }
 
@@ -409,6 +417,11 @@ namespace SexSlaveCraft
                 SSCPnaExposureUtility.RefreshBodyState(clone);
                 clone.needs?.AddOrRemoveNeedsAsAppropriate();
                 SSCPnaExposureUtility.GetNeed(clone)?.SetInitialLevel();
+#if SSC_RW17
+                // 身份和需求准入都已就位，用副本最终持有的需求派生特性。
+                SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(clone);
+                SSCCorruptionStages.NotifyContextChanged(clone);
+#endif
                 // 原生复制与特质/健康通知已完成，再清一次，确保任何复制回调都不能带入来源偏好。
                 SSCAbilityToggleUtility.ClearPersonalityState(clone);
             }
@@ -594,7 +607,7 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>复制来源特性并按接收者最高恶堕值重新协调性奴特性，不直接复制该派生特性。</summary>
+        /// <summary>复制来源的普通特性，性奴特性按副本状态派生。</summary>
         private static void SyncTraits(Pawn source, Pawn clone)
         {
             if (source?.story?.traits?.allTraits == null || clone?.story?.traits?.allTraits == null) return;
@@ -607,7 +620,9 @@ namespace SexSlaveCraft
                 clone.story.traits.GainTrait(new Trait(trait.def, trait.Degree, trait.ScenForced));
             }
 
+#if !SSC_RW17
             SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(clone);
+#endif
         }
 
         /// <summary>销毁并丢弃被克隆分娩替代的预生成幼体，随后清空妊娠组件列表。</summary>

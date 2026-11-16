@@ -118,6 +118,14 @@ $contracts = @{
         'SSC_Imprint_None' = ''; 'SSC_Imprint_Unlocked' = ''; 'SSC_Imprint_MasterLocked' = ''; 'SSC_Imprint_SlaveLocked' = ''
         'SSC_Imprint_GelStatus' = '0'; 'SSC_Imprint_GelTooltip' = ''; 'SSC_Imprint_SeedAlreadyMarked' = ''
         'SSC_Imprint_SeedIdentityBlocked' = ''; 'SSC_Imprint_SeedUsed' = '0'
+        'SSC_Imprint_FullCorruptionLetterLabel' = ''; 'SSC_Imprint_FullCorruptionLetterText' = '0'
+        'SSC_Imprint_QualificationLetterLabel' = ''; 'SSC_Imprint_QualificationLetterText' = '0'; 'SSC_Imprint_QualificationResearch' = ''
+        'SSC_Imprint_SeedMasterLetterLabel' = ''; 'SSC_Imprint_SeedMasterLetterText' = '0'
+        'SSC_Imprint_SeedSlaveLetterLabel' = ''; 'SSC_Imprint_SeedSlaveLetterText' = '0'
+        'SSC_Imprint_BindingMasterLetterLabel' = ''; 'SSC_Imprint_BindingMasterLetterText' = '0'
+        'SSC_Imprint_BindingSlaveLetterLabel' = ''; 'SSC_Imprint_BindingSlaveLetterText' = '0'
+        'SSC_Imprint_ImplantedSlaveLetterLabel' = ''; 'SSC_Imprint_ImplantedSlaveLetterText' = '0'
+        'SSC_Imprint_CopiedSlaveLetterLabel' = ''; 'SSC_Imprint_CopiedSlaveLetterText' = '0'
     }
     'SSC_BodyManagement.xml' = @{
         'SSC_BodyManagement_Title' = ''; 'SSC_BodyManagement_FertilityToggle' = ''; 'SSC_BodyManagement_NotStarted' = ''

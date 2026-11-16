@@ -48,6 +48,7 @@ namespace SexSlaveCraft
             observedMaster = LinkedPawn;
 #if SSC_RW17
             // 健康列表已持有这条链后再观察，不能把尚未入体的实例当作当前绑定。
+            SSCCorruptionStages.NotifyContextChanged(pawn);
             SSCRomanceLifecycle.Notify(pawn);
             // 新链只刷新身体指令的实际准入，不在锁链上保存或重置敏感度档位。
             SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
@@ -125,6 +126,7 @@ namespace SexSlaveCraft
             if (pawn?.health?.hediffSet == null || pawn.health.hediffSet.hediffs.Contains(this)) return;
 #if SSC_RW17
             // 以现在实际持有的链比较；删除旧实例时已存在的新链不能被误认为同一授权。
+            SSCCorruptionStages.NotifyContextChanged(pawn);
             SSCRomanceLifecycle.Notify(pawn);
             SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
 #endif
@@ -206,25 +208,46 @@ namespace SexSlaveCraft
                 return null;
             }
 
-            float oldSeverity = hediff.Severity;
-            int oldStage = SSCIdentityUtility.GetSexSlaveStageFromChain(hediff);
-            hediff.Severity = Mathf.Clamp(oldSeverity + amount, 0f, hediff.def.maxSeverity);
-#if SSC_RW17
-            // 原入口也显式通知，避免健康阶段被外部改写后漏掉 SSC 自身的第四阶段退阶。
-            if (oldStage != SSCIdentityUtility.GetSexSlaveStageFromChain(hediff)) SSCRomanceLifecycle.Notify(pawn);
-            if (oldStage != SSCIdentityUtility.GetSexSlaveStageFromChain(hediff)) SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
+            SetChainSeverity(hediff, pawn, hediff.Severity + amount);
+            return hediff;
+        }
+
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+        /// <summary>将仪式已验证的绝对严重度写到捕获的锁链，并沿用通用阶段通知。</summary>
+        /// <remarks>直接写入 Def 的阶段端点可避免先减后加导致的浮点舍入。单场额度由调用方判定。</remarks>
+        internal void SetRitualSeverity(Pawn pawn, float severity) => SetChainSeverity(this, pawn, severity);
 #endif
-            if (oldStage != SSCIdentityUtility.GetSexSlaveStageFromChain(hediff))
+
+        private static void SetChainSeverity(Hediff_ChainOfSexSlave hediff, Pawn pawn, float severity)
+        {
+            float oldSeverity = hediff.Severity;
+            // 用与身份查询相同的阶段口径比较写入前后，阈值附近的变化按实际跨阶派发生命周期通知。
+            int oldStage = SSCIdentityUtility.GetSexSlaveStageFromChain(hediff);
+            hediff.Severity = Mathf.Clamp(severity, 0f, hediff.def.maxSeverity);
+            int newStage = SSCIdentityUtility.GetSexSlaveStageFromChain(hediff);
+#if SSC_RW17
+            // 沿 SSC 的实际阶段刷新，即使原版 Def 的阶段序列没有发出同一条通知。
+            if (oldStage != newStage)
+            {
+                SSCCorruptionStages.NotifyContextChanged(pawn);
+                SSCRomanceLifecycle.Notify(pawn);
+                SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
+            }
+#endif
+            if (oldStage != newStage)
                 SSCSelfTrainingFeedback.NotifyStatusChanged(pawn);
 
             // 只有跨越训导官所需的第 3 阶段边界时才执行状态维护。
             // 普通锁链成长不会因每次严重度写入都检查特化和绑定。
+#if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+            if ((oldStage >= 3) != (newStage >= 3))
+#else
             if ((oldSeverity >= 0.5f) != (hediff.Severity >= 0.5f))
+#endif
                 TrainerSpecializationLifecycle.Notify(pawn);
 
             ModLog.Message($"[ChainOfSexSlave] Severity for {pawn} increased {oldSeverity:F2} → {hediff.Severity:F2}");
 
-            return hediff;
         }
     }
 }

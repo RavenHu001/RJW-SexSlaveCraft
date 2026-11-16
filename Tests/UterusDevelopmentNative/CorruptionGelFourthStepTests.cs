@@ -11,6 +11,7 @@ internal static partial class Program
 {
     private static Action gelAfterBoost, gelAfterCorruptionWrite;
     private static Action<JobDriver_Sex> gelLoadSetup;
+    private static float dailyCorruptionBudget;
 
     private static void GelFourthStepTests(string repo, Harmony harmony)
     {
@@ -37,6 +38,8 @@ internal static partial class Program
         harmony.Patch(write, postfix: new HarmonyMethod(typeof(Program), nameof(GelAfterCorruptionCallback)));
         try
         {
+            Check("daily scoring retains its planned will budget while actual corruption saturates at 100%", CorruptionDailyBudgetTest);
+            CorruptionNeedLoadTests();
             Check("gel ordinary consumer gains only from its own successful real orgasm", () =>
             {
                 var p = GelConsumer(); var need = GelUseNeed(p); GelDose(p); var d = GelUseDriver(p);
@@ -64,16 +67,23 @@ internal static partial class Program
                 p.health.RemoveHediff(SSCCorruptionGelEffectUtility.Find(p)); GelDose(p); GelFire(d); Require(need.CurLevel < .000001f);
                 var next = GelUseDriver(p); GelFire(next); Near(.02f, need.CurLevel); Near(.1f, need.HighestCorruptionLevel);
             });
-            Check("gel stage cap clips only actual gain and never lowers an already over-cap need", () =>
+            Check("gel crosses old stage ceilings and charges only actual gain at the global maximum", () =>
             {
                 var p = GelConsumer(); var need = GelUseNeed(p); need.SetCorruption(.115f); GelDose(p); var d = GelUseDriver(p);
-                GelFire(d); Near(.12f, need.CurLevel);
-                need.SetCorruption(0); GelFire(d); Near(.02f, need.CurLevel);
-                need.SetCorruption(.4f); GelFire(d); Near(.4f, need.CurLevel);
+                GelFire(d); Near(.135f, need.CurLevel);
                 var chain = p.health.AddHediff(SSCDefOf.ChainOfSexSlave); chain.Severity = .1f;
-                need.SetCorruption(.295f); GelFire(d); Near(.3f, need.CurLevel);
-                SSCMod.settings.useOldScoring = true; need.SetCorruption(.4f); GelFire(d); Near(.42f, need.CurLevel);
-                SSCMod.settings.useOldScoring = false;
+                need.SetCorruption(.295f); GelFire(d); Near(.315f, need.CurLevel);
+                need.SetCorruption(.995f); GelFire(d); Near(1f, need.CurLevel);
+                GelFire(d); Near(1f, need.CurLevel);
+                SSCMod.settings.useOldScoring = true;
+                try
+                {
+                    need.SetCorruption(.4f);
+                    for (int i = 0; i < 4; i++) GelFire(d);
+                    Near(.455f, need.CurLevel);
+                    Near(1f, need.HighestCorruptionLevel);
+                }
+                finally { SSCMod.settings.useOldScoring = false; }
             });
             Check("gel prior unrelated corruption gains do not consume the drug scene quota", () =>
             {
@@ -237,6 +247,118 @@ internal static partial class Program
             if (!skipped) harmony.Unpatch(baseExpose, AccessTools.Method(typeof(Program), nameof(Skip)));
             if (!hadRjwTypeBoundary) harmony.Unpatch(lookup, AccessTools.Method(typeof(Program), nameof(RjwScribeTypeBoundary)));
         }
+    }
+
+    private static void CorruptionDailyBudgetTest()
+    {
+        var boundary = new Harmony("ssc.tests.corruption.daily-budget");
+        var originalSocial = SkillDefOf.Social;
+        SkillDefOf.Social ??= new SkillDef { defName = "CorruptionTestSocial" };
+        boundary.Patch(AccessTools.Method(typeof(WillReductionUtility), nameof(WillReductionUtility.ApplyWillReductionByCorruptionBand)),
+            prefix: new HarmonyMethod(typeof(Program), nameof(CaptureDailyWillBudget)));
+        boundary.Patch(AccessTools.PropertyGetter(typeof(SkillRecord), nameof(SkillRecord.TotallyDisabled)),
+            prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
+        foreach (var method in AccessTools.GetDeclaredMethods(typeof(Messages)).Where(method => method.Name == nameof(Messages.Message)))
+            boundary.Patch(method, prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
+        try
+        {
+            var master = GelConsumer();
+            master.skills = new Pawn_SkillTracker(master);
+            if (!master.skills.skills.Any(skill => skill.def == SkillDefOf.Social))
+                master.skills.skills.Add(new SkillRecord(master, SkillDefOf.Social));
+            master.skills.GetSkill(SkillDefOf.Social).Level = 15;
+            var pawn = GelConsumer();
+            var need = GelUseNeed(pawn);
+            // 此例只走数值结算。没有心情需求时，现有两种评分会自然跳过记忆发放。
+            pawn.needs.mood = null;
+            foreach (var (oldScoring, budget) in new[] { (false, .12f), (true, .08f) })
+            {
+                SSCMod.settings.useOldScoring = oldScoring;
+                need.SetCorruption(.115f);
+                ConditioningUtility.ExecuteOutcome(master, pawn, 150f);
+                Near(.115f + budget, need.CurLevel);
+                need.SetCorruption(.995f);
+                ConditioningUtility.ExecuteOutcome(master, pawn, 150f);
+                Near(1f, need.CurLevel);
+                Near(budget, dailyCorruptionBudget);
+            }
+        }
+        finally
+        {
+            SSCMod.settings.useOldScoring = false;
+            SkillDefOf.Social = originalSocial;
+            boundary.UnpatchAll(boundary.Id);
+        }
+    }
+
+    private static bool CaptureDailyWillBudget(float corruptionGain)
+    {
+        dailyCorruptionBudget = corruptionGain;
+        return false;
+    }
+
+    private static void CorruptionNeedLoadTests()
+    {
+        Check("first refresh of a legacy corruption need fills the chain floor without regressing severity", () =>
+        {
+            var pawn = GelConsumer();
+            var chain = pawn.health.AddHediff(SSCDefOf.ChainOfSexSlave);
+            chain.Severity = .95f;
+            var loaded = LoadCorruptionNeed(pawn, "0.89");
+            Equal(.89f, loaded.CurLevel);
+            Equal(.89f, loaded.HighestCorruptionLevel);
+            loaded.NeedInterval();
+            loaded.NeedInterval();
+            Equal(.9f, loaded.CurLevel);
+            Equal(.95f, chain.Severity);
+        });
+
+        Check("saved corruption above the old ceiling survives load and old scoring refresh", () =>
+        {
+            var pawn = GelConsumer();
+            var chain = pawn.health.AddHediff(SSCDefOf.ChainOfSexSlave);
+            chain.Severity = .2f;
+            var loaded = LoadCorruptionNeed(pawn, "0.96", "0.98");
+            SSCMod.settings.useOldScoring = true;
+            try { loaded.NeedInterval(); }
+            finally { SSCMod.settings.useOldScoring = false; }
+            Equal(.96f, loaded.CurLevel);
+            Equal(.98f, loaded.HighestCorruptionLevel);
+            Equal(.2f, chain.Severity);
+        });
+
+        Check("native Scribe replaces malformed corruption without losing a valid saved peak", () =>
+        {
+            var pawn = GelConsumer();
+            var chain = pawn.health.AddHediff(SSCDefOf.ChainOfSexSlave);
+            chain.Severity = .55f;
+            var loaded = LoadCorruptionNeed(pawn, "NaN", "0.95");
+            Equal(0f, loaded.CurLevel);
+            Equal(.95f, loaded.HighestCorruptionLevel);
+            loaded.NeedInterval();
+            Equal(.5f, loaded.CurLevel);
+            Equal(.55f, chain.Severity);
+
+            loaded = LoadCorruptionNeed(pawn, "0.6", "NaN");
+            Equal(.6f, loaded.HighestCorruptionLevel);
+        });
+    }
+
+    private static Need_Corruption LoadCorruptionNeed(Pawn pawn, string current, string peak = null)
+    {
+        var previous = GelUseNeed(pawn);
+        string path = Path.Combine(saveDirectory, "corruption-need-" + ++nextId + ".xml");
+        // 按旧 Need 的原生结构提供 fixture。读取字段、构造和 PostLoadInit 使用真实 Scribe。
+        new XElement("CorruptionNeedFixture", new XElement("need", new XElement("def", previous.def.defName),
+            new XElement("curLevel", current), peak == null ? null : new XElement("highestCorruptionLevel", peak))).Save(path);
+        GelTestCorruption loaded = null;
+        Scribe.loader.InitLoading(path);
+        Scribe_Deep.Look(ref loaded, "need", pawn);
+        Scribe.loader.FinalizeLoading();
+        Require(loaded != null && loaded.def != null);
+        pawn.needs.AllNeeds.Remove(previous);
+        pawn.needs.AllNeeds.Add(loaded);
+        return loaded;
     }
 
     private static void GelDose(Pawn p)

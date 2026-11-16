@@ -413,6 +413,12 @@ namespace SexSlaveCraft
         public static string Ritual_OutcomeHeader => "SSC_Ritual_OutcomeHeader".Translate();
 
         public static string Ritual_NoNewStage => "SSC_Ritual_NoNewStage".Translate();
+#if SSC_RW17
+        public static string Ritual_ChainStageReached(int stage) => "SSC_Ritual_ChainStageReached".Translate(stage);
+        public static string Ritual_ChainProgress(string progress) => "SSC_Ritual_ChainProgress".Translate(progress);
+        public static string Ritual_ChainStagePending(string threshold) => "SSC_Ritual_ChainStagePending".Translate(threshold);
+        public static string Ritual_ChainFinalStage => "SSC_Ritual_ChainFinalStage".Translate();
+#endif
         // 仪式结果
         /// <summary>生成“；由于理智脱出，{0} 彻底成为了 {1} 的性奴。”的本地化文本，并填入调用参数。</summary>
         public static string Ritual_FlawedLoversCreated(string slaveName, string masterName)

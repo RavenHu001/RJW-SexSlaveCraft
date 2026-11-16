@@ -54,12 +54,24 @@ internal static partial class Program
             { var s=InfestationTarget();AddPnaProducer(s);var t=InfestationTarget();FinishInfestation(s,t,allowProducer);Near(allowProducer?.02:0,SSCPnaExposureUtility.GetLoad(t));Near(0,t.needs.CorruptionNeed.CurLevel); });
         Run("侵染第二批Lovin强来源仍生效",()=>
         { var m=ToggleMaster();AddPnaProducer(m);var t=InfestationTarget();FinishInfestation(m,t,false);Near(.08,SSCPnaExposureUtility.GetLoad(t)); });
-        foreach(float level in new[]{.115f,.5f})
-            Run("侵染第二批新评分12%上限及超限不倒扣 "+level,()=>
-            { var m=ToggleMaster();var t=InfestationTarget();t.needs.CorruptionNeed.CurLevel=level;FinishInfestation(m,t);Near(level>=.12f?level:Math.Min(.12,level+.01),t.needs.CorruptionNeed.CurLevel);Near(.08,SSCPnaExposureUtility.GetLoad(t)); });
-        Run("侵染第二批锁链上限部分增量",()=>
-        { const float cap=.3f; var m=ToggleMaster();var t=InfestationTarget();t.InfestationCap=cap;t.needs.CorruptionNeed.CurLevel=cap-.005f;FinishInfestation(m,t);Near(cap,t.needs.CorruptionNeed.CurLevel); });
-        Run("侵染第二批旧评分保留原上限与历史最高",()=>
+        Run("侵染可越过旧上限且单次只加一个百分点",()=>
+        {
+            var master = ToggleMaster();
+            var target = InfestationTarget();
+            target.needs.CorruptionNeed.CurLevel = .115f;
+            FinishInfestation(master, target);
+            Near(.125, target.needs.CorruptionNeed.CurLevel);
+            Near(.08, SSCPnaExposureUtility.GetLoad(target));
+        });
+        Run("侵染在100%只入账实际余量",()=>
+        {
+            var master = ToggleMaster();
+            var target = InfestationTarget();
+            target.needs.CorruptionNeed.CurLevel = .995f;
+            FinishInfestation(master, target);
+            Near(1, target.needs.CorruptionNeed.CurLevel);
+        });
+        Run("侵染旧评分保留单次额度与历史峰值",()=>
         {
             SSCMod.settings.useOldScoring=true;
             try{var m=ToggleMaster();var t=InfestationTarget();t.needs.CorruptionNeed.CurLevel=.9f;FinishInfestation(m,t);Near(.91,t.needs.CorruptionNeed.CurLevel);Near(.91,t.needs.CorruptionNeed.HighestCorruptionLevel);}

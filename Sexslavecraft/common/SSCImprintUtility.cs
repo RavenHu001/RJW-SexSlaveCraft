@@ -65,27 +65,65 @@ namespace SexSlaveCraft
             => GetKind(pawn) == SSCImprintKind.None && Add(pawn, InitialDefName);
 
         /// <summary>先完成身份提交，再添加对应定型印记；不能反转已分化方向。</summary>
-        internal static bool TryGrantDifferentiated(Pawn pawn, PawnIdentity identity)
+        internal static bool TryGrantDifferentiated(Pawn pawn, PawnIdentity identity, Func<bool> stillEligible = null)
         {
             // 目标身份必须已由正常身份／绑定入口写入；无印记和初始态才可取得新的定型事实。
             if (SSCIdentityUtility.GetIdentity(pawn) != identity ||
                 (identity != PawnIdentity.Master && identity != PawnIdentity.Slave)) return false;
-            SSCImprintKind kind = GetKind(pawn);
+            Hediff original = Find(pawn);
+            SSCImprintKind kind = Kind(original?.def);
             if (kind != SSCImprintKind.None && kind != SSCImprintKind.Initial) return false;
             string name = identity == PawnIdentity.Master ? MasterDefName : SlaveDefName;
-            if (DefDatabase<HediffDef>.GetNamedSilentFail(name) == null) return false;
+            HediffDef def = DefDatabase<HediffDef>.GetNamedSilentFail(name);
+            var health = pawn?.health;
+            if (health?.hediffSet == null || def?.hediffClass != typeof(Hediff_SSCImprint)) return false;
             // 移除初始态和添加分化态都会发出健康回调；始终核对原人格、原 Comp 与目标身份。
             object token = SSCPersonalityRuntimeUtility.Capture(pawn);
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
-            Clear(pawn);
-            if (!SSCPersonalityRuntimeUtility.IsCurrent(pawn, token) || pawn.TryGetComp<CompSexSlaveTraining>() != comp ||
-                SSCIdentityUtility.GetIdentity(pawn) != identity || GetKind(pawn) != SSCImprintKind.None) return false;
-            if (!Add(pawn, name)) return false;
-            if (!SSCPersonalityRuntimeUtility.IsCurrent(pawn, token) || pawn.TryGetComp<CompSexSlaveTraining>() != comp ||
-                SSCIdentityUtility.GetIdentity(pawn) != identity) return false;
-            // 天生初始者此前只有成年选择准入；主人定型后补成原有的永久主人资格记录。
-            if (identity == PawnIdentity.Master) comp.ReplaceMasterQualification(true);
-            return SSCPersonalityRuntimeUtility.IsCurrent(pawn, token);
+            bool SameCarrier() => SSCPersonalityRuntimeUtility.IsCurrent(pawn, token) &&
+                pawn.TryGetComp<CompSexSlaveTraining>() == comp && pawn.health == health;
+            bool CanCommit() => SameCarrier() && SSCIdentityUtility.GetIdentity(pawn) == identity &&
+                (stillEligible == null || stillEligible());
+            if (comp == null || !CanCommit()) return false;
+            var replacement = (Hediff_SSCImprint)HediffMaker.MakeHediff(def, pawn);
+            if (!CanCommit() || Find(pawn) != original) return false;
+            bool committed = false;
+            replacement.DeferAgeCorrection = true;
+            try
+            {
+                if (original != null) health.RemoveHediff(original);
+                if (!CanCommit() || Find(pawn) != null) return false;
+                health.AddHediff(replacement);
+                if (!CanCommit() || Find(pawn) != replacement) return false;
+                // 主人定型后补成永久主人资格记录。
+                if (identity == PawnIdentity.Master) comp.ReplaceMasterQualification(true);
+                committed = CanCommit() && Find(pawn) == replacement;
+            }
+            finally
+            {
+                replacement.DeferAgeCorrection = false;
+                if (!committed && SameCarrier())
+                {
+                    // 只撤回本事务添加的实例。回调换入形态或换了人格时，保留对方的结果。
+                    try
+                    {
+                        if (health.hediffSet.hediffs.Contains(replacement)) health.RemoveHediff(replacement);
+                    }
+                    finally
+                    {
+                        // 移除已落地、后续回调抛错时，空出的印记位仍可恢复。
+                        if (original != null && SameCarrier() && Find(pawn) == null) health.AddHediff(original);
+                    }
+                }
+            }
+            if (!committed) return false;
+            // 印记与身份已提交。年龄 setter 的外部回调失败时，定型印记仍会按日纠正年龄。
+            try { CorrectAge(pawn); }
+            catch (Exception ex)
+            {
+                Log.Warning($"[SSC] Could not immediately correct the biological age after imprint differentiation for {pawn}: {ex}");
+            }
+            return SameCarrier() && SSCIdentityUtility.GetIdentity(pawn) == identity && Find(pawn) == replacement;
         }
 
         /// <summary>通过原版健康入口添加指定印记，并确认最终挂载结果；互斥和即时回春由 Hediff 处理。</summary>
@@ -105,11 +143,15 @@ namespace SexSlaveCraft
             CompSexSlaveTraining slaveComp = slave.TryGetComp<CompSexSlaveTraining>();
             if (!SSCBondUtility.IsBoundTo(slave, master) ||
                 SSCBondUtility.GetBridle(master)?.ValidTargets.Contains(slave) != true) return;
-            if (GetKind(master) == SSCImprintKind.Initial) TryGrantDifferentiated(master, PawnIdentity.Master);
-            // 主人定型的健康回调也可能换入另一个受方人格，不能沿用旧绑定继续给后来者定型。
+            if (GetKind(master) == SSCImprintKind.Initial && TryGrantDifferentiated(master, PawnIdentity.Master))
+                SSCImprintLetters.SendAcquired(master, Find(master), SSCImprintAcquisition.Binding);
+            // 主人定型和发信可触发回调，处理受方前复查原人格、组件和实际绑定，避免把本场成果交给后来者。
+            // 优先交给本场满值请求。满值入口认领受方后，即使当次替换失败，也留给它重试，避免落入普通绑定、丢失满值信。
             if (SSCPersonalityRuntimeUtility.IsCurrent(slave, slaveToken) && slave.TryGetComp<CompSexSlaveTraining>() == slaveComp &&
                 SSCBondUtility.IsBoundTo(slave, master) &&
-                GetKind(slave) == SSCImprintKind.Initial) TryGrantDifferentiated(slave, PawnIdentity.Slave);
+                GetKind(slave) == SSCImprintKind.Initial && !SSCFullCorruptionImprint.ResolveDuringBinding(slave) &&
+                TryGrantDifferentiated(slave, PawnIdentity.Slave))
+                SSCImprintLetters.SendAcquired(slave, Find(slave), SSCImprintAcquisition.Binding);
         }
 
         /// <summary>只纠正生理年龄；原版 setter 同步成长与生命阶段，历法年龄和健康列表不动。</summary>
@@ -154,10 +196,18 @@ namespace SexSlaveCraft
 
         /// <summary>恢复来源的精确形态；调用方须先移出宿主印记并恢复来源身份，不执行重新分化。</summary>
         internal static bool Restore(Pawn pawn, CompPersonalityStore data)
+            => Restore(pawn, data, out _);
+
+        /// <summary>返回本次成功恢复的印记实例，供调用方在完整植入提交后复查。无印记来源返回空实例。</summary>
+        internal static bool Restore(Pawn pawn, CompPersonalityStore data, out Hediff restored)
         {
+            restored = null;
             if (!CanRestore(pawn, data)) return false;
             HediffDef def = data.hediffTags?.Keys.FirstOrDefault(IsImprintDef);
-            return def == null || Add(pawn, def.defName);
+            if (def == null) return true;
+            if (!Add(pawn, def.defName)) return false;
+            restored = Find(pawn);
+            return true;
         }
 
         /// <summary>从离体载荷生成简洁形态名称，供凝胶检查文字和人格卡共用。</summary>

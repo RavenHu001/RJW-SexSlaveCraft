@@ -78,7 +78,11 @@ namespace SexSlaveCraft
                     !SSCPersonalityRuntimeUtility.IsCurrent(pawn, token))
                 { reason = "SSC_Imprint_SeedIdentityBlocked".Translate().ToString(); return false; }
                 // 本分支到此直接结束，避免继续落入首次资格分支重复补蓝图或消耗第二枚。
+                // 保留本次实际挂载的印记，等消耗落地后再通知。消耗回调替换人格或印记时，旧取得结果失效。
+                Hediff acquired = SSCImprintUtility.Find(pawn);
                 item.SplitOff(1).Destroy();
+                if (SSCPersonalityRuntimeUtility.IsCurrent(pawn, token) && pawn.TryGetComp<CompSexSlaveTraining>() == training)
+                    SSCImprintLetters.SendAcquired(pawn, acquired, SSCImprintAcquisition.Seed);
                 reason = null;
                 return true;
             }
@@ -101,6 +105,13 @@ namespace SexSlaveCraft
             // 消耗只在此成功路径执行；不能另挂独立销毁效果，否则拒绝授予也可能损失道具。
             pawn.TryGetComp<CompSexSlaveTraining>().ReplaceMasterQualification(true);
             item.SplitOff(1).Destroy();
+#if SSC_RW17
+            // 取得个人资格后才发资格信。蓝图段落只说明本次补齐的殖民地条件，已完成的研究不会再提示开始研发。
+            if (SSCPersonalityRuntimeUtility.IsCurrent(pawn, token) && pawn.TryGetComp<CompSexSlaveTraining>() == training &&
+                training.masterQualificationUnlocked)
+                SSCImprintLetters.SendQualification(pawn, missing > 0 && !project.IsFinished &&
+                    project.TechprintsApplied >= project.TechprintCount);
+#endif
             reason = null;
             return true;
         }

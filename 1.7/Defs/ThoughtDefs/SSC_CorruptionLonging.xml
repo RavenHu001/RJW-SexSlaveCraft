@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThoughtDef>
+    <defName>SSC_CorruptionLonging</defName>
+    <thoughtClass>SexSlaveCraft.Thought_SituationalSSCCorruptionLonging</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCorruptionLonging</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <stages>
+      <li>
+        <label>Corrupted Submission (Curious)</label>
+        <description>Sometimes I wonder what it would feel like to be dominated. Once the thought comes up, I keep getting distracted, and my legs go a little weak.</description>
+        <baseMoodEffect>-1</baseMoodEffect>
+      </li>
+      <li>
+        <label>Corrupted Submission (Acquiescent)</label>
+        <description>There doesn't seem to be anything wrong with being ordered around... I catch myself waiting for another command. My pussy starts to itch, and the longer I wait, the more restless I get.</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+      <li>
+        <label>Corrupted Submission (Infatuated)</label>
+        <description>Ah... it feels so good to be dominated. I want someone to pin me down and fuck me until I can't speak. My pussy is already wet, and I can't clench it shut...</description>
+        <baseMoodEffect>-6</baseMoodEffect>
+      </li>
+      <li>
+        <label>Corrupted Submission (Desperate)</label>
+        <description>I want to be someone's sex slave completely—stripped, held down, and filled up❤ The thought fills my head, and my pussy twitches and leaks on its own. I can't shake it...</description>
+        <baseMoodEffect>-10</baseMoodEffect>
+      </li>
+      <li>
+        <label>Corrupted Submission (Unsated)</label>
+        <description>I've gotten used to being used, and now it feels like it isn't enough. It only just happened, yet I feel empty, and I keep wondering what they'll do to me next time.</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+      <li>
+        <label>Corrupted Submission (Yearning)</label>
+        <description>Remembering how it felt to be used only makes my pussy itch worse. Ah... I want to be taken again. Harder, and for longer...</description>
+        <baseMoodEffect>-6</baseMoodEffect>
+      </li>
+      <li>
+        <label>Corrupted Submission (Insatiable)</label>
+        <description>Just thinking about it makes my pussy twitch and leak on its own. I want to be stripped, tied up, and used to the limit❤ I just want someone to take me one more time...</description>
+        <baseMoodEffect>-10</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

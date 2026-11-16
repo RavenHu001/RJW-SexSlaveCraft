@@ -42,6 +42,9 @@ namespace SexSlaveCraft
         /// <summary>从已经读取的锁链判定当前阶段，供同次查询复用；调用方负责角色身份门槛。</summary>
         internal static int GetSexSlaveStageFromChain(Hediff_ChainOfSexSlave chain)
         {
+#if SSC_RW17
+            return TrainingOutcomeUtility.GetChainStage(chain).Stage;
+#else
             // 将阶段边界集中保留在身份工具中；持有锁链的查询入口无需
             // 为了取得阶段再扫描一次 Hediff，也不另写一套严重度门槛。
             if (chain == null) return 0;
@@ -52,10 +55,15 @@ namespace SexSlaveCraft
             if (severity >= 0.3f) return 2;
             if (severity >= 0.1f) return 1;
             return 0;
+#endif
         }
 
         public static int GetSexSlaveTraitDegreeFromHighestCorruption(Pawn pawn)
         {
+#if SSC_RW17
+            // 锁链、原版奴隶身份和恶堕峰值都可独立存在。正式 SSC 身份才提供特性资格。
+            if (!IsSexSlave(pawn)) return 0;
+#endif
             Need_Corruption corruption = pawn?.needs?.TryGetNeed<Need_Corruption>();
             float highest = corruption?.HighestCorruptionLevel ?? 0f;
             if (highest >= 0.9f) return 4;
@@ -67,6 +75,51 @@ namespace SexSlaveCraft
 
         public static bool SyncSexSlaveTraitFromHighestCorruption(Pawn pawn)
         {
+#if SSC_RW17
+            TraitSet traits = pawn?.story?.traits;
+            TraitDef def = SSCDefOf.SexSlaveTrait;
+            if (traits?.allTraits == null || def == null) return false;
+
+            int degree = GetSexSlaveTraitDegreeFromHighestCorruption(pawn);
+            // 普通角色的需求会周期同步。没有残留时直接返回，避免反复分配清理列表。
+            if (degree == 0 && !traits.allTraits.Exists(trait => trait?.def == def)) return true;
+            List<Trait> existing = traits.allTraits.FindAll(trait => trait?.def == def);
+            if (degree > 0 && existing.Count == 1 && existing[0].Degree == degree) return true;
+
+            var comp = pawn.TryGetComp<CompSexSlaveTraining>();
+            var identity = GetIdentity(pawn);
+            var need = pawn.needs?.TryGetNeed<Need_Corruption>();
+            object token = SSCPersonalityRuntimeUtility.Capture(pawn);
+            bool IsCurrent() => SSCPersonalityRuntimeUtility.IsCurrent(pawn, token) &&
+                pawn.TryGetComp<CompSexSlaveTraining>() == comp && GetIdentity(pawn) == identity &&
+                pawn.story?.traits == traits && pawn.needs?.TryGetNeed<Need_Corruption>() == need &&
+                GetSexSlaveTraitDegreeFromHighestCorruption(pawn) == degree;
+
+            foreach (Trait staleTrait in existing)
+            {
+                if (!IsCurrent()) return false;
+                if (!traits.allTraits.Contains(staleTrait)) continue;
+                if (staleTrait.sourceGene == null)
+                {
+                    // 原版从有效特性中判定能否移除。解除待删除条目的抑制，让原版同步相关缓存。
+                    staleTrait.suppressedByTrait = false;
+                    staleTrait.suppressedByGene = null;
+                    traits.RemoveTrait(staleTrait, true);
+                }
+                else
+                {
+                    // 兼容外部存档将派生特性归给基因。只清残留条目，保留源基因。
+                    traits.allTraits.Remove(staleTrait);
+                }
+            }
+
+            // 原版移除特性会发通知。回调可能退出身份或替换人格，升级也要在加新档前复查。
+            if (!IsCurrent()) return false;
+            if (degree == 0) return true;
+            if (!traits.allTraits.Exists(trait => trait?.def == def))
+                traits.GainTrait(new Trait(def, degree));
+            return IsCurrent() && traits.allTraits.Exists(trait => trait?.def == def && trait.Degree == degree);
+#else
             if (pawn?.story?.traits?.allTraits == null || SSCDefOf.SexSlaveTrait == null) return false;
 
             int targetDegree = GetSexSlaveTraitDegreeFromHighestCorruption(pawn);
@@ -91,6 +144,7 @@ namespace SexSlaveCraft
             }
 
             return true;
+#endif
         }
 
         public static bool HasEstablishedSexSlaveState(Pawn pawn)
@@ -156,8 +210,7 @@ namespace SexSlaveCraft
             {
 #if SSC_RW17
                 SSCCorruptionGelEffectUtility.RefreshBodyState(pawn);
-                if (!SSCPersonalityRuntimeUtility.IsCurrent(pawn, personalityToken) || pawn.TryGetComp<CompSexSlaveTraining>() != comp ||
-                    comp.pawnIdentity != identity) return false;
+                if (!SyncSexSlaveTraitAfterIdentityWrite(pawn, comp, identity, personalityToken)) return false;
 #endif
                 if (restoredQualification.HasValue) comp.ReplaceMasterQualification(restoredQualification.Value);
                 // 同身份请求只刷新现有成长，不补零经验。Master→Master 人格植入
@@ -200,10 +253,11 @@ namespace SexSlaveCraft
                 return false;
             comp.pawnIdentity = identity;
 #if SSC_RW17
+            if (identity == PawnIdentity.Master) SSCFullCorruptionImprint.CancelForMaster(pawn);
+            SSCCorruptionStages.NotifyContextChanged(pawn);
             // 身份先落地即撤销凝胶受药；后续成长／仪式回调提前退出也不能留下主人的药效。
             SSCCorruptionGelEffectUtility.RefreshBodyState(pawn);
-            if (!SSCPersonalityRuntimeUtility.IsCurrent(pawn, personalityToken) || pawn.TryGetComp<CompSexSlaveTraining>() != comp ||
-                comp.pawnIdentity != identity) return false;
+            if (!SyncSexSlaveTraitAfterIdentityWrite(pawn, comp, identity, personalityToken)) return false;
             SSCPersonalityExcretionAdmission.RemoveForbiddenPreparation(pawn);
             // 身份写入后立即观察退出事件，不能等后续资格回调结束才撤销旧命令。
             SSCRomanceLifecycle.Notify(pawn);
@@ -264,10 +318,34 @@ namespace SexSlaveCraft
             // 旧锁链的显式身份修复也不能把已定型为主人的人格改成性奴。
             if (!SSCImprintUtility.AllowsIdentity(pawn, PawnIdentity.Slave)) return false;
 #endif
-            // 普通切换仍被历史锁链锁定。此定向修复只接受 Unset，不泛化为 Master 转换。
-            // 不立即运行可能重算成长或协调指派的生命周期；正常资格查询读取恢复后的身份。
-            pawn.TryGetComp<CompSexSlaveTraining>().pawnIdentity = PawnIdentity.Slave;
+            return RestoreSlaveIdentity(pawn, pawn.TryGetComp<CompSexSlaveTraining>());
+        }
+
 #if SSC_RW17
+        /// <summary>原版复制只复制健康状态和需求。用继承的定型印记补齐新副本的正式身份。</summary>
+        internal static bool TryRestoreCopiedSlaveIdentity(Pawn source, Pawn copy)
+        {
+            if (source == copy || copy == null || copy.Dead || copy.Destroyed || copy.Discarded ||
+                SSCImprintUtility.GetKind(source) != SSCImprintKind.Slave ||
+                SSCImprintUtility.GetKind(copy) != SSCImprintKind.Slave) return false;
+
+            // 复制通知在所有 Comp 都处理完后到达。只补没有选定的身份，保留其他 Comp 已写入的结果。
+            var comp = copy.TryGetComp<CompSexSlaveTraining>();
+            if (comp == null || comp.pawnIdentity != PawnIdentity.Unset || comp.restrictionRestoreDepth > 0 ||
+                SSCBondUtility.GetBridle(copy)?.ValidTargets.Any() == true) return false;
+
+            return RestoreSlaveIdentity(copy, comp);
+        }
+#endif
+
+        // 定向补齐正式身份。已有关系和调教配置由各自载体管理。
+        private static bool RestoreSlaveIdentity(Pawn pawn, CompSexSlaveTraining comp)
+        {
+            comp.pawnIdentity = PawnIdentity.Slave;
+#if SSC_RW17
+            SSCCorruptionStages.NotifyContextChanged(pawn);
+            if (!SyncSexSlaveTraitAfterIdentityWrite(pawn, comp, PawnIdentity.Slave, SSCPersonalityRuntimeUtility.Capture(pawn)))
+                return false;
             // 显式恢复仍沿用原锁链；浪漫模块只更新观察，不据此补发关系或创建命令。
             SSCRomanceLifecycle.Notify(pawn);
             SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
@@ -275,6 +353,18 @@ namespace SexSlaveCraft
             SSCAbilityToggleUtility.SyncMarkers(pawn);
             return true;
         }
+
+#if SSC_RW17
+        private static bool SyncSexSlaveTraitAfterIdentityWrite(Pawn pawn, CompSexSlaveTraining comp, PawnIdentity identity, object token)
+        {
+            if (!SSCPersonalityRuntimeUtility.IsCurrent(pawn, token) || pawn.TryGetComp<CompSexSlaveTraining>() != comp ||
+                comp.pawnIdentity != identity) return false;
+            SyncSexSlaveTraitFromHighestCorruption(pawn);
+            // 特性增删会通知原版和其他模组。旧身份提交只能在原人格仍有效时继续。
+            return SSCPersonalityRuntimeUtility.IsCurrent(pawn, token) && pawn.TryGetComp<CompSexSlaveTraining>() == comp &&
+                comp.pawnIdentity == identity;
+        }
+#endif
 
         private static bool CancelBindingRitualBeforeIdentityChange(Pawn pawn, CompSexSlaveTraining comp)
         {

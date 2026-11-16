@@ -9,4 +9,21 @@
   <SSC_Imprint_SeedAlreadyMarked>已有印記者不能使用慾望之種。</SSC_Imprint_SeedAlreadyMarked>
   <SSC_Imprint_SeedIdentityBlocked>當前人格無法取得目標身分，未消耗慾望之種。</SSC_Imprint_SeedIdentityBlocked>
   <SSC_Imprint_SeedUsed>{0}已使用慾望之種。</SSC_Imprint_SeedUsed>
+  <SSC_Imprint_FullCorruptionLetterLabel>淫慾印記已分化</SSC_Imprint_FullCorruptionLetterLabel>
+  <SSC_Imprint_FullCorruptionLetterText>{0}的惡墮已達 100%，身心都已臣服於被支配的淫慾，印記隨之分化為「淫慾之奴」。</SSC_Imprint_FullCorruptionLetterText>
+  <SSC_Imprint_QualificationLetterLabel>取得主人資格</SSC_Imprint_QualificationLetterLabel>
+  <SSC_Imprint_QualificationLetterText>{0}體內的慾望之種已經甦醒，在身體深處隱隱發燙。現在，可以選擇成為 SSC 主人。</SSC_Imprint_QualificationLetterText>
+  <SSC_Imprint_SeedMasterLetterLabel>慾望之種喚醒了淫慾之主</SSC_Imprint_SeedMasterLetterLabel>
+  <SSC_Imprint_SeedMasterLetterText>慾望之種在{0}體內扎根，征服的淫慾隨之甦醒，使其成為「淫慾之主」。</SSC_Imprint_SeedMasterLetterText>
+  <SSC_Imprint_SeedSlaveLetterLabel>慾望之種喚醒了淫慾之奴</SSC_Imprint_SeedSlaveLetterLabel>
+  <SSC_Imprint_SeedSlaveLetterText>{0}體內的慾望之種與臣服的渴望融為一體，將其烙成「淫慾之奴」，從此只渴求被支配、被使用。</SSC_Imprint_SeedSlaveLetterText>
+  <SSC_Imprint_BindingMasterLetterLabel>綁定使主人印記定型</SSC_Imprint_BindingMasterLetterLabel>
+  <SSC_Imprint_BindingMasterLetterText>新締結的主從關係喚醒了{0}體內沉睡的印記，支配的淫慾在血裡沸騰，使其成為「淫慾之主」。</SSC_Imprint_BindingMasterLetterText>
+  <SSC_Imprint_BindingSlaveLetterLabel>綁定使性奴印記定型</SSC_Imprint_BindingSlaveLetterLabel>
+  <SSC_Imprint_BindingSlaveLetterText>新建立的綁定讓{0}的印記定型為「淫慾之奴」，被支配的淫慾燒遍了全身。</SSC_Imprint_BindingSlaveLetterText>
+  <SSC_Imprint_ImplantedSlaveLetterLabel>淫慾之奴印記隨人格遷入</SSC_Imprint_ImplantedSlaveLetterLabel>
+  <SSC_Imprint_ImplantedSlaveLetterText>植入的人格為{0}帶來了已定型的「淫慾之奴」印記，臣服的淫慾在這具新身體上延續。</SSC_Imprint_ImplantedSlaveLetterText>
+  <SSC_Imprint_CopiedSlaveLetterLabel>複製體繼承了淫慾之奴印記</SSC_Imprint_CopiedSlaveLetterLabel>
+  <SSC_Imprint_CopiedSlaveLetterText>新出現的複製體{0}繼承了原身的「淫慾之奴」印記，連同刻進身體的臣服一併複製了過來。</SSC_Imprint_CopiedSlaveLetterText>
+  <SSC_Imprint_QualificationResearch>殖民地已補齊「調教」研究所需的藍圖，可以開始研發。</SSC_Imprint_QualificationResearch>
 </LanguageData>

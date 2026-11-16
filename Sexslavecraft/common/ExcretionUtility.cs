@@ -142,17 +142,18 @@ namespace SexSlaveCraft
             SSCMasterQualificationUtility.ClearPersonalityQualification(consumer);
             SSCMasterProgressionUtility.ClearPersonalityRecord(consumer);
             // 清理准备接收人格的身体，移除残留恶堕、性奴特质和锁链状态。
-            if (consumer.needs != null)
-            {
-                var corNeed = consumer.needs.TryGetNeed<Need_Corruption>();
-                if (corNeed != null) corNeed.SetCorruption(0f, true);
-            }
+            var corNeed = consumer.needs?.TryGetNeed<Need_Corruption>();
+            if (corNeed != null) corNeed.SetCorruption(0f, true);
 
+#if SSC_RW17
+            else SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(consumer);
+#else
             TraitDef ssDef = DefDatabase<TraitDef>.GetNamedSilentFail("SexSlaveCraft_SexSlave");
             if (ssDef != null && consumer.story?.traits?.allTraits != null)
             {
                 consumer.story.traits.allTraits.RemoveAll(x => x.def == ssDef);
             }
+#endif
 
             SSCBondUtility.Unbind(consumer);
             SSCIdentityUtility.TrySetIdentity(consumer, PawnIdentity.Unset);
@@ -252,6 +253,10 @@ namespace SexSlaveCraft
                 return false;
             }
             if (!SSCPersonalityRuntimeUtility.TryBeginMutation(consumer, out var mutation)) return false;
+#if SSC_RW17
+            object restoredToken = SSCPersonalityRuntimeUtility.Capture(consumer);
+            Hediff restoredImprint;
+#endif
             using (mutation)
             {
                 try
@@ -306,8 +311,10 @@ namespace SexSlaveCraft
                     // 与版本 1 一样保留宿主基因，不猜测旧数据的来源。
                     PersonalityTraitUtility.RestoreTraits(consumer, data.storedTraits);
 
-                    // 性奴特质仅由恢复后的历史最高恶堕值重建。
+#if !SSC_RW17
+                    // 旧版本按历史最高恶堕重建派生特质。
                     SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(consumer);
+#endif
 
                     CompSexSlaveTraining trainingComp = consumer.TryGetComp<CompSexSlaveTraining>();
                     if (trainingComp != null)
@@ -331,7 +338,8 @@ namespace SexSlaveCraft
                     }
 #if SSC_RW17
                     // 精确恢复来源印记；无印记来源不继承宿主印记，旧链恢复也不触发分化。
-                    if (!SSCImprintUtility.Restore(consumer, data))
+                    // 记下新挂载的实例，后面的绑定恢复、人格写入和凝胶消耗均成功后才考虑发送植入信。
+                    if (!SSCImprintUtility.Restore(consumer, data, out restoredImprint))
                     { Log.Error("[SSC] Personality insertion could not restore the imprint."); return false; }
 #endif
                     // 身份恢复成功后再重建来源成长；同为主人也不能跳过此步骤。
@@ -498,6 +506,10 @@ namespace SexSlaveCraft
 #if SSC_RW17
                     // 最终人格和锁链已恢复，再精确覆盖来源配置；作用域退出后按最终状态协调。
                     if (!SSCRomancePreferences.Restore(consumer, romanceSnapshot)) return false;
+                    if (!mutation.IsCurrent || consumer.TryGetComp<CompSexSlaveTraining>() != originalComp) return false;
+                    // 绑定恢复与需求刷新均已完成，由接收者最终身份和需求重建派生特性。
+                    SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(consumer);
+                    if (!mutation.IsCurrent || consumer.TryGetComp<CompSexSlaveTraining>() != originalComp) return false;
 #endif
 
                     // 健康、专精及能力恢复可能触发后续回调，成功出口再按最终锁链核对一次。
@@ -509,7 +521,6 @@ namespace SexSlaveCraft
                     {
                         data.parent.Destroy(DestroyMode.Vanish);
                     }
-                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -517,6 +528,16 @@ namespace SexSlaveCraft
                     return false;
                 }
             }
+#if SSC_RW17
+            if (SSCPersonalityRuntimeUtility.IsCurrent(consumer, restoredToken) && consumer.TryGetComp<CompSexSlaveTraining>() == originalComp)
+            {
+                // 人格替换作用域释放后先检查最终恶堕。来源是初始印记时由满值流程通知。
+                // 植入信仅接受仍挂载的原恢复实例，因此满值流程新产生的定型印记不会再领一封植入信。
+                SSCFullCorruptionImprint.AfterPersonalityRestore(consumer);
+                SSCImprintLetters.SendAcquired(consumer, restoredImprint, SSCImprintAcquisition.Implantation);
+            }
+#endif
+            return true;
         }
 
     }
