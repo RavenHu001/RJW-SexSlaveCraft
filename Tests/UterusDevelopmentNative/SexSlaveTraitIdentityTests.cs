@@ -163,6 +163,34 @@ internal static partial class Program
                 Equal(3, DerivedTraits(clone).Single().Degree);
                 Equal(4, DerivedTraits(source).Single().Degree);
             });
+
+            Check("native duplication restores the identity of a copy that inherits a mature slave imprint", () =>
+            {
+                var source = ImprintPawn(PawnIdentity.Slave);
+                source.story.Childhood = new BackstoryDef { spawnCategories = new List<string>() };
+                AddNeed(source).RestoreCorruption(.55f, .95f);
+                var originalImprint = Mark(source, SSCImprintUtility.SlaveDefName);
+                var clone = ImprintPawn();
+                // 原版先复制健康和需求，随后通知各 Comp；副本起初没有 SSC 身份。
+                Hidden(typeof(GameComponent_PawnDuplicator), null, "CopyStoryAndTraits", source, clone);
+                Hidden(typeof(GameComponent_PawnDuplicator), null, "CopyHediffs", source, clone);
+                Hidden(typeof(GameComponent_PawnDuplicator), null, "CopyNeeds", source, clone);
+                Equal(PawnIdentity.Unset, SSCIdentityUtility.GetIdentity(clone));
+
+                var notify = AccessTools.Method(typeof(Pawn), nameof(Pawn.Notify_DuplicatedFrom));
+                var postfix = AccessTools.Method(typeof(Harmony_SexSlaveTraitDuplication), "Postfix");
+                harmony.CreateClassProcessor(typeof(Harmony_SexSlaveTraitDuplication)).Patch();
+                try { clone.Notify_DuplicatedFrom(source); }
+                finally { harmony.Unpatch(notify, postfix); }
+
+                Equal(SSCImprintKind.Slave, SSCImprintUtility.GetKind(clone));
+                Require(SSCImprintUtility.Find(clone) != originalImprint);
+                Equal(PawnIdentity.Slave, SSCIdentityUtility.GetIdentity(clone));
+                Equal(3, DerivedTraits(clone).Single().Degree);
+                Require(SSCBondUtility.GetBoundMaster(clone) == null);
+                Require(!SSCIdentityUtility.TrySetIdentity(clone, PawnIdentity.Unset));
+                Equal(4, DerivedTraits(source).Single().Degree);
+            });
         }
         finally { SSCDefOf.SexSlaveTrait = previousDef; }
     }

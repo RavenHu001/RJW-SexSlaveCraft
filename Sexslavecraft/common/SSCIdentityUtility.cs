@@ -253,6 +253,7 @@ namespace SexSlaveCraft
                 return false;
             comp.pawnIdentity = identity;
 #if SSC_RW17
+            if (identity == PawnIdentity.Master) SSCFullCorruptionImprint.CancelForMaster(pawn);
             SSCCorruptionStages.NotifyContextChanged(pawn);
             // 身份先落地即撤销凝胶受药；后续成长／仪式回调提前退出也不能留下主人的药效。
             SSCCorruptionGelEffectUtility.RefreshBodyState(pawn);
@@ -317,9 +318,29 @@ namespace SexSlaveCraft
             // 旧锁链的显式身份修复也不能把已定型为主人的人格改成性奴。
             if (!SSCImprintUtility.AllowsIdentity(pawn, PawnIdentity.Slave)) return false;
 #endif
-            // 普通切换仍被历史锁链锁定。此定向修复只接受 Unset，不泛化为 Master 转换。
-            // 不立即运行可能重算成长或协调指派的生命周期；正常资格查询读取恢复后的身份。
-            CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
+            return RestoreSlaveIdentity(pawn, pawn.TryGetComp<CompSexSlaveTraining>());
+        }
+
+#if SSC_RW17
+        /// <summary>原版复制只复制健康状态和需求。用继承的定型印记补齐新副本的正式身份。</summary>
+        internal static bool TryRestoreCopiedSlaveIdentity(Pawn source, Pawn copy)
+        {
+            if (source == copy || copy == null || copy.Dead || copy.Destroyed || copy.Discarded ||
+                SSCImprintUtility.GetKind(source) != SSCImprintKind.Slave ||
+                SSCImprintUtility.GetKind(copy) != SSCImprintKind.Slave) return false;
+
+            // 复制通知在所有 Comp 都处理完后到达。只补没有选定的身份，保留其他 Comp 已写入的结果。
+            var comp = copy.TryGetComp<CompSexSlaveTraining>();
+            if (comp == null || comp.pawnIdentity != PawnIdentity.Unset || comp.restrictionRestoreDepth > 0 ||
+                SSCBondUtility.GetBridle(copy)?.ValidTargets.Any() == true) return false;
+
+            return RestoreSlaveIdentity(copy, comp);
+        }
+#endif
+
+        // 定向补齐正式身份。已有关系和调教配置由各自载体管理。
+        private static bool RestoreSlaveIdentity(Pawn pawn, CompSexSlaveTraining comp)
+        {
             comp.pawnIdentity = PawnIdentity.Slave;
 #if SSC_RW17
             SSCCorruptionStages.NotifyContextChanged(pawn);

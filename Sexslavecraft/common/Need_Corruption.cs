@@ -189,9 +189,9 @@ namespace SexSlaveCraft
         public override void NeedInterval()
         {
 #if SSC_RW17
-            // 只重试本次运行中已有的满值请求，在自然衰减扣减之前使用原需求复查。
-            if (CurLevel == MaxLevel && SSCFullCorruptionImprint.ResolvePending(pawn, this) &&
-                pawn.needs?.TryGetNeed<Need_Corruption>() != this) return;
+            if (!SSCFullCorruptionImprint.TryRefreshNeed(pawn, this, out bool deferDecay)) return;
+#elif SSC_RITUAL_STAGE_TEST
+            const bool deferDecay = false;
 #endif
             if (IsFrozen) return;
 
@@ -204,7 +204,7 @@ namespace SexSlaveCraft
                 GetMinLevel(stageFloor, TrainingOutcomeUtility.GetCorruptionMaintenanceStageUpper(pawn));
             float floor = Mathf.Max(stageFloor, maintenanceFloor);
             float current = NormalizeLevel(CurLevel);
-            if (!oldScoring && (SSCMod.settings?.enableCorruptionDecay ?? true) && current > floor)
+            if (!deferDecay && !oldScoring && (SSCMod.settings?.enableCorruptionDecay ?? true) && current > floor)
             {
                 float decayPerDay = CalculateDecayPerDay();
                 if (decayPerDay > 0f) current -= decayPerDay / 60000f * 150f;

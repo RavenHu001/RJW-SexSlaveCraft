@@ -106,7 +106,7 @@ internal static partial class Program
                 Equal(1, fullImprintLetters.Count);
             });
 
-            Check("failed replacement restores the same initial imprint and identity before a successful need retry", () =>
+            Check("first failed refresh holds full corruption for a second retry that sends one letter", () =>
             {
                 fullImprintLetters.Clear();
                 var pawn = ImprintPawn(age: 40);
@@ -126,11 +126,91 @@ internal static partial class Program
                 Equal(40L * GenDate.TicksPerYear, pawn.ageTracker.AgeBiologicalTicks);
                 Equal(0, fullImprintLetters.Count);
 
+                FailNextFullImprint(pawn);
+                need.NeedInterval();
+                Equal(1f, need.CurLevel);
+                Require(SSCImprintUtility.Find(pawn) == initial);
+                Equal(PawnIdentity.Unset, SSCIdentityUtility.GetIdentity(pawn));
+                Equal(0, fullImprintLetters.Count);
+                // 仍为满值的常规写入不能抢先消费第二次刷新机会。
+                need.SetCorruption(1f);
+                Equal(0, fullImprintLetters.Count);
+
                 need.NeedInterval();
                 Equal(SSCImprintKind.Slave, SSCImprintUtility.GetKind(pawn));
                 Equal(PawnIdentity.Slave, SSCIdentityUtility.GetIdentity(pawn));
                 Equal(SSCImprintUtility.YoungAgeTicks, pawn.ageTracker.AgeBiologicalTicks);
+                Require(need.CurLevel < 1f);
+                need.NeedInterval();
                 Equal(1, fullImprintLetters.Count);
+            });
+
+            Check("second failed refresh clears the pending imprint and lets corruption decay", () =>
+            {
+                fullImprintLetters.Clear();
+                var pawn = ImprintPawn();
+                var initial = Mark(pawn, SSCImprintUtility.InitialDefName);
+                var need = AddFullImprintNeed(pawn);
+                FailNextFullImprint(pawn);
+                need.SetCorruption(1f);
+                FailNextFullImprint(pawn);
+                need.NeedInterval();
+                Equal(1f, need.CurLevel);
+                FailNextFullImprint(pawn);
+                need.NeedInterval();
+                Require(need.CurLevel < 1f);
+                Require(SSCImprintUtility.Find(pawn) == initial);
+                Equal(PawnIdentity.Unset, SSCIdentityUtility.GetIdentity(pawn));
+                Equal(0, fullImprintLetters.Count);
+
+                // 恢复满值不登记新事件。未清理的旧待办会在这次刷新发信。
+                need.RestoreCorruption(1f, 1f);
+                need.NeedInterval();
+                Equal(0, fullImprintLetters.Count);
+                need.SetCorruption(1f);
+                Equal(1, fullImprintLetters.Count);
+            });
+
+            Check("selecting master cancels the pending imprint even if the pawn leaves that role before refresh", () =>
+            {
+                fullImprintLetters.Clear();
+                var pawn = ImprintPawn();
+                var initial = Mark(pawn, SSCImprintUtility.InitialDefName);
+                var need = AddFullImprintNeed(pawn);
+                FailNextFullImprint(pawn);
+                need.SetCorruption(1f);
+                pawn.TryGetComp<CompSexSlaveTraining>().ReplaceMasterQualification(true);
+                Require(SSCIdentityUtility.TrySetIdentity(pawn, PawnIdentity.Master));
+                Require(SSCIdentityUtility.TrySetIdentity(pawn, PawnIdentity.Unset));
+                need.NeedInterval();
+                Require(SSCImprintUtility.Find(pawn) == initial);
+                Require(need.CurLevel < 1f);
+                Equal(0, fullImprintLetters.Count);
+            });
+
+            Check("implanting another personality discards a failed full imprint request", () =>
+            {
+                fullImprintLetters.Clear();
+                var host = ImprintPawn();
+                var oldInitial = Mark(host, SSCImprintUtility.InitialDefName);
+                var need = AddFullImprintNeed(host);
+                FailNextFullImprint(host);
+                need.SetCorruption(1f);
+
+                var source = ImprintPawn();
+                Mark(source, SSCImprintUtility.InitialDefName);
+                AddFullImprintNeed(source).RestoreCorruption(.50f, .50f);
+                var data = new CompPersonalityStore();
+                data.StorePawnData(source);
+                Require(ExcretionUtility.InheritEverything(host, data));
+                var newInitial = SSCImprintUtility.Find(host);
+                Require(newInitial != oldInitial);
+                Equal(SSCImprintKind.Initial, SSCImprintUtility.GetKind(host));
+                need.RestoreCorruption(1f, 1f);
+                need.NeedInterval();
+                Require(SSCImprintUtility.Find(host) == newInitial);
+                Require(need.CurLevel < 1f);
+                Equal(0, fullImprintLetters.Count);
             });
 
             Check("implantation during an imprint callback queues the incoming full personality", () =>
@@ -363,6 +443,12 @@ internal static partial class Program
         };
         pawn.needs.AllNeeds.Add(need);
         return need;
+    }
+
+    private static void FailNextFullImprint(Pawn pawn)
+    {
+        observedImprintPawn = pawn;
+        onDifferentiatedImprintAdded = _ => throw new InvalidOperationException("Simulated imprint PostAdd failure.");
     }
 
     // 发信使用原版公开入口，测试在 UI 投递边界截获小人目标。
