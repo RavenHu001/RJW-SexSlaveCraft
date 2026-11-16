@@ -1,5 +1,7 @@
 # 玩家阅读入口 / Player documentation
 
+**2.5.1 开发预览。** PNA 雾气系列、关系命令栏和兼容改动见[双语版本说明](../Releases/2.5.1/2.5.1发布说明.md)。下方为当前正式版的下载与指南。
+
 **2.5.0 玩家入口。** 调教管理窗口和多调教员指派见[中文入门](../../读我，玩法介绍.md#ssc-250)、[完整规则](../../机制详解.md#ssc-250)、[English quick start](../../QUICK_START_EN.md#ssc-250) 和 [English player guide](../../PLAYER_GUIDE_EN.md#ssc-250)。 [下载 2.5.0 正式版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0)
 
 **2.4.10 修订版。** 纳入子宫开发成长判定修正。 新增宠物兔家政和宠物狐科研医疗，面向 RimWorld 1.7。安装包为 1.6 提供 SSC 2.4.1。[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2) · [双语发布说明](../Releases/2.4.10/2.4.10发布说明.md)

@@ -1,4 +1,6 @@
-# SSC PatchAll 启动注册排查与分批修复方案
+# SSC 启动补丁注册隔离与诊断验收
+
+三批修复、诊断更新及复核修正版已合入 2.5.1，并通过本机 Combat Extended 实机验收。下文保留原调查基线、分批方案和验证结果。其他模组组合、鞭束显示和同一 tick 重派见[待验收索引](../Verification/README.md#ssc-251-open-checks)。
 
 2026-11-15。以 SSC 2.5.0 当前开发分支和 RimWorld 1.7 为范围，包含 Issue #44 的 PNA 短矛绘制容错提交 `e63681e1`。第一批通过本机 CE 功能验收并提交 `93d39c3b`，鞭束显示与同 tick 重派单独留待排查。第二批通过实机验收并提交 `76591a1b`。第三批 `58dfb1e5` 通过本机 CE 实机验收。1.6／Common 产物沿用冻结基线。
 
@@ -6,7 +8,7 @@
 
 `ModStartup` 的静态构造先执行 `harmony.PatchAll()`。补丁的准备、目标解析、Transpiler 执行或 Harmony 生成替换方法时抛出异常，会中断这次扫描。先前已装的补丁可能仍在，后续补丁不会继续注册。高潮采样、UAP、主人吸引力和倒地调教的安装回调在该调用返回后才排队，后面的仪式修正与全凝胶化绘制也因此可能走不到。现有 `Harmony patches loaded successfully` 只标记注解扫描完成，出现在手动注册和延迟安装实际完成之前。 [启动入口](../../../Sexslavecraft/ThePatches/HarmonyStartUp.cs#L17)
 
-日常调教先启动接收任务，再调用 RJW 原生 `Start`。SSC 依赖 `Start_Postfix` 记录开始凭据，返回后校验凭据才进入正常推进。如果这个补丁因批次中断而缺失，接收任务仍可能反复启动，调教却无法推进和结算。该故障链已在 Issue #44 的诊断中观察到。绘制容错版已通过维护者开 CE 的注册、警告去重及结算验收，本机 Cat Hero 对照也确认修复版能继续注册并到达开始确认。其他候选风险目前来自源码，汇报者复测状态继续记在原调查记录。 [开始凭据写入](../../../Sexslavecraft/ThePatches/Harmony_ProtectSexSlave.cs#L40) · [调教校验](../../../Sexslavecraft/JobDriver/JobDriver_Train.cs#L313) · [Issue #44 调查](SSC-Issue-44日常调教循环调查.md)
+日常调教先启动接收任务，再调用 RJW 原生 `Start`。SSC 依赖 `Start_Postfix` 记录开始凭据，返回后校验凭据才进入正常推进。如果这个补丁因批次中断而缺失，接收任务仍可能反复启动，调教却无法推进和结算。该故障链已在 Issue #44 的诊断中观察到。绘制容错版已通过维护者开 CE 的注册、警告去重及结算验收，本机 Cat Hero 对照也确认修复版能继续注册并到达开始确认。其他候选风险目前来自源码，汇报者复测状态继续记在原调查记录。 [开始凭据写入](../../../Sexslavecraft/ThePatches/Harmony_ProtectSexSlave.cs#L40) · [调教校验](../../../Sexslavecraft/JobDriver/JobDriver_Train.cs#L313) · [Issue #44 调查](../Reviews/SSC-Issue-44日常调教循环调查.md)
 
 ## 风险清单
 

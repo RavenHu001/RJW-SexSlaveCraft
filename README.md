@@ -1,5 +1,7 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
+**2.5.1 开发版（2026-11-15 登记）。** 纳入 PNA 雾气系列、主从关系命令栏修复、启动兼容修复与诊断窗口更新。 [2.5.1 版本说明](Docs/Releases/2.5.1/2.5.1发布说明.md) · [归并核对](Docs/Releases/2.5.1/2.5.1开发归并核对.md) · [验证记录](Docs/Releases/2.5.1/2.5.1版本验证.md)
+
 **SSC 2.5.0。** 调教管理窗口、多调教员指派及相关维护面向 RimWorld 1.7。 [2.5.0 版本说明](Docs/Releases/2.5.0/2.5.0发布说明.md) · [归并核对](Docs/Releases/2.5.0/2.5.0开发归并核对.md) · [验证记录](Docs/Releases/2.5.0/2.5.0版本验证.md)
 
 **2.4.9 — 2026-11-02正式发布。** [下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9)。完整All **52套／6535项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未变。标签源码`2b288569`，ZIP及SHA-256已上传并复核为最新稳定版；本轮未启动新游戏或同步安装目录。下方开发／登记记录保留原日期与范围。
@@ -12,7 +14,7 @@
 
 面向 RimWorld 的成人向 RimJobWorld（RJW）扩展，基于上游 **2.2.8** 继续维护，提供角色培养、主从绑定、特化、人格转移和身体改造。
 
-[2.5.0 开发范围](Docs/Releases/2.5.0/2.5.0发布说明.md) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
+[2.5.1 开发范围](Docs/Releases/2.5.1/2.5.1发布说明.md) · [双语模组简介](Docs/模组介绍.md) · [玩家阅读入口](Docs/Players/README.md) · [文档总索引](Docs/README.md) · [English](#english-overview)
 
 ## 2.5.0 新增内容（仅 1.7）
 
@@ -120,7 +122,7 @@
 | 用途 | 阅读顺序 |
 | --- | --- |
 | 了解与游玩 | [模组介绍](Docs/模组介绍.md) → [玩家阅读入口](Docs/Players/README.md) → 快速入门 → 完整机制 |
-| 查看版本变化 | [2.5.0 版本说明](Docs/Releases/2.5.0/2.5.0发布说明.md) → [提交归并](Docs/Releases/2.5.0/2.5.0开发归并核对.md) → [验证记录](Docs/Releases/2.5.0/2.5.0版本验证.md) |
+| 查看版本变化 | [2.5.1 版本说明](Docs/Releases/2.5.1/2.5.1发布说明.md) → [提交归并](Docs/Releases/2.5.1/2.5.1开发归并核对.md) → [验证记录](Docs/Releases/2.5.1/2.5.1版本验证.md) |
 | 接手开发 | [开发协作约定](AGENTS.md) → [开发资料入口](Docs/Development/README.md) → [已交付记录](Docs/Development/Completed/README.md) → [专项待验收](Docs/Development/Verification/README.md) → [当前规划](Docs/Design/README.md) |
 | 新增个人能力开关 | 先读[现行接入规范](Docs/Development/Reference/个人能力开关接入规范.md)，复用能力注册、原载体后端、状态查询与上下文提交；UI 行及跨 ITab 复用边界见规范 |
 | 编译、测试、打包 | [维护入口](Docs/Maintenance/README.md) → [测试说明](Tests/README.md) → [发布与打包](Docs/Maintenance/发布与打包.md) |
@@ -132,6 +134,8 @@
 问题反馈请附模组／游戏版本、加载顺序、复现步骤、日志及新旧档情况。项目署名：Someone、Hajimi、TieJin。
 
 ## English overview
+
+**SSC 2.5.1 is in development for RimWorld 1.7.** It groups the PNA mist series, relationship command fixes, startup compatibility and diagnostics. The public package is 2.5.0. [2.5.1 notes](Docs/Releases/2.5.1/2.5.1发布说明.md#english)
 
 **SSC 2.5.0** introduces the Training Management window and multiple trainer assignments on RimWorld 1.7. [2.5.0 notes](Docs/Releases/2.5.0/2.5.0发布说明.md#english) · [Download 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0)
 

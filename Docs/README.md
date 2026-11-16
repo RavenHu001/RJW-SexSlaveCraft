@@ -1,8 +1,10 @@
 # 文档总索引
 
-**2.4.9 — 2026-11-02正式发布。** [下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9)。完整All **52套／6535项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未变。标签源码`2b288569`，ZIP及SHA-256已上传并复核为最新稳定版；本轮未启动新游戏或同步安装目录。下方开发／登记记录保留原日期与范围。
-
 [项目首页](../README.md) · [玩家阅读入口](Players/README.md) · [当前规划](Design/README.md) · [开发资料](Development/README.md)
+
+## 当前开发版本
+
+**2.5.1 开发版（2026-11-15 登记）。** 纳入 PNA 雾气系列、主从关系命令栏修复、启动兼容修复与诊断窗口更新。 [版本说明](Releases/2.5.1/2.5.1发布说明.md) · [完成索引](Development/Completed/README.md#ssc-251-completed) · [发布准备](Releases/2.5.1/2.5.1版本验证.md)
 
 ## 当前正式版本
 
@@ -14,7 +16,7 @@
 | --- | --- | --- |
 | 了解功能、准备发布页面 | [双语模组介绍](模组介绍.md) | English 在前、中文在后；先看当前版本与功能范围 |
 | 安装和游玩 | [玩家阅读入口](Players/README.md) | 简介 → 快速入门 → 按需查机制与常见问题 |
-| 了解版本归属 | [发布与验证索引](Releases/README.md) | 版本说明 → 正式发布归档 → 提交归并 |
+| 了解版本归属 | [发布与验证索引](Releases/README.md) | 版本说明 → 开发归并 → 版本验证；已发布版本从验证页进入正式发布归档 |
 | 接手已完成功能 | [已交付开发记录](Development/Completed/README.md) | 主题完成核对 → 对应阶段 → 历史设计 |
 | 新增个人能力开关 | [现行接入规范](Development/Reference/个人能力开关接入规范.md) | [开发协作约定](../AGENTS.md) → 保存源与适用边界 → 原载体后端 → 公共查询、UI 与提交 → 生命周期验收 |
 | 查明确的验证缺口 | [待验收事项](Development/Verification/README.md) | 尚待确认范围 → 实现依据 → 实机步骤 |
@@ -28,8 +30,8 @@
 ## 三条阅读路线
 
 - **新玩家**：[模组介绍](模组介绍.md) → [快速入门](../读我，玩法介绍.md) → [机制详解](../机制详解.md)。英文路线见 [English reading order](Players/README.md#english-reading-order)。
-- **接手开发**：[开发协作约定](../AGENTS.md) → [开发资料入口](Development/README.md) → [开发规范与历史参考](Development/Reference/README.md) → [完成记录](Development/Completed/README.md) → [待验收](Development/Verification/README.md) → [未来规划](Design/README.md)。新增同类个人布尔能力先读[能力开关接入规范](Development/Reference/个人能力开关接入规范.md)。
-- **准备发布**　[2.5.0 版本验证](Releases/2.5.0/2.5.0版本验证.md) → [构建与打包](Maintenance/发布与打包.md) → [测试索引](../Tests/README.md)。
+- **接手开发**：[开发协作约定](../AGENTS.md) → [开发规范与历史参考](Development/Reference/README.md) → [2.5.1 接手顺序](Development/README.md#ssc-251-reading-order)。实施与验收见[完成记录](Development/Completed/README.md#ssc-251-completed)，独立复测见[待验收](Development/Verification/README.md#ssc-251-open-checks)，未完需求见[当前规划](Design/README.md#当前专项规划)。
+- **准备发布**：[2.5.1 版本验证](Releases/2.5.1/2.5.1版本验证.md) → [构建与打包](Maintenance/发布与打包.md) → [测试索引](../Tests/README.md)。
 
 ## 目录与状态
 
@@ -42,7 +44,7 @@ Docs/
     未来内容开发规划.md        未完成需求及历史编号
     性能测量与定点优化首批规划.md  暂缓方案留存
     浪漫控制后续社交关系与浪漫事件拓展规划.md  未开发方向
-    Archive/                   已交付设计，含调教管理、浪漫主规划与身体开发
+    Archive/                   已交付设计及历史版本更新摘录
   Development/
     开发更新记录.md            按日期追溯
     Completed/                 实现、修复与已关闭批次
