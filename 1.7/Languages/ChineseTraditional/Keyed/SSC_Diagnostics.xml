@@ -27,4 +27,11 @@
   <SSC_Diagnostics_PatchWeaponDrawing>PNA 武器繪製</SSC_Diagnostics_PatchWeaponDrawing>
   <SSC_Diagnostics_PatchWeaponDrawingFallback>繪製指令配置不符。SSC 武器繪製效果已停用，沿用現有繪製。</SSC_Diagnostics_PatchWeaponDrawingFallback>
   <SSC_Diagnostics_TrainingHooksUnavailable>日常調教所需補丁未就緒，暫時無法派發日常調教。</SSC_Diagnostics_TrainingHooksUnavailable>
+  <SSC_Diagnostics_Overview>概況</SSC_Diagnostics_Overview>
+  <SSC_Diagnostics_PatchAll>全部狀態</SSC_Diagnostics_PatchAll>
+  <SSC_Diagnostics_PatchFilter>{0}（{1}）</SSC_Diagnostics_PatchFilter>
+  <SSC_Diagnostics_PatchEmpty>沒有符合此狀態的補丁。</SSC_Diagnostics_PatchEmpty>
+  <SSC_Diagnostics_SkipMissingDependency>未偵測到此相容功能所需的外部依賴。</SSC_Diagnostics_SkipMissingDependency>
+  <SSC_Diagnostics_SkipUnsupportedTarget>未找到適用的目標方法或介面。</SSC_Diagnostics_SkipUnsupportedTarget>
+  <SSC_Diagnostics_SkipConditionsNotMet>未找到可註冊的目標，或安裝前置條件未滿足。</SSC_Diagnostics_SkipConditionsNotMet>
 </LanguageData>

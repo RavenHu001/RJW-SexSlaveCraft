@@ -27,4 +27,11 @@
   <SSC_Diagnostics_PatchWeaponDrawing>PNA weapon drawing</SSC_Diagnostics_PatchWeaponDrawing>
   <SSC_Diagnostics_PatchWeaponDrawingFallback>The draw instructions did not match. SSC weapon effects are disabled and existing drawing is preserved.</SSC_Diagnostics_PatchWeaponDrawingFallback>
   <SSC_Diagnostics_TrainingHooksUnavailable>Daily training cannot be assigned because required patches are unavailable.</SSC_Diagnostics_TrainingHooksUnavailable>
+  <SSC_Diagnostics_Overview>Overview</SSC_Diagnostics_Overview>
+  <SSC_Diagnostics_PatchAll>All statuses</SSC_Diagnostics_PatchAll>
+  <SSC_Diagnostics_PatchFilter>{0} ({1})</SSC_Diagnostics_PatchFilter>
+  <SSC_Diagnostics_PatchEmpty>No patches with this status.</SSC_Diagnostics_PatchEmpty>
+  <SSC_Diagnostics_SkipMissingDependency>The required optional dependency was not detected.</SSC_Diagnostics_SkipMissingDependency>
+  <SSC_Diagnostics_SkipUnsupportedTarget>No supported target method or interface was found.</SSC_Diagnostics_SkipUnsupportedTarget>
+  <SSC_Diagnostics_SkipConditionsNotMet>No eligible target was found or an installation requirement was not met.</SSC_Diagnostics_SkipConditionsNotMet>
 </LanguageData>

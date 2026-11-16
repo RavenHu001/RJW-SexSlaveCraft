@@ -30,7 +30,9 @@ namespace SexSlaveCraft
                 if (targets == null)
                 {
 #if SSC_RW17
-                    SSCPatchRegistration.Record(name, SSCPatchState.Skipped, stage: "Resolve");
+                    // 解析器仅在所需外部依赖未检测到时返回 null。已识别依赖的签名异常会由下方异常路径报告。
+                    SSCPatchRegistration.Record(name, SSCPatchState.Skipped, stage: "Resolve",
+                        skipReason: SSCPatchSkipReason.MissingDependency);
 #endif
                     return false;
                 }

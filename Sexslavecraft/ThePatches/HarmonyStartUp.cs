@@ -41,7 +41,8 @@ namespace SexSlaveCraft
             // 可选 UAP 接入使用独立 owner，完整核对后才开放手动豁免；不随旧版 PatchAll 注册。
             SSCPatchRegistration.Schedule("UAP group", SSCUapGroupPatches.Install,
                 () => SSCUapGroupApi.Ready ? SSCPatchState.Ready :
-                    SSCUapGroupApi.Dialog == null ? SSCPatchState.Skipped : SSCPatchState.Fallback);
+                    SSCUapGroupApi.Dialog == null ? SSCPatchState.Skipped : SSCPatchState.Fallback,
+                SSCPatchSkipReason.MissingDependency);
             // 完整核对 RJW 评价与自愿入口后安装关系保底，保留原基础资格和主人侧意愿。
             SSCPatchRegistration.Schedule("Master attraction", SSCMasterAttractionPatches.Install,
                 () => SSCMasterAttractionPatches.Ready ? SSCPatchState.Ready : SSCPatchState.Fallback);
@@ -188,8 +189,9 @@ namespace SexSlaveCraft
             {
                 Harmony_FullGelatinizationBodyTint.RegisterSizedApparel(harmony);
 #if SSC_RW17
+                bool workerPresent = AccessTools.TypeByName("SizedApparel.SizedApparelRenderNodeWorker") != null;
                 RecordManualPatch("FullGel SizedApparel material", "Verse.PawnRenderNodeWorker.GetFinalizedMaterial",
-                    AccessTools.TypeByName("SizedApparel.SizedApparelRenderNodeWorker") != null);
+                    workerPresent, missingDependency: !workerPresent);
 #endif
             }
             catch (Exception ex)
@@ -215,7 +217,7 @@ namespace SexSlaveCraft
                 }
                 else
                 {
-                    RecordManualPatch("FullGel SizedApparel clothing", "Verse.ApparelGraphicRecordGetter.TryGetGraphicApparel", false);
+                    RecordManualPatch("FullGel SizedApparel clothing", "Verse.ApparelGraphicRecordGetter.TryGetGraphicApparel", false, missingDependency: true);
                     SSCLog.Important("[SSC FullGel] 未检测到 SizedApparel，跳过服装胸型图形软依赖补丁。");
                 }
             }
@@ -233,13 +235,15 @@ namespace SexSlaveCraft
 #endif
         }
 
-        // 手动钩子的安装入口已有独立异常处理。这里仅把实际安装、缺依赖跳过或失败映射到诊断报告。
-        private static void RecordManualPatch(string group, string target, bool installed, Exception error = null)
+        // 手动安装入口负责区分外部依赖是否存在。无异常且未安装时，依赖缺席与目标接口不适用分别记录。
+        private static void RecordManualPatch(string group, string target, bool installed, Exception error = null, bool missingDependency = false)
         {
 #if SSC_RW17
             SSCPatchRegistration.Record(group, error != null ? SSCPatchState.Failed :
                 installed ? SSCPatchState.Ready : SSCPatchState.Skipped,
-                target, "Manual install", error?.GetBaseException().GetType().Name);
+                target, "Manual install", error?.GetBaseException().GetType().Name,
+                error != null || installed ? SSCPatchSkipReason.None :
+                    missingDependency ? SSCPatchSkipReason.MissingDependency : SSCPatchSkipReason.UnsupportedTarget);
 #endif
         }
     }

@@ -11,6 +11,8 @@ namespace SexSlaveCraft
 {
     /// <summary>区分尚未安装、明确跳过、正常启用、沿用原行为和安装失败。成功登记 Transpiler 仍可能回退原指令。</summary>
     internal enum SSCPatchState { Waiting, Ready, Skipped, Fallback, Failed }
+    /// <summary>保留启动时能确认的跳过原因。只有已跳过的行会把此分类译成提示。</summary>
+    internal enum SSCPatchSkipReason { None, MissingDependency, UnsupportedTarget, ConditionsNotMet }
 
     /// <summary>启动过程写入的结果。诊断窗口只读取副本，不触发安装或反射解析。</summary>
     internal static class SSCPatchRegistration
@@ -18,14 +20,15 @@ namespace SexSlaveCraft
         internal const string Owner = "SexSlaveCraft.training.patch";
         internal const string DailyTraining = "Daily training lifecycle";
         // 每组保留最近一次结果。窗口刷新或复制时读取整个副本，避免在枚举时遇到延迟安装写入。
-        private static readonly Dictionary<string, (SSCPatchState State, string Target, string Stage, string Detail)> results = new();
+        private static readonly Dictionary<string, (SSCPatchState State, string Target, string Stage, string Detail, SSCPatchSkipReason SkipReason)> results = new();
 
-        internal static void Record(string group, SSCPatchState state, string target = null, string stage = null, string detail = null)
+        internal static void Record(string group, SSCPatchState state, string target = null, string stage = null,
+            string detail = null, SSCPatchSkipReason skipReason = SSCPatchSkipReason.None)
         {
-            lock (results) results[group] = (state, target, stage, detail);
+            lock (results) results[group] = (state, target, stage, detail, skipReason);
         }
 
-        internal static KeyValuePair<string, (SSCPatchState State, string Target, string Stage, string Detail)>[] Snapshot()
+        internal static KeyValuePair<string, (SSCPatchState State, string Target, string Stage, string Detail, SSCPatchSkipReason SkipReason)>[] Snapshot()
         {
             lock (results) return results.OrderBy(item => item.Key, StringComparer.Ordinal).ToArray();
         }
@@ -65,7 +68,10 @@ namespace SexSlaveCraft
                 complete &= Install(type.Name, () =>
                 {
                     var applied = harmony.CreateClassProcessor(type).Patch();
-                    return applied?.Count > 0 ? SSCPatchState.Ready : SSCPatchState.Skipped;
+                    if (applied?.Count > 0) return SSCPatchState.Ready;
+                    // 空结果按跳过登记。记录原因后返回 null，让通用安装器保留这条带原因的状态。
+                    Record(type.Name, SSCPatchState.Skipped, stage: "Prepare", skipReason: ResolveSkipReason(type));
+                    return null;
                 }, () => Unpatch(harmony, new[] { type }), stage: "Resolve / install");
             }
             // 装完后核对实际挂载。成功调用安装器或找到目标签名都不足以证明 Start 凭据写入、保存和收尾可用。
@@ -80,7 +86,7 @@ namespace SexSlaveCraft
                 lock (results)
                     foreach (Type type in lifecycle)
                         if (results.TryGetValue(type.Name, out var row) && row.State == SSCPatchState.Ready)
-                            results[type.Name] = (SSCPatchState.Fallback, row.Target, "Rollback", DailyTraining);
+                            results[type.Name] = (SSCPatchState.Fallback, row.Target, "Rollback", DailyTraining, SSCPatchSkipReason.None);
             }, stage: "Verify");
             TrainerAssignmentUtility.DailyTrainingHooksReady = ready;
             if (!ready)
@@ -89,6 +95,16 @@ namespace SexSlaveCraft
         }
 
         private const string DerivedReservations = "RJW derived reservations";
+
+        private static SSCPatchSkipReason ResolveSkipReason(Type patchType)
+        {
+            // Mint 补丁的已知准备条件可以区分两种情况。窗口类型存在时，剩下的检查是 DoRow 与组件字段的接口匹配。
+            if (patchType == typeof(Harmony_SSC_MintSharedBedAssignmentUI))
+                return AccessTools.TypeByName("DubsMintMenus.Dialog_AssignBuildingOwner") == null
+                    ? SSCPatchSkipReason.MissingDependency : SSCPatchSkipReason.UnsupportedTarget;
+            // Harmony 返回空列表时没有提供 Prepare 的详细拒绝原因。
+            return SSCPatchSkipReason.ConditionsNotMet;
+        }
 
         private static bool InstallReservation(Harmony harmony, Type type)
         {
@@ -161,13 +177,18 @@ namespace SexSlaveCraft
         }
 
         /// <summary>先登记等待状态，再交给原长事件队列。等回调运行完，按安装器报告的真实就绪结果更新。</summary>
-        internal static void Schedule(string group, Action install, Func<SSCPatchState> state)
+        internal static void Schedule(string group, Action install, Func<SSCPatchState> state,
+            SSCPatchSkipReason skipReason = SSCPatchSkipReason.ConditionsNotMet)
         {
             Record(group, SSCPatchState.Waiting);
             LongEventHandler.ExecuteWhenFinished(() => Install(group, () =>
             {
                 install();
-                return state();
+                var result = state();
+                if (result != SSCPatchState.Skipped) return result;
+                // 延迟组如果主动跳过，由调度方提供它能确认的原因，覆盖先前的等待记录。
+                Record(group, result, stage: "Delayed install", skipReason: skipReason);
+                return null;
             }, stage: "Delayed install"));
         }
 
