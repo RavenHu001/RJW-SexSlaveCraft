@@ -120,6 +120,7 @@ internal static partial class Program
         ImprintAgeTests();
         ImprintPersonalityTests();
         SexSlaveTraitIdentityTests(repo, harmony);
+        CorruptionMoodTests(repo);
     }
 
     /// <summary>为非印记依赖登记最小健康定义；已有真实引用时沿用原实例，不替换被测印记资源。</summary>

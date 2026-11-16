@@ -10,6 +10,7 @@ namespace SexSlaveCraft
         private static void Postfix(Pawn __instance)
         {
             SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(__instance);
+            SSCCorruptionStages.NotifyContextChanged(__instance);
         }
     }
 }

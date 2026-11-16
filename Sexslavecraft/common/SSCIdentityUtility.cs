@@ -253,6 +253,7 @@ namespace SexSlaveCraft
                 return false;
             comp.pawnIdentity = identity;
 #if SSC_RW17
+            SSCCorruptionStages.NotifyContextChanged(pawn);
             // 身份先落地即撤销凝胶受药；后续成长／仪式回调提前退出也不能留下主人的药效。
             SSCCorruptionGelEffectUtility.RefreshBodyState(pawn);
             if (!SyncSexSlaveTraitAfterIdentityWrite(pawn, comp, identity, personalityToken)) return false;
@@ -321,6 +322,7 @@ namespace SexSlaveCraft
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
             comp.pawnIdentity = PawnIdentity.Slave;
 #if SSC_RW17
+            SSCCorruptionStages.NotifyContextChanged(pawn);
             if (!SyncSexSlaveTraitAfterIdentityWrite(pawn, comp, PawnIdentity.Slave, SSCPersonalityRuntimeUtility.Capture(pawn)))
                 return false;
             // 显式恢复仍沿用原锁链；浪漫模块只更新观察，不据此补发关系或创建命令。

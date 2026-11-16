@@ -48,6 +48,7 @@ namespace SexSlaveCraft
             observedMaster = LinkedPawn;
 #if SSC_RW17
             // 健康列表已持有这条链后再观察，不能把尚未入体的实例当作当前绑定。
+            SSCCorruptionStages.NotifyContextChanged(pawn);
             SSCRomanceLifecycle.Notify(pawn);
             // 新链只刷新身体指令的实际准入，不在锁链上保存或重置敏感度档位。
             SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
@@ -125,6 +126,7 @@ namespace SexSlaveCraft
             if (pawn?.health?.hediffSet == null || pawn.health.hediffSet.hediffs.Contains(this)) return;
 #if SSC_RW17
             // 以现在实际持有的链比较；删除旧实例时已存在的新链不能被误认为同一授权。
+            SSCCorruptionStages.NotifyContextChanged(pawn);
             SSCRomanceLifecycle.Notify(pawn);
             SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
 #endif
@@ -224,9 +226,13 @@ namespace SexSlaveCraft
             hediff.Severity = Mathf.Clamp(severity, 0f, hediff.def.maxSeverity);
             int newStage = SSCIdentityUtility.GetSexSlaveStageFromChain(hediff);
 #if SSC_RW17
-            // 原入口也显式通知，避免健康阶段被外部改写后漏掉 SSC 自身的第四阶段退阶。
-            if (oldStage != newStage) SSCRomanceLifecycle.Notify(pawn);
-            if (oldStage != newStage) SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
+            // 沿 SSC 的实际阶段刷新，即使原版 Def 的阶段序列没有发出同一条通知。
+            if (oldStage != newStage)
+            {
+                SSCCorruptionStages.NotifyContextChanged(pawn);
+                SSCRomanceLifecycle.Notify(pawn);
+                SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
+            }
 #endif
             if (oldStage != newStage)
                 SSCSelfTrainingFeedback.NotifyStatusChanged(pawn);

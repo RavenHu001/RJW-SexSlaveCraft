@@ -412,6 +412,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
                 // 身份和需求准入都已就位，用副本最终持有的需求派生特性。
                 SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(clone);
+                SSCCorruptionStages.NotifyContextChanged(clone);
 #endif
                 // 原生复制与特质/健康通知已完成，再清一次，确保任何复制回调都不能带入来源偏好。
                 SSCAbilityToggleUtility.ClearPersonalityState(clone);

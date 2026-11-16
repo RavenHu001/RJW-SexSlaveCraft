@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThoughtDef>
+    <defName>SSC_CorruptionLonging</defName>
+    <thoughtClass>Thought_Situational</thoughtClass>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCCorruptionLonging</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <stages>
+      <li>
+        <label>longing to submit: distracted</label>
+        <description>Sometimes I wish someone would tell me what to do. I keep getting distracted by the thought.</description>
+        <baseMoodEffect>-1</baseMoodEffect>
+      </li>
+      <li>
+        <label>longing to submit: restless</label>
+        <description>I catch myself waiting for someone to give me an order. The longer I wait, the more restless I get.</description>
+        <baseMoodEffect>-3</baseMoodEffect>
+      </li>
+      <li>
+        <label>longing to submit: craving</label>
+        <description>I want someone to take charge of me. Until then, I can barely focus on anything.</description>
+        <baseMoodEffect>-6</baseMoodEffect>
+      </li>
+      <li>
+        <label>longing to submit: desperate</label>
+        <description>I want to give myself over to someone completely. I can't get the thought out of my head.</description>
+        <baseMoodEffect>-10</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

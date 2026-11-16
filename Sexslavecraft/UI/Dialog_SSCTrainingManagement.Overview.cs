@@ -151,12 +151,10 @@ namespace SexSlaveCraft
         /// <summary>恶堕档位用概况正文的字号占据整行，细条放在档位下方。</summary>
         private static void AddCorruptionStatus(SettingsColumn column, Need_Corruption need)
         {
-            // 档位和细条都随当前需求回落。百分比向下取整，避免在临界点提前显示下一档门槛。
+            // 文字、档位和细条取自同一次整数百分比快照。
             var stage = need.GetStagePresentation();
-            float fraction = Mathf.Clamp01(need.CurLevelPercentage);
             Color accent = CorruptionAccent(stage.Index, stage.ThresholdCount);
-            string percent = (Mathf.Floor(fraction * 100f) / 100f).ToString("0%");
-            AddOverviewValue(column, "SSC_TrainingManagement_CurrentCorruption".Translate(), percent, accent);
+            AddOverviewValue(column, "SSC_TrainingManagement_CurrentCorruption".Translate(), stage.Percentage, accent);
             const float trackHeight = 3f;
             const float trackGap = 2f;
             var stageFont = Text.Font;
@@ -168,7 +166,7 @@ namespace SexSlaveCraft
                 Text.Font = stageFont;
                 Text.Anchor = TextAnchor.MiddleLeft;
                 Widgets.Label(new Rect(rect.x, rect.y, rect.width, height), stage.Label);
-                DrawStageBar(new Rect(rect.x, rect.yMax - trackHeight, rect.width, trackHeight), fraction, accent);
+                DrawStageBar(new Rect(rect.x, rect.yMax - trackHeight, rect.width, trackHeight), stage.Fraction, accent);
             }));
         }
 

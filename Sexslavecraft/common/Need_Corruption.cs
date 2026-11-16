@@ -18,14 +18,30 @@ namespace SexSlaveCraft
         public Need_Corruption(Pawn pawn) : base(pawn)
         {
             SetInitialLevel();
-            threshPercents = new List<float>();
-            foreach (var stage in stages)
-            {
-                threshPercents.Add(stage.threshold);
-            }
+            FillThresholdMarkers();
         }
 
         public override float MaxLevel => 1f;
+
+#if SSC_RW17
+        public override float CurLevel
+        {
+            get => base.CurLevel;
+            set
+            {
+                float before = base.CurLevel;
+                base.CurLevel = value;
+                if (before != base.CurLevel)
+                    SSCCorruptionStages.NotifyLevelChanged(pawn, this, before, base.CurLevel);
+            }
+        }
+
+        public override void OnNeedRemoved()
+        {
+            base.OnNeedRemoved();
+            SSCCorruptionStages.NotifyContextChanged(pawn);
+        }
+#endif
 
         public float HighestCorruptionLevel
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
@@ -38,6 +54,7 @@ namespace SexSlaveCraft
 #endif
         public bool HasEverBeenCorrupted => HighestCorruptionLevel > 0f;
 
+#if !SSC_RW17
         private List<(float threshold, string label)> stages = new List<(float, string)>
         {
             (0.95f, Strings.Stage_Extreme),
@@ -46,8 +63,20 @@ namespace SexSlaveCraft
             (0.25f, Strings.Stage_Minor),
             (0.05f, Strings.Stage_Slight)
         };
+#endif
 
         /// <summary>返回当前恶堕档位的名称和顺序，最低档为零，数值回落时同步回落。</summary>
+#if SSC_RW17
+        internal (string Label, int Index, int ThresholdCount, string Percentage, float Fraction) GetStagePresentation()
+        {
+            int percentage = SSCCorruptionStages.GetWholePercentage(CurLevel);
+            int index = SSCCorruptionStages.GetIndex(percentage);
+            return (SSCCorruptionStages.GetLabel(index), index, SSCCorruptionStages.Thresholds.Count,
+                (percentage / 100d).ToString("0%"), percentage / 100f);
+        }
+
+        internal float DisplayFraction => SSCCorruptionStages.GetWholePercentage(CurLevel) / 100f;
+#else
         internal (string Label, int Index, int ThresholdCount) GetStagePresentation()
         {
             // 阈值按从高到低排列，命中的第一项是当前值达到的最高档。
@@ -58,6 +87,18 @@ namespace SexSlaveCraft
                     return (stage.label, stages.Count - i, stages.Count);
             }
             return (Strings.Stage_Stable, 0, stages.Count);
+        }
+#endif
+
+        private void FillThresholdMarkers()
+        {
+            threshPercents ??= new List<float>();
+            threshPercents.Clear();
+#if SSC_RW17
+            foreach (int percentage in SSCCorruptionStages.Thresholds) threshPercents.Add(percentage / 100f);
+#else
+            foreach (var stage in stages) threshPercents.Add(stage.threshold);
+#endif
         }
 
         private float GetMinLevel()
@@ -298,21 +339,20 @@ namespace SexSlaveCraft
         /// <summary>原版需求提示与管理窗口复用同一档位判定。</summary>
         public override string GetTipString()
         {
-            string stage = GetStagePresentation().Label;
-            return Strings.Need_TipFormat(def.LabelCap, CurLevelPercentage.ToStringPercent(), stage, def.description);
+            var stage = GetStagePresentation();
+#if SSC_RW17
+            string percentage = stage.Percentage;
+#else
+            string percentage = CurLevelPercentage.ToStringPercent();
+#endif
+            return Strings.Need_TipFormat(def.LabelCap, percentage, stage.Label, def.description);
         }
 
         public override void DrawOnGUI(Rect rect, int maxThresholdMarkers = int.MaxValue,
             float customMargin = -1f, bool drawArrows = true, bool doTooltip = true,
             Rect? rectForTooltip = null, bool drawLabel = true)
         {
-            if (threshPercents == null)
-                threshPercents = new List<float>();
-            threshPercents.Clear();
-            foreach (var stage in stages)
-            {
-                threshPercents.Add(stage.threshold);
-            }
+            FillThresholdMarkers();
 
             base.DrawOnGUI(rect, maxThresholdMarkers, customMargin, drawArrows, doTooltip, rectForTooltip, drawLabel);
         }
