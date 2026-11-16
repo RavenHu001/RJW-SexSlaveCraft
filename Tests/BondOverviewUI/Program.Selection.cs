@@ -133,8 +133,11 @@ internal static partial class Program
             Require(image.x==10&&image.y==20&&image.width==50&&image.height==50&&PortraitsCache.Requests.Single().size.x==56);
         });
         // 使用实际四语模板验证数量和按钮边界；字符宽度替身不代表实机字体或缩放验收。
-        foreach(string lang in new[]{"ChineseSimplified","ChineseTraditional","English","Russian"})
-            foreach(float width in new[]{100f,130f})Check("owned header: two-digit count survives "+lang+" width "+width,()=>{
+        foreach (var (lang, width) in new[]
+        {
+            ("ChineseSimplified", 100f), ("ChineseTraditional", 130f), ("English", 130f), ("Russian", 100f)
+        })
+            Check("owned header: two-digit count survives "+lang+" width "+width,()=>{
                 var xml=System.Xml.Linq.XDocument.Load(SscTestPaths.Combine(root,"Languages",lang,"Keyed/SSC_BondOverview.xml"));
                 Verse.Extensions.Translations["SSC_BondOverview_OwnedCount"]=xml.Root.Element("SSC_BondOverview_OwnedCount").Value;
                 LanguageDatabase.activeLanguage=new();var f=Fixture();for(int i=0;i<11;i++)Place(Slave(f.master,"P"+i),f.map);

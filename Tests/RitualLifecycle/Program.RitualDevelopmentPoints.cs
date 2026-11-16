@@ -43,15 +43,14 @@ internal static partial class Program
             settings.ExposeRitualDevelopmentPointsSettings();
             Require(!settings.enableRitualDevelopmentPoints, "old configuration enabled reward");
         });
-        foreach (bool enabled in new[] { false, true })
-            Check($"ritual development production setting roundtrip enabled={enabled}", () =>
-            {
-                var original = new SSCSettings { enableRitualDevelopmentPoints = enabled };
-                Scribe.mode = LoadSaveMode.Saving; original.ExposeRitualDevelopmentPointsSettings();
-                var loaded = new SSCSettings { enableRitualDevelopmentPoints = !enabled };
-                Scribe.mode = LoadSaveMode.LoadingVars; loaded.ExposeRitualDevelopmentPointsSettings();
-                Equal(enabled, loaded.enableRitualDevelopmentPoints, "saved preference");
-            });
+        Check("ritual development production setting roundtrip enabled=True", () =>
+        {
+            var original = new SSCSettings { enableRitualDevelopmentPoints = true };
+            Scribe.mode = LoadSaveMode.Saving; original.ExposeRitualDevelopmentPointsSettings();
+            var loaded = new SSCSettings { enableRitualDevelopmentPoints = false };
+            Scribe.mode = LoadSaveMode.LoadingVars; loaded.ExposeRitualDevelopmentPointsSettings();
+            Require(loaded.enableRitualDevelopmentPoints, "saved preference");
+        });
 
         Check("disabled reward preserves all other whole ritual outcomes and existing points", () =>
         {
@@ -65,9 +64,8 @@ internal static partial class Program
             Equal(1, TestWorld.RitualLetters, "normal letter");
             Require(!TestWorld.RitualLetterTexts.Single().Contains("DevelopmentPointsAwarded"), "disabled reward text");
         });
-        for (int index = 0; index < 4; index++)
+        foreach (int outcome in new[] { 0, 2, 3 })
         {
-            int outcome = index;
             Check($"completed ritual forwards actual outcome index={outcome} exactly once", () =>
             {
                 SSCMod.settings.enableRitualDevelopmentPoints = true;

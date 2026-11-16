@@ -33,7 +33,7 @@ internal static partial class Program
             CompositeContinuousTests(repo);
             CompositeEffectiveTraitTests(boundary);
             CompositeDiagnosticTests(repo);
-            CompositeBatch4BoundaryTests(repo);
+            CompositeBatch4BoundaryTests();
             RomanceCompositeBatch4ReviewTests();
             RomanceCompositeDurationTests();
             RomanceCompositeReplacementAuditTests();

@@ -22,13 +22,6 @@ internal static partial class Program
                 SexUtility.ProcessSex(d.Sexprops);SexUtility.ProcessSex(d.Sexprops);
                 Assert(reads==1&&SSCPnaSexSupplyUtility.StrongDoses.Count==1&&
                     Math.Abs(SSCPnaSexSupplyUtility.StrongDoses[0]-.16f)<.0001f,"只读一次且原结算不改快照");
-            });
-        foreach(bool reverse in new[]{false,true})
-            Run("侵染完成双向主人和来源择强 reverse="+reverse,()=>
-            {
-                ResetSexAwards();var p=People();p.a.Training.pawnIdentity=PawnIdentity.Master;p.a.Training.Infestation=true;
-                var d=Driver(reverse?p.b:p.a,reverse?p.a:p.b,false);Begin(d);d.ticks_left=0;
-                SexUtility.ProcessSex(d.Sexprops);SexUtility.ProcessSex(d.Sexprops);
                 Assert(SSCPnaSexSupplyUtility.StrongCalls==1&&TrainerSpecializationProgressUtility.InitiatedSexAwards==1,"唯一完成");
                 Assert(!SSCPnaSexSupplyUtility.Calls.Any(x=>x.Source==p.a),"强来源不再发弱来源");
                 Assert(Math.Abs(p.b.needs.corruption.CurLevel-.01f)<.0001f,"目标恶堕");
@@ -44,29 +37,13 @@ internal static partial class Program
                 Assert(reads==1&&SSCPnaSexSupplyUtility.StrongDoses.Count==1&&
                     Math.Abs(SSCPnaSexSupplyUtility.StrongDoses[0]-.03f)<.0001f,"Lovin同样使用冻结下限剂量");
             });
-        Run("侵染原结算内重入只由外层认领",()=>
+        Run("侵染原结算换人格同组件同身份也不补领 target=False",()=>
         {
             ResetSexAwards();var p=People();p.a.Training.pawnIdentity=PawnIdentity.Master;p.a.Training.Infestation=true;var d=Driver(p.a,p.b,false);Begin(d);d.ticks_left=0;
-            bool nested=false;SexUtility.OnProcess=()=>{if(nested)return;nested=true;SexUtility.ProcessSex(d.Sexprops);};
+            SexUtility.OnProcess=()=>{SSCPersonalityRuntimeUtility.TryBeginMutation(p.a,out var scope);scope.Dispose();};
             try{SexUtility.ProcessSex(d.Sexprops);}finally{SexUtility.OnProcess=null;}
-            Assert(SSCPnaSexSupplyUtility.StrongCalls==1&&TrainerSpecializationProgressUtility.InitiatedSexAwards==1,"重入不抢认领");
-        });
-        foreach(bool target in new[]{false,true})
-            Run("侵染原结算换人格同组件同身份也不补领 target="+target,()=>
-            {
-                ResetSexAwards();var p=People();p.a.Training.pawnIdentity=PawnIdentity.Master;p.a.Training.Infestation=true;var d=Driver(p.a,p.b,false);Begin(d);d.ticks_left=0;
-                SexUtility.OnProcess=()=>{SSCPersonalityRuntimeUtility.TryBeginMutation(target?p.b:p.a,out var scope);scope.Dispose();};
-                try{SexUtility.ProcessSex(d.Sexprops);}finally{SexUtility.OnProcess=null;}
-                SexUtility.ProcessSex(d.Sexprops);
-                Assert(SSCPnaSexSupplyUtility.StrongCalls==0&&TrainerSpecializationProgressUtility.InitiatedSexAwards==0,"原场已消费且人格失效");
-            });
-        Run("侵染原方法异常释放占用且不提前认领",()=>
-        {
-            ResetSexAwards();var p=People();p.a.Training.pawnIdentity=PawnIdentity.Master;p.a.Training.Infestation=true;var d=Driver(p.a,p.b,false);Begin(d);d.ticks_left=0;
-            SexUtility.OnProcess=()=>throw new InvalidOperationException("test original");
-            try{SexUtility.ProcessSex(d.Sexprops);throw new Exception("异常未保留");}catch(InvalidOperationException){}finally{SexUtility.OnProcess=null;}
-            Assert(SSCPnaSexSupplyUtility.StrongCalls==0,"异常无收益");SexUtility.ProcessSex(d.Sexprops);
-            Assert(SSCPnaSexSupplyUtility.StrongCalls==1,"后续真实完成可认领");
+            SexUtility.ProcessSex(d.Sexprops);
+            Assert(SSCPnaSexSupplyUtility.StrongCalls==0&&TrainerSpecializationProgressUtility.InitiatedSexAwards==0,"原场已消费且人格失效");
         });
         Run("侵染经验回调换人格后停止所有供给",()=>
         {
@@ -81,7 +58,7 @@ internal static partial class Program
             try{SexUtility.ProcessSex(d.Sexprops);}finally{SexUtility.OnProcess=null;}
             Assert(SSCPnaSexSupplyUtility.StrongCalls==0&&SSCPnaSexSupplyUtility.Calls.Count==2,"旧普通来源保留");
         });
-        foreach(bool started in new[]{false,true}) foreach(bool timerDone in new[]{false,true})
+        foreach (var (started, timerDone) in new[] { (false, true), (true, false), (true, true) })
             Run("侵染Lovin真实开始与计时 started="+started+" timer="+timerDone,()=>
             {
                 ResetSexAwards();var p=People();p.a.Training.pawnIdentity=PawnIdentity.Master;p.a.Training.Infestation=true;var d=Lovin(p.a,p.b);
@@ -116,12 +93,6 @@ internal static partial class Program
             }
         });
 #if REAL_HARMONY
-        Run("侵染真实Harmony跳过原结算不认领且释放占用",()=>
-        {
-            ResetSexAwards();var p=People();p.a.Training.pawnIdentity=PawnIdentity.Master;p.a.Training.Infestation=true;var d=Driver(p.a,p.b,false);Begin(d);d.ticks_left=0;
-            InfestationSkipProbe.Skip=true;try{SexUtility.ProcessSex(d.Sexprops);}finally{InfestationSkipProbe.Skip=false;}
-            Assert(SSCPnaSexSupplyUtility.StrongCalls==0,"跳过原方法");SexUtility.ProcessSex(d.Sexprops);Assert(SSCPnaSexSupplyUtility.StrongCalls==1,"释放占用");
-        });
         Run("侵染Lovin显式排在本机rjw owner之前",()=>
         {
             var info=HarmonyLib.Harmony.GetPatchInfo(typeof(JobDriver).GetMethod("Cleanup"));

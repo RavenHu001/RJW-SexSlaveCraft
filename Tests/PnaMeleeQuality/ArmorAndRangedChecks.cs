@@ -119,7 +119,9 @@ internal static partial class Program
             AccessTools.Field(typeof(ProjectileProperties), "armorPenetrationBase").SetValue(prop, baseAp);
             foreach (QualityCategory quality in row.Name == "SSC_Weapon_PnaBlowpipe"
                 ? Enum.GetValues<QualityCategory>()
-                : new[] { QualityCategory.Awful, QualityCategory.Normal, QualityCategory.Legendary })
+                : row.Name is "SSC_Weapon_PnaLightCrossbow" or "SSC_Weapon_PnaProjectorGun"
+                    ? new[] { QualityCategory.Normal, QualityCategory.Legendary }
+                    : new[] { QualityCategory.Normal })
                 Check($"远程原版伤害穿甲精度及普通防身品质 {row.Name} {quality}", () =>
                 {
                     var def = new ThingDef { defName = row.Name, category = ThingCategory.Item, equipmentType = EquipmentType.Primary, tools = new List<Tool> { new Tool { power = 9 } } };

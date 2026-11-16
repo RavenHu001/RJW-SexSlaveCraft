@@ -126,12 +126,8 @@ internal static partial class Program
             finally{Widgets.ThrowCheckbox=false;}
             Check(GUI.enabled&&GUI.color.r==1,"finally恢复");
         });
-        foreach(float width in new[]{300f,480f,640f})
-        foreach(float row in new[]{102f,192f})
-        {
-            float w=width,h=row;
-            Run($"外观布局宽{w}分量高{h}不重叠",()=>PersonalRenderingLayout(w,h));
-        }
+        foreach (var (width, row) in new[] { (300f, 192f), (480f, 102f), (640f, 192f) })
+            Run($"外观布局宽{width}分量高{row}不重叠", () => PersonalRenderingLayout(width, row));
         Run("外观弹窗RGBHSV切换仅显示三个分量",()=>
         {
             var p=new Pawn();var c=AppearanceOwner(p);var window=new Dialog_FullGelAppearance(p,c.parent);

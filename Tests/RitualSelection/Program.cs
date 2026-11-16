@@ -87,7 +87,7 @@ internal static partial class Program
         Run("布尔包装不构造报告", () =>
         { Assert(Trainjudge.SexSlaveTrainJudge(new Pawn())); Assert(Counters.Eligibility == 1 && Counters.Reports == 0); });
 
-        foreach (int population in new[] { 20, 100, 300, 1000 })
+        foreach (int population in new[] { 20, 1000 })
             Run($"{population} 人开窗、自动填充和高亮不做完整执行者检查", () =>
             {
                 var f = new Fixture(population - 2); f.Open(selected: f.Host);

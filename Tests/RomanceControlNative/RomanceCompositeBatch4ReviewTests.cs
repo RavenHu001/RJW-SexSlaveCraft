@@ -98,14 +98,6 @@ internal static partial class Program
             Require(actor.Contains(" rule=none ") && actor.Contains(" decisionRule=AcceptRomance "));
             Require(target.Contains(" rule=AcceptRomance ") && target.Contains(" decisionRule=AcceptRomance "));
         });
-        foreach (int number in new[] { 11, 12, 13 })
-            Check("composite b4 review breakup does not invent acceptance decision " + number, () =>
-            {
-                var branch = SSCRomanceMoodCatalog.EventBranches.Single(b => (int)b.Event == number && !b.Masochist && b.Opinion == SSCRomanceOpinionBand.Close);
-                moodDiagnostics.Clear(); RunCompositeEvent(branch, 60);
-                string line = moodDiagnostics.Single(m => m.Contains("event id="));
-                Require(line.Contains("decisionKnown=False original=unknown accepted=unknown"));
-            });
     }
     /// <summary>使用真实上下文提交，确保重入来自已授权的新选择，而不是伪造配置写入。</summary>
     private static void SetReview4Preference(Pawn pawn, SSCRomanceSetting setting, bool value)

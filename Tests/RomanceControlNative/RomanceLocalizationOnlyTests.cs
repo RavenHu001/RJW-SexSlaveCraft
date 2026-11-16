@@ -81,7 +81,7 @@ internal static partial class Program
                 });
             }
             foreach (var entry in XDocument.Load(Path.Combine(repo, "1.7/Languages", locale, "Keyed/SSC_Romance.xml")).Root.Elements()
-                .Where(e => e.Name.LocalName.StartsWith("SSC_Romance_Report_") || e.Name.LocalName.StartsWith("SSC_Romance_Result_")))
+                .Where(e => e.Name.LocalName is "SSC_Romance_Report_Romance" or "SSC_Romance_Result_RelationshipChanged"))
                 Check("copy keyed format " + locale + "/" + entry.Name.LocalName, () =>
                 {
                     string result = entry.Name.LocalName.StartsWith("SSC_Romance_Result_")

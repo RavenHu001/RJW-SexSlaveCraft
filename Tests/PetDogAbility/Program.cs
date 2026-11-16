@@ -159,10 +159,13 @@ internal static partial class Program
     }
     private static void CrossDirectionQualification()
     {
-        foreach (SexSlaveSpecializationType direction in Enum.GetValues<SexSlaveSpecializationType>())
-        foreach (PawnIdentity identity in Enum.GetValues<PawnIdentity>())
-        foreach (bool drafted in new[] { false, true })
+        var identities = Enum.GetValues<PawnIdentity>();
+        int sample = 0;
+        foreach (var direction in Enum.GetValues<SexSlaveSpecializationType>())
         {
+            // 按方向轮换身份与征召，六种身份／征召配对各有代表。
+            var identity = identities[sample % identities.Length];
+            bool drafted = sample++ % 2 != 0;
             Reset(); var caster = Pawn(direction, .37f); caster.Training.pawnIdentity = identity; caster.Drafted = drafted;
             caster.health.AddHediff(DogFinal); PetDogAbilityUtility.Maintain(caster);
             Check(PetDogAbilityUtility.CanUse(caster, out _) && caster.abilities.GetAbility(SSCDefOf.SSC_PetDogTame).CanCast, "final tied to direction/identity/draft " + direction);

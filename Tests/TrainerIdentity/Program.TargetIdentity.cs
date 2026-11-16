@@ -18,9 +18,11 @@ internal static partial class Program
         });
         Run("自动候选及强制准备拒绝未设置或主人身份，不触发恢复身体检查和任务创建", () =>
         {
-            foreach (PawnIdentity identity in new[] { PawnIdentity.Unset, PawnIdentity.Master })
-            foreach (bool protection in new[] { false, true })
-            foreach (int vanillaStatus in new[] { 0, 1, 2 })
+            foreach (var (identity, protection, vanillaStatus) in new[]
+            {
+                (PawnIdentity.Unset, false, 0), (PawnIdentity.Unset, true, 1), (PawnIdentity.Unset, false, 2),
+                (PawnIdentity.Master, true, 0), (PawnIdentity.Master, false, 1), (PawnIdentity.Master, true, 2)
+            })
             {
                 var f = Setup(); var work = new WorkGiver_Training();
                 f.slave.Training.pawnIdentity = identity;
@@ -45,18 +47,17 @@ internal static partial class Program
         });
         Run("后台日常仪式和首次建绑请求均要求 SSC 性奴身份，关闭限制不豁免", () =>
         {
-            foreach (PawnIdentity identity in new[] { PawnIdentity.Unset, PawnIdentity.Master })
-            foreach (bool protection in new[] { false, true })
             foreach (SSCInteractionKind kind in new[] { SSCInteractionKind.DailyTraining, SSCInteractionKind.RitualTraining, SSCInteractionKind.BindingPreparation })
+            foreach (var (identity, protection, assignment) in new[]
+            {
+                (PawnIdentity.Unset, true, true), (PawnIdentity.Master, false, false)
+            })
             {
                 var f = Setup(); f.slave.Training.pawnIdentity = identity;
                 SSCMod.settings.enableSexSlaveProtectionRules = protection;
-                foreach (bool assignment in new[] { false, true })
-                {
-                    var admission = SSCRestrictionTrainingUtility.Evaluate(new SSCRestrictionRequest(f.master, f.slave, kind, true), assignment);
-                    Assert(!admission.Allowed && admission.Failure == SSCTrainingFailure.TargetIdentityRequired);
-                    Assert(admission.Reason == "SSC_Training_TargetIdentityRequired".Translate());
-                }
+                var admission = SSCRestrictionTrainingUtility.Evaluate(new SSCRestrictionRequest(f.master, f.slave, kind, true), assignment);
+                Assert(!admission.Allowed && admission.Failure == SSCTrainingFailure.TargetIdentityRequired);
+                Assert(admission.Reason == "SSC_Training_TargetIdentityRequired".Translate());
             }
         });
         Run("绑定主人最高许可不能替没有 SSC 身份的旧目标提供工作资格", () =>

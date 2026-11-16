@@ -21,7 +21,8 @@ internal static partial class Program
             {
                 CommandReset(original?0f:1f,1f);socialOpinionValue=0;
                 var a=cat==1?SocialSlave(severity:.1f):SocialPawn();var b=SocialSlave(cat==0?a:null,.5f);
-                Comp(b).romanceConfig=new(){allowAcceptRomance=allow,allowAcceptProposal=allow,
+                Comp(b).romanceConfig=new(){allowAcceptRomance=action==SSCRomanceAction.Romance?allow:!allow,
+                    allowAcceptProposal=action==SSCRomanceAction.Proposal?allow:!allow,
                     alwaysAcceptMaster=(choices&1)!=0,alwaysAcceptSexSlave=(choices&2)!=0,alwaysAcceptOthers=(choices&4)!=0};
                 if(action==SSCRomanceAction.Proposal)a.relations.AddDirectRelation(PawnRelationDefOf.Lover,b);
                 Require(a.interactions.TryInteractWith(b,SocialDef(action)));

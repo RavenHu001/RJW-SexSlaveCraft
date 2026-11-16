@@ -4,7 +4,6 @@ using RimWorld;
 using SexSlaveCraft;
 using Verse;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
 
 internal static partial class Program
 {
@@ -13,27 +12,8 @@ internal static partial class Program
     private static Action controlProbe;
 
     /// <summary>补充真实回调与独立显示验证，不能以目录查询通过代替原生情境思想准入。</summary>
-    private static void CompositeBatch4BoundaryTests(string repo)
+    private static void CompositeBatch4BoundaryTests()
     {
-        var language = LanguageDatabase.activeLanguage; var originalKeys = language.keyedReplacements;
-        try
-        {
-            foreach (string locale in new[] { "ChineseSimplified", "ChineseTraditional", "English", "Russian" })
-            {
-                language.keyedReplacements = XDocument.Load(Path.Combine(repo, "1.7/Languages", locale, "Keyed/SSC_RomanceMood.xml"))
-                    .Root.Elements().ToDictionary(e => e.Name.LocalName, e => new LoadedLanguage.KeyedReplacement { key = e.Name.LocalName, value = e.Value });
-                // 每语保留一次真实显示接线；十四分支的映射与数值由实际持续思想回归负责。
-                Check("composite b4 real continuous independent text " + locale + "/C-A-S4-N", () =>
-                {
-                    Require(SSCRomanceMoodCatalog.TryGet("C-A-S4-N", out var branch));
-                    var pawn = ControlPawn(branch.Stage, branch.Masochist, branch.Control != SSCRomanceControlState.Passive, branch.Control != SSCRomanceControlState.Active);
-                    var thought = ControlThought(pawn); Require(thought.Active);
-                    Equal(SSCRomanceMoodText.Name(branch).CapitalizeFirst(), thought.LabelCap);
-                    Equal(SSCRomanceMoodText.Description(branch), thought.Description);
-                });
-            }
-        }
-        finally { language.keyedReplacements = originalKeys; }
         foreach (string change in new[] { "count", "value", "produces-memory" })
             Check("composite b4 malformed continuous carrier is inactive " + change, () =>
             {

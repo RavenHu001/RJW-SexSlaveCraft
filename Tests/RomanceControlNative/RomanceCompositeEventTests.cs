@@ -32,15 +32,27 @@ internal static partial class Program
         return memory;
     }
 
-    /// <summary>十三类事件全部终端分支经过实际互动；同时验证原版匹配心情被替换、社交父记忆仍存在。</summary>
+    /// <summary>十三类事件选样经过实际互动，完整目录独立核对；同时验证原版匹配心情被替换、社交父记忆仍存在。</summary>
     private static void RomanceCompositeEventTests(Harmony harmony,string repo)
     {
         Check("composite native takeover anchors and actual patches ready",()=>Require((bool)AccessTools.Property(
             production.GetType("SexSlaveCraft.SSCRomanceNativeMoodHooks"),"Ready").GetValue(null)));
-        foreach(var branch in SSCRomanceMoodCatalog.EventBranches)
-        foreach(int raw in branch.Opinion==SSCRomanceOpinionBand.Disliked?new[]{-10}:branch.Opinion==SSCRomanceOpinionBand.Close?new[]{60}:
-            branch.LongDays>0&&branch.Value<0?new[]{0,1}:new[]{0})
-            Check($"composite actual event {branch.Id}/{raw}",()=>RunCompositeEventWithDiagnostics(branch,raw));
+        var branches = SSCRomanceMoodCatalog.EventBranches.ToArray();
+        foreach (var group in branches.GroupBy(branch => branch.Event))
+            Check($"composite documented catalog {group.Key}", () =>
+            {
+                var subject = SocialPawn();
+                foreach (var branch in group)
+                foreach (int raw in CompositeEventOpinions(branch))
+                {
+                    Require(SSCRomanceMoodCatalog.TryResolve(branch.Event, branch.Stage, branch.Masochist, raw, out var selection), branch.Id);
+                    if (Thought_MemorySSCCompositeRomance.TryCreate(selection, out var memory)) memory.pawn = subject;
+                    AssertDocumentedEvent(branch, raw, memory);
+                }
+            });
+        foreach (var branch in branches.Where(branch => RomanceRepresentativeCases.NativeEventBranches.Contains(branch.Id)))
+        foreach (int raw in CompositeEventOpinions(branch))
+            Check($"composite actual event {branch.Id}/{raw}", () => RunCompositeEventWithDiagnostics(branch, raw));
         CompositeNativeReplacementTests();
         CompositeEventBoundaryTests(harmony);
         RomanceCompositeBatch3ReviewTests();
@@ -52,6 +64,13 @@ internal static partial class Program
             Require(production.GetType("SexSlaveCraft.SSCRomanceMoodEvent")==null);
         });
     }
+
+    private static int[] CompositeEventOpinions(SSCRomanceMoodBranch branch) => branch.Opinion switch
+    {
+        SSCRomanceOpinionBand.Disliked => new[] { -10 },
+        SSCRomanceOpinionBand.Close => new[] { 60 },
+        _ => branch.LongDays > 0 && branch.Value < 0 ? new[] { 0, 1 } : new[] { 0 },
+    };
 
     /// <summary>输入仅控制原随机、好感和引擎边界；结果分类、目录选择、关系及替换均运行生产代码。</summary>
     private static void RunCompositeEvent(SSCRomanceMoodBranch branch,int raw,bool samePassiveResult=false)

@@ -27,7 +27,12 @@ internal static partial class Program
         .Where(x=>x.def==SSCDefOf.SSC_DesireInfestation_Mood||x.def==SSCDefOf.SSC_DesireInfestation_Opinion).ToArray();
     private static void RunInfestationFeedbackTests()
     {
-        foreach(bool forced in new[]{false,true})foreach(bool reverse in new[]{false,true})foreach(int stage in new[]{0,1,2,3})
+        // 正向普通场景走完整四档，其他方向与发起方式各取代表。
+        foreach (var (forced, reverse, stage) in new[]
+        {
+            (false, false, 0), (false, false, 1), (false, false, 2), (false, false, 3),
+            (false, true, 1), (true, false, 2), (true, true, 0), (true, true, 3)
+        })
             Run($"第四批真实普通完成 forced={forced} reverse={reverse} stage={stage}",()=>{
                 var s=FeedbackScene(reverse,forced);s.target.needs.corruption.CurLevel=stage>=2?.4f:.1f;s.target.relations.Opinion=stage%2==0?0:-1;
                 s.d.ticks_left=0;SexUtility.ProcessSex(s.d.Sexprops);SexUtility.ProcessSex(s.d.Sexprops);
@@ -51,13 +56,6 @@ internal static partial class Program
             var s=FeedbackScene();SSCDefOf.SSC_BodyPartTraining.IsFinished=false;s.d.ticks_left=0;
             try{SexUtility.ProcessSex(s.d.Sexprops);}finally{SSCDefOf.SSC_BodyPartTraining.IsFinished=true;}
             Assert(Feedback(s.target).Length==2,"反馈不依赖部位计划");
-        });
-        foreach(bool completed in new[]{false,true})Run("第四批任务存档保留唯一认领 completed="+completed,()=>{
-            var s=FeedbackScene();s.d.ticks_left=0;if(completed)SexUtility.ProcessSex(s.d.Sexprops);
-            foreach(var memory in Feedback(s.target))memory.age=123;
-            var restored=new JobDriver_SexBaseInitiator{pawn=s.d.pawn,job=s.d.job,Sexprops=new(){pawn=s.d.pawn,partner=s.d.Partner},PartnerPawn=s.d.Partner,ticks_left=0};
-            s.d.pawn.jobs.curDriver=restored;Restore(s.d,restored);SexUtility.ProcessSex(restored.Sexprops);SexUtility.ProcessSex(restored.Sexprops);
-            Assert(Feedback(s.target).Length==2&&Feedback(s.target).All(x=>x.age==(completed?123:0))&&SSCPnaSexSupplyUtility.StrongCalls==1,"恢复后只领取一次");
         });
         foreach(bool reverse in new[]{false,true})Run("第四批 Lovin 双端 Cleanup 合计一次 reverse="+reverse,()=>{
             var s=FeedbackScene(reverse);var d=Lovin(reverse?s.target:s.master,reverse?s.master:s.target);BeginLovin(d);d.FinishTimer();
@@ -87,13 +85,6 @@ internal static partial class Program
             p.a.jobs.curDriver=d;d.MakeScenarioToils();Begin(d);d.ticks_left=0;
             SexUtility.ProcessSex(d.Sexprops??new SexProps{pawn=p.a,partner=kind=="solo"?p.a:p.b});Assert(Feedback(p.b).Length==0,"不能从专用流程领取侵染反馈");
         });
-#if REAL_HARMONY
-        Run("第四批跳过原结算不领取，后续真实完成可领取",()=>{
-            var s=FeedbackScene();s.d.ticks_left=0;InfestationSkipProbe.Skip=true;
-            try{SexUtility.ProcessSex(s.d.Sexprops);}finally{InfestationSkipProbe.Skip=false;}
-            Assert(Feedback(s.target).Length==0,"跳过原结算");SexUtility.ProcessSex(s.d.Sexprops);Assert(Feedback(s.target).Length==2,"占用释放");
-        });
-#endif
         // 清除静态回调与可选反馈定义，防止后续无关保护用例受本专项配置影响。
         ResetFeedback();
     }

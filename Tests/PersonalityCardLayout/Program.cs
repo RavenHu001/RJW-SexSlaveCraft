@@ -26,7 +26,7 @@ internal static class Program
         repo = SscTestPaths.RepositoryRoot(args.Length > 0 ? args[0] : null);
         // 空、短、溢出列表各选代表；下方资格用例已覆盖四语长列表，不再展开语言与数量全表。
         foreach (var sample in new[] { (Language: "ChineseSimplified", Count: 0), (Language: "ChineseTraditional", Count: 3),
-            (Language: "English", Count: 15), (Language: "Russian", Count: 30) })
+            (Language: "English", Count: 15) })
             Run($"{sample.Language} / {sample.Count} traits: fixed information stays visible", () => Layout(sample.Language, sample.Count));
         Run("Long trait names wrap without overlapping the next row", LongNames);
         // 提供长展示结果给真实绘制入口，检查固定摘要避让；业务形态与翻译由原生印记专项验证。

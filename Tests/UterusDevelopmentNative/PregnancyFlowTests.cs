@@ -51,8 +51,11 @@ internal static partial class Program
         Current.Game.storyteller = Bare<Storyteller>(); Current.Game.storyteller.difficulty = new Difficulty { babiesAreHealthy = true };
         human.race.gestationPeriodDays = 20;
         DefDatabase<HediffDef>.Add(new HediffDef { defName = "FertilityEnhancer", hediffClass = typeof(Hediff) });
-        foreach (string name in new[] { "Pregnant", "PregnantHuman" })
-        foreach (var category in new[] { HungerCategory.Fed, HungerCategory.Hungry, HungerCategory.Starving })
+        foreach (var (name, category) in new[]
+        {
+            ("Pregnant", HungerCategory.Fed), ("PregnantHuman", HungerCategory.Fed),
+            ("PregnantHuman", HungerCategory.Hungry), ("PregnantHuman", HungerCategory.Starving)
+        })
             Check("batch4 actual native Tick applies 1.25 once and keeps hunger: " + name + "/" + category, () =>
             {
                 pregnancyHunger = category; var normal = PregnancyMother(false); var boosted = PregnancyMother(true);

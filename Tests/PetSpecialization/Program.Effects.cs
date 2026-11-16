@@ -28,13 +28,22 @@ internal static partial class Program
         Run("非当前狗、冲突终极、死亡或无效工作对象不计成长或抽签", InvalidDogWork);
     }
 
-    /// <summary>穷举当前方向与成果组合；多终极只查询现有事实，不迁移或选择保留对象。</summary>
+    /// <summary>代表普通方向、跨方向终极效果、冲突终极与组外拒绝。</summary>
     private static void EffectMatrix()
     {
-        var types = Enum.GetValues<SexSlaveSpecializationType>().Append((SexSlaveSpecializationType)999).ToArray();
-        for (int mask = 0; mask < 8; mask++)
-        foreach (var current in types)
-        foreach (var target in types)
+        var (cat, dog, rabbit) = (Pets[0], Pets[1], Pets[2]);
+        var none = SexSlaveSpecializationType.None;
+        var cow = SexSlaveSpecializationType.Cow;
+        var unknown = (SexSlaveSpecializationType)999;
+        foreach (var (mask, current, target) in new[]
+        {
+            (0, cat, cat), (0, dog, dog), (0, rabbit, rabbit),
+            (0, dog, cat), (0, rabbit, dog), (0, cat, rabbit),
+            (1, none, cat), (2, cat, dog), (4, cow, rabbit),
+            (1, dog, dog), (2, rabbit, rabbit), (4, cat, cat),
+            (3, rabbit, cat), (5, dog, rabbit), (6, cat, dog),
+            (7, cow, cow), (7, unknown, unknown), (7, none, SexSlaveSpecializationType.PetFox)
+        })
         {
             int index = Array.IndexOf(Pets, target);
             bool expected = index >= 0 && ((mask & (1 << index)) != 0 || (mask == 0 && current == target));

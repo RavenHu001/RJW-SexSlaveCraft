@@ -51,10 +51,14 @@ internal static partial class Program
             s.d.ticks_left=0;SexUtility.ProcessSex(s.d.Sexprops);Assert(BodyExp(s.target,s.unused)==0,"重复开始不改凭据");
         });
         foreach(bool completed in new[]{false,true}) Run("第三批进行中/已完成存档恢复 completed="+completed,()=>{
-            var s=BodyScene();s.d.ticks_left=0;if(completed)SexUtility.ProcessSex(s.d.Sexprops);
+            ResetFeedback();var s=BodyScene();s.target.needs.mood=new RimWorld.Need_Mood(s.target);
+            s.d.ticks_left=0;if(completed)SexUtility.ProcessSex(s.d.Sexprops);
+            foreach(var memory in Feedback(s.target))memory.age=123;
             var restored=new JobDriver_SexBaseInitiator{pawn=s.d.pawn,job=s.d.job,Sexprops=new(){pawn=s.d.pawn,partner=s.d.Partner,dictionaryKey=s.d.Sexprops.dictionaryKey},PartnerPawn=s.d.Partner,ticks_left=0};
             s.d.pawn.jobs.curDriver=restored;Restore(s.d,restored);SexUtility.ProcessSex(restored.Sexprops);SexUtility.ProcessSex(restored.Sexprops);
             Assert(Math.Abs(BodyExp(s.target,s.hand)-.01f)<.00001f&&SSCPnaSexSupplyUtility.StrongCalls==1,"恢复后合计一次且不重新解析");
+            var memories=Feedback(s.target);
+            Assert(memories.Length==2&&memories.All(x=>x.age==(completed?123:0)),"恢复后保留原反馈年龄");
         });
         Run("第三批旧场景缺字段恢复不回填",()=>{
             var s=BodyScene();Scribe.node.Clear();Scribe.mode=LoadSaveMode.Saving;s.d.ExposeData();Scribe.node.Remove("sscOrdinarySexParts");
@@ -70,11 +74,14 @@ internal static partial class Program
             SexUtility.OnProcess=()=>{if(nested)return;nested=true;SexUtility.ProcessSex(s.d.Sexprops);};
             try{SexUtility.ProcessSex(s.d.Sexprops);}finally{SexUtility.OnProcess=null;}
             Assert(Math.Abs(BodyExp(s.target,s.hand)-.01f)<.00001f,"唯一开发");
+            Assert(nested&&SSCPnaSexSupplyUtility.StrongCalls==1&&TrainerSpecializationProgressUtility.InitiatedSexAwards==1,"重入不抢认领");
         });
         Run("第三批原结算换人格停止开发",()=>{
             var s=BodyScene();s.d.ticks_left=0;SexUtility.OnProcess=()=>{SSCPersonalityRuntimeUtility.TryBeginMutation(s.target,out var scope);scope.Dispose();};
             try{SexUtility.ProcessSex(s.d.Sexprops);}finally{SexUtility.OnProcess=null;}
-            Assert(BodyExp(s.target,s.hand)==0,"原人格凭据失效");
+            SexUtility.ProcessSex(s.d.Sexprops);
+            Assert(BodyExp(s.target,s.hand)==0&&SSCPnaSexSupplyUtility.StrongCalls==0&&
+                TrainerSpecializationProgressUtility.InitiatedSexAwards==0,"原人格凭据失效且本场不能补领");
         });
         Run("第三批健康回调重入不能追加一次",()=>{
             var s=BodyScene();s.d.ticks_left=0;InfestationHealth.OnAdded=_=>SexUtility.ProcessSex(s.d.Sexprops);
@@ -83,14 +90,20 @@ internal static partial class Program
         });
         Run("第三批原方法异常未提前开发且释放临时占用",()=>{
             var s=BodyScene();s.d.ticks_left=0;SexUtility.OnProcess=()=>throw new InvalidOperationException("test original");
-            try{SexUtility.ProcessSex(s.d.Sexprops);}catch(InvalidOperationException){}finally{SexUtility.OnProcess=null;}
-            Assert(BodyExp(s.target,s.hand)==0,"异常前不开发");SexUtility.ProcessSex(s.d.Sexprops);Assert(BodyExp(s.target,s.hand)>.009f,"后续真实完成可领");
+            try{SexUtility.ProcessSex(s.d.Sexprops);throw new Exception("异常未保留");}
+            catch(InvalidOperationException ex) when(ex.Message=="test original"){}finally{SexUtility.OnProcess=null;}
+            Assert(BodyExp(s.target,s.hand)==0&&SSCPnaSexSupplyUtility.StrongCalls==0,"异常前无收益");
+            SexUtility.ProcessSex(s.d.Sexprops);
+            Assert(BodyExp(s.target,s.hand)>.009f&&SSCPnaSexSupplyUtility.StrongCalls==1,"后续真实完成可领");
         });
 #if REAL_HARMONY
         Run("第三批跳过原方法不认领开发",()=>{
-            var s=BodyScene();s.d.ticks_left=0;InfestationSkipProbe.Skip=true;
+            ResetFeedback();var s=BodyScene();s.target.needs.mood=new RimWorld.Need_Mood(s.target);
+            s.d.ticks_left=0;InfestationSkipProbe.Skip=true;
             try{SexUtility.ProcessSex(s.d.Sexprops);}finally{InfestationSkipProbe.Skip=false;}
-            Assert(BodyExp(s.target,s.hand)==0,"跳过原方法");SexUtility.ProcessSex(s.d.Sexprops);Assert(BodyExp(s.target,s.hand)>.009f,"仍可真实完成");
+            Assert(BodyExp(s.target,s.hand)==0&&Feedback(s.target).Length==0&&SSCPnaSexSupplyUtility.StrongCalls==0,"跳过原方法");
+            SexUtility.ProcessSex(s.d.Sexprops);
+            Assert(BodyExp(s.target,s.hand)>.009f&&Feedback(s.target).Length==2&&SSCPnaSexSupplyUtility.StrongCalls==1,"仍可真实完成");
         });
 #endif
         Run("第三批原版Lovin仍只结算第二批分量",()=>{

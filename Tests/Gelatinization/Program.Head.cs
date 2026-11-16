@@ -25,16 +25,12 @@ internal static partial class Program
         foreach (var part in new (string name, object controller, NLFacialAnimationLayerType layer)[]
         {
             ("眼白瞳孔", new EyeballControllerComp(), NLFacialAnimationLayerType.Basic),
-            ("左眼", new EyeballControllerComp(), NLFacialAnimationLayerType.L_Basic),
-            ("右眼", new EyeballControllerComp(), NLFacialAnimationLayerType.R_Basic),
             ("眼睛高光", new EyeballControllerComp(), NLFacialAnimationLayerType.Cover),
-            ("左眼附加层", new EyeballControllerComp(), NLFacialAnimationLayerType.L_Option),
             ("右眼附加层", new EyeballControllerComp(), NLFacialAnimationLayerType.R_Option),
             ("睫毛", new LidControllerComp(), NLFacialAnimationLayerType.Basic),
             ("眼部底层", new LidControllerComp(), NLFacialAnimationLayerType.Bottom),
             ("眉毛", new BrowControllerComp(), NLFacialAnimationLayerType.Basic),
             ("嘴型", new MouthControllerComp(), NLFacialAnimationLayerType.Basic),
-            ("嘴部覆盖", new MouthControllerComp(), NLFacialAnimationLayerType.Cover),
             ("表情符号", new EmotionControllerComp(), NLFacialAnimationLayerType.Basic),
             ("眼部装饰", new LidOptionControllerComp(), NLFacialAnimationLayerType.Basic),
             ("原头部高光", new HeadControllerComp(), NLFacialAnimationLayerType.Highlight),

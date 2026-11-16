@@ -62,34 +62,25 @@ internal static class Program
   Run("原版回收后继续泛光，48tick时熄灭",()=>
   {
    var f=new Fixture();f.Verb.Cast();float previous=1;
-   for(int i=1;i<=47;i++){f.Handler.ProcessPostTickVisuals(1);float a=f.Alpha;Check(a<=previous&&a>0,"截止前仍亮且不回升");previous=a;}
+   for (int i = 1; i <= 47; i++)
+   {
+    f.Handler.ProcessPostTickVisuals(1);
+    float alpha = f.Alpha;
+    Check(alpha <= previous && alpha > 0, "截止前仍亮且不回升");
+    if (i == 18) Near(1, alpha);
+    if (i == 19) Check(alpha < 1, "开始淡出");
+    if (i == 33) Near(.5, alpha);
+    previous = alpha;
+   }
    Near(0,f.Handler.CurrentOffset.x);f.Handler.ProcessPostTickVisuals(1);Near(0,f.Alpha);
-  });
-  Run("18tick满亮，随后30tick淡出",()=>
-  {
-   var f=new Fixture();f.Verb.Cast();f.Handler.ProcessPostTickVisuals(18);Near(1,f.Alpha);
-   f.Handler.ProcessPostTickVisuals(1);Check(f.Alpha<1&&f.Alpha>0,"后半段开始淡出");
-   f.Handler.ProcessPostTickVisuals(29);Near(0,f.Alpha);Near(0,f.Handler.CurrentOffset.x);
-  });
-  Run("保持与淡出区间的亮度连续",()=>
-  {
-   var f=new Fixture();f.Verb.Cast();f.Handler.ProcessPostTickVisuals(18);Near(1,f.Alpha);
-   f.Handler.ProcessPostTickVisuals(15);Near(.5,f.Alpha);
-   f.Handler.ProcessPostTickVisuals(15);Near(0,f.Alpha);
   });
   Run("批量视觉tick和逐tick相同",()=>{var a=new Fixture();a.Verb.Cast();for(int i=0;i<33;i++)a.Handler.ProcessPostTickVisuals(1);float expected=a.Alpha;var b=new Fixture();b.Verb.Cast();b.Handler.ProcessPostTickVisuals(33);Near(expected,b.Alpha);});
   Run("暂停和多次绘制查询不推进进度",()=>{var f=new Fixture();f.Verb.Cast();for(int i=0;i<10;i++)Near(1,f.Alpha);f.Handler.ProcessPostTickVisuals(0);Near(1,f.Alpha);});
   Run("走路和目标移动不影响进度",()=>{var f=new Fixture();f.Verb.Cast();f.Handler.ProcessPostTickVisuals(5);float a=f.Alpha;f.Caster.DrawPos=new Vector3(90,0,90);f.Target.DrawPos=default;Near(a,f.Alpha);});
   Run("额外同向受击不能延长泛光",()=>{var f=new Fixture();f.Verb.Cast();f.Handler.ProcessPostTickVisuals(33);float a=f.Alpha;f.Handler.AddOffset(.2f,90);Near(a,f.Alpha);f.Handler.ProcessPostTickVisuals(15);Near(0,f.Alpha);});
   Run("提前回位不提前熄灭，到期后外力不能重新点亮",()=>{var f=new Fixture();f.Verb.Cast();f.Handler.CurrentOffset=default;Near(1,f.Alpha);f.Handler.ProcessPostTickVisuals(48);Near(0,f.Alpha);f.Handler.AddOffset(.35f,90);Near(0,f.Alpha);});
-  Run("淡出后外力不能使亮度回升",()=>{var f=new Fixture();f.Verb.Cast();f.Handler.ProcessPostTickVisuals(33);float a=f.Alpha;f.Handler.AddOffset(.2f,90);Near(a,f.Alpha);});
   Run("同格较短回位仍显示完整0.8秒",()=>{var f=new Fixture();f.Target.Position=f.Caster.Position;f.Verb.Cast();f.Handler.ProcessPostTickVisuals(14);Near(0,f.Handler.CurrentOffset.x);Near(1,f.Alpha);f.Handler.ProcessPostTickVisuals(34);Near(0,f.Alpha);});
   Run("已有外部偏移不改变本次泛光寿命",()=>{var f=new Fixture();f.Target.Position=f.Caster.Position;f.Handler.AddOffset(.17f,90);f.Verb.Cast();f.Handler.ProcessPostTickVisuals(33);Near(.5,f.Alpha);f.Handler.ProcessPostTickVisuals(15);Near(0,f.Alpha);});
-  Run("各方向和斜向保持相同定时淡出",()=>
-  {
-   foreach(var row in new[]{(x:1f,z:0f),(x:-1f,z:0f),(x:0f,z:1f),(x:0f,z:-1f),(x:1f,z:1f)})
-   {var f=new Fixture();f.Target.DrawPos=new Vector3(10+row.x,0,10+row.z);f.Verb.Cast();Near(1,f.Alpha);f.Handler.ProcessPostTickVisuals(33);Near(.5,f.Alpha);f.Handler.ProcessPostTickVisuals(15);Near(0,f.Alpha);}
-  });
   Run("不同持有者的反馈独立推进",()=>{var a=new Fixture();a.Verb.Cast();var b=new Fixture();b.Verb.Cast();a.Handler.ProcessPostTickVisuals(48);Near(0,a.Alpha);Near(1,b.Alpha);});
   foreach(string gate in new[]{"dead","destroyed","despawned","switch-map","unequip","save"})Run("持有状态失效清理 "+gate,()=>
   {

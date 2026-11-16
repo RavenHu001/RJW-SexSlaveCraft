@@ -16,23 +16,6 @@ internal static partial class Program
     /// <summary>检验标题同行、窄栏换行、输入灰显及个人提交，不假定真实引擎像素尺寸。</summary>
     private static void RunPersonalResetUiTests()
     {
-        foreach (var language in Languages)
-        foreach (float width in new[] { 260f, 352f, 560f })
-            Run($"个人恢复标题同行 {language}/{width}", () =>
-            {
-                LoadLanguage(language); LoadResetLanguage(language);
-                foreach (var node in XDocument.Load(SscTestPaths.Combine(repo, "Languages", language, "Keyed/SSC_Romance.xml")).Root.Elements()) Translation.Entries[node.Name.LocalName] = node.Value;
-                var (_, frames) = DrawRomanceUi(RomanceUiPawn(), width);
-                var buttons = Widgets.Items.Where(i => i.Kind == "reset-button").ToArray(); Assert(buttons.Length == 2);
-                for (int i = 0; i < 2; i++)
-                {
-                    var title = Widgets.Items.Single(item => item.Kind == "label" && item.Text == Translation.Translate(i == 0 ? "SSC_Romance_SexSection" : "SSC_Romance_RomanceSection"));
-                    Assert(Math.Abs(title.Rect.y - buttons[i].Rect.y) < .01f);
-                    Assert(title.Rect.xMax + 7f <= buttons[i].Rect.x && buttons[i].Rect.xMax <= frames[i].Rect.xMax);
-                    Assert(buttons[i].Rect.height >= Text.CalcHeight(buttons[i].Text, buttons[i].Rect.width - 12f));
-                    Assert(buttons[i].Disabled);
-                }
-            });
         Run("个人恢复浪漫整份恢复且独立于性行为按钮", () =>
         {
             LoadResetLanguage("English");

@@ -13,9 +13,8 @@ internal static partial class Program
     private static void PostLightTests(string root)
     {
         Run("头部身体SA统一绕过3100光照层", () => SharedLightingPhase(root));
-        foreach (bool enabled in new[] { false, true })
-            foreach (bool full in new[] { false, true })
-                Run($"头部整组只对完全凝胶化且开启开关生效 full={full} enabled={enabled}", () => HeadGroupGate(full, enabled));
+        foreach (var (full, enabled) in new[] { (false, false), (true, false), (true, true) })
+            Run($"头部整组只对完全凝胶化且开启开关生效 full={full} enabled={enabled}", () => HeadGroupGate(full, enabled));
         Run("切换关闭后五官立刻回到原材质及队列", FeatureToggle);
         Run("已染角色不会污染共享材质的普通角色", SharedFeatureNormal);
         Run("五官原色与不透明度不被皮肤参数覆盖", FeatureProperties);

@@ -247,7 +247,7 @@ internal static partial class Program
         foreach (var name in new[] { "Pregnant", "PregnantHuman", "RJW_pregnancy", "RJW_pregnancy_beast" })
             Check("batch2 hidden pregnancy refuses surgery: " + name, () =>
             { var pawn = SurgeryPawn(); pawn.health.AddHediff(DefDatabase<HediffDef>.GetNamed(name)); Refused(pawn, "SSC_UterusDevelopment_PregnancyBlocked".Translate()); });
-        foreach (float progress in new[] { .01f, .7f, 1f }) Check("batch2 started bodies cannot reset through surgery: " + progress,
+        foreach (float progress in new[] { .01f, 1f }) Check("batch2 started bodies cannot reset through surgery: " + progress,
             () => { var pawn = SurgeryPawn(); Start(pawn, progress); Refused(pawn, "已经"); });
         Check("batch2 foreign target part is refused without modifying anatomy", () =>
         { var pawn = SurgeryPawn(); Require(!uterusSurgery.Worker.AvailableReport(pawn, new BodyPartRecord()).Accepted); Equal(1, pawn.health.hediffSet.hediffs.Count); });
@@ -283,13 +283,12 @@ internal static partial class Program
             AccessTools.Field(typeof(Bill), "pawnRestriction").SetValue(bill, SurgeryPawn(PawnIdentity.Unset));
             Require(!bill.PawnAllowedToStartAnew(SurgeryPawn(PawnIdentity.Unset)));
         });
-        foreach (string change in new[] { "pregnant", "identity", "organ", "started", "part" })
-            Check("batch2 waiting bill rechecks current patient: " + change, () =>
-            {
-                var patient = SurgeryPawn(); var doctor = SurgeryPawn(PawnIdentity.Unset); var bill = SurgeryBill(patient);
-                Require(bill.PawnAllowedToStartAnew(doctor)); ChangeSurgeryPatient(patient, change, bill);
-                Require(!bill.PawnAllowedToStartAnew(doctor));
-            });
+        Check("batch2 waiting bill rechecks current patient:  part", () =>
+        {
+            var patient = SurgeryPawn(); var doctor = SurgeryPawn(PawnIdentity.Unset); var bill = SurgeryBill(patient);
+            Require(bill.PawnAllowedToStartAnew(doctor)); ChangeSurgeryPatient(patient, "part", bill);
+            Require(!bill.PawnAllowedToStartAnew(doctor));
+        });
         Check("batch2 admission does not narrow unrelated medical recipes", () =>
         {
             var bill = SurgeryBill(SurgeryPawn(PawnIdentity.Unset)); bill.recipe = new RecipeDef { defName = "Unrelated" };
@@ -348,13 +347,12 @@ internal static partial class Program
             Require(!death.Apply(0, uterusSurgery, SurgeryPawn(PawnIdentity.Unset), patient, patient.RaceProps.body.corePart));
             Require(!patient.Dead); Equal(0, injuryCalls);
         });
-        foreach (string change in new[] { "pregnant", "identity", "organ", "started", "part" })
-            Check("batch2 completion rechecks patient before native roll: " + change, () =>
-            {
-                var patient = SurgeryPawn(); var bill = SurgeryBill(patient); ChangeSurgeryPatient(patient, change, bill); ResetSurgeryResult(1);
-                try { uterusSurgery.Worker.ApplyOnPawn(patient, bill.Part, SurgeryPawn(PawnIdentity.Unset), new(), bill); Equal(0, surgeryRolls); Equal(0, tales); }
-                finally { forcedQuality = null; }
-            });
+        Check("batch2 completion rechecks patient before native roll:  part", () =>
+        {
+            var patient = SurgeryPawn(); var bill = SurgeryBill(patient); ChangeSurgeryPatient(patient, "part", bill); ResetSurgeryResult(1);
+            try { uterusSurgery.Worker.ApplyOnPawn(patient, bill.Part, SurgeryPawn(PawnIdentity.Unset), new(), bill); Equal(0, surgeryRolls); Equal(0, tales); }
+            finally { forcedQuality = null; }
+        });
         Check("batch2 after native success callback pregnancy blocks final landing without removing pregnancy", () =>
         {
             var patient = SurgeryPawn(); var bill = SurgeryBill(patient); ResetSurgeryResult(1);

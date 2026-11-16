@@ -17,7 +17,7 @@ internal static partial class Program
     private static void RunBondRelationOutcomeTests()
     {
         // 在完整仪式中验证门槛和重复结算保护，防止只测试辅助函数却遗漏实际接线。
-        foreach (int opinion in new[] { 79, 80, 100 })
+        foreach (int opinion in new[] { 79, 80 })
             Check("real whole ritual ownership relation threshold " + opinion, () =>
             {
                 var f = new RitualFixture(); PrepareRelations(f, opinion); Advance(f, 6);

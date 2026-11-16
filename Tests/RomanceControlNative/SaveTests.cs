@@ -1,4 +1,4 @@
-﻿// AI 辅助生成：真实 XML／Scribe 阶段与跨 Pawn 引用；只为外部世界提供已加载实体登记。
+// AI 辅助生成：真实 XML／Scribe 阶段与跨 Pawn 引用；只为外部世界提供已加载实体登记。
 using System.Xml.Linq;
 using HarmonyLib;
 using SexSlaveCraft;
@@ -9,15 +9,48 @@ internal static partial class Program
     /// <summary>通过真实 XML 往返验证明确选择、旧字段、未知版本及跨角色授权引用。</summary>
     private static void SaveTests()
     {
-        foreach (var setting in Enum.GetValues<SSCRomanceSetting>())
-        foreach (bool value in new[] { false, true })
-            Check($"real Scribe explicit {setting}/{value}", () =>
+        var fields = new (SSCRomanceSetting Setting, string XmlKey)[]
+        {
+            (SSCRomanceSetting.InitiateRomance, "allowInitiateRomance"),
+            (SSCRomanceSetting.InitiateProposal, "allowInitiateProposal"),
+            (SSCRomanceSetting.InitiateBreakup, "allowInitiateBreakup"),
+            (SSCRomanceSetting.AcceptRomance, "allowAcceptRomance"),
+            (SSCRomanceSetting.AcceptProposal, "allowAcceptProposal"),
+            (SSCRomanceSetting.InitiateToMaster, "allowInitiateToMaster"),
+            (SSCRomanceSetting.InitiateToOthers, "allowInitiateToOthers"),
+            (SSCRomanceSetting.AlwaysAcceptMaster, "alwaysAcceptMaster"),
+            (SSCRomanceSetting.InitiateToSexSlave, "allowInitiateToSexSlave"),
+            (SSCRomanceSetting.AlwaysAcceptSexSlave, "alwaysAcceptSexSlave"),
+            (SSCRomanceSetting.AlwaysAcceptOthers, "alwaysAcceptOthers"),
+        };
+        var defaults = new SSCRomanceConfig();
+        for (int pattern = 0; pattern < 4; pattern++)
+        {
+            int bit = 1 << pattern;
+            Check("real Scribe distinct field pattern " + pattern, () =>
             {
-                var p = Slave(); var v = SSCRomancePreferences.GetView(p, setting);
-                Require(SSCRomancePreferences.TrySet(p, setting, value, v.Context, out _));
-                var saved = new RomanceFixture(Comp(p)); string path = Save(saved);
-                var restored = Slave(); Load(path, Comp(restored)); Equal(value, SSCRomancePreferences.GetView(restored, setting).Saved);
+                var p = Slave();
+                var selected = fields.Select(field => defaults.Get(field.Setting)).ToArray();
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    var setting = fields[i].Setting;
+                    // 1..11 的四位签名互异，每个字段都经过 true 和 false。
+                    selected[i] = ((i + 1) & bit) != 0;
+                    Require(SSCRomancePreferences.TrySet(p, setting, selected[i], SSCRomancePreferences.GetView(p, setting).Context, out _));
+                    for (int j = 0; j < fields.Length; j++)
+                        Equal(selected[j], SSCRomancePreferences.GetView(p, fields[j].Setting).Saved);
+                }
+                string path = Save(new RomanceFixture(Comp(p)));
+                var xml = XDocument.Load(path).Descendants("sscRomanceConfig").Single();
+                var restored = Slave(); Load(path, Comp(restored));
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    var field = fields[i];
+                    if (selected[i] != defaults.Get(field.Setting)) Equal(selected[i], (bool)xml.Element(field.XmlKey));
+                    Equal(selected[i], SSCRomancePreferences.GetView(restored, field.Setting).Saved);
+                }
             });
+        }
         foreach (bool entireNode in new[] { false, true })
             Check("real Scribe old missing configuration/fields defaults " + entireNode, () =>
             {

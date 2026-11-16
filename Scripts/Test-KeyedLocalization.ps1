@@ -3,7 +3,7 @@
 .SYNOPSIS
 检查受影响Keyed文件的四语结构、消费键和格式参数，不加载游戏程序集。
 .DESCRIPTION
-默认只检查本轮精简涉及的六个文件。五个模块文件以English核对完整键集合及参数索引；
+默认检查受精简影响的模块文件及文化规则，以English核对完整键集合及参数索引；
 混合模块SSC_Keys.xml只对MilkProductionToggle消费合同做跨语对齐，其余键仍检查结构和格式合法。
 独立消费合同防止四语同时漏键。允许调整正文、参数次序和格式，不固定键总数。
 #>
@@ -13,8 +13,10 @@ param(
     [string]$RuntimeRoot,
     [ValidateNotNullOrEmpty()][string[]]$Files = @(
         'SSC_RomanceMood.xml', 'SSC_Romance.xml', 'SSC_BodyManagement.xml',
-        'SSC_UterusDevelopment.xml', 'SSC_Cosmetic.xml', 'SSC_Keys.xml'
+        'SSC_UterusDevelopment.xml', 'SSC_Cosmetic.xml', 'SSC_Keys.xml',
+        'SSC_HediffFertility.xml', 'SSC_MasterProgression.xml'
     ),
+    [switch]$CultureGrammar,
     [switch]$PassThru
 )
 
@@ -24,6 +26,7 @@ $repo = (Resolve-Path -LiteralPath $RepositoryRoot).Path
 if (-not $RuntimeRoot) { $RuntimeRoot = Join-Path $repo '1.7' }
 $runtime = (Resolve-Path -LiteralPath $RuntimeRoot).Path
 $languages = @('English', 'ChineseSimplified', 'ChineseTraditional', 'Russian')
+$checkCultureGrammar = $CultureGrammar -or -not $PSBoundParameters.ContainsKey('Files')
 $contractOnlyFiles = @('SSC_Keys.xml')
 $selected = [Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
 foreach ($file in $Files) {
@@ -124,7 +127,21 @@ $contracts = @{
         'SSC_UterusDevelopment_MissingTorso' = ''; 'SSC_UterusDevelopment_ConfigUnavailable' = ''
         'SSC_UterusDevelopment_SlaveIdentityRequired' = ''; 'SSC_UterusDevelopment_PregnancyBlocked' = ''
         'SSC_UterusDevelopment_MissingOrgan' = ''; 'SSC_UterusDevelopment_AdultFemaleRequired' = ''
+        'SSC_UterusDevelopment_DescriptionDeveloping' = ''; 'SSC_UterusDevelopment_DescriptionInfertile' = ''
+        'SSC_UterusDevelopment_DescriptionFertile' = ''
         'SSC_UterusDevelopment_DoctorRequired' = ''; 'SSC_UterusDevelopment_Started' = '0'
+    }
+    'SSC_HediffFertility.xml' = @{
+        'SSC_HediffFertility_Factor' = '0'; 'SSC_HediffFertility_LactationOverrideNote' = ''
+    }
+    'SSC_MasterProgression.xml' = @{ 'SSC_MasterProgression_StageAdvanced' = '0,1,2' }
+    'SSC_Romance.xml' = @{
+        'SSC_Romance_Report_Romance' = ''; 'SSC_Romance_Report_Proposal' = ''
+        'SSC_Romance_Report_EndLover' = ''; 'SSC_Romance_Report_EndFiance' = ''
+        'SSC_Romance_Report_Divorce' = ''; 'SSC_Romance_Report_Breakup' = ''
+        'SSC_Romance_Result_NotOccurred' = '0,1,2'; 'SSC_Romance_Result_Rejected' = '0,1,2'
+        'SSC_Romance_Result_RelationshipChanged' = '0,1,2'; 'SSC_Romance_Result_Unconfirmed' = '0,1,2'
+        'SSC_Romance_Result_RejectedAndSeparated' = '0,1'
     }
     'SSC_Cosmetic.xml' = @{ 'SSC_Cosmetic_MedicineRequired' = '0' }
     'SSC_Keys.xml' = @{ 'SSC_ITab_MilkProductionToggle' = '' }
@@ -149,6 +166,70 @@ if ($selected.Contains('SSC_RomanceMood.xml')) {
     $contracts['SSC_RomanceMood.xml'] = $moodContract
 }
 
+if ($checkCultureGrammar) {
+    $meme = 'SSC_Meme_MasterSlaveOrder'
+    $generalHeads = @(
+        'memeAdjective', 'memeCreed', 'memeHyphenPrefix', 'r_leaderTitle(priority=10)',
+        'SSC_LeaderPreset', 'SSC_LeaderPreset', 'SSC_LeaderPreset',
+        'SSC_MoralistPreset', 'SSC_MoralistPreset', 'SSC_MoralistPreset',
+        'SSC_BindingRitualPreset', 'SSC_BindingRitualPreset', 'SSC_BindingRitualPreset', 'memeConcept'
+    )
+    $storyHeads = @(
+        'creation', 'episode', 'intro', 'conflict', 'founderJoin', 'victory',
+        'setup', 'story', 'lessonIntro', 'lesson', 'lessonReinforcement', 'archistBasis', 'archistFact', 'archistProphecy',
+        'animistBasis', 'animistFact', 'animistProphecy'
+    )
+    $rules = [ordered]@{}
+    for ($i = 0; $i -lt $generalHeads.Count; $i++) { $rules["$meme.generalRules.rulesStrings.$i"] = $generalHeads[$i] }
+    for ($i = 0; $i -lt $storyHeads.Count; $i++) {
+        $uses = if ($i -in @(1, 7)) { 'uses=1,' } else { '' }
+        $rules["$meme.descriptionMaker.rules.rulesStrings.$i"] = $storyHeads[$i] + "(${uses}tag=meme_SSC_MasterSlaveOrder)"
+    }
+    foreach ($language in $languages) {
+        $context = "$language/DefInjected/MemeDef/SSC_Culture.xml"
+        $entries = Read-KeyedEntries (Join-Path $runtime "Languages/$context") $context
+        $expected = @("$meme.label", "$meme.description") + @($rules.Keys)
+        for ($i = 0; $i -lt 3; $i++) {
+            foreach ($field in @('ideoName', 'theme', 'adjective', 'member')) { $expected += "$meme.symbolPacks.$i.$field" }
+        }
+        if ($entries.Count -ne $expected.Count) { throw "Unexpected culture key count in $context" }
+        foreach ($key in $expected) {
+            if (-not $entries.ContainsKey($key)) { throw "Missing culture key in ${context}: $key" }
+            if ($entries[$key] -match 'TODO|\[占位') { throw "Unfinished culture text in ${context}: $key" }
+        }
+        foreach ($key in $rules.Keys) {
+            $head = $rules[$key] + '->'
+            if (-not $entries[$key].StartsWith($head, [StringComparison]::Ordinal)) { throw "Culture rule header mismatch in ${context}: $key" }
+            $body = $entries[$key].Substring($head.Length)
+            if ([string]::IsNullOrWhiteSpace($body)) { throw "Missing culture rule body in ${context}: $key" }
+            if ($key -ceq "$meme.generalRules.rulesStrings.3") {
+                if ($body -cne '[SSC_LeaderPreset]') { throw "Culture leader rule lost its preset reference in $context" }
+                continue
+            }
+            if ($key -match 'descriptionMaker\.rules\.rulesStrings\.(\d+)$' -and [int]$Matches[1] -lt 8) {
+                $index = [int]$Matches[1]
+                $tokens = [regex]::Matches($body, '\[([^\[\]]+)\]')
+                $allowed = @('deity0_name', 'memberNamePlural', 'founderName', 'founder_pronoun', 'place_name', 'foeLeader')
+                if (-not $tokens.Count -or @($tokens | Where-Object { $_.Groups[1].Value -cnotin $allowed }).Count -or
+                    [regex]::Replace($body, '\[[^\[\]]+\]', '') -match '[\[\]]') {
+                    throw "Invalid culture story references in ${context}: $key"
+                }
+                $founder = $body.Contains('[founderName]')
+                if (($index -in @(2, 3) -and $founder) -or ($index -in @(4, 5, 6, 7) -and -not $founder) -or
+                    ($index -eq 4 -and -not $body.Contains('[deity0_name]'))) {
+                    throw "Unexpected founder/deity references in ${context}: $key"
+                }
+            }
+            elseif ($body -match '[\[\]]|ERR|Errorism|Filestring') { throw "Unresolved culture text in ${context}: $key" }
+        }
+        foreach ($prefix in @('SSC_LeaderPreset', 'SSC_MoralistPreset', 'SSC_BindingRitualPreset')) {
+            $pool = @($rules.Keys | Where-Object { $rules[$_] -ceq $prefix } | ForEach-Object { $entries[$_].Substring($prefix.Length + 2) })
+            if (@($pool | Sort-Object -CaseSensitive -Unique).Count -ne 3) { throw "Duplicate culture preset in ${context}: $prefix" }
+        }
+    }
+    Write-Host "Culture grammar: fixed DefInjected keys, rule headers, references and preset pools checked in $($languages.Count) languages."
+}
+
 $seen = @{}
 foreach ($language in $languages) { $seen[$language] = [Collections.Generic.HashSet[string]]::new([StringComparer]::Ordinal) }
 $results = [Collections.Generic.List[object]]::new()
@@ -167,6 +248,9 @@ foreach ($file in $Files) {
             foreach ($key in $contracts[$file].Keys) {
                 if (-not $entries.ContainsKey($key)) { throw "Missing consumed Keyed entry in ${context}: $key" }
                 if ($formats[$key] -cne $contracts[$file][$key]) { throw "Consumed parameter contract mismatch in ${context}: $key" }
+                if ($key.StartsWith('SSC_Romance_Report_') -and $entries[$key] -cnotmatch '\bTargetA\b') {
+                    throw "Missing TargetA in ${context}: $key"
+                }
             }
         }
         if ($null -eq $reference) { $reference = $entries; $referenceFormats = $formats }

@@ -15,7 +15,10 @@ internal static partial class Program
     private static void GelFourthStepTests(string repo, Harmony harmony)
     {
         var previous = SSCMod.settings; SSCMod.settings = new SSCSettings();
-        SSCDefOf.SSC_PersonalityExcreted_Done ??= DefDatabase<HediffDef>.GetNamed("Hediff_SSC_PersonalityExcreted_Done");
+        // 分区不能依赖第三批空壳用例先登记这个夹具。
+        const string hollowDefName = "Hediff_SSC_PersonalityExcreted_Done";
+        SSCDefOf.SSC_PersonalityExcreted_Done ??= DefDatabase<HediffDef>.GetNamedSilentFail(hollowDefName) ??
+            AddGelDef(new HediffDef { defName = hollowDefName, hediffClass = typeof(Hediff), initialSeverity = 1 });
         var sideEffects = new[] { AccessTools.Method(typeof(JobDriver_Sex), "PlayCumSound"),
             AccessTools.Method(typeof(JobDriver_Sex), "PlayOrgasmVoice"), AccessTools.Method(typeof(JobDriver_Sex), "CalculateSatisfactionPerTick"),
             AccessTools.Method(typeof(SexUtility), "SatisfyPersonal") };

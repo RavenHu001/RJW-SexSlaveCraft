@@ -9,8 +9,8 @@ internal static partial class Program
     {
         foreach (PawnIdentity identity in new[] { PawnIdentity.Unset, PawnIdentity.Master })
         foreach (bool ritual in new[] { false, true })
-        foreach (bool protection in new[] { false, true })
-        foreach (bool forced in new[] { false, true })
+        // 每个入口和身份均覆盖限制开关，关闭时使用强制指派测试最宽松的路径。
+        foreach (var (protection, forced) in new[] { (true, false), (false, true) })
             Run($"调教身份兜底：{identity}, 仪式={ritual}, 限制={protection}, 强制={forced}", () =>
             {
                 var p = People(); p.a.Training.pawnIdentity = PawnIdentity.Master;

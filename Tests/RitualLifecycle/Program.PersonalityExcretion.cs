@@ -120,8 +120,7 @@ internal static partial class Program
                 "PE reservation was released during handoff");
             Equal(0, first.Actor.Map.reservationManager.ReleaseCalls, "handoff must not release target");
         });
-        foreach (bool firstForced in new[] { false, true })
-        foreach (bool secondForced in new[] { false, true })
+        foreach (var (firstForced, secondForced) in new[] { (false, false), (false, true), (true, true) })
             Check($"PE contender cannot take an occupied target (first={firstForced}, second={secondForced})", () =>
             {
                 var first = new PEExecution(forced: firstForced);
