@@ -2,11 +2,11 @@
 
 [项目首页](../README.md) · [玩家阅读入口](Players/README.md) · [当前规划](Design/README.md) · [开发资料](Development/README.md)
 
-## 当前开发版本
-
-**2.5.1 开发版（2026-11-15 登记）。** 纳入 PNA 雾气系列、主从关系命令栏修复、启动兼容修复与诊断窗口更新。 [版本说明](Releases/2.5.1/2.5.1发布说明.md) · [完成索引](Development/Completed/README.md#ssc-251-completed) · [发布准备](Releases/2.5.1/2.5.1版本验证.md)
-
 ## 当前正式版本
+
+**2.5.1 于 2026-11-15 正式发布。** 完整门禁通过 52 套、6350/6350 项。 [下载 2.5.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.1) · [版本说明](Releases/2.5.1/2.5.1发布说明.md) · [发布归档](Releases/2.5.1/2.5.1版本验证.md#ssc-251-release) · [完成索引](Development/Completed/README.md#ssc-251-completed)
+
+## 上一正式版本
 
 **2.5.0 于 2026-11-12 正式发布。** 完整门禁通过 52 套、6544/6544 项。 [下载 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0) · [发布归档](Releases/2.5.0/2.5.0版本验证.md#ssc-250-release) · [完成索引](Development/Completed/README.md#ssc-250-completed)
 
