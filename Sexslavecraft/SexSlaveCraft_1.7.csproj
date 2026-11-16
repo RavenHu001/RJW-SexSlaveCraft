@@ -173,6 +173,7 @@
     <Compile Include="common/Romance/SSCRomanceMoodGroups.cs" />
     <Compile Include="common/Romance/SSCRomanceMoodRequest.cs" />
     <Compile Include="ThePatches/Harmony_RomanceMoodHistory.cs" />
+    <Compile Include="ThePatches/Harmony_SexSlaveTraitDuplication.cs" />
     <Compile Include="ThePatches/Harmony_RomanceMoodAdmissionTail.cs" />
     <Compile Include="common/Romance/SSCRomanceInteractionFacts.cs" />
     <Compile Include="common/Romance/SSCRomanceLogGrammar.cs" />

@@ -42,6 +42,13 @@ namespace SexSlaveCraft
 #endif
             }
 #if SSC_RW17
+            // 身份与峰值都已反序列化。容器中的尸体和远处飞船货物可能不在普通快照中，
+            // 复用持有者遍历补齐。先收集再写特性，避免原版特性通知在枚举中改变集合。
+            var traitPawns = new HashSet<Pawn>(pawns);
+            using (var world = SSCBondOverviewWorld.Rent())
+                world.CollectCandidates(null, pawn => { if (pawn != null) traitPawns.Add(pawn); });
+            foreach (Pawn pawn in traitPawns) SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(pawn);
+
             // 角色引用、绑定及人格完整恢复后，才认领原存档的当前/排队命令。
             SSCDailyTrainingOccupancy.ReconcileAfterLoad(pawns);
             SSCRomanceCommandGameComponent.Current?.ReconcileAfterLoad();

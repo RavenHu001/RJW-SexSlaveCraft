@@ -409,6 +409,10 @@ namespace SexSlaveCraft
                 SSCPnaExposureUtility.RefreshBodyState(clone);
                 clone.needs?.AddOrRemoveNeedsAsAppropriate();
                 SSCPnaExposureUtility.GetNeed(clone)?.SetInitialLevel();
+#if SSC_RW17
+                // 身份和需求准入都已就位，用副本最终持有的需求派生特性。
+                SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(clone);
+#endif
                 // 原生复制与特质/健康通知已完成，再清一次，确保任何复制回调都不能带入来源偏好。
                 SSCAbilityToggleUtility.ClearPersonalityState(clone);
             }
@@ -594,7 +598,7 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>复制来源特性并按接收者最高恶堕值重新协调性奴特性，不直接复制该派生特性。</summary>
+        /// <summary>复制来源的普通特性，性奴特性按副本状态派生。</summary>
         private static void SyncTraits(Pawn source, Pawn clone)
         {
             if (source?.story?.traits?.allTraits == null || clone?.story?.traits?.allTraits == null) return;
@@ -607,7 +611,9 @@ namespace SexSlaveCraft
                 clone.story.traits.GainTrait(new Trait(trait.def, trait.Degree, trait.ScenForced));
             }
 
+#if !SSC_RW17
             SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(clone);
+#endif
         }
 
         /// <summary>销毁并丢弃被克隆分娩替代的预生成幼体，随后清空妊娠组件列表。</summary>

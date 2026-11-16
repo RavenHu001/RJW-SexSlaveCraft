@@ -276,7 +276,9 @@ namespace SexSlaveCraft
                     highestCorruptionLevel = CurLevel;
                 else
                     RecordCurrentCorruption();
+#if !SSC_RW17
                 SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(pawn);
+#endif
             }
         }
     }
