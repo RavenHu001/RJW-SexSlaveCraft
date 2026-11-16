@@ -1,11 +1,10 @@
 # RJW-SexSlaveCraft Quick Start Guide
 
-**SSC 2.5.0 guide for RimWorld 1.7.** The package includes SSC 2.4.1 for RimWorld 1.6. [Download 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0)
+**SSC 2.5.1 guide for RimWorld 1.7.** The package includes SSC 2.4.1 for RimWorld 1.6. [Download 2.5.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.1)
 
-[2.5.0 Training Management](#ssc-250) · [2.5.0 notes](Docs/Releases/2.5.0/2.5.0发布说明.md#english) · [2.4.10 pet paths](#ssc-2410) · [2.4.10 release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
+[2.5.1 PNA mist](#ssc-pna-mist) · [2.5.1 release notes](Docs/Releases/2.5.1/2.5.1发布说明.md#english) · [2.5.0 Training Management](#ssc-250) · [2.5.0 notes](Docs/Releases/2.5.0/2.5.0发布说明.md#english) · [2.4.10 pet paths](#ssc-2410) · [2.4.10 release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
 
 
-[PNA mist equipment (1.7 development build)](#ssc-pna-mist)
 
 <a id="ssc-250"></a>
 
@@ -298,7 +297,7 @@ When Cow Specialization is active, completed sex scenes accelerate milk producti
 
 <a id="ssc-pna-mist"></a>
 
-### PNA mist shells, traps and emitter (1.7 development build)
+### PNA mist shells, traps and emitter (2.5.1, RimWorld 1.7)
 
 - Research **Industrial aphrodisiac nanofluid weapons**, then make **PNA mist shells** at a machining table and load them into a mortar. Research vanilla **IEDs** as well to build **PNA mist traps**. Both instantly add **25 percentage points** of PNA load to eligible targets reached by the burst within five cells. The burst deals zero physical damage.
 - Research **Precision electrothermal mist**, then build the **PNA mist emitter** under **Misc**, connect it to power and refuel it with **ordinary PNA**. Set the radius (5–10 cells) and mode independently. In the same room, Low settles toward a natural equilibrium and sustained exposure on High can reach 100%. After leaving the area or switching the device off, existing load wears off normally. [Full rules and operating costs](PLAYER_GUIDE_EN.md#ssc-pna-mist)

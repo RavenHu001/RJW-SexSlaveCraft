@@ -1,6 +1,6 @@
 # 玩家阅读入口 / Player documentation
 
-**2.5.1 开发预览。** PNA 雾气系列、关系命令栏和兼容改动见[双语版本说明](../Releases/2.5.1/2.5.1发布说明.md)。下方为当前正式版的下载与指南。
+**2.5.1 玩家入口。** PNA 雾气系列、关系命令栏和兼容改动见[双语版本说明](../Releases/2.5.1/2.5.1发布说明.md)。[下载 2.5.1 正式版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.1)
 
 **2.5.0 玩家入口。** 调教管理窗口和多调教员指派见[中文入门](../../读我，玩法介绍.md#ssc-250)、[完整规则](../../机制详解.md#ssc-250)、[English quick start](../../QUICK_START_EN.md#ssc-250) 和 [English player guide](../../PLAYER_GUIDE_EN.md#ssc-250)。 [下载 2.5.0 正式版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0)
 
@@ -34,7 +34,7 @@
 
 | 问题 | 入门 | 完整规则 |
 | --- | --- | --- |
-| PNA 雾气炮弹、陷阱与发烟器（1.7 开发版） | [入门](../../读我，玩法介绍.md#ssc-pna-mist) | [规则与消耗](../../机制详解.md#ssc-pna-mist) |
+| PNA 雾气炮弹、陷阱与发烟器（2.5.1，1.7） | [入门](../../读我，玩法介绍.md#ssc-pna-mist) | [规则与消耗](../../机制详解.md#ssc-pna-mist) |
 | 2.4.10 宠物兔／宠物狐与猫狗调整 | [入门](../../读我，玩法介绍.md#ssc-2410) | [规则](../../机制详解.md#ssc-2410) |
 | 2.4.9堕落凝胶 | [入门](../../读我，玩法介绍.md#ssc-249-gel) | [规则](../../机制详解.md#ssc-249-gel) |
 | 2.4.9发烟器／地图与旅队阶段维持 | [入门](../../读我，玩法介绍.md#ssc-249) | [规则](../../机制详解.md#ssc-249) |
@@ -53,7 +53,7 @@
 
 ## English reading order
 
-For PNA mist equipment in the RimWorld 1.7 development build, use the [quick start](../../QUICK_START_EN.md#ssc-pna-mist) or the [full rules and operating costs](../../PLAYER_GUIDE_EN.md#ssc-pna-mist).
+For PNA mist equipment in SSC 2.5.1 on RimWorld 1.7, use the [quick start](../../QUICK_START_EN.md#ssc-pna-mist) or the [full rules and operating costs](../../PLAYER_GUIDE_EN.md#ssc-pna-mist).
 
 Development 2.4.9 also adds [Depravity Gel](../../QUICK_START_EN.md#ssc-249-gel), with [full rules](../../PLAYER_GUIDE_EN.md#ssc-249-gel), alongside [emitters and PNA maintenance](../../QUICK_START_EN.md#ssc-249), with [full rules](../../PLAYER_GUIDE_EN.md#ssc-249). These additions are included in 2.4.9 and were not in the earlier public v2.4.8 package.
 

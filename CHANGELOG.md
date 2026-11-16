@@ -1,6 +1,6 @@
 # 更新日志 / Changelog — SexSlaveCraft（TieJin 接续版 / TieJin continuation）
 
-## [2.5.1] — 2026-11-15 — 开发版 / Unreleased — PNA 雾气与兼容修复 / PNA Mist and Compatibility
+## [2.5.1] — 2026-11-15 — 正式版 / Release — PNA 雾气与兼容修复 / PNA Mist and Compatibility
 
 从 `v2.5.0` 后至 `5d9c999d`，纳入 32 个非合并提交、1 个合并提交和 193 个净变更路径。面向 RimWorld 1.7。[双语说明](Docs/Releases/2.5.1/2.5.1发布说明.md) · [提交归并](Docs/Releases/2.5.1/2.5.1开发归并核对.md) · [验证记录](Docs/Releases/2.5.1/2.5.1版本验证.md)
 
@@ -13,7 +13,7 @@
 
 RimWorld 1.7 gains PNA mist mortar shells and IEDs. Both use the same five-tile blast and instantly raise each eligible target’s PNA load by 25 percentage points. Both use purple-tinted vanilla smoke textures. The PNA mist emitter has its own single-tile sprite and separate controls for radius (5–10 tiles) and mode. Low mode settles at an equilibrium with natural decay, while high mode can bring eligible targets to full load. All three features passed in-game acceptance. After test cleanup, the PnaLoad and native emitter suites passed 379/379 and 23/23 respectively.
 
-The update fixes relationship command flicker with WOWGAG. If a mod conflict causes a patch or compatibility group to fail registration at startup, SSC skips the failed patch or group and continues loading the rest. Daily Training checks its required hooks before issuing jobs. When a hook is missing, SSC blocks the affected jobs to prevent them from repeatedly starting, aborting and being assigned again. Diagnostics now shows registration and fallback details. The changes passed scoped in-game checks on development builds. Formal 2.5.1 release checks are pending.
+The update fixes relationship command flicker with WOWGAG. If a mod conflict causes a patch or compatibility group to fail registration at startup, SSC skips the failed patch or group and continues loading the rest. Daily Training checks its required hooks before issuing jobs. When a hook is missing, SSC blocks the affected jobs to prevent them from repeatedly starting, aborting and being assigned again. Diagnostics now shows registration and fallback details. The changes passed scoped in-game checks on development builds. The validation record tracks the formal release checks and remaining compatibility cases.
 
 ## [2.5.0] — 2026-11-12 — 调教管理 / Training Management
 

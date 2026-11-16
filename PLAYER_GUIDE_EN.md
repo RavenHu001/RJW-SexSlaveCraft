@@ -1,11 +1,10 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-**SSC 2.5.0 guide for RimWorld 1.7.** The package includes SSC 2.4.1 for RimWorld 1.6. [Download 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0)
+**SSC 2.5.1 guide for RimWorld 1.7.** The package includes SSC 2.4.1 for RimWorld 1.6. [Download 2.5.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.1)
 
-[2.5.0 Training Management](#ssc-250) · [2.5.0 notes](Docs/Releases/2.5.0/2.5.0发布说明.md#english) · [2.4.10 pet paths](#ssc-2410) · [2.4.10 release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
+[2.5.1 PNA mist](#ssc-pna-mist) · [2.5.1 release notes](Docs/Releases/2.5.1/2.5.1发布说明.md#english) · [2.5.0 Training Management](#ssc-250) · [2.5.0 notes](Docs/Releases/2.5.0/2.5.0发布说明.md#english) · [2.4.10 pet paths](#ssc-2410) · [2.4.10 release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
 
 
-[PNA mist equipment (1.7 development build)](#ssc-pna-mist)
 
 <a id="ssc-250"></a>
 
@@ -993,7 +992,7 @@ These are baseline values before quality, users and other modifiers. Damage and 
 
 <a id="ssc-pna-mist"></a>
 
-### 11.9 PNA mist shells, traps and emitter (1.7 development build)
+### 11.9 PNA mist shells, traps and emitter (2.5.1, RimWorld 1.7)
 
 | Equipment | Research and materials |
 | --- | --- |
