@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_BreakdownSuccess.stages.0.label>облегчение после тренировки</SSC_BreakdownSuccess.stages.0.label>
+  <SSC_BreakdownSuccess.stages.0.description>Наконец-то удалось расслабиться. Теперь мне снова спокойно.</SSC_BreakdownSuccess.stages.0.description>
+  <SSC_BreakdownTrainerOpinion.stages.0.label>помощь во время приступа</SSC_BreakdownTrainerOpinion.stages.0.label>
+  <SSC_BreakdownTrainerOpinion.stages.0.description>Мне помогли именно тогда, когда я больше всего в этом нуждался.</SSC_BreakdownTrainerOpinion.stages.0.description>
+  <SSC_BreakdownFailure.stages.0.label>неразрешённый приступ</SSC_BreakdownFailure.stages.0.label>
+  <SSC_BreakdownFailure.stages.0.description>Худшее уже позади, но беспокойство и раздражение всё ещё не проходят.</SSC_BreakdownFailure.stages.0.description>
+</LanguageData>

@@ -66,6 +66,7 @@ namespace SexSlaveCraft
             // 只恢复本场挂载的具体实例。健康列表由原版单独保存，引用在 Scribe 的交叉解析阶段接回。
             Scribe_References.Look(ref effect, "sscSlaveBreakdownEffect");
             ExposeBehavior();
+            ExposeTrainingRequest();
         }
 
         public override void MentalStateTick(int delta)
@@ -81,6 +82,9 @@ namespace SexSlaveCraft
                 return;
             }
 
+            // 已开场的调教可以同步延长状态和 Hediff，先处理授权，再用最新期限结算整小时增量。
+            TickTrainingRequest(now, delta);
+            if (pawn.MentalState != this) return;
             // 到期时健康追踪器可能已移除兜底 Hediff，最后一个完整小时仍由原发作结算。
             AdvanceBroken(Math.Min(now, expiresAt));
             // 添加或修改 FeelingBroken 会进入健康回调，回调可能已经结束或替换了状态。
@@ -191,6 +195,8 @@ namespace SexSlaveCraft
             if (ending || Scribe.mode != LoadSaveMode.Inactive) return;
             CaptureCarrier();
             ending = true;
+            // 只有确认开始过的发作才结算。完成出口先写入成功，原版恢复不会把成功改成中断。
+            if (episodeResult == EpisodeResult.None && initialized) episodeResult = EpisodeResult.Failure;
             // 第一步存档里的已启动状态只有到期时间。原版启动通知在 PostStart 前撤销状态时没有到期时间。
             int now = SSCSlaveBreakdown.Now;
             if ((initialized || (!attemptedStart && expiresAt >= 0)) && now >= 0 &&
@@ -211,7 +217,16 @@ namespace SexSlaveCraft
             }
             finally
             {
-                try { StopBehaviorJob(); }
+                try
+                {
+                    // 发布仍需原调教员作好感对象。无论回调结果，都释放信件、批准与本场行为。
+                    try { PublishEpisodeOutcome(); }
+                    finally
+                    {
+                        try { CancelTrainingRequest(); }
+                        finally { StopBehaviorJob(); }
+                    }
+                }
                 finally
                 {
                     try { if (HasEffect() && pawn.health == health) health.RemoveHediff(effect); }

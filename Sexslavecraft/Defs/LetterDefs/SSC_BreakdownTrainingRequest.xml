@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 沿用原版选择信外观和存档结构，由受方的精神状态持有决定权限。 -->
+  <LetterDef ParentName="CustomChoiceLetterBase">
+    <defName>SSC_BreakdownTrainingRequest</defName>
+    <letterClass>SexSlaveCraft.ChoiceLetter_SSCBreakdownTraining</letterClass>
+  </LetterDef>
+</Defs>

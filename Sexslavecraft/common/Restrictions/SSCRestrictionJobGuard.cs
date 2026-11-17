@@ -97,6 +97,20 @@ namespace SexSlaveCraft
                     SSCIdentityUtility.IsSexSlave(request.Receiver)) && HasStarted(driver, request);
         }
 
+        private static JobDriver_Sex ResolveInitiator(JobDriver_Sex driver)
+            => driver is JobDriver_SexBaseReciever receiver ? SSCRestrictionJobContext.FindInitiator(receiver) : driver;
+
+        /// <summary>普通场景可沿用开始凭据。发作特批的准入始终由受方的当前发作持有。</summary>
+        private static bool CanReuseStartedPermission(JobDriver_Sex driver, SSCRestrictionRequest request)
+        {
+#if SSC_RW17
+            // 接收端与发起端同样复核特批。已有 RJW Start 凭据不能延续已撤销的玩家批准。
+            if (MentalState_SSCSlaveBreakdown.IsBreakdownTraining(ResolveInitiator(driver)?.job)) return false;
+#endif
+            return HasStarted(driver, request) && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
+                SSCIdentityUtility.IsSexSlave(request.Receiver));
+        }
+
         /// <summary>预约阶段只返回许可，不结束正在被任务跟踪器安装的驱动，也不创建配置或玩家命令豁免。</summary>
         public static bool TryReserve(JobDriver_Sex driver, out bool allowed, bool ordered = false)
         {
@@ -107,8 +121,7 @@ namespace SexSlaveCraft
             { State(driver).Rejected = true; return true; }
 #endif
             if (!SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request)) return false;
-            if (HasStarted(driver, request) && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
-                SSCIdentityUtility.IsSexSlave(request.Receiver))) return true;
+            if (CanReuseStartedPermission(driver, request)) return true;
 #if SSC_RW17
             // 只拒绝已确认失配的驱动的新请求。已具备有效凭据的场景优先沿用原收尾路径。
             if (!CanStartWithInstalledHooks(driver, ordered))
@@ -144,8 +157,7 @@ namespace SexSlaveCraft
                 return true;
             }
 #endif
-            if (HasStarted(driver, request) && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
-                SSCIdentityUtility.IsSexSlave(request.Receiver))) return true;
+            if (CanReuseStartedPermission(driver, request)) return true;
 #if SSC_RW17
             // 在途任务也可能来自读档或绕过常规派发的调用。准备检查继续用现有拒绝清理，防止遗留等待任务。
             if (!CanStartWithInstalledHooks(driver))
@@ -176,8 +188,19 @@ namespace SexSlaveCraft
             // 专用适配只处理已登记请求；其他用途继续走下方统一策略，不能形成玩家命令通用白名单。
             if (SSCUapGroupRuntime.Evaluate(driver, out decision, out reason)) return decision.Allowed;
 #endif
-            JobDriver_Sex actor = driver is JobDriver_SexBaseReciever receiver
-                ? SSCRestrictionJobContext.FindInitiator(receiver) : driver;
+            JobDriver_Sex actor = ResolveInitiator(driver);
+#if SSC_RW17
+            if (MentalState_SSCSlaveBreakdown.IsBreakdownTraining(actor?.job))
+            {
+                // 此处使用驱动提供的实际方向，保留 SexProps 配对失效等信息。只有候选扫描才能用两名 Pawn 构造方向。
+                SSCTrainingAdmission approved = SSCRestrictionTrainingUtility.EvaluateBreakdown(request);
+                decision = approved.Permission;
+                bool authorized = MentalState_SSCSlaveBreakdown.CurrentFor(request.Receiver)
+                    ?.OwnsTrainingJob(request.Initiator, actor.job) == true;
+                reason = authorized ? approved.Reason : Strings.Train_Reason_InvalidFaction;
+                return authorized && approved.Allowed;
+            }
+#endif
             bool automaticDaily = actor is JobDriver_Training && !ordered && actor.job?.playerForced != true;
             SSCTrainingAdmission admission = SSCRestrictionTrainingUtility.Evaluate(request, automaticDaily);
             decision = admission.Permission;

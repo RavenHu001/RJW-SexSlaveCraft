@@ -238,8 +238,11 @@ namespace SexSlaveCraft
             return TryStartReceiverJobCore(actor, partner, parentJob, receiverJobDef, false, false, false, null,
                 dailyHandoffCurrent: HandoffCurrent);
 
+            // 走位同步、释放预约和安装接收器均可重入。特批在每次交接检查时还须保有原批准。
             bool HandoffCurrent() => occupancy?.IsCurrentFor(context) == true && SSCIdentityUtility.IsSexSlave(partner) &&
-                !SSCDailyTrainingOccupancy.HasOtherReceiver(partner, actor);
+                !SSCDailyTrainingOccupancy.HasOtherReceiver(partner, actor) &&
+                (!MentalState_SSCSlaveBreakdown.IsBreakdownTraining(parentJob) ||
+                 MentalState_SSCSlaveBreakdown.CurrentFor(partner)?.OwnsTrainingJob(actor, parentJob) == true);
 #else
             return TryStartReceiverJobCore(actor, partner, parentJob, receiverJobDef, false, true, false, null);
 #endif

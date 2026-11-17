@@ -1,5 +1,7 @@
 # 子宫开发第 1～5 批原生专项
 
+2026-11-16，[奴性爆发第四步](../../Docs/Design/第7项奴性爆发开发方案.md#第四步实现与自动回归)在 `--imprint` 新增 5 项 Core，本轮 70／70。覆盖选择信读档、拒绝与到期、开场后时限、记忆与黄信的结算去重、两套评分及实际驱动方向和人格更换。原生用例隔离地图寻路和完整 RJW 双人演出。
+
 2026-11-16，[淫堕传道戒律](../../Docs/Development/Completed/文化淫堕传道戒律实现与验收.md)新增 5 项 Core，复用 `--corruption-gel` 分区；本次 76／76。以实际 RJW 高潮调用和原生 Scribe 核对按对象结算与冷却，未执行整个宿主。
 
 2026-11-16，第 19 项合并前复跑 `--imprint` 42／42 和 `--corruption-gel` 71／71。印记分区也覆盖正式身份特性、持续心情、取得信件去重、原版复制身份和满值分化重试。 [合并前回归](../../Docs/Development/Completed/第19项恶堕率与性奴化阶段解耦实机验收.md) · [复制身份](SexSlaveTraitIdentityTests.cs) · [信件与重试](FullCorruptionImprintTests.cs)

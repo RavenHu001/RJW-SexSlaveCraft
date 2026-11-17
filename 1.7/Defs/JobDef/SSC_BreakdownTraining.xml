@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 此标识只用于发作批准的单场任务。共用训练驱动负责预约、交接和日常完成记账。 -->
+  <JobDef>
+    <defName>SSC_BreakdownTraining</defName>
+    <driverClass>SexSlaveCraft.JobDriver_Training</driverClass>
+    <reportString>training TargetA after an approved request.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+    <suspendable>false</suspendable>
+    <checkOverrideOnDamage>Never</checkOverrideOnDamage>
+    <playerInterruptible>true</playerInterruptible>
+    <alwaysShowWeapon>false</alwaysShowWeapon>
+  </JobDef>
+</Defs>

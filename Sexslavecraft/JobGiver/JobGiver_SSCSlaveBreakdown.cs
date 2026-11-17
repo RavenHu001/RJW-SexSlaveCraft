@@ -18,7 +18,8 @@ namespace SexSlaveCraft
             var state = MentalState_SSCSlaveBreakdown.CurrentFor(pawn);
             if (state?.CanIssueBehavior != true) return ThinkResult.NoJob;
             // 原版覆写比较识别同一个 Job，因此不会重新启动此任务。更高层的安全响应仍可中断。
-            if (state.OwnsBehaviorJob(pawn.CurJob))
+            // 获批接收器由训练驱动安装。行为树返回当前任务，让接收器继续运行。
+            if (state.OwnsBehaviorJob(pawn.CurJob) || state.HoldsTrainingReceiver(pawn.CurJob))
                 return new ThinkResult(pawn.CurJob, pawn.CurJob.jobGiver ?? this, JobTag.InMentalState, false);
             state.RetireMissingBehaviorJob();
             return state.CanIssueBehavior ? base.TryIssueJobPackage(pawn, jobParams) : ThinkResult.NoJob;

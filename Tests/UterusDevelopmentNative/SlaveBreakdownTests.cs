@@ -16,6 +16,8 @@ internal static partial class Program
     private static Faction breakdownFaction;
     private static readonly HashSet<Pawn> breakdownPawns = new();
     private static readonly List<(Pawn Pawn, string Type, SSCImprintKind Imprint, bool InBreakdown)> breakdownLetters = new();
+    private static readonly List<Pawn> breakdownFailureLetters = new();
+    private static Pawn reachableBreakdownTrainer;
     private static bool breakdownRollSucceeds;
     private static int breakdownRolls;
     private static MentalBreakIntensity? selectedBreakdownIntensity;
@@ -111,6 +113,15 @@ internal static partial class Program
             }
             var breakdownEffect = LoadHediff(Path.Combine(repo, "1.7/Defs/HediffDefs/SSC_SlaveBreakdown.xml"));
             var feelingBroken = LoadHediff(RjwResource("Defs/HediffDefs/Hediffs_FeelingBroken.xml"));
+            xml.Load(Path.Combine(repo, "1.7/Defs/LetterDefs/SSC_BreakdownTrainingRequest.xml"));
+            var requestDef = DirectXmlToObject.ObjectFromXml<LetterDef>(xml.DocumentElement.SelectSingleNode("LetterDef"), false);
+            DefDatabase<LetterDef>.Add(requestDef);
+            xml.Load(Path.Combine(repo, "1.7/Defs/JobDef/SSC_BreakdownTraining.xml"));
+            var trainingDef = DirectXmlToObject.ObjectFromXml<JobDef>(xml.DocumentElement.SelectSingleNode("JobDef"), false);
+            DefDatabase<JobDef>.Add(trainingDef);
+            xml.Load(Path.Combine(repo, "1.7/Defs/ThoughtDefs/SSC_BreakdownOutcome.xml"));
+            foreach (XmlNode node in xml.DocumentElement.SelectNodes("ThoughtDef"))
+                DefDatabase<ThoughtDef>.Add(DirectXmlToObject.ObjectFromXml<ThoughtDef>(node, false));
             errors.Clear();
             DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
             Require(errors.Count == 0, string.Join('\n', errors));
@@ -130,6 +141,11 @@ internal static partial class Program
             Prefix(AccessTools.Method(typeof(GenText), nameof(GenText.AdjustedFor),
                 new[] { typeof(string), typeof(Pawn), typeof(string), typeof(bool) }), nameof(BreakdownGrammarBoundary));
             Prefix(AccessTools.Method(typeof(ColoredText), nameof(ColoredText.Resolve)), nameof(BreakdownColorBoundary));
+            Prefix(AccessTools.Method(typeof(MentalState_SSCSlaveBreakdown), "CanApproach"), nameof(BreakdownTrainerBoundary));
+            Prefix(AccessTools.Method(typeof(MentalState_SSCSlaveBreakdown), "TrainerEligible"), nameof(BreakdownTrainerBoundary));
+            Prefix(AccessTools.Method(typeof(Messages), nameof(Messages.Message),
+                new[] { typeof(string), typeof(LookTargets), typeof(MessageTypeDef), typeof(bool) }), nameof(Skip));
+            Prefix(AccessTools.Method(typeof(TrainingOutcomeUtility), nameof(TrainingOutcomeUtility.CalculateOpinionChange)), nameof(BreakdownOpinionBoundary));
             // 只替代与本步无关的初始准入、年龄和身体因素，保留 NeedInterval 和实际驱动力属性。
             Prefix(AccessTools.Method(typeof(rjw.xxx), nameof(rjw.xxx.is_asexual), new[] { typeof(Pawn) }), nameof(BreakdownAsexualBoundary));
             Prefix(AccessTools.Method(typeof(rjw.xxx), nameof(rjw.xxx.can_do_loving), new[] { typeof(Pawn) }), nameof(BreakdownLovingBoundary));
@@ -149,6 +165,9 @@ internal static partial class Program
                     SSCMod.settings = new SSCSettings { EnableSlaveBreakdown = true, enableCorruptionDecay = false, enableRitualEnslavement = false };
                     SetBreakdownTick(1000);
                     breakdownLetters.Clear();
+                    breakdownFailureLetters.Clear();
+                    Find.LetterStack.LettersListForReading.Clear();
+                    reachableBreakdownTrainer = null;
                     breakdownRollSucceeds = false;
                     breakdownRolls = 0;
                     selectedBreakdownIntensity = null;
@@ -158,6 +177,176 @@ internal static partial class Program
                     action();
                 });
             }
+
+            Case("breakdown request and native letter reconnect after Scribe; approval consumes exactly that request", () =>
+            {
+                var (pawn, need) = BreakdownPawn();
+                var (trainer, _) = BreakdownPawn(PawnIdentity.Master);
+                reachableBreakdownTrainer = trainer;
+                var state = StartWanderingBreakdown(pawn, need);
+                var letter = InstallBreakdownRequest(state, pawn, trainer, requestDef);
+                Require(state.IsPendingDecision(letter) && state.CanApprove(letter));
+
+                var fixture = new SlaveBreakdownSaveFixture(pawn, SSCMod.settings) { Request = letter };
+                string path = SaveBreakdown(fixture);
+                Find.LetterStack.LettersListForReading.Clear();
+                var (loadedPawn, _) = BreakdownPawn();
+                loadedPawn.thingIDNumber = pawn.thingIDNumber;
+                var loaded = LoadBreakdown(path, loadedPawn, trainer, loadedPawn);
+                var restored = (MentalState_SSCSlaveBreakdown)loadedPawn.MentalState;
+                Find.LetterStack.LettersListForReading.Add(loaded.Request);
+                Require(loaded.Request != letter && loaded.Request.Subject == loadedPawn && loaded.Request.Trainer == trainer);
+                Require(restored.IsPendingDecision(loaded.Request) && restored.CanApprove(loaded.Request));
+                Action accept = loaded.Request.Choices.First().action;
+                accept();
+                accept();
+                letter.Choices.First().action?.Invoke();
+                Require(!restored.IsPendingDecision(loaded.Request));
+                Equal("Approved", BreakdownField("requestPhase").GetValue(restored).ToString());
+                Equal(0, Find.LetterStack.LettersListForReading.Count);
+            });
+
+            Case("rejection revokes stale accept and expiration or interruption publishes one failure", () =>
+            {
+                var (pawn, need) = BreakdownPawn();
+                var (trainer, _) = BreakdownPawn(PawnIdentity.Master);
+                reachableBreakdownTrainer = trainer;
+                var state = StartWanderingBreakdown(pawn, need);
+                SetBreakdownLowMood(pawn, MentalBreakIntensity.Minor);
+                var letter = InstallBreakdownRequest(state, pawn, trainer, requestDef);
+                var choices = letter.Choices.ToArray();
+                choices[1].action();
+                choices[0].action();
+                Equal("None", BreakdownField("requestPhase").GetValue(state).ToString());
+                Equal(4750L, (long)BreakdownField("nextRequestAt").GetValue(state));
+                Require(!Find.LetterStack.LettersListForReading.Contains(letter) && pawn.InMentalState);
+
+                var late = InstallBreakdownRequest(state, pawn, trainer, requestDef);
+                Action acceptLate = late.Choices.First().action;
+                SetBreakdownTick(16000);
+                acceptLate();
+                state.MentalStateTick(1);
+                pawn.mindState.mentalStateHandler.Reset();
+                Equal(1, breakdownFailureLetters.Count);
+                Require(breakdownFailureLetters[0] == pawn && !pawn.InMentalState &&
+                    !Find.LetterStack.LettersListForReading.Contains(late));
+                Equal(PawnIdentity.Unset, SSCIdentityUtility.GetIdentity(pawn));
+                Require(pawn.needs.mood.thoughts.memories.Memories.Count(thought =>
+                    thought.def.defName == "SSC_BreakdownFailure") == 1);
+
+                SetBreakdownTick(1000);
+                var (interrupted, interruptedNeed) = BreakdownPawn();
+                StartWanderingBreakdown(interrupted, interruptedNeed);
+                interrupted.mindState.mentalStateHandler.Reset();
+                interrupted.mindState.mentalStateHandler.Reset();
+                Equal(2, breakdownFailureLetters.Count);
+                Require(breakdownFailureLetters[1] == interrupted);
+            });
+
+            Case("approved training extends only when started and can claim success once", () =>
+            {
+                var (pawn, need) = BreakdownPawn();
+                var (trainer, _) = BreakdownPawn(PawnIdentity.Master);
+                reachableBreakdownTrainer = trainer;
+                var state = StartWanderingBreakdown(pawn, need);
+                SetBreakdownLowMood(pawn, MentalBreakIntensity.Minor);
+                var letter = InstallBreakdownRequest(state, pawn, trainer, requestDef);
+                letter.Choices.First().action();
+                var job = JobMaker.MakeJob(trainingDef, pawn);
+                var driver = new JobDriver_Training { pawn = trainer, job = job };
+                SetBreakdownPhase(state, "Dispatched");
+                BreakdownField("trainingJobId").SetValue(state, job.loadID);
+                SetBreakdownTick(13500);
+                Require(state.OwnsTrainingJob(trainer, job));
+                var effect = pawn.health.hediffSet.hediffs.OfType<Hediff_SSCSlaveBreakdown>().Single();
+                Equal(16000L, effect.ExpiresAt);
+                Require(!state.ClaimTrainingSuccess(driver));
+                state.MarkApprovedTrainingStarted(driver);
+                Equal(18500L, effect.ExpiresAt);
+                var wrongJob = JobMaker.MakeJob(trainingDef, pawn);
+                Require(!state.OwnsTrainingJob(trainer, wrongJob));
+                Require(state.ClaimTrainingSuccess(driver) && !state.ClaimTrainingSuccess(driver));
+                state.FinishSuccessfulTraining();
+                state.FinishSuccessfulTraining();
+                Require(!pawn.InMentalState && !pawn.health.hediffSet.hediffs.Contains(effect) &&
+                    breakdownFailureLetters.Count == 0);
+                Equal(PawnIdentity.Slave, SSCIdentityUtility.GetIdentity(pawn));
+                var memories = pawn.needs.mood.thoughts.memories.Memories;
+                Require(memories.Count(thought => thought.def.defName == "SSC_BreakdownSuccess") == 1);
+                Require(memories.Count(thought => thought.def.defName == "SSC_BreakdownTrainerOpinion" &&
+                    thought.otherPawn == trainer) == 1);
+            });
+
+            Case("breakdown training guard requires the actual direction and rechecks the live approval after Start", () =>
+            {
+                var (pawn, need) = BreakdownPawn();
+                var (trainer, _) = BreakdownPawn(PawnIdentity.Master);
+                reachableBreakdownTrainer = trainer;
+                var state = StartWanderingBreakdown(pawn, need);
+                var letter = InstallBreakdownRequest(state, pawn, trainer, requestDef);
+                letter.Choices.First().action();
+
+                var job = JobMaker.MakeJob(trainingDef, pawn);
+                var driver = new JobDriver_Training { pawn = trainer, job = job };
+                SetBreakdownPhase(state, "Dispatched");
+                BreakdownField("trainingJobId").SetValue(state, job.loadID);
+                trainer.jobs.curJob = job;
+                trainer.jobs.curDriver = driver;
+                var receiver = new JobDriver_TrainingReceiver { pawn = pawn, job = JobMaker.MakeJob(trainingDef, trainer) };
+                pawn.jobs.curJob = receiver.job;
+                pawn.jobs.curDriver = receiver;
+                try
+                {
+                    // 即使关闭互动保护，任务实际持有的方向也必须与批准相符。
+                    SSCMod.settings.enableSexSlaveProtectionRules = false;
+                    driver.Sexprops = new rjw.SexProps(pawn, trainer);
+                    Require(SSCRestrictionJobGuard.TryReserve(driver, out bool allowed) && !allowed);
+                    driver.Sexprops = new rjw.SexProps(trainer, pawn);
+                    Require(SSCRestrictionJobGuard.TryReserve(driver, out allowed) && allowed);
+                    Require(SSCRestrictionJobGuard.TryReserve(receiver, out allowed) && allowed);
+                    Require(SSCRestrictionJobGuard.TryMarkStarted(driver, true));
+                    Require(SSCRestrictionJobGuard.HasStartedScene(receiver, SSCInteractionKind.DailyTraining));
+
+                    // 同一身体换人格会撤销旧批准。已有的 Start 记录不能让接收端跳过特批复查。
+                    Require(SSCPersonalityRuntimeUtility.TryBeginMutation(trainer, out var mutation));
+                    using (mutation)
+                    {
+                        Require(SSCRestrictionJobGuard.TryReserve(receiver, out allowed) && !allowed);
+                        Require(SSCRestrictionJobGuard.TryReserve(driver, out allowed) && !allowed);
+                    }
+                }
+                finally
+                {
+                    trainer.jobs.curDriver = pawn.jobs.curDriver = null;
+                    trainer.jobs.curJob = pawn.jobs.curJob = null;
+                }
+            });
+
+            Case("the scene bonus feeds both scoring modes without writing a bond or an inflated history score", () =>
+            {
+                SkillDef previousSocial = SkillDefOf.Social;
+                try
+                {
+                    SkillDefOf.Social = DefDatabase<SkillDef>.GetNamedSilentFail("Social") ?? new SkillDef { defName = "Social" };
+                    if (DefDatabase<SkillDef>.GetNamedSilentFail("Social") == null) DefDatabase<SkillDef>.Add(SkillDefOf.Social);
+                    var (trainer, _) = BreakdownPawn(PawnIdentity.Master);
+                    trainer.skills = new Pawn_SkillTracker(trainer);
+                    trainer.skills.GetSkill(SkillDefOf.Social).Level = 15;
+                    foreach (bool legacy in new[] { false, true })
+                    {
+                        SSCMod.settings.useOldScoring = legacy;
+                        var (pawn, need) = BreakdownPawn(PawnIdentity.Slave);
+                        need.SetCorruption(.30f);
+                        var comp = pawn.TryGetComp<CompSexSlaveTraining>();
+                        comp.lastTrainingScore = 12f;
+                        ConditioningUtility.ExecuteBreakdownOutcome(trainer, pawn, 5f);
+                        Require(Math.Abs(need.CurLevel - (legacy ? .38f : .42f)) < .0001f);
+                        Equal(legacy ? 12f : 5f, comp.lastTrainingScore);
+                        Require(!Utils.HasChainHediff(pawn) && SSCBondUtility.GetBoundMaster(pawn) == null);
+                    }
+                }
+                finally { SkillDefOf.Social = previousSocial; }
+            });
 
             Case("one actual full crossing differentiates first and sends exactly one letter for each outcome", () =>
             {
@@ -754,6 +943,8 @@ internal static partial class Program
     private static (Pawn Pawn, Need_Corruption Need) BreakdownPawn(PawnIdentity identity = PawnIdentity.Unset)
     {
         Pawn pawn = ImprintPawn(identity);
+        // 原版信件 LookTargets 由 ThingID 标识角色，定义名后不可附带临时数字。
+        pawn.def.defName = "SSC_TestBreakdownRace";
         pawn.RaceProps.lifeStageAges[0].def.canDoRandomMentalBreaks = true;
         // 原生宿主只登记躯干，不模拟脑部容量。原版 Awake 仍会检查角色的真实任务。
         pawn.RaceProps.alwaysAwake = true;
@@ -860,6 +1051,11 @@ internal static partial class Program
     private static bool CaptureBreakdownLetter(TaggedString label, LookTargets lookTargets)
     {
         if (lookTargets.targets?.FirstOrDefault().Thing is not Pawn pawn || !breakdownPawns.Contains(pawn)) return true;
+        if (label.RawText == "SSC_BreakdownFailure_Label".Translate().RawText)
+        {
+            breakdownFailureLetters.Add(pawn);
+            return false;
+        }
         string type = label.RawText == "SSC_Imprint_FullCorruptionLetterLabel".Translate().RawText ? "imprint" :
             label.RawText.StartsWith(SSCSlaveBreakdown.StateDef.LabelCap.RawText + ": ", StringComparison.Ordinal) ? "breakdown" : label.RawText;
         breakdownLetters.Add((pawn, type, SSCImprintUtility.GetKind(pawn), pawn.MentalState is MentalState_SSCSlaveBreakdown));
@@ -894,10 +1090,61 @@ internal static partial class Program
         }
     }
 
-    private static SlaveBreakdownSaveFixture LoadBreakdown(string path, Pawn pawn)
+    private static MentalState_SSCSlaveBreakdown StartWanderingBreakdown(Pawn pawn, Need_Corruption need)
+    {
+        need.SetCorruption(1f);
+        SSCSlaveBreakdownGameComponent.Current.GameComponentTick();
+        var state = (MentalState_SSCSlaveBreakdown)pawn.MentalState;
+        AccessTools.Field(typeof(MentalState_SSCSlaveBreakdown), "openingPhase").SetValue(state,
+            MentalState_SSCSlaveBreakdown.OpeningPhase.Wander);
+        return state;
+    }
+
+    // 宿主没有寻路网格。使用原版 LetterMaker、信堆和点击，从已找到调教员的边界驱动申请。
+    private static bool BreakdownTrainerBoundary(Pawn __0, ref bool __result)
+    {
+        if (__0 != reachableBreakdownTrainer || __0 == null) return true;
+        __result = true;
+        return false;
+    }
+
+    // 这一用例比较实际恶堕入账及训练历史；无图形宿主不装入身体与社交记忆资源。
+    private static bool BreakdownOpinionBoundary(Pawn sexSlave, ref float __result)
+    {
+        if (!breakdownPawns.Contains(sexSlave)) return true;
+        __result = 0f;
+        return false;
+    }
+
+    private static FieldInfo BreakdownField(string name) => AccessTools.Field(typeof(MentalState_SSCSlaveBreakdown), name);
+
+    private static void SetBreakdownPhase(MentalState_SSCSlaveBreakdown state, string name)
+    {
+        var field = BreakdownField("requestPhase");
+        field.SetValue(state, Enum.Parse(field.FieldType, name));
+    }
+
+    private static ChoiceLetter_SSCBreakdownTraining InstallBreakdownRequest(MentalState_SSCSlaveBreakdown state,
+        Pawn pawn, Pawn trainer, LetterDef def)
+    {
+        var letter = (ChoiceLetter_SSCBreakdownTraining)LetterMaker.MakeLetter("test request", "test text", def,
+            new LookTargets(pawn, trainer));
+        letter.Subject = pawn;
+        letter.Trainer = trainer;
+        Find.LetterStack.LettersListForReading.Add(letter);
+        BreakdownField("requestTrainer").SetValue(state, trainer);
+        BreakdownField("trainerPersonality").SetValue(state, SSCPersonalityRuntimeUtility.Capture(trainer));
+        BreakdownField("requestId").SetValue(state, letter.ID);
+        SetBreakdownPhase(state, "Waiting");
+        return letter;
+    }
+
+    private static SlaveBreakdownSaveFixture LoadBreakdown(string path, Pawn pawn, params Pawn[] references)
     {
         SlaveBreakdownSaveFixture fixture = null;
         Scribe.loader.InitLoading(path);
+        var directory = (LoadedObjectDirectory)AccessTools.Field(typeof(CrossRefHandler), "loadedObjectDirectory").GetValue(Scribe.loader.crossRefs);
+        foreach (Pawn reference in references) directory.RegisterLoaded(reference);
         Scribe_Deep.Look(ref fixture, "fixture", pawn, new SSCSettings { EnableSlaveBreakdown = true });
         Scribe.loader.FinalizeLoading();
         return fixture;
@@ -908,6 +1155,7 @@ public sealed class SlaveBreakdownSaveFixture : IExposable
 {
     private readonly Pawn pawn;
     public readonly SSCSettings Settings;
+    public ChoiceLetter_SSCBreakdownTraining Request;
 
     public SlaveBreakdownSaveFixture(Pawn pawn, SSCSettings settings)
     {
@@ -921,5 +1169,6 @@ public sealed class SlaveBreakdownSaveFixture : IExposable
         pawn.TryGetComp<CompSexSlaveTraining>().PostExposeData();
         pawn.health.hediffSet.ExposeData();
         pawn.mindState.mentalStateHandler.ExposeData();
+        Scribe_Deep.Look(ref Request, "request");
     }
 }

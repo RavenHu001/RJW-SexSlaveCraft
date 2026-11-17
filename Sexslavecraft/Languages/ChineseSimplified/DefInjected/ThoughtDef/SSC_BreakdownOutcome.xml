@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_BreakdownSuccess.stages.0.label>调教后的释然</SSC_BreakdownSuccess.stages.0.label>
+  <SSC_BreakdownSuccess.stages.0.description>我终于有机会放下戒备，整个人都松下来了。</SSC_BreakdownSuccess.stages.0.description>
+  <SSC_BreakdownTrainerOpinion.stages.0.label>陪我熬过了发作</SSC_BreakdownTrainerOpinion.stages.0.label>
+  <SSC_BreakdownTrainerOpinion.stages.0.description>我最需要有人帮忙的时候，对方赶来了。</SSC_BreakdownTrainerOpinion.stages.0.description>
+  <SSC_BreakdownFailure.stages.0.label>发作后的失落</SSC_BreakdownFailure.stages.0.label>
+  <SSC_BreakdownFailure.stages.0.description>最难熬的时候已经过去了，我却还是烦躁得静不下来。</SSC_BreakdownFailure.stages.0.description>
+</LanguageData>

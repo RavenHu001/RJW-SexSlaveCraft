@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_BreakdownRequest_Label>Просьба о тренировке</SSC_BreakdownRequest_Label>
+  <SSC_BreakdownRequest_Text>Во время приступа покорности {0} просит {1} провести тренировку. Решение можно принять до окончания приступа.</SSC_BreakdownRequest_Text>
+  <SSC_BreakdownRequest_Unavailable>Тренер или место сейчас недоступны.</SSC_BreakdownRequest_Unavailable>
+  <SSC_BreakdownFailure_Label>Приступ покорности закончился</SSC_BreakdownFailure_Label>
+  <SSC_BreakdownFailure_Text>Приступ покорности у {0} закончился, но ощущение неудовлетворённости осталось.</SSC_BreakdownFailure_Text>
+</LanguageData>

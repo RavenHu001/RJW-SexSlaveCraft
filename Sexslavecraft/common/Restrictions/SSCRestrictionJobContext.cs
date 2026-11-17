@@ -47,7 +47,13 @@ namespace SexSlaveCraft
             bool known = driver is JobDriver_SexBaseInitiator && initiator != null;
             SSCInteractionKind kind;
             if (driver is JobDriver_Training || driver is JobDriver_RitualTraining)
+#if SSC_RW17
+                // 发作特批进入接收调教条目，无锁链也不改为首次建链准备。
+                kind = MentalState_SSCSlaveBreakdown.IsBreakdownTraining(driver.job) ? SSCInteractionKind.DailyTraining :
+                    SSCRestrictionTrainingUtility.CreateRequest(initiator, partner, driver is JobDriver_RitualTraining).Kind;
+#else
                 kind = SSCRestrictionTrainingUtility.CreateRequest(initiator, partner, driver is JobDriver_RitualTraining).Kind;
+#endif
             else if (driver is JobDriver_SelfTraining)
             {
                 kind = SSCInteractionKind.SelfTraining;

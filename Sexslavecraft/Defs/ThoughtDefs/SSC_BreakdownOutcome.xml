@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 心情和好感使用原版定时记忆。精神状态负责在结束时按一次性结果发放。 -->
+  <ThoughtDef>
+    <defName>SSC_BreakdownSuccess</defName>
+    <durationDays>2</durationDays>
+    <stackLimit>1</stackLimit>
+    <stages><li>
+      <label>relief after training</label>
+      <description>I finally had a chance to let go. I feel at ease again.</description>
+      <baseMoodEffect>20</baseMoodEffect>
+    </li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>SSC_BreakdownTrainerOpinion</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>3</durationDays>
+    <stackLimit>1</stackLimit>
+    <stackLimitForSameOtherPawn>1</stackLimitForSameOtherPawn>
+    <stages><li>
+      <label>helped me through my breakdown</label>
+      <description>They stepped in when I needed someone most.</description>
+      <baseOpinionOffset>35</baseOpinionOffset>
+    </li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>SSC_BreakdownFailure</defName>
+    <durationDays>1</durationDays>
+    <stackLimit>1</stackLimit>
+    <stages><li>
+      <label>unresolved breakdown</label>
+      <description>The worst is over, but I still feel restless and frustrated.</description>
+      <baseMoodEffect>-10</baseMoodEffect>
+    </li></stages>
+  </ThoughtDef>
+</Defs>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_BreakdownSuccess.stages.0.label>relief after training</SSC_BreakdownSuccess.stages.0.label>
+  <SSC_BreakdownSuccess.stages.0.description>I finally had a chance to let go. I feel at ease again.</SSC_BreakdownSuccess.stages.0.description>
+  <SSC_BreakdownTrainerOpinion.stages.0.label>helped me through my breakdown</SSC_BreakdownTrainerOpinion.stages.0.label>
+  <SSC_BreakdownTrainerOpinion.stages.0.description>They stepped in when I needed someone most.</SSC_BreakdownTrainerOpinion.stages.0.description>
+  <SSC_BreakdownFailure.stages.0.label>unresolved breakdown</SSC_BreakdownFailure.stages.0.label>
+  <SSC_BreakdownFailure.stages.0.description>The worst is over, but I still feel restless and frustrated.</SSC_BreakdownFailure.stages.0.description>
+</LanguageData>

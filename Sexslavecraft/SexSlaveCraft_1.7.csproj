@@ -72,6 +72,7 @@
     <Compile Include="common/SSCSlaveBreakdownGameComponent.cs" />
     <Compile Include="common/MentalState_SSCSlaveBreakdown.cs" />
     <Compile Include="common/MentalState_SSCSlaveBreakdown.Behavior.cs" />
+    <Compile Include="common/MentalState_SSCSlaveBreakdown.Training.cs" />
     <Compile Include="JobGiver/JobGiver_SSCSlaveBreakdown.cs" />
     <Compile Include="Hediff/Hediff_SSCSlaveBreakdown.cs" />
     <Compile Include="Comps/Comp_Train.SlaveBreakdown.cs" />
