@@ -253,7 +253,11 @@ namespace SexSlaveCraft
                 return false;
             comp.pawnIdentity = identity;
 #if SSC_RW17
-            if (identity == PawnIdentity.Master) SSCFullCorruptionImprint.CancelForMaster(pawn);
+            if (identity == PawnIdentity.Master)
+            {
+                SSCFullCorruptionImprint.CancelForMaster(pawn);
+                SSCSlaveBreakdownGameComponent.Current?.CancelFullRequest(pawn);
+            }
             SSCCorruptionStages.NotifyContextChanged(pawn);
             // 身份先落地即撤销凝胶受药；后续成长／仪式回调提前退出也不能留下主人的药效。
             SSCCorruptionGelEffectUtility.RefreshBodyState(pawn);

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_SlaveBreakdown.label>奴性爆發</SSC_SlaveBreakdown.label>
+  <SSC_SlaveBreakdown.beginLetter>極高的惡墮率讓{0}失去了冷靜，陷入了奴性爆發。</SSC_SlaveBreakdown.beginLetter>
+  <SSC_SlaveBreakdown.baseInspectLine>精神狀態：奴性爆發</SSC_SlaveBreakdown.baseInspectLine>
+</LanguageData>

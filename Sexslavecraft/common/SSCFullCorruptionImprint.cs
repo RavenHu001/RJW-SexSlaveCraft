@@ -76,6 +76,12 @@ namespace SexSlaveCraft
                 Resolve(pawn, state);
         }
 
+        // 奴性爆发等待这里退出（包括发信回调与重试）；成功或失败都释放原满值增长。
+        internal static bool IsSettling(Pawn pawn, Need_Corruption need)
+            => need != null && states.TryGetValue(pawn, out State state) &&
+               (state.RitualDepth != 0 || state.Applying?.Need == need ||
+                (state.Request is Pending request && request.Need == need && request.SameCarrier(pawn)));
+
         // 主人豁免立即生效。即使在两次刷新之间退出主人身份，也不恢复旧待办。
         internal static void CancelForMaster(Pawn pawn)
         {

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Setting_EnableSlaveBreakdown>Enable submission breakdowns</SSC_Setting_EnableSlaveBreakdown>
+  <SSC_Setting_EnableSlaveBreakdown_Desc>Allow eligible colonists and colony slaves with high corruption to suffer submission breakdowns.</SSC_Setting_EnableSlaveBreakdown_Desc>
+  <SSC_SlaveBreakdown_RiskLabel>Submission breakdown risk</SSC_SlaveBreakdown_RiskLabel>
+  <SSC_SlaveBreakdown_RiskExplanation>These pawns are at risk of a submission breakdown.\n\n{0}</SSC_SlaveBreakdown_RiskExplanation>
+</LanguageData>

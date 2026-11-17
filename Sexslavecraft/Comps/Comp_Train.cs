@@ -228,6 +228,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
             // 浪漫许可使用独立人格配置与授权节点，不与能力字典或旧性行为模板混存。
             ExposeRomance();
+            ExposeSlaveBreakdown();
 #endif
 
             Scribe_Values.Look(ref mode, "mode", TrainingMode.Disabled);

@@ -68,6 +68,10 @@
     <Compile Include="common/SSCImprintUtility.cs" />
     <Compile Include="common/SSCFullCorruptionImprint.cs" />
     <Compile Include="common/SSCImprintLetters.cs" />
+    <Compile Include="common/SSCSlaveBreakdown.cs" />
+    <Compile Include="common/SSCSlaveBreakdownGameComponent.cs" />
+    <Compile Include="common/MentalState_SSCSlaveBreakdown.cs" />
+    <Compile Include="Comps/Comp_Train.SlaveBreakdown.cs" />
     <Compile Include="common/FertilitySpecializationUtility.cs" />
     <Compile Include="common/FertilityAbilityUtility.cs" />
     <Compile Include="common/FertilitySceneUtility.cs" />

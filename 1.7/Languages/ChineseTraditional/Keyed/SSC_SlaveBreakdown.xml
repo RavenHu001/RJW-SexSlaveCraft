@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Setting_EnableSlaveBreakdown>啟用奴性爆發</SSC_Setting_EnableSlaveBreakdown>
+  <SSC_Setting_EnableSlaveBreakdown_Desc>允許符合條件的高惡墮殖民者和殖民地奴隸陷入奴性爆發。</SSC_Setting_EnableSlaveBreakdown_Desc>
+  <SSC_SlaveBreakdown_RiskLabel>奴性爆發風險</SSC_SlaveBreakdown_RiskLabel>
+  <SSC_SlaveBreakdown_RiskExplanation>以下小人可能陷入奴性爆發。\n\n{0}</SSC_SlaveBreakdown_RiskExplanation>
+</LanguageData>

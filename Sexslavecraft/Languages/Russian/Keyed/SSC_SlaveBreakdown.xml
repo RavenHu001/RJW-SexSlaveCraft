@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Setting_EnableSlaveBreakdown>Включить приступы покорности</SSC_Setting_EnableSlaveBreakdown>
+  <SSC_Setting_EnableSlaveBreakdown_Desc>Разрешить приступы покорности у подходящих колонистов и рабов колонии с высокой развращённостью.</SSC_Setting_EnableSlaveBreakdown_Desc>
+  <SSC_SlaveBreakdown_RiskLabel>Риск приступа покорности</SSC_SlaveBreakdown_RiskLabel>
+  <SSC_SlaveBreakdown_RiskExplanation>Этим персонажам грозит приступ покорности.\n\n{0}</SSC_SlaveBreakdown_RiskExplanation>
+</LanguageData>

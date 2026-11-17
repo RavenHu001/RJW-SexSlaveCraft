@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <MentalStateDef>
+    <defName>SSC_SlaveBreakdown</defName>
+    <label>submission breakdown</label>
+    <stateClass>SexSlaveCraft.MentalState_SSCSlaveBreakdown</stateClass>
+    <workerClass>SexSlaveCraft.MentalStateWorker_SSCSlaveBreakdown</workerClass>
+    <category>Misc</category>
+    <colonistsOnly>true</colonistsOnly>
+    <prisonersCanDo>false</prisonersCanDo>
+    <slavesCanDo>true</slavesCanDo>
+    <beginLetter>{0} has succumbed to a submission breakdown under the strain of intense corruption.</beginLetter>
+    <beginLetterDef>NegativeEvent</beginLetterDef>
+    <baseInspectLine>Mental state: submission breakdown</baseInspectLine>
+  </MentalStateDef>
+  <MentalBreakDef>
+    <defName>SSC_SlaveBreakdownMinor</defName>
+    <workerClass>SexSlaveCraft.MentalBreakWorker_SSCSlaveBreakdown</workerClass>
+    <mentalState>SSC_SlaveBreakdown</mentalState>
+    <baseCommonality>2.0</baseCommonality>
+    <intensity>Minor</intensity>
+  </MentalBreakDef>
+  <MentalBreakDef>
+    <defName>SSC_SlaveBreakdownMajor</defName>
+    <workerClass>SexSlaveCraft.MentalBreakWorker_SSCSlaveBreakdown</workerClass>
+    <mentalState>SSC_SlaveBreakdown</mentalState>
+    <baseCommonality>1.5</baseCommonality>
+    <intensity>Major</intensity>
+  </MentalBreakDef>
+  <MentalBreakDef>
+    <defName>SSC_SlaveBreakdownExtreme</defName>
+    <workerClass>SexSlaveCraft.MentalBreakWorker_SSCSlaveBreakdown</workerClass>
+    <mentalState>SSC_SlaveBreakdown</mentalState>
+    <baseCommonality>1.5</baseCommonality>
+    <intensity>Extreme</intensity>
+  </MentalBreakDef>
+</Defs>

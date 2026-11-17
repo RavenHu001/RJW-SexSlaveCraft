@@ -32,6 +32,21 @@ namespace SexSlaveCraft
         public bool enableCorruptionDecay = true;
         public float corruptionDecayPerDay = 0.02f;
         public bool useOldScoring = false;
+#if SSC_RW17
+        private bool enableSlaveBreakdown;
+
+        public bool EnableSlaveBreakdown
+        {
+            get => enableSlaveBreakdown;
+            set
+            {
+                if (enableSlaveBreakdown == value) return;
+                enableSlaveBreakdown = value;
+                // 同一暂停帧内关闭再开启也不能沿用已撤销的满值请求。
+                if (!value) SSCSlaveBreakdownGameComponent.Current?.CancelAllFullRequests();
+            }
+        }
+#endif
 
         /// <summary>读写新限制配置及既有全局设置，并在加载结束后将数值选项限制在支持范围内。</summary>
         public override void ExposeData()
@@ -57,6 +72,7 @@ namespace SexSlaveCraft
             ExposeMasterQualificationSettings();
             ExposeRestrictionSettings();
 #if SSC_RW17
+            Scribe_Values.Look(ref enableSlaveBreakdown, "enableSlaveBreakdown", false);
             // 1.7 独立全局偏好，缺字段默认关闭；不参与原个人规则或能力字典的保存。
             ExposeUapGroupSettings();
 #endif
@@ -245,6 +261,13 @@ namespace SexSlaveCraft
             float decaySliderValue = listingStandard.Slider(settings.corruptionDecayPerDay, 0f, 0.20f);
             settings.corruptionDecayPerDay = Mathf.Round(decaySliderValue * 200f) / 200f;
 
+#if SSC_RW17
+            bool breakdownEnabled = settings.EnableSlaveBreakdown;
+            listingStandard.CheckboxLabeled(
+                "SSC_Setting_EnableSlaveBreakdown".Translate(), ref breakdownEnabled,
+                "SSC_Setting_EnableSlaveBreakdown_Desc".Translate());
+            settings.EnableSlaveBreakdown = breakdownEnabled;
+#endif
             listingStandard.GapLine();
             listingStandard.CheckboxLabeled(
                 "SSC_Setting_UseOldScoring".Translate(),
