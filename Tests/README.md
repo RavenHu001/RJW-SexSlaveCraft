@@ -1,6 +1,6 @@
 # 测试说明索引
 
-2026-11-16，[文化同场恶堕戒律](../Docs/Development/Completed/文化同场恶堕戒律实现与验证.md)在现有宿主登记 6 项 Core：UapGroupNative 新增 1 项，UterusDevelopmentNative 新增 5 项。CultureNative 337／337、UapGroupNative 19／19、凝胶分区 76／76；未运行整仓 All。
+2026-11-16，[淫堕传道戒律](../Docs/Development/Completed/文化淫堕传道戒律实现与验收.md)在现有宿主登记 6 项 Core：UapGroupNative 新增 1 项，UterusDevelopmentNative 新增 5 项。CultureNative 337／337、UapGroupNative 19／19、凝胶分区 76／76；未运行整仓 All。
 
 2026-11-15，第二轮精简净减 **238 项**，当时登记 52 套、5885 项（Core 5148／Special 737）。15 个关联宿主 **3619／3619**，独立浪漫文案 **102／102**。[第二轮实施与验证](../Docs/Development/Completed/2.5.1发布后测试精简与验证.md#第二轮测试精简)
 
