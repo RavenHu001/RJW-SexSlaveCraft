@@ -394,10 +394,13 @@ namespace SexSlaveCraft
                     cloneTraining.specializationProgress = sourceTraining.specializationProgress;
 #if SSC_RW17
                     cloneTraining.ReplaceAssignedTrainers(sourceTraining.CopyAssignedTrainers());
+                    // 正式身份可以继承。只在原发作拥有临时身份且无永久锁时，副本恢复为未选。
+                    cloneTraining.pawnIdentity = MentalState_SSCSlaveBreakdown.CurrentFor(source)
+                        ?.IdentityForCopy(sourceTraining.pawnIdentity) ?? sourceTraining.pawnIdentity;
 #else
                     cloneTraining.selectedTrainer = sourceTraining.selectedTrainer;
-#endif
                     cloneTraining.pawnIdentity = sourceTraining.pawnIdentity;
+#endif
                     cloneTraining.slaveTrainerEnabled = false;
                     cloneTraining.trainerIdentityInitialized = true;
                     // 克隆是新角色，不继承本体可能尚未完成的旧档迁移版本。
@@ -506,8 +509,10 @@ namespace SexSlaveCraft
             // 初生清理与成熟复制共用此过滤，先排除身体 PNA 与主人阶段，
             // 再判断宽泛的 SSC 前缀。成熟只跳过来源，不删除克隆自身后来获得的状态。
 #if SSC_RW17
-            // 初生清理来源库存与药效，成熟跳过来源而保留克隆自己获得的身体记录。
-            if (SSCCorruptionGelProductionUtility.IsBodyStateDef(def) || SSCCorruptionGelEffectUtility.IsEffectDef(def)) return false;
+            // 此通道会按 SSC 前缀手动复制。显式排除身体库存、药效和单次发作 Hediff。
+            // 初生移除来源副本，成熟跳过来源条目，克隆自己后来得到的效果由各自的状态维护。
+            if (SSCCorruptionGelProductionUtility.IsBodyStateDef(def) || SSCCorruptionGelEffectUtility.IsEffectDef(def) ||
+                def.defName == Hediff_SSCSlaveBreakdown.DefName) return false;
 #endif
             if (SSCPnaExposureUtility.IsBodyStateDef(def) ||
                 SSCAbilityToggleUtility.IsMarkerDef(def) ||

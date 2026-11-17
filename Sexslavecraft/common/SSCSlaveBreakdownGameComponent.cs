@@ -37,7 +37,9 @@ namespace SexSlaveCraft
         // 待办和启动调用栈只存在于本局运行期间。冷却与满值回落状态由 Pawn 自己保存。
         private readonly Dictionary<Pawn, FullRequest> fullRequests = new();
         private readonly List<FullRequest> refresh = new();
-        private readonly Dictionary<Pawn, bool> startingFromFull = new();
+        // 原版可能返回 true，但 PostStart 未运行或 SSC 身份和 Hediff 没有安装完成。
+        // 只有 PostStart 提交成功才把 Started 写为 true。满值来源另用于更新直发记录。
+        private readonly Dictionary<Pawn, (bool FromFull, bool Started)> starting = new();
         private int fullRequestCancellationVersion;
 
         public SSCSlaveBreakdownGameComponent(Game game) { }
@@ -49,7 +51,7 @@ namespace SexSlaveCraft
         {
             int version = fullRequestCancellationVersion;
             if (!SSCSlaveBreakdown.CanConsider(pawn, need) || SSCSlaveBreakdown.StateDef == null ||
-                startingFromFull.ContainsKey(pawn) || HasFullRequest(pawn)) return null;
+                starting.ContainsKey(pawn) || HasFullRequest(pawn)) return null;
             var comp = pawn.TryGetComp<CompSexSlaveTraining>();
             // 恢复的人格可真实处于重启线以下，即使恢复过程本身不制造新的满值跨越。
             if (need.CurLevel < SSCSlaveBreakdown.RearmBelowLevel) comp.SlaveBreakdownFullTriggerUsed = false;
@@ -111,19 +113,21 @@ namespace SexSlaveCraft
         internal bool TryStart(Pawn pawn, string reason = null, bool causedByMood = false, bool fromFull = false)
         {
             MentalStateDef def = SSCSlaveBreakdown.StateDef;
-            if (def?.Worker.StateCanOccur(pawn) != true || !startingFromFull.TryAdd(pawn, fromFull)) return false;
+            if (def?.Worker.StateCanOccur(pawn) != true || !starting.TryAdd(pawn, (fromFull, false))) return false;
             try
             {
-                return pawn.mindState.mentalStateHandler.TryStartMentalState(def, reason, causedByMood: causedByMood);
+                return pawn.mindState.mentalStateHandler.TryStartMentalState(def, reason, causedByMood: causedByMood) && starting[pawn].Started;
             }
-            finally { startingFromFull.Remove(pawn); }
+            finally { starting.Remove(pawn); }
         }
 
+        /// <summary>身份与效果就绪后确认启动，在原版任务中断和发信之前清理本场的满值待办。</summary>
         internal void NotifyStarted(Pawn pawn)
         {
-            // 原版已经安装了状态。先消费本次待办和直发次数，再进入任务中断及开始信回调。
             CancelFullRequest(pawn);
-            if (startingFromFull.TryGetValue(pawn, out bool fromFull) && fromFull &&
+            if (!starting.TryGetValue(pawn, out var attempt)) return;
+            starting[pawn] = (attempt.FromFull, true);
+            if (attempt.FromFull &&
                 pawn.TryGetComp<CompSexSlaveTraining>() is CompSexSlaveTraining comp)
                 comp.SlaveBreakdownFullTriggerUsed = true;
         }

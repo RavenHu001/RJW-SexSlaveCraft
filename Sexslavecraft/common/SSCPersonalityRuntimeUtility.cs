@@ -40,6 +40,8 @@ namespace SexSlaveCraft
             if (baseline || !entered || state.Mutation != null) return false;
             // 无训练 Comp 的自由目标也有原预览 token；只更新凭据，不打开嵌套人格替换作用域。
             state.Token = new object();
+            // 外部健康事件也能让身体变为空壳，应撤销进行中发作对旧身份的写入权。
+            MentalState_SSCSlaveBreakdown.CurrentFor(pawn)?.InvalidatePersonality();
             return true;
         }
 #endif
@@ -56,6 +58,8 @@ namespace SexSlaveCraft
             scope = new MutationScope(pawn, state.Token);
             state.Mutation = scope;
 #if SSC_RW17
+            // 读档后发作可能还没重新捕获运行期凭据，立即失效以免认领换入后的人格。
+            MentalState_SSCSlaveBreakdown.CurrentFor(pawn)?.InvalidatePersonality();
             // 已换 token 且已占用替换作用域后，才终止前任待用种子任务，阻止其结果落到换入者。
             SSCImprintUtility.CancelPendingSeedUse(pawn);
             // 即使后续替换失败也不恢复旧命令，持久世代与进程内 token 同时撤销。

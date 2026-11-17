@@ -9,11 +9,11 @@ namespace SexSlaveCraft
 {
     public static class ExcretionUtility
     {
-        /// <summary>保存、放置及末端准入通过后清源；孕期拒绝撤回新产物，印记与技能沿原人格流程转移。</summary>
+        /// <summary>保存、放置及末端准入通过后清源。临时拒绝撤回本次产物并保留排泄准备。</summary>
         public static void DoExcretion(Pawn victim)
         {
 #if SSC_RW17
-            // 最终入口也拒绝主人，不能靠直接调用绕过手术或任务准入。
+            // 直接提取与手术、任务使用同一受方准入，只有主人需要移除准备。
             if (!SSCPersonalityExcretionAdmission.CanExtract(victim))
             { SSCPersonalityExcretionAdmission.RemoveForbiddenPreparation(victim); return; }
 #endif
@@ -45,7 +45,7 @@ namespace SexSlaveCraft
                     comp.StorePawnData(victim);
                     if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
 #if SSC_RW17
-                    // 快照读取会进入外部回调；受孕后撤回本次凝胶，不能继续放置或剥离人格。
+                    // 快照读取会进入外部回调。受方新近受孕或进入精神状态时，撤回本次凝胶。
                     if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, slime)) return;
 #else
                     PetCatAbilityUtility.DetachAfterExtraction(victim);

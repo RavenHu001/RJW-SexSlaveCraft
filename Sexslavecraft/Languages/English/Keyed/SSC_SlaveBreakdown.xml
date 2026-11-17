@@ -4,4 +4,6 @@
   <SSC_Setting_EnableSlaveBreakdown_Desc>Allow eligible colonists and colony slaves with high corruption to suffer submission breakdowns.</SSC_Setting_EnableSlaveBreakdown_Desc>
   <SSC_SlaveBreakdown_RiskLabel>Submission breakdown risk</SSC_SlaveBreakdown_RiskLabel>
   <SSC_SlaveBreakdown_RiskExplanation>These pawns are at risk of a submission breakdown.\n\n{0}</SSC_SlaveBreakdown_RiskExplanation>
+  <SSC_SlaveBreakdown_IdentityLocked>Identity cannot be changed manually during a submission breakdown.</SSC_SlaveBreakdown_IdentityLocked>
+  <SSC_SlaveBreakdown_ExcretionBlocked>Personality excretion is unavailable while the target is in a mental state.</SSC_SlaveBreakdown_ExcretionBlocked>
 </LanguageData>

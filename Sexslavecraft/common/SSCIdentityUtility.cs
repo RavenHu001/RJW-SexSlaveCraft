@@ -183,6 +183,33 @@ namespace SexSlaveCraft
             return TrySetIdentityCore(pawn, identity, null);
         }
 
+#if SSC_RW17
+        /// <summary>仅约束人工提交。印记定型、绑定和发作回退继续遵循各自的身份规则。</summary>
+        internal static bool IsManualIdentityChangeBlocked(Pawn pawn)
+            => MentalState_SSCSlaveBreakdown.CurrentFor(pawn) != null;
+
+        /// <summary>两个身份菜单共用入口。迁移或取消仪式可进入回调，实际写入前仍核对发作状态。</summary>
+        internal static bool TrySetManualIdentity(Pawn pawn, PawnIdentity identity)
+        {
+            if (IsManualIdentityChangeBlocked(pawn)) return false;
+            SSCMasterQualificationMigration.MigratePawn(pawn);
+            SSCMasterProgressionMigration.MigratePawn(pawn);
+            bool changed = TrySetIdentityCore(pawn, identity, null, () => !IsManualIdentityChangeBlocked(pawn));
+            // 此入口直达核心，补上常规 TrySetIdentity 的限制配置刷新。
+            if (changed) SSCRestrictionGameComponent.Notify(pawn);
+            return changed;
+        }
+
+        /// <summary>仅供原精神状态自动赋予临时身份。调用方提交归属检查并认领实际写入。</summary>
+        internal static bool TrySetBreakdownIdentity(Pawn pawn, System.Func<bool> canCommit, System.Action onWritten)
+        {
+            // 身份写入后的健康回调可立即清除精神状态，回退归属必须在该回调前登记。
+            bool changed = TrySetIdentityCore(pawn, PawnIdentity.Slave, null, canCommit, onWritten);
+            if (changed) SSCRestrictionGameComponent.Notify(pawn);
+            return changed;
+        }
+#endif
+
         /// <summary>仅供人格植入恢复已保存的身份与资格，仍遵守现有锁和仪式保护；旧人格印记由清源步骤先移出。</summary>
         internal static bool TryRestorePersonalityIdentity(Pawn pawn, PawnIdentity identity, bool qualificationUnlocked)
         {
@@ -190,7 +217,11 @@ namespace SexSlaveCraft
         }
 
         /// <summary>执行共同身份提交；恢复参数只替代资格准入，不开放绕过印记方向或绑定锁的通道。</summary>
-        private static bool TrySetIdentityCore(Pawn pawn, PawnIdentity identity, bool? restoredQualification)
+        private static bool TrySetIdentityCore(Pawn pawn, PawnIdentity identity, bool? restoredQualification
+#if SSC_RW17
+            , System.Func<bool> canCommit = null, System.Action onWritten = null
+#endif
+            )
         {
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
             if (comp == null) return false;
@@ -200,7 +231,7 @@ namespace SexSlaveCraft
                 return false;
 #if SSC_RW17
             // 必须早于同身份快捷分支，避免坏身份记录借重复提交绕过 Hediff 已保存的定型方向。
-            if (!SSCImprintUtility.AllowsIdentity(pawn, identity)) return false;
+            if (canCommit?.Invoke() == false || !SSCImprintUtility.AllowsIdentity(pawn, identity)) return false;
 #endif
             // 重复设置不属于身份切换，绑定结算也会重复写入性奴身份。
 #if SSC_RW17
@@ -251,8 +282,13 @@ namespace SexSlaveCraft
             }
             else if (identity == PawnIdentity.Master && !SSCMasterQualificationUtility.CanSelectMaster(pawn))
                 return false;
+#if SSC_RW17
+            // 前置回调可能让手动编辑失效，或已结束本次临时身份的所有者。
+            if (canCommit?.Invoke() == false) return false;
+#endif
             comp.pawnIdentity = identity;
 #if SSC_RW17
+            onWritten?.Invoke();
             if (identity == PawnIdentity.Master)
             {
                 SSCFullCorruptionImprint.CancelForMaster(pawn);
@@ -305,6 +341,10 @@ namespace SexSlaveCraft
         {
             if (Scribe.mode != LoadSaveMode.Inactive || pawn == null || pawn.Dead || pawn.Destroyed || pawn.Discarded)
                 return false;
+#if SSC_RW17
+            // 恢复旧锁链身份也是人工提交。已打开的确认框同样会在点击时重新走这里。
+            if (IsManualIdentityChangeBlocked(pawn)) return false;
+#endif
             CompSexSlaveTraining comp = pawn.TryGetComp<CompSexSlaveTraining>();
             if (comp == null || comp.pawnIdentity != PawnIdentity.Unset || comp.restrictionRestoreDepth > 0)
                 return false;

@@ -4,4 +4,6 @@
   <SSC_Setting_EnableSlaveBreakdown_Desc>允许符合条件的高恶堕殖民者和殖民地奴隶陷入奴性爆发。</SSC_Setting_EnableSlaveBreakdown_Desc>
   <SSC_SlaveBreakdown_RiskLabel>奴性爆发风险</SSC_SlaveBreakdown_RiskLabel>
   <SSC_SlaveBreakdown_RiskExplanation>以下小人可能陷入奴性爆发。\n\n{0}</SSC_SlaveBreakdown_RiskExplanation>
+  <SSC_SlaveBreakdown_IdentityLocked>奴性爆发期间无法手动切换身份。</SSC_SlaveBreakdown_IdentityLocked>
+  <SSC_SlaveBreakdown_ExcretionBlocked>目标处于精神状态中，暂时无法进行人格排泄。</SSC_SlaveBreakdown_ExcretionBlocked>
 </LanguageData>

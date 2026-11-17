@@ -4,4 +4,6 @@
   <SSC_Setting_EnableSlaveBreakdown_Desc>Разрешить приступы покорности у подходящих колонистов и рабов колонии с высокой развращённостью.</SSC_Setting_EnableSlaveBreakdown_Desc>
   <SSC_SlaveBreakdown_RiskLabel>Риск приступа покорности</SSC_SlaveBreakdown_RiskLabel>
   <SSC_SlaveBreakdown_RiskExplanation>Этим персонажам грозит приступ покорности.\n\n{0}</SSC_SlaveBreakdown_RiskExplanation>
+  <SSC_SlaveBreakdown_IdentityLocked>Во время приступа покорности нельзя сменить статус вручную.</SSC_SlaveBreakdown_IdentityLocked>
+  <SSC_SlaveBreakdown_ExcretionBlocked>Извлечение личности недоступно, пока цель находится в особом психическом состоянии.</SSC_SlaveBreakdown_ExcretionBlocked>
 </LanguageData>

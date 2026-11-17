@@ -25,7 +25,7 @@ namespace SexSlaveCraft
     public class Hediff_SSC_PersonalityExcreting : HediffWithComps
     {
 #if SSC_RW17
-        /// <summary>主人不保留排泄准备；仅怀孕或临产不会触发移除，满进度也保留等待。</summary>
+        /// <summary>主人身份撤销排泄准备。妊娠、临产或精神状态下，满进度同样保留等待。</summary>
         public override bool ShouldRemove => SSCPersonalityExcretionAdmission.MustRemovePreparation(pawn) || base.ShouldRemove;
 
         /// <summary>手术结算或外部添加时立即清除主人身上的准备状态。</summary>

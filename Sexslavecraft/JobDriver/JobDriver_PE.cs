@@ -235,7 +235,7 @@ namespace SexSlaveCraft
             };
         }
 
-        /// <summary>结算场景并复查孕态；1.7凝胶成功放置且仍有准入才剥离人格，失败保留准备与源人格。</summary>
+        /// <summary>场景结算后复查受方准入。1.7 凝胶成功放置且复查通过后才剥离人格。</summary>
         private void CompletePersonalityExtraction()
         {
             Pawn victim = Partner;
@@ -248,7 +248,7 @@ namespace SexSlaveCraft
             object originalPersonality = SSCPersonalityRuntimeUtility.Capture(victim);
             SexUtility.ProcessSex(Sexprops);
 #if SSC_RW17
-            // 原结算回调可能改身份或建立妊娠，生成凝胶之前再次复查。
+            // 原结算回调可能改身份、建立妊娠或进入精神状态，生成凝胶之前再次复查。
             if (!SSCPersonalityExcretionAdmission.CanExtract(victim))
             { SSCPersonalityExcretionAdmission.RemoveForbiddenPreparation(victim); return; }
 #endif
@@ -270,7 +270,7 @@ namespace SexSlaveCraft
                 if (product.TryGetComp<CompPersonalityStore>() == null || !mutation.IsCurrent ||
                     victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
 #if SSC_RW17
-                // 孕态必须覆盖快照和放置回调；源人格未清理前撤回失败产物，保留准备状态。
+                // 快照和放置都可能触发新的临时阻塞。源人格尚未清理时撤回产物，保留准备。
                 if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, product)) return;
                 if (GenSpawn.Spawn(product, victim.Position, victim.Map) == null)
                 {

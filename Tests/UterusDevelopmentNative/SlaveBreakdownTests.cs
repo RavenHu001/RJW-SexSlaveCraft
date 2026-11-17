@@ -1,5 +1,6 @@
 // AI 辅助生成：真实恶堕增长、印记和原版精神状态入口共用原生宿主。
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Xml;
 using System.Xml.Linq;
 using HarmonyLib;
@@ -19,6 +20,8 @@ internal static partial class Program
     private static int breakdownRolls;
     private static MentalBreakIntensity? selectedBreakdownIntensity;
     private static bool tickDuringImprintLetter;
+    private static Pawn skipBreakdownEffectFor;
+    private static Pawn interruptBeforeBreakdownStart;
 
     private static void SlaveBreakdownTests(string repo, MethodBase receiveLetter)
     {
@@ -30,6 +33,13 @@ internal static partial class Program
         var previousQuests = game.questManager;
         var previousThreshold = StatDefOf.MentalBreakThreshold;
         var previousRecord = RecordDefOf.TimesInMentalState;
+        ref StatDef frequency = ref AccessTools.StaticFieldRefAccess<StatDef>(typeof(rjw.RJWStatDefOf), "SexFrequency");
+        ref StatDef satisfaction = ref AccessTools.StaticFieldRefAccess<StatDef>(typeof(rjw.RJWStatDefOf), "SexSatisfaction");
+        ref StatDef vulnerability = ref AccessTools.StaticFieldRefAccess<StatDef>(typeof(rjw.RJWStatDefOf), "Vulnerability");
+        var previousFrequency = frequency;
+        var previousSatisfaction = satisfaction;
+        var previousVulnerability = vulnerability;
+        float previousDecay = rjw.RJWSettings.sexneed_decay_rate;
         bool previousRandomStates = DebugSettings.enableRandomMentalStates;
         var mapsField = AccessTools.Field(typeof(Game), "maps");
         object previousMaps = mapsField.GetValue(game);
@@ -68,13 +78,45 @@ internal static partial class Program
             DefDatabase<MentalStateDef>.Add(DirectXmlToObject.ObjectFromXml<MentalStateDef>(xml.DocumentElement.SelectSingleNode("MentalStateDef"), false));
             foreach (XmlNode node in xml.DocumentElement.SelectNodes("MentalBreakDef"))
                 DefDatabase<MentalBreakDef>.Add(DirectXmlToObject.ObjectFromXml<MentalBreakDef>(node, false));
+            // 宿主不模拟技能和身体能力。边界从实际 RJW 定义读取，数值仍经过原版 StatWorker 和 RJW 需求计算。
+            var rjwStats = XDocument.Load(RjwResource("Defs/StatDefs/Stats.xml"));
+            StatDef LoadNeutralStat(string name)
+            {
+                var source = rjwStats.Root.Elements("StatDef").Single(node => (string)node.Element("defName") == name);
+                var stat = DefDatabase<StatDef>.GetNamedSilentFail(name);
+                if (stat == null)
+                {
+                    stat = new StatDef { defName = name, defaultBaseValue = (float)source.Element("defaultBaseValue") };
+                    DefDatabase<StatDef>.Add(stat);
+                }
+                stat.minValue = (float?)source.Element("minValue") ?? stat.minValue;
+                stat.maxValue = (float?)source.Element("maxValue") ?? stat.maxValue;
+                return stat;
+            }
+            frequency = LoadNeutralStat("SexFrequency");
+            satisfaction = LoadNeutralStat("SexSatisfaction");
+            vulnerability = LoadNeutralStat("Vulnerability");
+            rjw.RJWSettings.sexneed_decay_rate = 1f;
+            if (DefDatabase<PawnCapacityDef>.GetNamedSilentFail("Consciousness") == null)
+                DefDatabase<PawnCapacityDef>.Add(new PawnCapacityDef { defName = "Consciousness" });
+            boundary.Patch(AccessTools.Method(typeof(GenTypes), nameof(GenTypes.GetTypeInAnyAssembly)),
+                prefix: new HarmonyMethod(typeof(Program), nameof(BreakdownRjwTypeBoundary)));
+            HediffDef LoadHediff(string path)
+            {
+                xml.Load(path);
+                var def = DirectXmlToObject.ObjectFromXml<HediffDef>(xml.DocumentElement.SelectSingleNode("HediffDef"), false);
+                DefDatabase<HediffDef>.Add(def);
+                return def;
+            }
+            var breakdownEffect = LoadHediff(Path.Combine(repo, "1.7/Defs/HediffDefs/SSC_SlaveBreakdown.xml"));
+            var feelingBroken = LoadHediff(RjwResource("Defs/HediffDefs/Hediffs_FeelingBroken.xml"));
             errors.Clear();
             DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
             Require(errors.Count == 0, string.Join('\n', errors));
 
             // 安装生产补丁，保留原版选池、状态赋值、Scribe 和信件构造。隔离地图网格、其 UI 更新及掷骰抽样。
             foreach (Type type in new[] { typeof(Patch_SSCSlaveBreakdownMoodSelection), typeof(Patch_SSCSlaveBreakdownClear),
-                         typeof(Patch_SSCSlaveBreakdownTransition) })
+                         typeof(Patch_SSCSlaveBreakdownTransition), typeof(Patch_SSCSlaveBreakdownDeath) })
                 boundary.CreateClassProcessor(type).Patch();
             void Prefix(MethodBase method, string name) => boundary.Patch(method, prefix: new HarmonyMethod(typeof(Program), name));
             Prefix(AccessTools.Method(typeof(AttackTargetsCache), nameof(AttackTargetsCache.UpdateTarget)), nameof(Skip));
@@ -85,6 +127,15 @@ internal static partial class Program
             Prefix(AccessTools.Method(typeof(GenText), nameof(GenText.AdjustedFor),
                 new[] { typeof(string), typeof(Pawn), typeof(string), typeof(bool) }), nameof(BreakdownGrammarBoundary));
             Prefix(AccessTools.Method(typeof(ColoredText), nameof(ColoredText.Resolve)), nameof(BreakdownColorBoundary));
+            // 只替代与本步无关的初始准入、年龄和身体因素，保留 NeedInterval 和实际驱动力属性。
+            Prefix(AccessTools.Method(typeof(rjw.xxx), nameof(rjw.xxx.is_asexual), new[] { typeof(Pawn) }), nameof(BreakdownAsexualBoundary));
+            Prefix(AccessTools.Method(typeof(rjw.xxx), nameof(rjw.xxx.can_do_loving), new[] { typeof(Pawn) }), nameof(BreakdownLovingBoundary));
+            Prefix(AccessTools.Method(typeof(rjw.Need_Sex), nameof(rjw.Need_Sex.GetFallFactorFor)), nameof(BreakdownFallFactorBoundary));
+            Prefix(AccessTools.Method(typeof(Pawn_HealthTracker), nameof(Pawn_HealthTracker.AddHediff),
+                new[] { typeof(Hediff), typeof(BodyPartRecord), typeof(DamageInfo?), typeof(DamageWorker.DamageResult) }),
+                nameof(SkipBreakdownEffect));
+            boundary.Patch(AccessTools.Method(typeof(MentalStateHandler), nameof(MentalStateHandler.TryStartMentalState)),
+                transpiler: new HarmonyMethod(typeof(Program), nameof(InsertBreakdownStartInterruption)));
             boundary.Patch(receiveLetter, prefix: new HarmonyMethod(typeof(Program), nameof(CaptureBreakdownLetter)) { priority = Priority.First });
 
             void Case(string name, Action action)
@@ -99,6 +150,8 @@ internal static partial class Program
                     breakdownRolls = 0;
                     selectedBreakdownIntensity = null;
                     tickDuringImprintLetter = false;
+                    skipBreakdownEffectFor = null;
+                    interruptBeforeBreakdownStart = null;
                     action();
                 });
             }
@@ -122,6 +175,167 @@ internal static partial class Program
                 Equal(PawnIdentity.Slave, SSCIdentityUtility.GetIdentity(pawn));
                 Require(breakdownLetters.SequenceEqual(new[] { (pawn, "imprint", SSCImprintKind.Slave, false),
                     (pawn, "breakdown", SSCImprintKind.Slave, true) }));
+                pawn.mindState.mentalStateHandler.Reset();
+                Require(!pawn.health.hediffSet.HasHediff(breakdownEffect));
+                Equal(PawnIdentity.Slave, SSCIdentityUtility.GetIdentity(pawn));
+                Equal(SSCImprintKind.Slave, SSCImprintUtility.GetKind(pawn));
+                Equal(2, breakdownLetters.Count);
+            });
+
+            Case("temporary role and native need effects end on interruption while completed FeelingBroken progress persists", () =>
+            {
+                var (pawn, need) = BreakdownPawn();
+                var comp = new rjw.CompRJW { parent = pawn };
+                AccessTools.Field(typeof(rjw.CompRJW), "pawnData").SetValue(comp, new rjw.PawnData(pawn) { raceSexDrive = 1f });
+                ((List<ThingComp>)AccessTools.Field(typeof(ThingWithComps), "comps").GetValue(pawn)).Add(comp);
+                var sexNeed = new rjw.Need_Sex(pawn) { def = new NeedDef { defName = "SSC_TestSexNeed" } };
+                float DecayOneInterval()
+                {
+                    sexNeed.CurLevel = 1f;
+                    sexNeed.NeedInterval();
+                    return 1f - sexNeed.CurLevel;
+                }
+                float baseline = DecayOneInterval();
+                Require(baseline > 0f && baseline < .02f);
+                Near(1f, rjw.xxx.get_vulnerability(pawn));
+                need.SetCorruption(1f);
+                runtime.GameComponentTick();
+                Require(pawn.MentalState is MentalState_SSCSlaveBreakdown);
+                Equal(PawnIdentity.Slave, SSCIdentityUtility.GetIdentity(pawn));
+                Require(SSCIdentityUtility.IsManualIdentityChangeBlocked(pawn));
+                Require(!SSCIdentityUtility.TrySetManualIdentity(pawn, PawnIdentity.Unset));
+                Require(!SSCPersonalityExcretionAdmission.CanExtract(pawn));
+                Near(baseline * 10f, DecayOneInterval());
+                Near(.25f, pawn.GetStatValue(rjw.RJWStatDefOf.SexSatisfaction));
+                Near(3f, rjw.xxx.get_vulnerability(pawn));
+
+                SetBreakdownTick(3499);
+                pawn.mindState.mentalStateHandler.MentalStateHandlerTickInterval(1);
+                Require(!pawn.health.hediffSet.HasHediff(feelingBroken));
+                SetBreakdownTick(3500);
+                pawn.mindState.mentalStateHandler.MentalStateHandlerTickInterval(1);
+                var broken = pawn.health.hediffSet.GetFirstHediffOfDef(feelingBroken);
+                Near(.03f, broken.Severity);
+                SetBreakdownTick(5999);
+                pawn.mindState.mentalStateHandler.Reset();
+                Equal(PawnIdentity.Unset, SSCIdentityUtility.GetIdentity(pawn));
+                Require(!pawn.health.hediffSet.HasHediff(breakdownEffect));
+                Require(!SSCIdentityUtility.IsManualIdentityChangeBlocked(pawn));
+                Require(SSCPersonalityExcretionAdmission.CanExtract(pawn));
+                Near(baseline, DecayOneInterval());
+                Near(1f, rjw.xxx.get_vulnerability(pawn));
+                SetBreakdownTick(16000);
+                pawn.mindState.mentalStateHandler.MentalStateHandlerTickInterval(1);
+                Near(.03f, broken.Severity);
+            });
+
+            Case("personality excretion pauses during a native non-SSC state and keeps the preparation", () =>
+            {
+                var (pawn, _) = BreakdownPawn();
+                var prep = new Hediff_SSC_PersonalityExcreting
+                    { def = SSCDefOf.SSC_PersonalityExcreting, pawn = pawn, Severity = .75f };
+                pawn.health.AddHediff(prep);
+                var external = new MentalStateDef { defName = "SSC_TestExcretionState", category = MentalStateCategory.Misc };
+                var handler = pawn.mindState.mentalStateHandler;
+                Require(handler.TryStartMentalState(external));
+                Require(!SSCPersonalityExcretionAdmission.CanExtract(pawn));
+                Require(!SSCPersonalityExcretionAdmission.TryContinueExtraction(pawn, null));
+                Require(pawn.health.hediffSet.hediffs.Contains(prep) && !prep.ShouldRemove);
+                handler.Reset();
+                Require(SSCPersonalityExcretionAdmission.CanExtract(pawn));
+            });
+
+            Case("a missing start effect retracts the role and does not consume the crossing or send a letter", () =>
+            {
+                var (pawn, need) = BreakdownPawn();
+                skipBreakdownEffectFor = pawn;
+                need.SetCorruption(1f);
+                runtime.GameComponentTick();
+                Require(pawn.MentalState == null && !pawn.health.hediffSet.HasHediff(breakdownEffect));
+                Equal(PawnIdentity.Unset, SSCIdentityUtility.GetIdentity(pawn));
+                var comp = pawn.TryGetComp<CompSexSlaveTraining>();
+                Equal(0L, comp.SlaveBreakdownCooldownUntil);
+                Require(!comp.SlaveBreakdownFullTriggerUsed && breakdownLetters.Count == 0);
+                skipBreakdownEffectFor = null;
+                need.SetCorruption(.99f);
+                need.SetCorruption(1f);
+                runtime.GameComponentTick();
+                Require(pawn.MentalState is MentalState_SSCSlaveBreakdown && comp.SlaveBreakdownFullTriggerUsed);
+                Equal(1, breakdownLetters.Count);
+            });
+
+            Case("native interruption before PostStart leaves no cooldown or begin letter", () =>
+            {
+                var (pawn, need) = BreakdownPawn();
+                interruptBeforeBreakdownStart = pawn;
+                need.SetCorruption(1f);
+                runtime.GameComponentTick();
+
+                Require(interruptBeforeBreakdownStart == null && pawn.MentalState == null);
+                Require(!pawn.health.hediffSet.HasHediff(breakdownEffect));
+                Equal(PawnIdentity.Unset, SSCIdentityUtility.GetIdentity(pawn));
+                var comp = pawn.TryGetComp<CompSexSlaveTraining>();
+                Equal(0L, comp.SlaveBreakdownCooldownUntil);
+                Require(!comp.SlaveBreakdownFullTriggerUsed && breakdownLetters.Count == 0);
+            });
+
+            Case("native death teardown clears the temporary role before discarding the mind tracker", () =>
+            {
+                var (pawn, need) = BreakdownPawn();
+                need.SetCorruption(1f);
+                runtime.GameComponentTick();
+                var handler = pawn.mindState.mentalStateHandler;
+                Require(handler.CurState is MentalState_SSCSlaveBreakdown);
+                SetBreakdownTick(3500);
+                handler.MentalStateHandlerTickInterval(1);
+                // 调用 Pawn.Kill 的原版死亡及卸载入口。省去尸体生成和地图上的死亡表现。
+                pawn.health.SetDead();
+                PawnComponentsUtility.RemoveComponentsOnKilled(pawn);
+
+                Require(pawn.mindState == null && handler.CurState == null);
+                Equal(PawnIdentity.Unset, SSCIdentityUtility.GetIdentity(pawn));
+                Require(!pawn.health.hediffSet.HasHediff(breakdownEffect));
+                Near(.03f, pawn.health.hediffSet.GetFirstHediffOfDef(feelingBroken).Severity);
+            });
+
+            Case("silent replacement settles the old episode and preserves the slave role present at entry", () =>
+            {
+                var (pawn, need) = BreakdownPawn(PawnIdentity.Slave);
+                need.SetCorruption(1f);
+                runtime.GameComponentTick();
+                var handler = pawn.mindState.mentalStateHandler;
+                Require(handler.CurState is MentalState_SSCSlaveBreakdown);
+                SetBreakdownTick(3500);
+                var external = new MentalStateDef { defName = "SSC_TestSilentReplacement", category = MentalStateCategory.Misc };
+                Require(handler.TryStartMentalState(external, transitionSilently: true));
+                Equal(external, handler.CurStateDef);
+                Equal(PawnIdentity.Slave, SSCIdentityUtility.GetIdentity(pawn));
+                Equal(63500L, pawn.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownUntil);
+                Require(!pawn.health.hediffSet.HasHediff(breakdownEffect));
+                Require(!SSCIdentityUtility.IsManualIdentityChangeBlocked(pawn));
+                Near(.03f, pawn.health.hediffSet.GetFirstHediffOfDef(feelingBroken).Severity);
+            });
+
+            Case("replacement before the first loaded tick withdraws the old effect without rolling back the incoming role", () =>
+            {
+                var (pawn, need) = BreakdownPawn();
+                need.SetCorruption(1f);
+                runtime.GameComponentTick();
+                string path = SaveBreakdown(new SlaveBreakdownSaveFixture(pawn, SSCMod.settings));
+                var (loaded, _) = BreakdownPawn();
+                LoadBreakdown(path, loaded);
+                Require(loaded.MentalState is MentalState_SSCSlaveBreakdown);
+                Require(SSCPersonalityRuntimeUtility.TryBeginMutation(loaded, out var mutation));
+                using (mutation)
+                    Require(SSCIdentityUtility.TryRestorePersonalityIdentity(loaded, PawnIdentity.Slave, false));
+
+                var effect = loaded.health.hediffSet.GetFirstHediffOfDef(breakdownEffect);
+                Require(effect.ShouldRemove);
+                SetBreakdownTick(3500);
+                loaded.mindState.mentalStateHandler.MentalStateHandlerTickInterval(1);
+                Require(loaded.MentalState == null && !loaded.health.hediffSet.HasHediff(breakdownEffect));
+                Require(!loaded.health.hediffSet.HasHediff(feelingBroken));
+                Equal(PawnIdentity.Slave, SSCIdentityUtility.GetIdentity(loaded));
             });
 
             Case("full breakdown waits for imprint retries and continues from either final outcome", () =>
@@ -348,15 +562,29 @@ internal static partial class Program
                 need.SetCorruption(1f);
                 runtime.GameComponentTick();
                 Require(pawn.MentalState is MentalState_SSCSlaveBreakdown);
+                SetBreakdownTick(13500);
+                pawn.mindState.mentalStateHandler.MentalStateHandlerTickInterval(1);
+                Near(.15f, pawn.health.hediffSet.GetFirstHediffOfDef(feelingBroken).Severity);
                 string path = SaveBreakdown(new SlaveBreakdownSaveFixture(pawn, SSCMod.settings));
                 var (loadedPawn, loadedNeed) = BreakdownPawn();
                 loadedNeed.RestoreCorruption(1f, 1f);
                 var restored = LoadBreakdown(path, loadedPawn);
                 Require(restored.Settings.EnableSlaveBreakdown && loadedPawn.MentalState is MentalState_SSCSlaveBreakdown);
+                Require(loadedPawn.health.hediffSet.HasHediff(breakdownEffect));
+                Require(SSCIdentityUtility.IsManualIdentityChangeBlocked(loadedPawn));
+                Equal(PawnIdentity.Slave, SSCIdentityUtility.GetIdentity(loadedPawn));
+                Near(10f, loadedPawn.GetStatValue(rjw.RJWStatDefOf.SexFrequency));
                 Require(loadedPawn.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownFullTriggerUsed);
                 SetBreakdownTick(16000);
+                var loadedEffect = loadedPawn.health.hediffSet.GetFirstHediffOfDef(breakdownEffect);
+                Require(loadedEffect.ShouldRemove);
+                // At the deadline health may tick before the mental state. The sixth pulse still belongs to the episode.
+                loadedPawn.health.RemoveHediff(loadedEffect);
                 loadedPawn.mindState.mentalStateHandler.MentalStateHandlerTickInterval(1);
                 Require(loadedPawn.MentalState == null);
+                Equal(PawnIdentity.Unset, SSCIdentityUtility.GetIdentity(loadedPawn));
+                Require(!loadedPawn.health.hediffSet.HasHediff(breakdownEffect));
+                Near(.18f, loadedPawn.health.hediffSet.GetFirstHediffOfDef(feelingBroken).Severity);
                 restored.Settings.EnableSlaveBreakdown = false;
                 path = SaveBreakdown(restored);
                 var (after, afterNeed) = BreakdownPawn();
@@ -406,6 +634,10 @@ internal static partial class Program
             Current.ProgramState = previousState;
             StatDefOf.MentalBreakThreshold = previousThreshold;
             RecordDefOf.TimesInMentalState = previousRecord;
+            frequency = previousFrequency;
+            satisfaction = previousSatisfaction;
+            vulnerability = previousVulnerability;
+            rjw.RJWSettings.sexneed_decay_rate = previousDecay;
             DebugSettings.enableRandomMentalStates = previousRandomStates;
             SSCMod.settings = previousSettings;
             SetBreakdownTick(oldTick);
@@ -448,6 +680,60 @@ internal static partial class Program
 
     private static void ObserveMoodBreakChoice(MentalBreakWorker_SSCSlaveBreakdown __instance)
         => selectedBreakdownIntensity = __instance.def.intensity;
+
+    private static bool BreakdownAsexualBoundary(Pawn __0, ref bool __result)
+    {
+        if (!breakdownPawns.Contains(__0)) return true;
+        __result = false;
+        return false;
+    }
+
+    private static bool BreakdownLovingBoundary(Pawn __0, ref bool __result)
+    {
+        if (!breakdownPawns.Contains(__0)) return true;
+        __result = true;
+        return false;
+    }
+
+    private static bool BreakdownFallFactorBoundary(Pawn __0, ref float __result)
+    {
+        if (!breakdownPawns.Contains(__0)) return true;
+        __result = 1f;
+        return false;
+    }
+
+    // 独立宿主的原版模组搜索列表未注册 RJW。走同一实际 DLL 解析 XML 中的类名。
+    private static bool BreakdownRjwTypeBoundary(string typeName, ref Type __result)
+    {
+        if (!typeName.StartsWith("rjw.", StringComparison.Ordinal)) return true;
+        __result = typeof(rjw.xxx).Assembly.GetType(typeName);
+        return __result == null;
+    }
+
+    private static bool SkipBreakdownEffect(Hediff __0)
+        => skipBreakdownEffectFor == null || __0 is not Hediff_SSCSlaveBreakdown || __0.pawn != skipBreakdownEffectFor;
+
+    // 原版在写入状态后、调用 PostStart 前进入 Lord 等通知。无图形宿主在同一窗口注入一次 Reset。
+    private static IEnumerable<CodeInstruction> InsertBreakdownStartInterruption(IEnumerable<CodeInstruction> instructions)
+    {
+        var stateSlot = AccessTools.Field(typeof(MentalStateHandler), "curStateInt");
+        foreach (var instruction in instructions)
+        {
+            yield return instruction;
+            if (!instruction.StoresField(stateSlot)) continue;
+            yield return new CodeInstruction(OpCodes.Ldarg_0);
+            yield return CodeInstruction.Call(typeof(Program), nameof(InterruptBeforeBreakdownStart));
+        }
+    }
+
+    private static void InterruptBeforeBreakdownStart(MentalStateHandler handler)
+    {
+        if (interruptBeforeBreakdownStart == null ||
+            handler != interruptBeforeBreakdownStart.mindState.mentalStateHandler ||
+            handler.CurState is not MentalState_SSCSlaveBreakdown) return;
+        interruptBeforeBreakdownStart = null;
+        handler.Reset();
+    }
 
     // 省去与信件顺序无关的原版语法规则表；原生状态仍构造信件并实际调用 ReceiveLetter。
     private static bool BreakdownGrammarBoundary(string __0, Pawn __1, ref string __result)
@@ -511,6 +797,7 @@ public sealed class SlaveBreakdownSaveFixture : IExposable
     {
         Settings.ExposeData();
         pawn.TryGetComp<CompSexSlaveTraining>().PostExposeData();
+        pawn.health.hediffSet.ExposeData();
         pawn.mindState.mentalStateHandler.ExposeData();
     }
 }
