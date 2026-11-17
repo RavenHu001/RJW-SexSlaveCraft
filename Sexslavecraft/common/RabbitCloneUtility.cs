@@ -512,7 +512,8 @@ namespace SexSlaveCraft
             // 此通道会按 SSC 前缀手动复制。显式排除身体库存、药效和单次发作 Hediff。
             // 初生移除来源副本，成熟跳过来源条目，克隆自己后来得到的效果由各自的状态维护。
             if (SSCCorruptionGelProductionUtility.IsBodyStateDef(def) || SSCCorruptionGelEffectUtility.IsEffectDef(def) ||
-                def.defName == Hediff_SSCSlaveBreakdown.DefName) return false;
+                def.defName == Hediff_SSCSlaveBreakdown.DefName ||
+                def.defName == Hediff_SSCSlaveBreakdownCooldown.DefName) return false;
 #endif
             if (SSCPnaExposureUtility.IsBodyStateDef(def) ||
                 SSCAbilityToggleUtility.IsMarkerDef(def) ||

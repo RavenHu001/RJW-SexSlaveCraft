@@ -39,6 +39,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
                 // 复用完整引用恢复后的现有快照，建立观察基线而不更换合法保存世代。
                 SSCRomanceLifecycle.InitializeAfterLoad(pawn);
+                pawn.TryGetComp<CompSexSlaveTraining>()?.MigrateSlaveBreakdownCooldown();
 #endif
             }
 #if SSC_RW17

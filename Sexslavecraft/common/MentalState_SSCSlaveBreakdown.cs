@@ -48,6 +48,8 @@ namespace SexSlaveCraft
             }
             // 标记新发作的开场。原版状态处理器完成本次切换后，由行为树派发具体任务。
             openingPhase = OpeningPhase.Pair;
+            // Start 确认后才清空真实需求。读档恢复与启动被撤销的场次沿用当前需求值。
+            if (pawn.needs?.TryGetNeed<rjw.Need_Sex>() is rjw.Need_Sex sexNeed) sexNeed.CurLevel = 0f;
             SSCSlaveBreakdownGameComponent.Current?.NotifyStarted(pawn);
             base.PostStart(reason);
         }
@@ -201,7 +203,7 @@ namespace SexSlaveCraft
             int now = SSCSlaveBreakdown.Now;
             if ((initialized || (!attemptedStart && expiresAt >= 0)) && now >= 0 &&
                 pawn.TryGetComp<CompSexSlaveTraining>() is CompSexSlaveTraining comp)
-                comp.SlaveBreakdownCooldownUntil = (long)now + SSCSlaveBreakdown.CooldownTicks;
+                comp.RecordSlaveBreakdownCooldown((long)now + SSCSlaveBreakdown.CooldownTicks);
         }
 
         /// <summary>清除后结算一次。身体效果按实例移除，身份回退另行核对当前人格和永久锁。</summary>

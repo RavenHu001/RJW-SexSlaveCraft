@@ -6,4 +6,8 @@
   <SSC_SlaveBreakdown_RiskExplanation>Этим персонажам грозит приступ покорности.\n\n{0}</SSC_SlaveBreakdown_RiskExplanation>
   <SSC_SlaveBreakdown_IdentityLocked>Во время приступа покорности нельзя сменить статус вручную.</SSC_SlaveBreakdown_IdentityLocked>
   <SSC_SlaveBreakdown_ExcretionBlocked>Извлечение личности недоступно, пока цель находится в особом психическом состоянии.</SSC_SlaveBreakdown_ExcretionBlocked>
+  <SSC_SlaveBreakdown_DebugStart>Запустить приступ покорности</SSC_SlaveBreakdown_DebugStart>
+  <SSC_SlaveBreakdown_DebugStartDesc>Немедленно вызвать приступ покорности у этого персонажа для проверки состояния и его исхода.</SSC_SlaveBreakdown_DebugStartDesc>
+  <SSC_SlaveBreakdown_DebugCooldown>До конца перерыва: {0}</SSC_SlaveBreakdown_DebugCooldown>
+  <SSC_SlaveBreakdown_DebugBlocked>Этот персонаж сейчас не может пережить приступ покорности.</SSC_SlaveBreakdown_DebugBlocked>
 </LanguageData>

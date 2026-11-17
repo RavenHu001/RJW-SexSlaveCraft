@@ -116,12 +116,18 @@ namespace SexSlaveCraft
     /// <summary>沿用 RJW 原候选及当前自动分流，另为游荡期单人任务记录本场所有权。</summary>
     public sealed class JobGiver_SSCSlaveBreakdownMasturbate : JobGiver_Masturbate
     {
+        [ThreadStatic] internal static Pawn CandidatePawn;
+
         public override ThinkResult TryIssueJobPackage(Pawn pawn, JobIssueParams jobParams)
         {
             var state = MentalState_SSCSlaveBreakdown.CurrentFor(pawn);
             if (state?.CanIssueBehavior != true || state.HasBehaviorJob) return ThinkResult.NoJob;
             Job previous = pawn.CurJob;
-            ThinkResult result = base.TryIssueJobPackage(pawn, jobParams);
+            Pawn previousCandidate = CandidatePawn;
+            ThinkResult result;
+            CandidatePawn = pawn;
+            try { result = base.TryIssueJobPackage(pawn, jobParams); }
+            finally { CandidatePawn = previousCandidate; }
             // 原始候选从基类返回时已通过 SSC 自动分流和许可 Postfix。
             if (!result.IsValid) return result;
             if (state.CanIssueBehavior && !state.HasBehaviorJob && pawn.CurJob == previous)
@@ -131,6 +137,58 @@ namespace SexSlaveCraft
             }
             JobMaker.ReturnToPool(result.Job);
             return ThinkResult.NoJob;
+        }
+    }
+
+    // RJW 的公开地点开关与旁人可见性评分分别发生在候选期和执行期。
+    // 仅放行本场候选或已认领任务。第三方普通任务即使涉及同一 Pawn 也不会继承例外。
+    internal static class SSCBreakdownPublicActivity
+    {
+        internal static bool Permits(Pawn pawn, Pawn partner = null)
+        {
+            var state = MentalState_SSCSlaveBreakdown.CurrentFor(pawn);
+            if (state?.CanIssueBehavior != true) return false;
+            if (partner == null && (state.SelectingOpeningJob || JobGiver_SSCSlaveBreakdownMasturbate.CandidatePawn == pawn))
+                return true;
+            return state.OwnsBehaviorJob(pawn.CurJob) && (partner == null
+                ? pawn.CurJob.targetA.Pawn == pawn
+                : pawn.CurJob.targetA.Pawn == partner);
+        }
+    }
+
+    [HarmonyPatch(typeof(JobGiver_Masturbate), "WillingToMasturbateEverywhere")]
+    internal static class Patch_SSCBreakdownMasturbateEverywhere
+    {
+        internal static bool Prefix(Pawn pawn, ref bool __result)
+        {
+            if (!SSCBreakdownPublicActivity.Permits(pawn)) return true;
+            __result = true;
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(CasualSex_Helper), nameof(CasualSex_Helper.MightBeSeen))]
+    internal static class Patch_SSCBreakdownVisibility
+    {
+        internal static bool Prefix(Pawn pawn, Pawn partner, ref bool __result)
+        {
+            if (!SSCBreakdownPublicActivity.Permits(pawn, partner)) return true;
+            __result = false;
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(CasualSex_Helper), nameof(CasualSex_Helper.FindSexLocation))]
+    internal static class Patch_SSCBreakdownActivityLocation
+    {
+        internal static bool Prefix(Pawn pawn, Pawn partner, ref IntVec3 __result)
+        {
+            // 单人任务优先用当前位置；仍由 RJW 判定格子能否安全使用。
+            // 双人快速任务的原版进阶由 MightBeSeen 接入，保留其温度与走位流程。
+            if (partner != null || !SSCBreakdownPublicActivity.Permits(pawn) ||
+                !CasualSex_Helper.IsAcceptableSexSpot(pawn.Position, pawn, null)) return true;
+            __result = pawn.Position;
+            return false;
         }
     }
 

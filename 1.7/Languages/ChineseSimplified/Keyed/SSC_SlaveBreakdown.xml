@@ -6,4 +6,8 @@
   <SSC_SlaveBreakdown_RiskExplanation>以下小人可能陷入奴性爆发。\n\n{0}</SSC_SlaveBreakdown_RiskExplanation>
   <SSC_SlaveBreakdown_IdentityLocked>奴性爆发期间无法手动切换身份。</SSC_SlaveBreakdown_IdentityLocked>
   <SSC_SlaveBreakdown_ExcretionBlocked>目标处于精神状态中，暂时无法进行人格排泄。</SSC_SlaveBreakdown_ExcretionBlocked>
+  <SSC_SlaveBreakdown_DebugStart>启动奴性爆发</SSC_SlaveBreakdown_DebugStart>
+  <SSC_SlaveBreakdown_DebugStartDesc>立即让该角色进入奴性爆发，供测试状态及收尾。</SSC_SlaveBreakdown_DebugStartDesc>
+  <SSC_SlaveBreakdown_DebugCooldown>剩余冷却：{0}</SSC_SlaveBreakdown_DebugCooldown>
+  <SSC_SlaveBreakdown_DebugBlocked>该角色现在无法进入奴性爆发。</SSC_SlaveBreakdown_DebugBlocked>
 </LanguageData>

@@ -111,12 +111,25 @@ namespace SexSlaveCraft
             => fullRequests.TryGetValue(request.Pawn, out FullRequest current) && current == request;
 
         internal bool TryStart(Pawn pawn, string reason = null, bool causedByMood = false, bool fromFull = false)
+            => StartState(pawn, reason, causedByMood, fromFull, forced: false);
+
+        // 显式测试跳过功能开关、恶堕阈值和冷却。使用同一 PostStart，不制造满值跨越。
+        internal bool TryStartForDebug(Pawn pawn)
+            => Prefs.DevMode && SSCMod.settings?.enableDebugGizmos == true && Scribe.mode == LoadSaveMode.Inactive &&
+               SSCSlaveBreakdown.Now >= 0 && SSCSlaveBreakdown.IsEligiblePawn(pawn) &&
+               pawn.mindState?.mentalStateHandler != null && pawn.TryGetComp<CompSexSlaveTraining>() != null &&
+               !SSCSlaveBreakdown.TemporarilyBlocked(pawn) && !SSCSlaveBreakdown.BlockedByVanilla(pawn) &&
+               StartState(pawn, null, causedByMood: false, fromFull: false, forced: true);
+
+        private bool StartState(Pawn pawn, string reason, bool causedByMood, bool fromFull, bool forced)
         {
             MentalStateDef def = SSCSlaveBreakdown.StateDef;
-            if (def?.Worker.StateCanOccur(pawn) != true || !starting.TryAdd(pawn, (fromFull, false))) return false;
+            if (def == null || (!forced && !def.Worker.StateCanOccur(pawn)) ||
+                !starting.TryAdd(pawn, (fromFull, false))) return false;
             try
             {
-                return pawn.mindState.mentalStateHandler.TryStartMentalState(def, reason, causedByMood: causedByMood) && starting[pawn].Started;
+                return pawn.mindState.mentalStateHandler.TryStartMentalState(def, reason, forced: forced,
+                    causedByMood: causedByMood) && starting[pawn].Started;
             }
             finally { starting.Remove(pawn); }
         }

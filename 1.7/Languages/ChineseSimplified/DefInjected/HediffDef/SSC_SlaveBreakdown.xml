@@ -2,4 +2,5 @@
 <LanguageData>
   <SSC_Hediff_SlaveBreakdown.label>奴性爆发</SSC_Hediff_SlaveBreakdown.label>
   <SSC_Hediff_SlaveBreakdown.description>奴性爆发期间的临时效果。</SSC_Hediff_SlaveBreakdown.description>
+  <SSC_Hediff_SlaveBreakdownCooldown.label>奴性爆发冷却</SSC_Hediff_SlaveBreakdownCooldown.label>
 </LanguageData>

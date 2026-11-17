@@ -2,4 +2,5 @@
 <LanguageData>
   <SSC_Hediff_SlaveBreakdown.label>приступ покорности</SSC_Hediff_SlaveBreakdown.label>
   <SSC_Hediff_SlaveBreakdown.description>Временные эффекты приступа покорности.</SSC_Hediff_SlaveBreakdown.description>
+  <SSC_Hediff_SlaveBreakdownCooldown.label>перерыв после приступа покорности</SSC_Hediff_SlaveBreakdownCooldown.label>
 </LanguageData>

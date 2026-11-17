@@ -28,4 +28,20 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref ExpiresAt, "sscBreakdownEffectExpiresAt", -1L);
         }
     }
+
+    /// <summary>单独保存发作后的绝对截止时间，包括角色离图期间。</summary>
+    public sealed class Hediff_SSCSlaveBreakdownCooldown : Hediff
+    {
+        internal const string DefName = "SSC_Hediff_SlaveBreakdownCooldown";
+        internal long ExpiresAt;
+
+        public override bool ShouldRemove => base.ShouldRemove ||
+            (Scribe.mode == LoadSaveMode.Inactive && SSCSlaveBreakdown.Now >= ExpiresAt);
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref ExpiresAt, "sscBreakdownCooldownExpiresAt", 0L);
+        }
+    }
 }

@@ -23,4 +23,14 @@
       </li>
     </stages>
   </HediffDef>
+  <HediffDef>
+    <defName>SSC_Hediff_SlaveBreakdownCooldown</defName>
+    <hediffClass>SexSlaveCraft.Hediff_SSCSlaveBreakdownCooldown</hediffClass>
+    <label>submission breakdown cooldown</label>
+    <isBad>false</isBad>
+    <duplicationAllowed>false</duplicationAllowed>
+    <stages>
+      <li><becomeVisible>false</becomeVisible></li>
+    </stages>
+  </HediffDef>
 </Defs>

@@ -104,14 +104,17 @@ internal static partial class Program
                 DefDatabase<PawnCapacityDef>.Add(new PawnCapacityDef { defName = "Consciousness" });
             boundary.Patch(AccessTools.Method(typeof(GenTypes), nameof(GenTypes.GetTypeInAnyAssembly)),
                 prefix: new HarmonyMethod(typeof(Program), nameof(BreakdownRjwTypeBoundary)));
-            HediffDef LoadHediff(string path)
+            HediffDef LoadHediff(string path, string name = null)
             {
                 xml.Load(path);
-                var def = DirectXmlToObject.ObjectFromXml<HediffDef>(xml.DocumentElement.SelectSingleNode("HediffDef"), false);
+                string selector = name == null ? "HediffDef" : $"HediffDef[defName='{name}']";
+                var def = DirectXmlToObject.ObjectFromXml<HediffDef>(xml.DocumentElement.SelectSingleNode(selector), false);
                 DefDatabase<HediffDef>.Add(def);
                 return def;
             }
             var breakdownEffect = LoadHediff(Path.Combine(repo, "1.7/Defs/HediffDefs/SSC_SlaveBreakdown.xml"));
+            var cooldownDef = LoadHediff(Path.Combine(repo, "1.7/Defs/HediffDefs/SSC_SlaveBreakdown.xml"),
+                Hediff_SSCSlaveBreakdownCooldown.DefName);
             var feelingBroken = LoadHediff(RjwResource("Defs/HediffDefs/Hediffs_FeelingBroken.xml"));
             xml.Load(Path.Combine(repo, "1.7/Defs/LetterDefs/SSC_BreakdownTrainingRequest.xml"));
             var requestDef = DirectXmlToObject.ObjectFromXml<LetterDef>(xml.DocumentElement.SelectSingleNode("LetterDef"), false);
@@ -129,7 +132,9 @@ internal static partial class Program
             // 安装生产补丁，保留原版选池、状态赋值、Scribe 和信件构造。隔离地图网格、其 UI 更新及掷骰抽样。
             foreach (Type type in new[] { typeof(Patch_SSCSlaveBreakdownMoodSelection), typeof(Patch_SSCSlaveBreakdownClear),
                          typeof(Patch_SSCSlaveBreakdownTransition), typeof(Patch_SSCSlaveBreakdownDeath),
-                         typeof(Patch_SSCSlaveBreakdownBehaviorCleanup), typeof(Patch_SSCSlaveBreakdownPartners) })
+                         typeof(Patch_SSCSlaveBreakdownBehaviorCleanup), typeof(Patch_SSCSlaveBreakdownPartners),
+                         typeof(Patch_SSCBreakdownMasturbateEverywhere), typeof(Patch_SSCBreakdownVisibility),
+                         typeof(Patch_SSCBreakdownActivityLocation) })
                 boundary.CreateClassProcessor(type).Patch();
             void Prefix(MethodBase method, string name) => boundary.Patch(method, prefix: new HarmonyMethod(typeof(Program), name));
             Prefix(AccessTools.Method(typeof(AttackTargetsCache), nameof(AttackTargetsCache.UpdateTarget)), nameof(Skip));
@@ -420,6 +425,57 @@ internal static partial class Program
                 Equal(MentalState_SSCSlaveBreakdown.OpeningPhase.Solo, state.Phase);
             });
 
+            Case("debug start enters the real opening without changing corruption and keeps public activity scoped", () =>
+            {
+                var (pawn, need) = BreakdownPawn();
+                var (partner, _) = BreakdownPawn();
+                var (bystander, _) = BreakdownPawn();
+                var comp = pawn.TryGetComp<CompSexSlaveTraining>();
+                comp.RecordSlaveBreakdownCooldown(5000);
+                need.SetCorruption(.42f);
+                SSCMod.settings.EnableSlaveBreakdown = false;
+                SSCMod.settings.enableDebugGizmos = true;
+                var prefs = (PrefsData)AccessTools.Field(typeof(Prefs), "data").GetValue(null);
+                bool previousDevMode = prefs.devMode;
+                prefs.devMode = true;
+                try
+                {
+                    Require(runtime.TryStartForDebug(pawn) && !runtime.TryStartForDebug(pawn));
+                    var state = (MentalState_SSCSlaveBreakdown)pawn.MentalState;
+                    Equal(MentalState_SSCSlaveBreakdown.OpeningPhase.Pair, state.Phase);
+                    Near(.42f, need.CurLevel);
+                    Require(!comp.SlaveBreakdownFullTriggerUsed && !SSCBreakdownPublicActivity.Permits(pawn, partner));
+
+                    Job opener = JobMaker.MakeJob(new JobDef { defName = "SSC_TestPublicQuickie" }, partner);
+                    state.SetBehaviorJob(opener);
+                    pawn.jobs.curJob = opener;
+                    Require(SSCBreakdownPublicActivity.Permits(pawn, partner));
+                    Require(!SSCBreakdownPublicActivity.Permits(pawn, bystander));
+                    Require(!rjw.CasualSex_Helper.MightBeSeen(new List<Pawn> { bystander }, pawn.Position, pawn, partner));
+                    pawn.jobs.curJob = null;
+                    state.CompleteBehaviorJob(true);
+                    Equal(MentalState_SSCSlaveBreakdown.OpeningPhase.Wander, state.Phase);
+
+                    var willingness = AccessTools.Method(typeof(rjw.JobGiver_Masturbate), "WillingToMasturbateEverywhere");
+                    bool oldPublicSetting = rjw.RJWPreferenceSettings.FapEverywhere;
+                    rjw.RJWPreferenceSettings.FapEverywhere = false;
+                    try
+                    {
+                        var jobGiver = new JobGiver_SSCSlaveBreakdownMasturbate();
+                        Require(!(bool)willingness.Invoke(jobGiver, new object[] { pawn }));
+                        JobGiver_SSCSlaveBreakdownMasturbate.CandidatePawn = pawn;
+                        Require((bool)willingness.Invoke(jobGiver, new object[] { pawn }));
+                        Require(!(bool)willingness.Invoke(jobGiver, new object[] { bystander }));
+                    }
+                    finally
+                    {
+                        JobGiver_SSCSlaveBreakdownMasturbate.CandidatePawn = null;
+                        rjw.RJWPreferenceSettings.FapEverywhere = oldPublicSetting;
+                    }
+                }
+                finally { prefs.devMode = previousDevMode; }
+            });
+
             Case("native suspension removes only the original opening job from the queue before falling back", () =>
             {
                 var (pawn, need) = BreakdownPawn();
@@ -484,7 +540,9 @@ internal static partial class Program
                 var comp = new rjw.CompRJW { parent = pawn };
                 AccessTools.Field(typeof(rjw.CompRJW), "pawnData").SetValue(comp, new rjw.PawnData(pawn) { raceSexDrive = 1f });
                 ((List<ThingComp>)AccessTools.Field(typeof(ThingWithComps), "comps").GetValue(pawn)).Add(comp);
-                var sexNeed = new rjw.Need_Sex(pawn) { def = new NeedDef { defName = "SSC_TestSexNeed" } };
+                var sexNeed = new rjw.Need_Sex(pawn) { def = new NeedDef {
+                    defName = "SSC_TestSexNeed", needClass = typeof(rjw.Need_Sex) } };
+                pawn.needs.AllNeeds.Add(sexNeed);
                 float DecayOneInterval()
                 {
                     sexNeed.CurLevel = 1f;
@@ -497,6 +555,7 @@ internal static partial class Program
                 need.SetCorruption(1f);
                 runtime.GameComponentTick();
                 Require(pawn.MentalState is MentalState_SSCSlaveBreakdown);
+                Near(0f, sexNeed.CurLevel);
                 Equal(PawnIdentity.Slave, SSCIdentityUtility.GetIdentity(pawn));
                 Require(SSCIdentityUtility.IsManualIdentityChangeBlocked(pawn));
                 Require(!SSCIdentityUtility.TrySetManualIdentity(pawn, PawnIdentity.Unset));
@@ -592,6 +651,7 @@ internal static partial class Program
                 Equal(PawnIdentity.Unset, SSCIdentityUtility.GetIdentity(pawn));
                 Require(!pawn.health.hediffSet.HasHediff(breakdownEffect));
                 Near(.03f, pawn.health.hediffSet.GetFirstHediffOfDef(feelingBroken).Severity);
+                Equal(63500L, pawn.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownUntil);
             });
 
             Case("silent replacement settles the old episode and preserves the slave role present at entry", () =>
@@ -887,6 +947,10 @@ internal static partial class Program
                 SSCMod.settings = LoadBreakdown(path, after).Settings;
                 Require(!SSCMod.settings.EnableSlaveBreakdown);
                 Equal(76000L, after.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownUntil);
+                var cooldown = after.health.hediffSet.GetFirstHediffOfDef(cooldownDef);
+                Require(cooldown is Hediff_SSCSlaveBreakdownCooldown && !cooldown.Visible);
+                Require(!cooldownDef.duplicationAllowed && !(bool)AccessTools.Method(typeof(RabbitCloneUtility),
+                    "ShouldKeepSscHediff").Invoke(null, new object[] { cooldownDef }));
                 Equal(1, breakdownLetters.Count);
 
                 SSCMod.settings.EnableSlaveBreakdown = true;
@@ -902,18 +966,30 @@ internal static partial class Program
                 Require(!breaker.TryDoRandomMoodCausedMentalBreak() && !SSCSlaveBreakdown.IsAtRisk(after));
                 Require(after.MentalState == null);
                 SetBreakdownTick(76000);
+                Require(cooldown.ShouldRemove);
                 runtime.GameComponentTick();
                 Require(after.MentalState == null && SSCSlaveBreakdown.IsAtRisk(after));
                 afterNeed.NeedInterval();
                 Equal(1, breakdownRolls);
                 Require(after.MentalState is MentalState_SSCSlaveBreakdown);
 
-                Edit(path, document => document.Root.Element("fixture").Elements().Where(e => e.Name.LocalName is
-                    "enableSlaveBreakdown" or "sscSlaveBreakdownCooldownUntil" or "sscSlaveBreakdownFullTriggerUsed").Remove());
+                Edit(path, document =>
+                {
+                    document.Descendants("li").Where(e => (string)e.Element("def") == cooldownDef.defName).Remove();
+                    var fixture = document.Root.Element("fixture");
+                    fixture.SetElementValue("sscSlaveBreakdownCooldownUntil", 76000);
+                    fixture.Elements().Where(e => e.Name.LocalName is "enableSlaveBreakdown" or "sscSlaveBreakdownFullTriggerUsed").Remove();
+                });
+                SetBreakdownTick(75999);
                 var (legacy, _) = BreakdownPawn();
                 Require(!LoadBreakdown(path, legacy).Settings.EnableSlaveBreakdown);
-                Equal(0L, legacy.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownUntil);
-                Require(!legacy.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownFullTriggerUsed);
+                var legacyComp = legacy.TryGetComp<CompSexSlaveTraining>();
+                Equal(76000L, legacyComp.SlaveBreakdownCooldownUntil);
+                Require(!legacy.health.hediffSet.HasHediff(cooldownDef));
+                legacyComp.MigrateSlaveBreakdownCooldown();
+                Require(legacy.health.hediffSet.HasHediff(cooldownDef));
+                Equal(76000L, legacyComp.SlaveBreakdownCooldownUntil);
+                Require(!legacyComp.SlaveBreakdownFullTriggerUsed);
             });
         }
         finally
