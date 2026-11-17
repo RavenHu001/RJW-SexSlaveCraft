@@ -11,7 +11,7 @@ namespace SexSlaveCraft
     /// 管理单次发作的身份写入、临时身体效果和结束清理。
     /// 原版精神状态负责启动、开始信和退出通知，SSC 在这些入口补齐本场资源的生命周期。
     /// </summary>
-    public sealed class MentalState_SSCSlaveBreakdown : MentalState
+    public sealed partial class MentalState_SSCSlaveBreakdown : MentalState
     {
         // 使用绝对游戏 tick。首步存档保留了到期时间，尚未执行 PostStart 的新实例则没有时限。
         private long expiresAt = -1L;
@@ -46,6 +46,8 @@ namespace SexSlaveCraft
                 EndCurrentState();
                 return;
             }
+            // 标记新发作的开场。原版状态处理器完成本次切换后，由行为树派发具体任务。
+            openingPhase = OpeningPhase.Pair;
             SSCSlaveBreakdownGameComponent.Current?.NotifyStarted(pawn);
             base.PostStart(reason);
         }
@@ -63,6 +65,7 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref personalityInvalidated, "sscSlaveBreakdownPersonalityInvalidated", false);
             // 只恢复本场挂载的具体实例。健康列表由原版单独保存，引用在 Scribe 的交叉解析阶段接回。
             Scribe_References.Look(ref effect, "sscSlaveBreakdownEffect");
+            ExposeBehavior();
         }
 
         public override void MentalStateTick(int delta)
@@ -83,7 +86,12 @@ namespace SexSlaveCraft
             // 添加或修改 FeelingBroken 会进入健康回调，回调可能已经结束或替换了状态。
             if (pawn.MentalState != this) return;
             if (now >= expiresAt) EndCurrentState();
-            else base.MentalStateTick(delta);
+            else
+            {
+                // 预约未成功安装的任务可能没有结束回调，按实际当前任务编号清理候选。
+                RetireMissingBehaviorJob();
+                if (pawn.MentalState == this) base.MentalStateTick(delta);
+            }
         }
 
         /// <summary>常规恢复的兜底。原版硬重置或静默替换经各自的 Harmony 入口进入同一清理。</summary>
@@ -196,17 +204,24 @@ namespace SexSlaveCraft
             if (ended || Scribe.mode != LoadSaveMode.Inactive) return;
             BeginEnding();
             ended = true;
-            // 即使健康回调抛出异常，也尝试完成后续的本场资源清理。
-            try { AdvanceBroken(Math.Min(SSCSlaveBreakdown.Now, expiresAt)); }
+            // 先保留应计的 RJW 整小时增量，再清理任务、临时效果以及身份。前一阶段异常仍尝试后续清理。
+            try
+            {
+                AdvanceBroken(Math.Min(SSCSlaveBreakdown.Now, expiresAt));
+            }
             finally
             {
-                try { if (HasEffect() && pawn.health == health) health.RemoveHediff(effect); }
+                try { StopBehaviorJob(); }
                 finally
                 {
-                    // 同场分化、建链或换入新人格均可改变最终身份归属。已开始的新发作也拥有自己的身份。
-                    if (temporaryIdentity && SameCarrier() && pawn.MentalState is not MentalState_SSCSlaveBreakdown &&
-                        SSCIdentityUtility.IsSexSlave(pawn) && !SSCIdentityUtility.IsIdentityLocked(pawn))
-                        SSCIdentityUtility.TrySetIdentity(pawn, PawnIdentity.Unset);
+                    try { if (HasEffect() && pawn.health == health) health.RemoveHediff(effect); }
+                    finally
+                    {
+                        // 同场分化、建链或换入新人格均可改变最终身份归属。已开始的新发作也拥有自己的身份。
+                        if (temporaryIdentity && SameCarrier() && pawn.MentalState is not MentalState_SSCSlaveBreakdown &&
+                            SSCIdentityUtility.IsSexSlave(pawn) && !SSCIdentityUtility.IsIdentityLocked(pawn))
+                            SSCIdentityUtility.TrySetIdentity(pawn, PawnIdentity.Unset);
+                    }
                 }
             }
         }

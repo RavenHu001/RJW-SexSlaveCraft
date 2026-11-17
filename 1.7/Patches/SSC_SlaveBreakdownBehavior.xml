@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Patch>
+  <Operation Class="PatchOperationAdd">
+    <!-- 原版主树的倒地、着火和威胁处理优先于本分支。此处只为奴性爆发增加子树。 -->
+    <xpath>Defs/ThinkTreeDef[defName="MentalStateNonCritical"]/thinkRoot/subNodes</xpath>
+    <value>
+      <li Class="ThinkNode_ConditionalMentalStates">
+        <states><li>SSC_SlaveBreakdown</li></states>
+        <subNodes>
+          <li Class="SexSlaveCraft.ThinkNode_SSCSlaveBreakdownBehavior">
+            <subNodes>
+              <!-- 空闲时先处理基础需求。已派发的当前互动由外层节点维持。 -->
+              <li Class="JobGiver_GetFood"><maxLevelPercentage>0.25</maxLevelPercentage></li>
+              <li Class="SexSlaveCraft.JobGiver_SSCSlaveBreakdownRest"><maxLevelPercentage>0.20</maxLevelPercentage></li>
+              <li Class="SexSlaveCraft.ThinkNode_SSCSlaveBreakdownOpening">
+                <subNodes>
+                  <!-- 两个子项分别由开场阶段选取，顺序对应双人尝试和单人后备。 -->
+                  <li Class="rjw.ThinkNode_ConditionalSexChecks">
+                    <subNodes>
+                      <li Class="rjw.ThinkNode_ConditionalHornyOrFrustrated">
+                        <subNodes><li Class="rjw.JobGiver_DoQuickie" /></subNodes>
+                      </li>
+                    </subNodes>
+                  </li>
+                  <!-- 开场后备立即检查一次，保留 RJW 自慰任务自身和 SSC 分流的准入。 -->
+                  <li Class="rjw.JobGiver_Masturbate" />
+                </subNodes>
+              </li>
+              <li Class="SexSlaveCraft.ThinkNode_SSCSlaveBreakdownWandering">
+                <subNodes>
+                  <!-- 游荡期的性需求沿用 RJW 日常资格和掷骰，完成后回到选址。 -->
+                  <li Class="rjw.ThinkNode_ConditionalSexChecks">
+                    <subNodes>
+                      <li Class="rjw.ThinkNode_ConditionalHornyOrFrustrated">
+                        <subNodes>
+                          <li Class="rjw.ThinkNode_ChancePerHour_Fappin">
+                            <subNodes><li Class="SexSlaveCraft.JobGiver_SSCSlaveBreakdownMasturbate" /></subNodes>
+                          </li>
+                        </subNodes>
+                      </li>
+                    </subNodes>
+                  </li>
+                </subNodes>
+              </li>
+              <!-- 无合法落点时由游荡节点短暂等待，随后再次评估上述需求与地点。 -->
+              <li Class="SexSlaveCraft.JobGiver_SSCSlaveBreakdownWander" />
+            </subNodes>
+          </li>
+        </subNodes>
+      </li>
+    </value>
+  </Operation>
+</Patch>

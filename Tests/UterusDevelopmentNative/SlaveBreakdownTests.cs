@@ -59,6 +59,7 @@ internal static partial class Program
             game.questManager = new QuestManager();
             breakdownMap = new Map();
             breakdownMap.mapPawns = new MapPawns(breakdownMap);
+            breakdownMap.gatherSpotLister = new GatherSpotLister();
             // 精神状态调用更新入口，独立宿主将网格更新隔离在下方边界。
             breakdownMap.attackTargetsCache = Bare<AttackTargetsCache>();
             mapsField.SetValue(game, new List<Map> { breakdownMap });
@@ -116,11 +117,13 @@ internal static partial class Program
 
             // 安装生产补丁，保留原版选池、状态赋值、Scribe 和信件构造。隔离地图网格、其 UI 更新及掷骰抽样。
             foreach (Type type in new[] { typeof(Patch_SSCSlaveBreakdownMoodSelection), typeof(Patch_SSCSlaveBreakdownClear),
-                         typeof(Patch_SSCSlaveBreakdownTransition), typeof(Patch_SSCSlaveBreakdownDeath) })
+                         typeof(Patch_SSCSlaveBreakdownTransition), typeof(Patch_SSCSlaveBreakdownDeath),
+                         typeof(Patch_SSCSlaveBreakdownBehaviorCleanup), typeof(Patch_SSCSlaveBreakdownPartners) })
                 boundary.CreateClassProcessor(type).Patch();
             void Prefix(MethodBase method, string name) => boundary.Patch(method, prefix: new HarmonyMethod(typeof(Program), name));
             Prefix(AccessTools.Method(typeof(AttackTargetsCache), nameof(AttackTargetsCache.UpdateTarget)), nameof(Skip));
             Prefix(AccessTools.Method(typeof(MapPawns), "DoListChangedNotifications"), nameof(Skip));
+            Prefix(AccessTools.Method(typeof(Pawn), nameof(Pawn.ClearReservationsForJob)), nameof(BreakdownReservationBoundary));
             Prefix(AccessTools.Method(typeof(Rand), nameof(Rand.MTBEventOccurs)), nameof(ControlBreakdownRoll));
             Prefix(AccessTools.Method(typeof(MentalBreakWorker_SSCSlaveBreakdown), nameof(MentalBreakWorker_SSCSlaveBreakdown.TryStart)), nameof(ObserveMoodBreakChoice));
             Prefix(AccessTools.Method(typeof(MentalBreaker), "RandomFinalStraw"), nameof(Skip));
@@ -180,6 +183,110 @@ internal static partial class Program
                 Equal(PawnIdentity.Slave, SSCIdentityUtility.GetIdentity(pawn));
                 Equal(SSCImprintKind.Slave, SSCImprintUtility.GetKind(pawn));
                 Equal(2, breakdownLetters.Count);
+            });
+
+            Case("opening falls back once and resumes the exact saved job instead of issuing another candidate", () =>
+            {
+                var (pawn, need) = BreakdownPawn();
+                need.SetCorruption(1f);
+                runtime.GameComponentTick();
+                var state = (MentalState_SSCSlaveBreakdown)pawn.MentalState;
+                var job = new Job { loadID = 381, def = new JobDef { defName = "SSC_TestOpeningSolo" } };
+                var pair = new BreakdownCandidateNode(null);
+                var solo = new BreakdownCandidateNode(job);
+                var opening = new ThinkNode_SSCSlaveBreakdownOpening();
+                AccessTools.Field(typeof(ThinkNode), "subNodes").SetValue(opening, new List<ThinkNode> { pair, solo });
+                Equal(job, opening.TryIssueJobPackage(pawn, default).Job);
+                Require(!opening.TryIssueJobPackage(pawn, default).IsValid);
+                Equal(1, pair.Calls);
+                Equal(1, solo.Calls);
+
+                string path = SaveBreakdown(new SlaveBreakdownSaveFixture(pawn, SSCMod.settings));
+                var (loaded, _) = BreakdownPawn();
+                LoadBreakdown(path, loaded);
+                loaded.jobs.curJob = new Job { loadID = job.loadID, def = job.def };
+                var after = (MentalState_SSCSlaveBreakdown)loaded.MentalState;
+                var branch = new ThinkNode_SSCSlaveBreakdownBehavior();
+                Equal(loaded.CurJob, branch.TryIssueJobPackage(loaded, default).Job);
+                loaded.jobs.curDriver = new JobDriver_Wait { pawn = loaded, job = loaded.CurJob };
+                loaded.jobs.EndCurrentJob(JobCondition.InterruptForced, startNewJob: false);
+                Equal(MentalState_SSCSlaveBreakdown.OpeningPhase.Wander, after.Phase);
+                Require(!opening.TryIssueJobPackage(loaded, default).IsValid);
+                Equal(1, solo.Calls);
+            });
+
+            Case("a missing paired job after reservation advances to solo only once", () =>
+            {
+                var (pawn, need) = BreakdownPawn();
+                need.SetCorruption(1f);
+                runtime.GameComponentTick();
+                var state = (MentalState_SSCSlaveBreakdown)pawn.MentalState;
+                state.SetBehaviorJob(new Job { loadID = 386 });
+                state.RetireMissingBehaviorJob();
+                Equal(MentalState_SSCSlaveBreakdown.OpeningPhase.Pair, state.Phase);
+                SetBreakdownTick(1001);
+                state.RetireMissingBehaviorJob();
+                state.RetireMissingBehaviorJob();
+                Require(!state.HasBehaviorJob);
+                Equal(MentalState_SSCSlaveBreakdown.OpeningPhase.Solo, state.Phase);
+            });
+
+            Case("native suspension removes only the original opening job from the queue before falling back", () =>
+            {
+                var (pawn, need) = BreakdownPawn();
+                need.SetCorruption(1f);
+                runtime.GameComponentTick();
+                var state = (MentalState_SSCSlaveBreakdown)pawn.MentalState;
+                var openingJob = new Job { loadID = 388, def = new JobDef { defName = "SSC_TestSuspendedOpening", suspendable = true } };
+                var unrelated = new Job { loadID = 390, def = new JobDef { defName = "SSC_TestUnrelatedJob" }, playerForced = true };
+                pawn.jobs.jobQueue.EnqueueLast(unrelated);
+                pawn.jobs.curJob = openingJob;
+                pawn.jobs.curDriver = new JobDriver_Wait { pawn = pawn, job = openingJob };
+                state.SetBehaviorJob(openingJob);
+                pawn.jobs.SuspendCurrentJob(JobCondition.InterruptForced);
+                Require(pawn.CurJob == null && !state.HasBehaviorJob);
+                Equal(MentalState_SSCSlaveBreakdown.OpeningPhase.Solo, state.Phase);
+                Equal(unrelated, pawn.jobs.jobQueue.Single().job);
+            });
+
+            Case("an actually started paired job skips the solo opening after success", () =>
+            {
+                var (pawn, need) = BreakdownPawn();
+                var (partner, _) = BreakdownPawn();
+                need.SetCorruption(1f);
+                runtime.GameComponentTick();
+                var state = (MentalState_SSCSlaveBreakdown)pawn.MentalState;
+                var job = new Job { loadID = 389, targetA = partner, def = new JobDef { defName = "Quickie" } };
+                var driver = new rjw.JobDriver_SexQuick { pawn = pawn, job = job };
+                state.SetBehaviorJob(job);
+                pawn.jobs.curJob = job;
+                pawn.jobs.curDriver = driver;
+                Require(SSCRestrictionJobGuard.TryMarkStarted(driver, true));
+                pawn.jobs.EndCurrentJob(JobCondition.Succeeded, startNewJob: false);
+                Equal(MentalState_SSCSlaveBreakdown.OpeningPhase.Wander, state.Phase);
+                Require(!state.HasBehaviorJob);
+            });
+
+            Case("disabling a native gather spot switches available anchors immediately", () =>
+            {
+                var (pawn, _) = BreakdownPawn();
+                var (first, _) = BreakdownPawn();
+                var (second, _) = BreakdownPawn();
+                var removed = new CompGatherSpot { parent = first };
+                var remaining = new CompGatherSpot { parent = second };
+                breakdownMap.gatherSpotLister.RegisterActivated(removed);
+                breakdownMap.gatherSpotLister.RegisterActivated(remaining);
+                try
+                {
+                    Equal(2, JobGiver_SSCSlaveBreakdownWander.ActiveGatherSpots(pawn).Count());
+                    removed.Active = false;
+                    Equal(remaining, JobGiver_SSCSlaveBreakdownWander.ActiveGatherSpots(pawn).Single());
+                }
+                finally
+                {
+                    breakdownMap.gatherSpotLister.RegisterDeactivated(removed);
+                    breakdownMap.gatherSpotLister.RegisterDeactivated(remaining);
+                }
             });
 
             Case("temporary role and native need effects end on interruption while completed FeelingBroken progress persists", () =>
@@ -651,6 +758,7 @@ internal static partial class Program
         // 原生宿主只登记躯干，不模拟脑部容量。原版 Awake 仍会检查角色的真实任务。
         pawn.RaceProps.alwaysAwake = true;
         pawn.jobs = new Pawn_JobTracker(pawn);
+        pawn.stances = new Pawn_StanceTracker(pawn);
         pawn.records = new Pawn_RecordsTracker(pawn);
         AccessTools.Field(typeof(Thing), "factionInt").SetValue(pawn, breakdownFaction);
         AccessTools.Field(typeof(Thing), "mapIndexOrState").SetValue(pawn, (sbyte)0);
@@ -770,6 +878,20 @@ internal static partial class Program
         Scribe_Deep.Look(ref fixture, "fixture");
         Scribe.saver.FinalizeSaving();
         return path;
+    }
+
+    // 宿主没有地图预约管理器，原版任务卸载、挂起和 Job 队列仍真实运行。
+    private static bool BreakdownReservationBoundary(Pawn __instance) => !breakdownPawns.Contains(__instance);
+
+    private sealed class BreakdownCandidateNode(Job job) : ThinkNode
+    {
+        internal int Calls;
+
+        public override ThinkResult TryIssueJobPackage(Pawn pawn, JobIssueParams jobParams)
+        {
+            Calls++;
+            return job == null ? ThinkResult.NoJob : new ThinkResult(job, this, null, false);
+        }
     }
 
     private static SlaveBreakdownSaveFixture LoadBreakdown(string path, Pawn pawn)
