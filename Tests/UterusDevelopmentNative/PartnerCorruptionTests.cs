@@ -72,8 +72,41 @@ internal static partial class Program
                 PartnerChain(hub); PartnerPrecept(hub, "Unrestricted");
                 PartnerChain(other); PartnerPrecept(other, "Unrestricted");
                 var need = GelUseNeed(target); GelDose(target);
+                SetPartnerTick(1000);
                 GelFire(observed); Near(.025f, need.CurLevel);
-                GelFire(observed); Near(.045f, need.CurLevel); // 只有新来源冷却，凝胶照常。
+                SetPartnerTick(1299); GelFire(observed); Near(.025f, need.CurLevel);
+                SetPartnerTick(1300); GelFire(observed); Near(.045f, need.CurLevel);
+                SetPartnerTick(1599); GelFire(observed); Near(.045f, need.CurLevel);
+                SetPartnerTick(1600); GelFire(observed); Near(.07f, need.CurLevel);
+            });
+            Check("scene corruption and gel restore separate caps onto the same native RJW job", () =>
+            {
+                var target = PartnerPawn(); var source = PartnerPawn();
+                var receive = PartnerReceiver(source, target);
+                JobDriver_Sex observed = PartnerInitiator(target, receive);
+                PartnerChain(source); PartnerPrecept(source, "Unrestricted");
+                var need = GelUseNeed(target); GelDose(target);
+                int start = Find.TickManager.TicksGame;
+                for (int i = 0; i < 4; i++)
+                {
+                    SetPartnerTick(start + i * 600);
+                    GelFire(observed);
+                }
+                Near(.10f, need.CurLevel);
+                observed = GelLoad(GelSave(observed), target, source);
+                for (int i = 4; i <= 10; i++)
+                {
+                    SetPartnerTick(start + i * 600);
+                    GelFire(observed);
+                }
+                Near(.15f, need.CurLevel);
+                // 既有场次余额已经用完。降低需求不退账；更换成新的对象 Job 才获得下一场额度。
+                need.SetCorruption(.10f);
+                SetPartnerTick(start + 11 * 600);
+                GelFire(observed); Near(.10f, need.CurLevel);
+                // 原生 float 仍可能写入小于显示精度的一格；新场验证等两条冷却均过期。
+                SetPartnerTick(start + 12 * 600);
+                GelFire(PartnerInitiator(target, receive)); Near(.125f, need.CurLevel);
             });
             Check("scene corruption keeps SSC masters and full targets off cooldown and clips the final positive gain", () =>
             {
@@ -83,41 +116,63 @@ internal static partial class Program
                 comp.pawnIdentity = PawnIdentity.Master; GelFire(receive); Near(0, need.CurLevel);
                 comp.pawnIdentity = PawnIdentity.Unset;
                 need.SetCorruption(1f); GelFire(receive);
-                Require(SSCCulturePartnerCorruptionGameComponent.Current.CanClaim(target));
+                Require(SSCCulturePartnerCorruptionGameComponent.Current.CanClaim(target, SSCCorruptionGainSource.Partner));
                 need.SetCorruption(.999f); GelFire(receive);
                 Near(1f, need.CurLevel); Near(1f, need.HighestCorruptionLevel);
-                Require(!SSCCulturePartnerCorruptionGameComponent.Current.CanClaim(target));
+                Require(!SSCCulturePartnerCorruptionGameComponent.Current.CanClaim(target, SSCCorruptionGainSource.Partner));
             });
-            Check("scene corruption cooldown survives native Scribe, a new scene and a changed source", () =>
+            Check("both cooldowns survive native Scribe and an old culture-only save retains its deadline", () =>
             {
                 SetPartnerTick(1000);
                 var target = PartnerPawn(); var source = PartnerPawn(); var receive = PartnerReceiver(target, source);
                 var need = GelUseNeed(target); PartnerChain(source); PartnerPrecept(source, "Unrestricted"); PartnerInitiator(source, receive);
-                GelFire(receive); Near(.005f, need.CurLevel);
+                GelDose(target); GelFire(receive); Near(.025f, need.CurLevel);
 
                 // 原生 Scribe 保存截止 tick，而非剩余 tick 或 Job；读档登记真实 Pawn 的跨引用。
                 var cooldown = SSCCulturePartnerCorruptionGameComponent.Current;
                 string path = Path.Combine(saveDirectory, "ssc-culture-partner-cooldown.xml");
                 Scribe.saver.InitSaving(path, "Cooldown");
                 Scribe_Deep.Look(ref cooldown, "component"); Scribe.saver.FinalizeSaving();
-                SetPartnerTick(1599);
+                SetPartnerTick(1299);
                 var loaded = LoadPartnerCooldown(path, target);
                 components.Remove(cooldown); components.Add(loaded);
                 var replacement = PartnerPawn(); PartnerChain(replacement); PartnerPrecept(replacement, "Unrestricted");
                 receive = PartnerReceiver(target, replacement); PartnerInitiator(replacement, receive);
-                Near(.005f, need.CurLevel); GelFire(receive); Near(.005f, need.CurLevel);
-                SetPartnerTick(1600); Near(.005f, need.CurLevel); GelFire(receive); Near(.01f, need.CurLevel);
+                Near(.025f, need.CurLevel); GelFire(receive); Near(.025f, need.CurLevel);
+                SetPartnerTick(1300); GelFire(receive); Near(.045f, need.CurLevel);
+                SetPartnerTick(1599); GelFire(receive); Near(.045f, need.CurLevel);
+                SetPartnerTick(1600); GelFire(receive); Near(.07f, need.CurLevel);
 
-                // 旧档缺字段不创建虚假冷却，且加载过程不补发收益。
+                // 升级前只有传道冷却节点。凝胶从空表起步，传道继续使用旧档截止时刻。
+                SetPartnerTick(1299);
+                Edit(path, xml => xml.Descendants("sscCorruptionGelDeadlines").Remove());
+                var old = LoadPartnerCooldown(path, target);
+                Require(old.CanClaim(target, SSCCorruptionGainSource.Gel));
+                Require(!old.CanClaim(target, SSCCorruptionGainSource.Partner));
                 Edit(path, xml => xml.Descendants("sscCulturePartnerCorruptionDeadlines").Remove());
-                Require(LoadPartnerCooldown(path, target).CanClaim(target));
-                Near(.01f, need.CurLevel);
+                Require(LoadPartnerCooldown(path, target).CanClaim(target, SSCCorruptionGainSource.Partner));
+                Near(.07f, need.CurLevel);
+            });
+            Check("an invalid route Def closes only that route", () =>
+            {
+                var target = PartnerPawn(); var source = PartnerPawn(); var receive = PartnerReceiver(target, source);
+                PartnerChain(source); PartnerPrecept(source, "Unrestricted"); PartnerInitiator(source, receive);
+                var need = GelUseNeed(target); GelDose(target);
+                var profile = SSCCorruptionGainDefOf.SSC_CorruptionGain_Partner;
+                double originalGain = profile.gainPerOrgasmPoints;
+                try
+                {
+                    profile.gainPerOrgasmPoints = double.NaN; profile.ResolveReferences();
+                    Require(profile.ConfigErrors().Any());
+                    GelFire(receive); Near(.02f, need.CurLevel);
+                    Require(SSCCulturePartnerCorruptionGameComponent.Current.CanClaim(target, SSCCorruptionGainSource.Partner));
+                }
+                finally { profile.gainPerOrgasmPoints = originalGain; profile.ResolveReferences(); }
             });
         }
         finally
         {
             ideology.SetValue(null, originalIdeology); SetPartnerTick(originalTick);
-            components.RemoveAll(c => c is SSCCulturePartnerCorruptionGameComponent);
             var remove = AccessTools.Method(typeof(DefDatabase<PreceptDef>), "Remove");
             foreach (var def in defs) remove.Invoke(null, new object[] { def });
             sceneFixturePawns.Clear(); gelOrgasmCallback = null;
@@ -129,11 +184,6 @@ internal static partial class Program
     // 只设置场景外部输入，不替换生产的当前任务、疾患、戒律和配对判断。
     private static Pawn PartnerPawn(Gender gender = Gender.None)
     {
-        if (SSCCulturePartnerCorruptionGameComponent.Current == null)
-        {
-            var components = (List<GameComponent>)AccessTools.Field(typeof(Game), "components").GetValue(Current.Game);
-            components.Add(new SSCCulturePartnerCorruptionGameComponent(Current.Game));
-        }
         var pawn = GelConsumer(); pawn.gender = gender; sceneFixturePawns.Add(pawn); return pawn;
     }
 

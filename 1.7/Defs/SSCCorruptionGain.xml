@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 增量和单场上限均以百分点填写。冷却按受影响者与途径计时，填 0 可关闭冷却。 -->
+  <SexSlaveCraft.SSCCorruptionGainDef>
+    <defName>SSC_CorruptionGain_Gel</defName>
+    <cooldownTicks>300</cooldownTicks>
+    <gainPerOrgasmPoints>2</gainPerOrgasmPoints>
+    <maxPerScenePoints>10</maxPerScenePoints>
+  </SexSlaveCraft.SSCCorruptionGainDef>
+  <SexSlaveCraft.SSCCorruptionGainDef>
+    <defName>SSC_CorruptionGain_Partner</defName>
+    <cooldownTicks>600</cooldownTicks>
+    <gainPerOrgasmPoints>0.5</gainPerOrgasmPoints>
+    <maxPerScenePoints>5</maxPerScenePoints>
+  </SexSlaveCraft.SSCCorruptionGainDef>
+</Defs>

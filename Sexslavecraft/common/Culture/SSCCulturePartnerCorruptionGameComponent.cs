@@ -1,4 +1,4 @@
-// AI 辅助生成：受影响 Pawn 的短冷却独立于场次、来源和人格，不保存可重放事件。
+// AI 辅助生成：按受影响 Pawn 和增长途径保存绝对截止时刻。
 using System.Collections.Generic;
 using Verse;
 
@@ -6,13 +6,14 @@ namespace SexSlaveCraft
 {
     public sealed class SSCCulturePartnerCorruptionGameComponent : GameComponent
     {
-        private const int CooldownTicks = 600;
+        private const int PruneInterval = 1000;
         private readonly Game game;
-        // 对象是唯一保存维度。更换施加者、Job 或会话都继续使用同一个截止时间。
-        private Dictionary<Pawn, long> deadlines = new Dictionary<Pawn, long>();
-        // Scribe 在恢复 Pawn 引用前暂存两份列表；只在 PostLoadInit 后释放。
-        private List<Pawn> savedPawns;
-        private List<long> savedDeadlines;
+        // 保留组件类型和原文化保存键，让旧档的文化截止时刻继续生效。凝胶追加独立表。
+        private Dictionary<Pawn, long> partnerDeadlines = new();
+        private Dictionary<Pawn, long> gelDeadlines = new();
+        // 两张表的 Scribe 引用队列分别持有到 PostLoadInit，不能在引用解析前共用或重置。
+        private List<Pawn> savedPartnerPawns, savedGelPawns;
+        private List<long> savedPartnerDeadlines, savedGelDeadlines;
         private int lastPrune = -1;
 
         public SSCCulturePartnerCorruptionGameComponent(Game game) { this.game = game; }
@@ -22,50 +23,63 @@ namespace SexSlaveCraft
 
         private int Now => game?.tickManager?.TicksGame ?? -1;
 
-        /// <summary>使用绝对游戏 tick，不依赖 Job 或更新频率；与截止 tick 相等即到期。</summary>
-        internal bool CanClaim(Pawn target)
+        private Dictionary<Pawn, long> Deadlines(SSCCorruptionGainSource source) =>
+            source == SSCCorruptionGainSource.Gel ? gelDeadlines : partnerDeadlines;
+
+        /// <summary>使用绝对游戏 tick；更换施加者、Job 或人格时继续使用同一途径的截止时刻。</summary>
+        internal bool CanClaim(Pawn target, SSCCorruptionGainSource source)
         {
             int now = Now;
             // 加载中的半恢复引用和另一局游戏的旧组件均不能接受结算。
             return now >= 0 && Scribe.mode == LoadSaveMode.Inactive && ReferenceEquals(game, Verse.Current.Game) &&
-                SSCCultureStateUtility.IsLiving(target) && (!deadlines.TryGetValue(target, out long end) || end <= now);
+                SSCCultureStateUtility.IsLiving(target) && (!Deadlines(source).TryGetValue(target, out long end) || end <= now);
         }
 
-        internal bool TryClaim(Pawn target)
+        internal bool TryClaim(Pawn target, SSCCorruptionGainSource source, int cooldownTicks)
         {
-            if (!CanClaim(target)) return false;
+            if (!CanClaim(target, source)) return false;
+            if (cooldownTicks == 0) return true;
             int now = Now;
-            // 只在实际认领时低频回收，空闲时不遍历世界，也不为到期记录补发事件。
-            if (lastPrune < 0 || (long)now - lastPrune >= CooldownTicks) Prune(now);
-            deadlines[target] = (long)now + CooldownTicks;
+            // 清理频率独立于配置，仅在有实际认领或存读档时遍历两个稀疏表。
+            if (lastPrune < 0 || (long)now - lastPrune >= PruneInterval) Prune(now);
+            Deadlines(source)[target] = (long)now + cooldownTicks;
             return true;
         }
 
         private void Prune(int now)
         {
-            // 先收集键再移除，只遍历本来源曾写入的稀疏记录，不读取地图或其他人物。
+            Prune(partnerDeadlines, now);
+            Prune(gelDeadlines, now);
+            lastPrune = now;
+        }
+
+        private static void Prune(Dictionary<Pawn, long> deadlines, int now)
+        {
+            // 先收集键再移除，清理只释放引用，也不为到期记录补发事件。
             List<Pawn> expired = null;
             foreach (var entry in deadlines)
                 if (!SSCCultureStateUtility.IsLiving(entry.Key) || entry.Value <= now)
                     (expired ??= new List<Pawn>()).Add(entry.Key);
             if (expired != null)
                 foreach (Pawn pawn in expired) deadlines.Remove(pawn);
-            lastPrune = now;
         }
 
         public override void ExposeData()
         {
-            // Reference + Value 只保存 Pawn 引用与截止时刻；旧档缺字段、跨引用失效都不生成新冷却。
+            // Reference + Value 只保存 Pawn 引用与绝对截止时刻。更新 XML 后已有截止时刻继续生效。
             if (Scribe.mode == LoadSaveMode.Saving) Prune(Now);
-            Scribe_Collections.Look(ref deadlines, "sscCulturePartnerCorruptionDeadlines", LookMode.Reference, LookMode.Value,
-                ref savedPawns, ref savedDeadlines, logNullErrors: false);
+            Scribe_Collections.Look(ref partnerDeadlines, "sscCulturePartnerCorruptionDeadlines", LookMode.Reference, LookMode.Value,
+                ref savedPartnerPawns, ref savedPartnerDeadlines, logNullErrors: false);
+            Scribe_Collections.Look(ref gelDeadlines, "sscCorruptionGelDeadlines", LookMode.Reference, LookMode.Value,
+                ref savedGelPawns, ref savedGelDeadlines, logNullErrors: false);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 // Scribe 已完成跨引用解析；缺节点等同空表。清理仅恢复数据，不发奖也不重新开始冷却。
-                deadlines ??= new Dictionary<Pawn, long>();
+                partnerDeadlines ??= new Dictionary<Pawn, long>();
+                gelDeadlines ??= new Dictionary<Pawn, long>();
                 Prune(Now);
-                savedPawns = null;
-                savedDeadlines = null;
+                savedPartnerPawns = savedGelPawns = null;
+                savedPartnerDeadlines = savedGelDeadlines = null;
             }
         }
     }

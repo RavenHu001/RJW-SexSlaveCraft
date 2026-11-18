@@ -1,4 +1,5 @@
 // AI 辅助生成：实际Orgasm、摄入、需求写入和RJW Scribe；只隔离整场声效及世界服务。
+using System.Xml;
 using System.Xml.Linq;
 using HarmonyLib;
 using RimWorld;
@@ -16,6 +17,21 @@ internal static partial class Program
     private static void GelFourthStepTests(string repo, Harmony harmony)
     {
         var previous = SSCMod.settings; SSCMod.settings = new SSCSettings();
+        int originalTick = Find.TickManager.TicksGame;
+        var components = (List<GameComponent>)AccessTools.Field(typeof(Game), "components").GetValue(Current.Game);
+        var cooldowns = new SSCCulturePartnerCorruptionGameComponent(Current.Game);
+        components.Add(cooldowns);
+        // 沿原版 XML、ResolveReferences 和 DefOf 绑定，限于本专项定义。
+        var xml = new XmlDocument();
+        xml.Load(Path.Combine(repo, "1.7/Defs/SSCCorruptionGain.xml"));
+        var profiles = xml.DocumentElement.ChildNodes.OfType<XmlElement>()
+            .Select(node => DirectXmlToObject.ObjectFromXml<SSCCorruptionGainDef>(node, false)).ToArray();
+        foreach (var profile in profiles)
+        {
+            profile.ResolveReferences();
+            DefDatabase<SSCCorruptionGainDef>.Add(profile);
+        }
+        AccessTools.Method(typeof(DefOfHelper), "BindDefsFor").Invoke(null, new object[] { typeof(SSCCorruptionGainDefOf) });
         // 分区不能依赖第三批空壳用例先登记这个夹具。
         const string hollowDefName = "Hediff_SSC_PersonalityExcreted_Done";
         SSCDefOf.SSC_PersonalityExcreted_Done ??= DefDatabase<HediffDef>.GetNamedSilentFail(hollowDefName) ??
@@ -53,16 +69,16 @@ internal static partial class Program
             {
                 var d = GelDriver(); var need = GelUseNeed(d.pawn); GelDose(d.pawn);
                 GelFire(d); Near(.1f, (float)GelComp(d.pawn).BatchProgress); Near(.02f, need.CurLevel);
-                GelFire(d); Near(.1f, (float)GelComp(d.pawn).BatchProgress); Near(.04f, need.CurLevel);
-                GelToggle(d.pawn, false); GelFire(d); Near(.06f, need.CurLevel);
+                GelFireAfterCooldown(d); Near(.1f, (float)GelComp(d.pawn).BatchProgress); Near(.04f, need.CurLevel);
+                GelToggle(d.pawn, false); GelFireAfterCooldown(d); Near(.06f, need.CurLevel);
             });
             Check("gel scene cap survives lower corruption, redose and replacement medicine", () =>
             {
                 var p = GelConsumer(); var need = GelUseNeed(p); GelDose(p); var d = GelUseDriver(p);
-                for (int i = 0; i < 5; i++) GelFire(d);
+                for (int i = 0; i < 5; i++) GelFireAfterCooldown(d);
                 Near(.1f, need.CurLevel); double delivered = need.CurLevel;
                 Require(delivered >= .10f && delivered <= .10f, "five events must reach the native 10% milestone without exceeding it");
-                GelFire(d); Near(.1f, need.CurLevel);
+                GelFireAfterCooldown(d); Near(.1f, need.CurLevel);
                 need.SetCorruption(0); GelDose(p); GelFire(d); Require(need.CurLevel < .000001f);
                 p.health.RemoveHediff(SSCCorruptionGelEffectUtility.Find(p)); GelDose(p); GelFire(d); Require(need.CurLevel < .000001f);
                 var next = GelUseDriver(p); GelFire(next); Near(.02f, need.CurLevel); Near(.1f, need.HighestCorruptionLevel);
@@ -72,14 +88,14 @@ internal static partial class Program
                 var p = GelConsumer(); var need = GelUseNeed(p); need.SetCorruption(.115f); GelDose(p); var d = GelUseDriver(p);
                 GelFire(d); Near(.135f, need.CurLevel);
                 var chain = p.health.AddHediff(SSCDefOf.ChainOfSexSlave); chain.Severity = .1f;
-                need.SetCorruption(.295f); GelFire(d); Near(.315f, need.CurLevel);
-                need.SetCorruption(.995f); GelFire(d); Near(1f, need.CurLevel);
-                GelFire(d); Near(1f, need.CurLevel);
+                need.SetCorruption(.295f); GelFireAfterCooldown(d); Near(.315f, need.CurLevel);
+                need.SetCorruption(.995f); GelFireAfterCooldown(d); Near(1f, need.CurLevel);
+                GelFireAfterCooldown(d); Near(1f, need.CurLevel);
                 SSCMod.settings.useOldScoring = true;
                 try
                 {
                     need.SetCorruption(.4f);
-                    for (int i = 0; i < 4; i++) GelFire(d);
+                    for (int i = 0; i < 4; i++) GelFireAfterCooldown(d);
                     Near(.455f, need.CurLevel);
                     Near(1f, need.HighestCorruptionLevel);
                 }
@@ -92,7 +108,7 @@ internal static partial class Program
                 {
                     var p = GelConsumer(); var need = GelUseNeed(p); GelDose(p); var d = GelUseDriver(p);
                     CorruptionUtility.AddCorruption(p, .2f); GelFire(d); CorruptionUtility.AddCorruption(p, .1f);
-                    for (int i = 0; i < 5; i++) GelFire(d);
+                    for (int i = 0; i < 5; i++) GelFireAfterCooldown(d);
                     Near(.4f, need.CurLevel);
                 }
                 finally { SSCMod.settings.useOldScoring = false; }
@@ -102,9 +118,9 @@ internal static partial class Program
                 var p = GelConsumer(); var need = GelUseNeed(p); var d = GelUseDriver(p); GelFire(d); Near(0, need.CurLevel);
                 gelOrgasmCallback = () => GelDose(p); GelFire(d); Near(0, need.CurLevel);
                 GelFire(d); Near(.02f, need.CurLevel);
-                SSCCorruptionGelEffectUtility.Find(p).Timer.SetDuration(0); GelFire(d); Near(.02f, need.CurLevel);
+                SSCCorruptionGelEffectUtility.Find(p).Timer.SetDuration(0); GelFireAfterCooldown(d); Near(.02f, need.CurLevel);
                 GelDose(p); GelFire(d); Near(.04f, need.CurLevel);
-                SSCCorruptionGelSceneRuntime.Finish(d); GelFire(d); Near(.04f, need.CurLevel);
+                SSCCorruptionGelSceneRuntime.Finish(d); GelFireAfterCooldown(d); Near(.04f, need.CurLevel);
             });
             Check("gel absent need is never created and an in-flight replacement cannot receive an old event", () =>
             {
@@ -119,7 +135,7 @@ internal static partial class Program
             {
                 var p = GelConsumer(); var need = GelUseNeed(p); GelDose(p); var d = GelUseDriver(p); GelFire(d);
                 gelOrgasmCallback = () => { p.health.RemoveHediff(SSCCorruptionGelEffectUtility.Find(p)); GelDose(p); };
-                GelFire(d); Near(.02f, need.CurLevel);
+                GelFireAfterCooldown(d); Near(.02f, need.CurLevel);
                 gelOrgasmCallback = () => { Require(SSCPersonalityRuntimeUtility.TryBeginMutation(p, out var scope)); scope.Dispose(); };
                 GelFire(d); Near(.02f, need.CurLevel); GelFire(d); Near(.04f, need.CurLevel);
             });
@@ -133,58 +149,62 @@ internal static partial class Program
             {
                 var p = GelConsumer(); var training = AttachToggleTraining(p); training.pawnIdentity = PawnIdentity.Unset;
                 var need = GelUseNeed(p); GelDose(p); var d = GelUseDriver(p); GelFire(d);
-                training.pawnIdentity = PawnIdentity.Master; SSCAbilityToggleUtility.SyncMarkers(p); GelFire(d); Near(.02f, need.CurLevel);
+                training.pawnIdentity = PawnIdentity.Master; SSCAbilityToggleUtility.SyncMarkers(p); GelFireAfterCooldown(d); Near(.02f, need.CurLevel);
                 training.pawnIdentity = PawnIdentity.Unset; SSCAbilityToggleUtility.SyncMarkers(p); GelFire(d); Near(.02f, need.CurLevel);
                 GelDose(p); var hollow = p.health.AddHediff(SSCDefOf.SSC_PersonalityExcreted_Done);
                 GelFire(d); Near(.02f, need.CurLevel); p.health.RemoveHediff(hollow); GelFire(d); Near(.04f, need.CurLevel);
             });
-            Check("gel nested real events count once each and exceptional events are not replayed", () =>
+            Check("gel batches only one gain per positive cooldown and does not replay exceptional events", () =>
             {
                 var p = GelConsumer(); var need = GelUseNeed(p); GelDose(p); var d = GelUseDriver(p);
-                gelOrgasmCallback = () => GelFire(d); GelFire(d); Equal(2, d.orgasms); Near(.04f, need.CurLevel);
+                gelOrgasmCallback = () => GelFire(d); GelFire(d); Equal(2, d.orgasms); Near(.02f, need.CurLevel);
                 gelOrgasmCallback = () => throw new InvalidOperationException("gel event failure");
-                bool threw = false; try { GelFire(d); } catch (InvalidOperationException) { threw = true; }
-                Require(threw); Near(.04f, need.CurLevel); GelFire(d); Near(.06f, need.CurLevel);
+                bool threw = false; try { GelFireAfterCooldown(d); } catch (InvalidOperationException) { threw = true; }
+                Require(threw); Near(.02f, need.CurLevel); GelFire(d); Near(.04f, need.CurLevel);
             });
             Check("gel settlement reentry and a post-write exception cannot duplicate or refund a paid gain", () =>
             {
                 var p = GelConsumer(); var need = GelUseNeed(p); GelDose(p); var d = GelUseDriver(p);
                 gelAfterCorruptionWrite = () => GelFire(d); GelFire(d); Equal(2, d.orgasms); Near(.02f, need.CurLevel);
                 gelAfterCorruptionWrite = () => throw new InvalidOperationException("gel write callback failure");
-                bool threw = false; try { GelFire(d); } catch (InvalidOperationException) { threw = true; }
+                bool threw = false; try { GelFireAfterCooldown(d); } catch (InvalidOperationException) { threw = true; }
                 Require(threw); Near(.04f, need.CurLevel);
-                need.SetCorruption(0); for (int i = 0; i < 5; i++) GelFire(d); Near(.06f, need.CurLevel);
+                need.SetCorruption(0); GelFire(d); Near(0, need.CurLevel);
+                for (int i = 0; i < 5; i++) GelFireAfterCooldown(d);
+                Near(.06f, need.CurLevel);
             });
             Check("gel driver replacement on the same Job preserves quota before its first event or save", () =>
             {
                 var p = GelConsumer(); var need = GelUseNeed(p); GelDose(p); var d = GelUseDriver(p);
-                for (int i = 0; i < 5; i++) GelFire(d); need.SetCorruption(0);
+                for (int i = 0; i < 5; i++) GelFireAfterCooldown(d);
+                need.SetCorruption(0);
                 var replacement = GelUseDriver(p, d.job); var restored = GelLoad(GelSave(replacement), p);
-                GelFire(restored); Require(need.CurLevel < .000001f);
+                GelFireAfterCooldown(restored); Require(need.CurLevel < .000001f);
                 replacement = GelUseDriver(p, restored.job); GelFire(replacement); Require(need.CurLevel < .000001f);
                 GelFire(GelUseDriver(p)); Near(.02f, need.CurLevel);
             });
             Check("gel native Scribe and immediate re-save preserve the remaining consumer allowance", () =>
             {
                 var p = GelConsumer(); var need = GelUseNeed(p); GelDose(p); var d = GelUseDriver(p);
-                GelFire(d); GelFire(d); var restored = GelLoad(GelSave(d), p);
+                GelFire(d); GelFireAfterCooldown(d); var restored = GelLoad(GelSave(d), p);
                 restored = GelLoad(GelSave(restored), p); need.SetCorruption(0);
-                for (int i = 0; i < 5; i++) GelFire(restored); Near(.06f, need.CurLevel);
+                for (int i = 0; i < 5; i++) GelFireAfterCooldown(restored);
+                Near(.06f, need.CurLevel);
             });
             Check("gel loaded task retains both ledgers when its driver is replaced before any event or save", () =>
             {
                 var d = GelDriver(); var p = d.pawn; var need = GelUseNeed(p); GelDose(p);
-                for (int i = 0; i < 5; i++) GelFire(d);
+                for (int i = 0; i < 5; i++) GelFireAfterCooldown(d);
                 var restored = GelLoad(GelSave(d), p); need.SetCorruption(0);
                 var replacement = GelUseDriver(p, restored.job);
-                restored = GelLoad(GelSave(replacement), p); GelFire(restored);
+                restored = GelLoad(GelSave(replacement), p); GelFireAfterCooldown(restored);
                 Require(need.CurLevel < .000001f && Math.Abs(GelComp(p).BatchProgress - .1d) < .000001d,
                     $"loaded task must retain paid consumption and production claim: need={need.CurLevel}, batch={GelComp(p).BatchProgress}");
             });
             Check("gel native PostLoadInit binds the ledger before SetupToils can replace its driver", () =>
             {
                 var d = GelDriver(); var p = d.pawn; var need = GelUseNeed(p); GelDose(p);
-                for (int i = 0; i < 5; i++) GelFire(d);
+                for (int i = 0; i < 5; i++) GelFireAfterCooldown(d);
                 var setup = AccessTools.Method(typeof(JobDriver), "SetupToils");
                 // 这例保留原版基类ExposeData及其PostLoadInit调用，只隔离地图Toil构建体。
                 harmony.Unpatch(baseExpose, AccessTools.Method(typeof(Program), nameof(Skip)));
@@ -196,7 +216,7 @@ internal static partial class Program
                     var restored = GelLoad(path, p);
                     Require(!ReferenceEquals(restored, p.jobs.curDriver), "native SetupToils boundary must actually replace the driver");
                     var replacement = (JobDriver_Sex)p.jobs.curDriver;
-                    restored = GelLoad(GelSave(replacement), p); need.SetCorruption(0); GelFire(restored);
+                    restored = GelLoad(GelSave(replacement), p); need.SetCorruption(0); GelFireAfterCooldown(restored);
                     Require(need.CurLevel < .000001f); Near(.1f, (float)GelComp(p).BatchProgress);
                 }
                 finally
@@ -211,10 +231,49 @@ internal static partial class Program
                 var d = GelDriver(); GelFire(d); var p = d.pawn; var need = GelUseNeed(p); GelDose(p);
                 string path = GelSave(d); Edit(path, xml => {
                     var node = xml.Descendants("sscCorruptionGelScene").Single(); node.Element("version").Value = "1";
-                    node.Element("granted").Remove(); node.Element("consumptionClosed").Remove(); });
+                    node.Element("granted").Remove(); node.Element("consumptionClosed").Remove(); node.Element("partnerGranted").Remove(); });
                 var restored = GelLoad(path, p); GelFire(restored); Near(.02f, need.CurLevel); Near(.1f, (float)GelComp(p).BatchProgress);
                 path = GelSave(restored); Edit(path, xml => xml.Descendants("sscCorruptionGelScene").Remove());
-                restored = GelLoad(path, p); Near(.02f, need.CurLevel); GelFire(restored); Near(.04f, need.CurLevel);
+                restored = GelLoad(path, p); Near(.02f, need.CurLevel); GelFireAfterCooldown(restored); Near(.04f, need.CurLevel);
+            });
+            Check("gel v2 quota follows reloaded Def values without forfeiting prior grants", () =>
+            {
+                var p = GelConsumer(); var need = GelUseNeed(p); GelDose(p); var d = GelUseDriver(p);
+                GelFire(d); GelFireAfterCooldown(d); Near(.04f, need.CurLevel);
+                string path = GelSave(d);
+                Edit(path, doc =>
+                {
+                    var node = doc.Descendants("sscCorruptionGelScene").Single();
+                    node.Element("version").Value = "2";
+                    node.Element("partnerGranted").Remove();
+                });
+
+                // 用原版 XML 解析模拟替换 Def 后重启。旧额度超出新上限，只算零余额。
+                var original = SSCCorruptionGainDefOf.SSC_CorruptionGain_Gel;
+                var patched = new XmlDocument();
+                patched.LoadXml("<Def><defName>SSC_CorruptionGain_Gel</defName><cooldownTicks>17</cooldownTicks>" +
+                    "<gainPerOrgasmPoints>3</gainPerOrgasmPoints><maxPerScenePoints>3.5</maxPerScenePoints></Def>");
+                var profile = DirectXmlToObject.ObjectFromXml<SSCCorruptionGainDef>(patched.DocumentElement, false);
+                profile.ResolveReferences();
+                SSCCorruptionGainDefOf.SSC_CorruptionGain_Gel = profile;
+                try
+                {
+                    var restored = GelLoad(path, p);
+                    GelFireAfterCooldown(restored); Near(.04f, need.CurLevel);
+                    path = GelSave(restored);
+
+                    // 再次上调后，旧档仍保有原 4 点累计，只补本场余额。下一场使用 3 点和新的 17 tick。
+                    profile.maxPerScenePoints = 5.5;
+                    profile.ResolveReferences();
+                    restored = GelLoad(path, p);
+                    GelFire(restored); Near(.055f, need.CurLevel);
+                    var next = GelUseDriver(p);
+                    SetPartnerTick(Find.TickManager.TicksGame + 16);
+                    GelFire(next); Near(.055f, need.CurLevel);
+                    SetPartnerTick(Find.TickManager.TicksGame + 1);
+                    GelFire(next); Near(.085f, need.CurLevel);
+                }
+                finally { SSCCorruptionGainDefOf.SSC_CorruptionGain_Gel = original; }
             });
             Check("gel invalid current-format allowance closes consumption but retains independent production", () =>
             {
@@ -231,9 +290,9 @@ internal static partial class Program
             {
                 var p = GelConsumer(); var need = GelUseNeed(p); GelDose(p); var d = GelUseDriver(p); string path = null;
                 gelOrgasmCallback = () => path = GelSave(d); GelFire(d); Near(.02f, need.CurLevel);
-                var restored = GelLoad(path, p); GelFire(restored); Near(.02f, need.CurLevel);
+                var restored = GelLoad(path, p); GelFireAfterCooldown(restored); Near(.02f, need.CurLevel);
                 var next = GelUseDriver(p); gelAfterCorruptionWrite = () => path = GelSave(next); GelFire(next); Near(.04f, need.CurLevel);
-                restored = GelLoad(path, p); GelFire(restored); Near(.04f, need.CurLevel);
+                restored = GelLoad(path, p); GelFireAfterCooldown(restored); Near(.04f, need.CurLevel);
             });
             GelFourthLifecycleTests(harmony);
             PartnerCorruptionTests(repo, harmony);
@@ -241,6 +300,11 @@ internal static partial class Program
         finally
         {
             gelOrgasmCallback = gelAfterBoost = gelAfterCorruptionWrite = null; gelLoadSetup = null; SSCMod.settings = previous;
+            SetPartnerTick(originalTick);
+            components.RemoveAll(c => c is SSCCulturePartnerCorruptionGameComponent);
+            SSCCorruptionGainDefOf.SSC_CorruptionGain_Gel = SSCCorruptionGainDefOf.SSC_CorruptionGain_Partner = null;
+            var remove = AccessTools.Method(typeof(DefDatabase<SSCCorruptionGainDef>), "Remove");
+            foreach (var profile in profiles) remove.Invoke(null, new object[] { profile });
             foreach (var method in sideEffects) harmony.Unpatch(method, AccessTools.Method(typeof(Program), nameof(Skip)));
             harmony.Unpatch(sideEffects[0], AccessTools.Method(typeof(Program), nameof(GelOrgasmSideEffect)));
             harmony.Unpatch(boost, AccessTools.Method(typeof(Program), nameof(GelAfterBoostCallback)));
@@ -248,6 +312,12 @@ internal static partial class Program
             if (!skipped) harmony.Unpatch(baseExpose, AccessTools.Method(typeof(Program), nameof(Skip)));
             if (!hadRjwTypeBoundary) harmony.Unpatch(lookup, AccessTools.Method(typeof(Program), nameof(RjwScribeTypeBoundary)));
         }
+    }
+
+    private static void GelFireAfterCooldown(JobDriver_Sex driver)
+    {
+        SetPartnerTick(Find.TickManager.TicksGame + 300);
+        GelFire(driver);
     }
 
     private static void CorruptionDailyBudgetTest()
@@ -421,7 +491,7 @@ internal static partial class Program
             Require(!raw.hediffTags.ContainsKey(gelEffect) && !processed.hediffTags.ContainsKey(gelEffect));
             Near(.02f, processed.corruptionLevel); Near(.02f, processed.highestCorruptionLevel);
             Require(ReferenceEquals(original, SSCCorruptionGelEffectUtility.Find(p))); Equal(4321, original.Timer.ticksToDisappear);
-            need.SetCorruption(0); for (int i = 0; i < 5; i++) GelFire(d); Near(.08f, need.CurLevel);
+            need.SetCorruption(0); for (int i = 0; i < 5; i++) GelFireAfterCooldown(d); Near(.08f, need.CurLevel);
         });
         Check("gel actual clone birth cleanup removes copied medicine and inventory while maturation keeps its own", () =>
         {
@@ -447,12 +517,12 @@ internal static partial class Program
             // 旧档／外部载荷即使强塞药效标签，真实恢复入口也须忽略它。
             processed.hediffTags[gelEffect] = 1;
             var host = GelConsumer(); var need = GelUseNeed(host); GelDose(host); var d = GelUseDriver(host);
-            for (int i = 0; i < 4; i++) GelFire(d);
+            for (int i = 0; i < 4; i++) GelFireAfterCooldown(d);
             var own = SSCCorruptionGelEffectUtility.Find(host); own.Timer.ticksToDisappear = 4100;
             Require(ExcretionUtility.InheritEverything(host, processed), string.Join('\n', errors));
             Require(ReferenceEquals(own, SSCCorruptionGelEffectUtility.Find(host))); Equal(4100, own.Timer.ticksToDisappear);
             Near(.02f, need.CurLevel); Near(.02f, need.HighestCorruptionLevel);
-            need.SetCorruption(0); GelFire(d); GelFire(d); Near(.02f, need.CurLevel);
+            need.SetCorruption(0); GelFireAfterCooldown(d); GelFireAfterCooldown(d); Near(.02f, need.CurLevel);
             Require(!SSCPersonalityRuntimeUtility.IsMutating(host));
         });
         }

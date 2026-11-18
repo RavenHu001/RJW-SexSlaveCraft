@@ -232,7 +232,7 @@
     <Compile Include="common/SSCCorruptionGelProductionUtility.cs" />
     <Compile Include="common/SSCCorruptionGelProductionToggleBackend.cs" />
     <Compile Include="common/SSCCorruptionGelSceneRuntime.cs" />
-    <Compile Include="common/SSCCorruptionGelConsumptionUtility.cs" />
+    <Compile Include="common/SSCCorruptionGainUtility.cs" />
     <Compile Include="common/Culture/SSCCulturePartnerCorruption.cs" />
     <Compile Include="common/Culture/SSCCulturePartnerCorruptionGameComponent.cs" />
     <Compile Include="common/Culture/SSCPartnerCorruptionScene.cs" />
