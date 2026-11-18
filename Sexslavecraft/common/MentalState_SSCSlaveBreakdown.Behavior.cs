@@ -1,4 +1,8 @@
 // AI 辅助生成：开场和游荡任务的归属随当前精神状态保存。
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
 using HarmonyLib;
 using rjw;
 using Verse;
@@ -76,7 +80,7 @@ namespace SexSlaveCraft
 
         private void StopBehaviorJob()
         {
-            // 硬重置可以跳过原版 Recover。只结束本场互动或由专用游荡节点派发的任务。
+            // 常规恢复和硬重置都只结束本场互动或由专用游荡节点派发的任务。
             try
             {
                 if (invitation?.InvitedUse == true) CancelInvitation();
@@ -98,6 +102,32 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref behaviorJobId, "sscBreakdownBehaviorJob", -1);
             Scribe_Values.Look(ref behaviorIssuedAt, "sscBreakdownBehaviorIssuedAt", -1);
         }
+    }
+
+    // 原版 stopsJobs 同时控制入场和恢复。只拦下 SSC 恢复时的 StopAll，其余通知和入场行为照原版。
+    [HarmonyPatch(typeof(MentalState), nameof(MentalState.RecoverFromState))]
+    internal static class Patch_SSCSlaveBreakdownRecoveryJobs
+    {
+        internal static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = instructions.ToList();
+            var stopsJobs = AccessTools.Field(typeof(MentalStateDef), nameof(MentalStateDef.stopsJobs));
+            int flag = codes.FindIndex(code => code.LoadsField(stopsJobs));
+            if (flag < 0 || flag != codes.FindLastIndex(code => code.LoadsField(stopsJobs)))
+                throw new InvalidOperationException("Expected one recovery job-stop guard in MentalState.RecoverFromState.");
+
+            // 保留原判断的其余条件。SSC 的精准清理已在状态清除回调中处理任务及队列。
+            codes.InsertRange(flag + 1, new[]
+            {
+                new CodeInstruction(OpCodes.Ldarg_0),
+                new CodeInstruction(OpCodes.Call,
+                    AccessTools.Method(typeof(Patch_SSCSlaveBreakdownRecoveryJobs), nameof(ShouldStopJobs)))
+            });
+            return codes;
+        }
+
+        private static bool ShouldStopJobs(bool stopJobs, MentalState state)
+            => stopJobs && state is not MentalState_SSCSlaveBreakdown;
     }
 
     // 原版清掉 CurJob 前还会访问挂起任务。前缀只记录归属，等 Finalizer 确认该任务退场才移除它的队列项。

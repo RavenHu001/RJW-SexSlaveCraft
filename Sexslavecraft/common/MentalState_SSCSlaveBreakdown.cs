@@ -13,8 +13,6 @@ namespace SexSlaveCraft
     /// </summary>
     public sealed partial class MentalState_SSCSlaveBreakdown : MentalState
     {
-        // 仅早期开发档在首次有效刷新补挂 Hediff 前使用。已初始化的发作始终读取 Hediff。
-        private long legacyExpiresAt = -1L;
         private long nextBrokenAt;
         private Hediff_SSCSlaveBreakdown effect;
         // 即使效果被外部移除，也保留原实例到退出结算结束。准入要再检查实例是否仍挂在当前身体上。
@@ -61,11 +59,6 @@ namespace SexSlaveCraft
             base.ExposeData();
             Scribe_Values.Look(ref nextBrokenAt, "sscSlaveBreakdownNextBrokenAt", 0L);
             Scribe_Values.Look(ref initialized, "sscSlaveBreakdownInitialized", false);
-            // 已有 Hediff 的旧档可能保存两份期限。已初始化时忽略旧状态字段，始终以 Hediff 为准。
-            // 暂停中读过早期旧档后可能立即再保存，兼容字段保留到首次有效刷新完成迁移。
-            if (!initialized && (Scribe.mode == LoadSaveMode.LoadingVars ||
-                (Scribe.mode == LoadSaveMode.Saving && legacyExpiresAt >= 0)))
-                Scribe_Values.Look(ref legacyExpiresAt, "sscSlaveBreakdownExpiresAt", -1L);
             Scribe_Values.Look(ref temporaryIdentity, "sscSlaveBreakdownTemporaryIdentity", false);
             Scribe_Values.Look(ref personalityInvalidated, "sscSlaveBreakdownPersonalityInvalidated", false);
             // 健康列表由原版单独深存，状态只恢复本场的实例引用。外部移除后立即存档时，
@@ -85,10 +78,8 @@ namespace SexSlaveCraft
         {
             CaptureCarrier();
             int now = SSCSlaveBreakdown.Now;
-            // 首步开发档只有状态期限。沿用该值补挂原效果，增量从恢复时开始累计。
             // 到期先走退出结算，避免调教刷新把已用完的延长期误判为任务失效并退回原截止点。
-            if (!CanInitializeOrContinue() ||
-                (!initialized && (effect != null || now >= legacyExpiresAt || !TryInitialize(legacyExpiresAt))) ||
+            if (!initialized || !CanInitializeOrContinue() ||
                 !SSCIdentityUtility.IsSexSlave(pawn) || !HasEffect() || now >= Deadline)
             {
                 EndCurrentState();
@@ -179,7 +170,6 @@ namespace SexSlaveCraft
                 nextBrokenAt = (long)SSCSlaveBreakdown.Now + GenDate.TicksPerHour;
                 // AddHediff 已刷新健康缓存，属性读取会查询 CurStage。确认启动后即可生效。
                 initialized = true;
-                legacyExpiresAt = -1L;
                 return true;
             }
             catch (Exception ex)
@@ -218,9 +208,9 @@ namespace SexSlaveCraft
             ending = true;
             // 只有确认开始过的发作才结算。完成出口先写入成功，原版恢复不会把成功改成中断。
             if (episodeResult == EpisodeResult.None && initialized) episodeResult = EpisodeResult.Failure;
-            // 尚未迁移的旧档仍代表已启动的发作。新发作须安装效果且确认成功才会开始冷却。
+            // 只有已确认启动的发作才开始冷却。之后移除 Hediff 仍按本场中断结算。
             int now = SSCSlaveBreakdown.Now;
-            if ((initialized || legacyExpiresAt >= 0) && now >= 0 &&
+            if (initialized && now >= 0 &&
                 pawn.TryGetComp<CompSexSlaveTraining>() is CompSexSlaveTraining comp)
                 comp.RecordSlaveBreakdownCooldown((long)now + SSCSlaveBreakdown.CooldownTicks);
         }
