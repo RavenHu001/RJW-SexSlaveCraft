@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_BreakdownRequest_Label>Просьба о тренировке</SSC_BreakdownRequest_Label>
-  <SSC_BreakdownRequest_Text>Во время приступа покорности {0} просит {1} провести тренировку. Решение можно принять до окончания приступа.</SSC_BreakdownRequest_Text>
-  <SSC_BreakdownRequest_Unavailable>Тренер или место сейчас недоступны.</SSC_BreakdownRequest_Unavailable>
-  <SSC_BreakdownFailure_Label>Приступ покорности закончился</SSC_BreakdownFailure_Label>
-  <SSC_BreakdownFailure_Text>Приступ покорности у {0} закончился, но ощущение неудовлетворённости осталось.</SSC_BreakdownFailure_Text>
+  <SSC_BreakdownRequest_Label>Мольба о дрессировке</SSC_BreakdownRequest_Label>
+  <SSC_BreakdownRequest_Text>{0} больше ни о чём не может думать, кроме как о том, чтобы с этим телом обращались как с секс-рабом, и умоляет {1} о дрессировке. Примите решение до конца приступа.</SSC_BreakdownRequest_Text>
+  <SSC_BreakdownRequest_Unavailable>Дрессировщик или место сейчас недоступны.</SSC_BreakdownRequest_Unavailable>
+  <SSC_BreakdownFailure_Label>Возвращение рассудка</SSC_BreakdownFailure_Label>
+  <SSC_BreakdownFailure_Text>Приступ покорности миновал. Теперь {0} никак не может успокоиться: остались лишь зуд, пустота и раздражение.</SSC_BreakdownFailure_Text>
 </LanguageData>

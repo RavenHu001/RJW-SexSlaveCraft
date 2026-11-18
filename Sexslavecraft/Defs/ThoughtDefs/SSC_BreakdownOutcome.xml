@@ -6,8 +6,8 @@
     <durationDays>2</durationDays>
     <stackLimit>1</stackLimit>
     <stages><li>
-      <label>relief after training</label>
-      <description>I finally had a chance to let go. I feel at ease again.</description>
+      <label>lust for submission sated</label>
+      <description>I was used like a sex slave and filled up so completely. It felt so good I don't even want to move now… ahh ❤</description>
       <baseMoodEffect>20</baseMoodEffect>
     </li></stages>
   </ThoughtDef>
@@ -18,8 +18,8 @@
     <stackLimit>1</stackLimit>
     <stackLimitForSameOtherPawn>1</stackLimitForSameOtherPawn>
     <stages><li>
-      <label>helped me through my breakdown</label>
-      <description>They stepped in when I needed someone most.</description>
+      <label>sated my lust for submission</label>
+      <description>Just when I thought I'd go mad from wanting it, they pinned me beneath them and used me hard.</description>
       <baseOpinionOffset>35</baseOpinionOffset>
     </li></stages>
   </ThoughtDef>
@@ -28,8 +28,8 @@
     <durationDays>1</durationDays>
     <stackLimit>1</stackLimit>
     <stages><li>
-      <label>unresolved breakdown</label>
-      <description>The worst is over, but I still feel restless and frustrated.</description>
+      <label>lust for submission unsated</label>
+      <description>No one came to use me. My body feels empty and itchy, and I can't settle down.</description>
       <baseMoodEffect>-10</baseMoodEffect>
     </li></stages>
   </ThoughtDef>

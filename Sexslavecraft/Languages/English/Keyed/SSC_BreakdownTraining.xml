@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_BreakdownRequest_Label>Training request</SSC_BreakdownRequest_Label>
-  <SSC_BreakdownRequest_Text>{0} has asked {1} for training during a submission breakdown. You can decide before the breakdown ends.</SSC_BreakdownRequest_Text>
+  <SSC_BreakdownRequest_Label>Begging for training</SSC_BreakdownRequest_Label>
+  <SSC_BreakdownRequest_Text>{0} can think only of being treated like a sex slave and is begging {1} for training. Decide before the breakdown ends.</SSC_BreakdownRequest_Text>
   <SSC_BreakdownRequest_Unavailable>The trainer or location is currently unavailable.</SSC_BreakdownRequest_Unavailable>
-  <SSC_BreakdownFailure_Label>Submission breakdown ended</SSC_BreakdownFailure_Label>
-  <SSC_BreakdownFailure_Text>{0}'s submission breakdown has ended, leaving lingering frustration.</SSC_BreakdownFailure_Text>
+  <SSC_BreakdownFailure_Label>Regained composure</SSC_BreakdownFailure_Label>
+  <SSC_BreakdownFailure_Text>{0}'s submission breakdown is over. All that's left is an empty, itching frustration that won't let them settle down.</SSC_BreakdownFailure_Text>
 </LanguageData>

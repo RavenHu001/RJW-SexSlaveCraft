@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_BreakdownRequest_Label>调教请求</SSC_BreakdownRequest_Label>
-  <SSC_BreakdownRequest_Text>{0} 在发作期间请求由 {1} 调教。请在本次发作结束前作出决定。</SSC_BreakdownRequest_Text>
+  <SSC_BreakdownRequest_Label>渴求被调教</SSC_BreakdownRequest_Label>
+  <SSC_BreakdownRequest_Text>{0} 满脑子只剩下被当作性奴的念头，正哀求 {1} 调教自己。请在本次发作结束前作出决定。</SSC_BreakdownRequest_Text>
   <SSC_BreakdownRequest_Unavailable>调教员或场地当前不可用。</SSC_BreakdownRequest_Unavailable>
-  <SSC_BreakdownFailure_Label>奴性爆发结束</SSC_BreakdownFailure_Label>
-  <SSC_BreakdownFailure_Text>{0} 的奴性爆发已经结束。对方仍感到烦躁和失落。</SSC_BreakdownFailure_Text>
+  <SSC_BreakdownFailure_Label>恢复理智</SSC_BreakdownFailure_Label>
+  <SSC_BreakdownFailure_Text>{0} 的奴性爆发结束了，只留下一身又痒又空的烦躁，怎么也静不下来。</SSC_BreakdownFailure_Text>
 </LanguageData>
