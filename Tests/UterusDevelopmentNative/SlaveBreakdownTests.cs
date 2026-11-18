@@ -880,6 +880,71 @@ internal static partial class Program
                 Require(!state.TryBeginInvitationScan());
             });
 
+            Case("one breakdown carries its single opening, both invitation cooldowns, and training handoff through a save", () =>
+            {
+                var (subject, need) = BreakdownPawn();
+                var (ordinaryPartner, _) = BreakdownPawn();
+                var (trainer, _) = BreakdownPawn(PawnIdentity.Master);
+                reachableBreakdownTrainer = trainer;
+                need.SetCorruption(1f);
+                runtime.GameComponentTick();
+                var state = (MentalState_SSCSlaveBreakdown)subject.MentalState;
+
+                Job openingJob = JobMaker.MakeJob(JobDefOf.Wait, 100);
+                var solo = new BreakdownCandidateNode(openingJob);
+                var opening = new ThinkNode_SSCSlaveBreakdownOpening();
+                AccessTools.Field(typeof(ThinkNode), "subNodes").SetValue(opening, new List<ThinkNode> { solo });
+                Equal(openingJob, opening.TryIssueJobPackage(subject, default).Job);
+                subject.jobs.curJob = openingJob;
+                subject.jobs.curDriver = new JobDriver_Wait { pawn = subject, job = openingJob };
+                Require(!state.TryBeginInvitationScan());
+                subject.jobs.EndCurrentJob(JobCondition.Succeeded, startNewJob: false);
+                Require(!opening.TryIssueJobPackage(subject, default).IsValid);
+                Equal(1, solo.Calls);
+
+                var request = InstallBreakdownRequest(state, subject, trainer, requestDef);
+                Require(state.TryBeginInvitationScan());
+                InstallBreakdownInvitation(subject, state, ordinaryPartner);
+                subject.jobs.EndCurrentJob(JobCondition.InterruptForced, startNewJob: false);
+                SetBreakdownTick(2249);
+                Require(!state.TryBeginInvitationScan());
+                SetBreakdownTick(2250);
+                Require(state.TryBeginInvitationScan());
+                Require(state.TryRecordInvitation(ordinaryPartner, SSCPersonalityRuntimeUtility.Capture(ordinaryPartner),
+                    false, out Job rejected, invitedUse: true) && rejected == null);
+                SetBreakdownTick(3500);
+                Require(state.TryBeginInvitationScan() && !state.CanInvite(ordinaryPartner));
+                RecordInvitedUse(state, trainer);
+
+                // Save while the training choice and the accepted reverse invitation are both outstanding.
+                string path = SaveBreakdown(new SlaveBreakdownSaveFixture(subject, SSCMod.settings) { Request = request });
+                Find.LetterStack.LettersListForReading.Clear();
+                var (loaded, _) = BreakdownPawn();
+                loaded.thingIDNumber = subject.thingIDNumber;
+                var fixture = LoadBreakdown(path, loaded, ordinaryPartner, trainer, loaded);
+                var restored = (MentalState_SSCSlaveBreakdown)loaded.MentalState;
+                Find.LetterStack.LettersListForReading.Add(fixture.Request);
+                restored.MentalStateTick(1);
+                Equal(1, invitedUseDispatches);
+                var driver = (JobDriver_SSCBreakdownInvitedUse)trainer.jobs.curDriver;
+                Job receiver = JobMaker.MakeJob(rjw.xxx.gettin_raped, trainer);
+                RunBreakdownInvitationPreparation(driver, () =>
+                {
+                    loaded.jobs.curJob = receiver;
+                    loaded.jobs.curDriver = new rjw.JobDriver_SexBaseRecieverRaped { pawn = loaded, job = receiver };
+                });
+                Require(restored.InvitedUseReceiverFor(receiver) != null && restored.CanApprove(fixture.Request));
+
+                restored.Decide(fixture.Request, true);
+                Require(restored.HasApprovedTraining && restored.CanReceiveBreakdownTraining &&
+                    restored.Phase == MentalState_SSCSlaveBreakdown.OpeningPhase.Wander &&
+                    trainer.CurJob == null && loaded.CurJob == null);
+                SetBreakdownTick(4750);
+                Require(!restored.TryBeginInvitationScan() && !opening.TryIssueJobPackage(loaded, default).IsValid);
+                Equal(1, invitedUseDispatches);
+                Equal(1, solo.Calls);
+            });
+
             Case("disabling a native gather spot switches available anchors immediately", () =>
             {
                 var (pawn, _) = BreakdownPawn();
