@@ -58,6 +58,9 @@ namespace SexSlaveCraft
         private bool CanRequestTraining => openingPhase == OpeningPhase.Wander &&
             episodeResult == EpisodeResult.None && CanIssueBehavior && SSCSlaveBreakdown.Now < RequestDeadline;
 
+        // 从玩家决定起让出候选槽。等待选择的信件本身不占用发作小人或调教员。
+        internal bool HasApprovedTraining => requestPhase is RequestPhase.Approved or RequestPhase.Dispatched;
+
         /// <summary>从扫描到执行都需要的基础资格。路径距离和可打断的旧工作仅在派发前检查。</summary>
         private bool TrainerEligible(Pawn trainer)
             => trainer?.Spawned == true && trainer != pawn && trainer.Map == pawn.Map && !trainer.Drafted &&
@@ -98,8 +101,13 @@ namespace SexSlaveCraft
 
         /// <summary>界面的接受按钮和真正的提交共用同一准入，界面状态随点击时的现场重新检查。</summary>
         internal bool CanApprove(ChoiceLetter_SSCBreakdownTraining letter)
-            => IsPendingDecision(letter) && TrainerIdentityCurrent && CanApproach(requestTrainer) &&
-                AvailableToTeach(requestTrainer);
+            => IsPendingDecision(letter) && TrainerIdentityCurrent &&
+                (CanWaitForInvitedTrainer() || (CanApproach(requestTrainer) && AvailableToTeach(requestTrainer)));
+
+        // 如果调教员也是本场邀约的对象，可以先批准。邀约收尾后的完整可达性和预约检查仍在派发前执行。
+        private bool CanWaitForInvitedTrainer() => invitation?.Partner == requestTrainer &&
+            invitation?.OccupiesPartner(pawn) == true && TrainerEligible(requestTrainer) &&
+            requestTrainer.Position.InHorDistOf(pawn.Position, RequestRadius);
 
         internal void Decide(ChoiceLetter_SSCBreakdownTraining letter, bool accept)
         {
@@ -113,7 +121,12 @@ namespace SexSlaveCraft
             // 先消费这次按钮权限。关闭信件会触发原版回调，重复点击也不会启动第二个 Job。
             // 等下一个状态 tick 再派发，允许在游戏暂停时稳妥保存已批准的决定。
             requestPhase = RequestPhase.Approved;
-            Find.LetterStack.RemoveLetter(letter);
+            try { Find.LetterStack.RemoveLetter(letter); }
+            finally
+            {
+                // 信件回调可能同步取消批准。只在该状态仍处于获批阶段时抢占准备中的邀约。
+                if (requestPhase == RequestPhase.Approved) CancelUnstartedInvitation();
+            }
         }
 
         private void TickTrainingRequest(int now, int delta)
@@ -140,13 +153,20 @@ namespace SexSlaveCraft
             }
             if (requestPhase == RequestPhase.Approved)
             {
-                // 点击以后角色可能换工作。受方正满足需求时，可在原到期前等到再次空闲。
-                if (!TrainerIdentityCurrent || !CanApproach(requestTrainer) || !AvailableToTeach(requestTrainer))
+                // 发作小人或调教员可能仍在已开场的互动中。先等精确的原互动结束，再检查预约及任务占用。
+                if (!TrainerIdentityCurrent || !TrainerEligible(requestTrainer) ||
+                    !requestTrainer.Position.InHorDistOf(pawn.Position, RequestRadius))
                 {
                     CancelTrainingRequest();
                     return;
                 }
-                if (CanReceiveBreakdownTraining) DispatchApprovedTraining();
+                if (!CanReceiveBreakdownTraining) return;
+                if (!CanApproach(requestTrainer) || !AvailableToTeach(requestTrainer))
+                {
+                    CancelTrainingRequest();
+                    return;
+                }
+                DispatchApprovedTraining();
                 return;
             }
             // 发信期间不申请预约。通过信件批准后，才由现有训练驱动认领占用。

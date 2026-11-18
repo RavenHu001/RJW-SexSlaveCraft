@@ -68,6 +68,7 @@ namespace SexSlaveCraft
             // 只恢复本场挂载的具体实例。健康列表由原版单独保存，引用在 Scribe 的交叉解析阶段接回。
             Scribe_References.Look(ref effect, "sscSlaveBreakdownEffect");
             ExposeBehavior();
+            ExposeInvitations();
             ExposeTrainingRequest();
         }
 
@@ -84,7 +85,10 @@ namespace SexSlaveCraft
                 return;
             }
 
-            // 已开场的调教可以同步延长状态和 Hediff，先处理授权，再用最新期限结算整小时增量。
+            // 先清理未能恢复的邀约，再处理批准，避免失效的邀请仍占着发起者或调教员。
+            TickInvitation();
+            if (pawn.MentalState != this) return;
+            // 已开场的调教可以同步延长状态和 Hediff，用最新期限结算整小时增量。
             TickTrainingRequest(now, delta);
             if (pawn.MentalState != this) return;
             // 到期时健康追踪器可能已移除兜底 Hediff，最后一个完整小时仍由原发作结算。

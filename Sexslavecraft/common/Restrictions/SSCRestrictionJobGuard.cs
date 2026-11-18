@@ -156,6 +156,19 @@ namespace SexSlaveCraft
                 Reject(driver, request, Strings.Train_Reason_AlreadyBeingTrained);
                 return true;
             }
+            if (phase == "Start" && driver is JobDriver_SexQuick quick)
+            {
+                var breakdown = MentalState_SSCSlaveBreakdown.CurrentFor(quick.pawn);
+                var invitation = breakdown?.InvitationFor(quick.job);
+                // 有些兼容驱动会直接调用 Start。即使跳过原 Quickie 的场景 Toil，也必须持有对应的接收任务。
+                if ((invitation != null && !invitation.CanStartScene(breakdown, quick)) ||
+                    (invitation == null && quick.job?.jobGiver is ThinkNode_SSCSlaveBreakdownInvitation))
+                {
+                    allowed = false;
+                    AbortBreakdownInvitation(quick);
+                    return true;
+                }
+            }
 #endif
             if (CanReuseStartedPermission(driver, request)) return true;
 #if SSC_RW17
@@ -456,9 +469,32 @@ namespace SexSlaveCraft
             foreach (Toil toil in toils)
             {
                 Action original = toil.initAction;
+#if SSC_RW17
+                // RJW Quickie 的持续场景是 Never 步骤。其初始化在 Start 前已经访问接收驱动，
+                // 因此必须在进入原委托之前检查，不能只依赖 Start 前缀拒绝接收安装失败。
+                bool requiresInvitationReceiver = toil.defaultCompleteMode == ToilCompleteMode.Never;
+#endif
                 // 包装初始化回调只用于记录归属；许可检查仍在统一的步骤和开始入口执行。
                 toil.initAction = () =>
                 {
+#if SSC_RW17
+                    if (driver is JobDriver_SexQuick quick)
+                    {
+                        var breakdown = MentalState_SSCSlaveBreakdown.CurrentFor(quick.pawn);
+                        if (breakdown?.InvitationFor(quick.job) is { } invitation)
+                        {
+                            // 归属随发作保存。即使发起 Job 未能恢复，仍可清理接收方的准备任务。
+                            invitation.RunNativeStep(breakdown, quick, original, requiresInvitationReceiver);
+                            return;
+                        }
+                        if (quick.job?.jobGiver is ThinkNode_SSCSlaveBreakdownInvitation)
+                        {
+                            // 已撤销的候选即使后来被安装，也不能借普通 Quickie 路径继续。
+                            AbortBreakdownInvitation(quick);
+                            return;
+                        }
+                    }
+#endif
                     Pawn target = driver.Partner;
                     SceneState state = State(driver);
                     HashSet<int> before = SSCRestrictionJobPreparation.Snapshot(target);
@@ -481,6 +517,17 @@ namespace SexSlaveCraft
                 yield return toil;
             }
         }
+
+#if SSC_RW17
+        internal static void AbortBreakdownInvitation(JobDriver_SexQuick driver)
+        {
+            if (driver.pawn?.jobs?.curDriver != driver) return;
+            // 未 Start 的 Toil 若已附带 RJW End，必须跳过未开始的收尾。接收器由本场记录精确释放。
+            State(driver).Rejected = true;
+            // 仍在原生步骤的初始化栈内，等原版下一轮选任务，避免同步再进另一个 Toil。
+            driver.pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
+        }
+#endif
 
         /// <summary>事件调度前检查实际Job驱动并登记来源；拒绝时尚未打断任何工作，也不以事件名推测许可。</summary>
         public static bool PrepareEvent(Pawn actor, Job job, SSCRestrictionEvent source)

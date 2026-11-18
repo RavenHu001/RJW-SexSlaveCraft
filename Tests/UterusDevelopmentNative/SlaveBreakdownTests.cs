@@ -1,6 +1,7 @@
 // AI 辅助生成：真实恶堕增长、印记和原版精神状态入口共用原生宿主。
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 using System.Xml;
 using System.Xml.Linq;
 using HarmonyLib;
@@ -35,6 +36,7 @@ internal static partial class Program
         var previousQuests = game.questManager;
         var previousThreshold = StatDefOf.MentalBreakThreshold;
         var previousRecord = RecordDefOf.TimesInMentalState;
+        JobDef previousWait = JobDefOf.Wait;
         ref StatDef frequency = ref AccessTools.StaticFieldRefAccess<StatDef>(typeof(rjw.RJWStatDefOf), "SexFrequency");
         ref StatDef satisfaction = ref AccessTools.StaticFieldRefAccess<StatDef>(typeof(rjw.RJWStatDefOf), "SexSatisfaction");
         ref StatDef vulnerability = ref AccessTools.StaticFieldRefAccess<StatDef>(typeof(rjw.RJWStatDefOf), "Vulnerability");
@@ -62,6 +64,7 @@ internal static partial class Program
             breakdownMap = new Map();
             breakdownMap.mapPawns = new MapPawns(breakdownMap);
             breakdownMap.gatherSpotLister = new GatherSpotLister();
+            JobDefOf.Wait ??= new JobDef { defName = "Wait", driverClass = typeof(JobDriver_Wait) };
             // 精神状态调用更新入口，独立宿主将网格更新隔离在下方边界。
             breakdownMap.attackTargetsCache = Bare<AttackTargetsCache>();
             mapsField.SetValue(game, new List<Map> { breakdownMap });
@@ -116,6 +119,14 @@ internal static partial class Program
             var cooldownDef = LoadHediff(Path.Combine(repo, "1.7/Defs/HediffDefs/SSC_SlaveBreakdown.xml"),
                 Hediff_SSCSlaveBreakdownCooldown.DefName);
             var feelingBroken = LoadHediff(RjwResource("Defs/HediffDefs/Hediffs_FeelingBroken.xml"));
+            // The isolated suite loads only the RJW Defs it exercises. Prewarm the shared cache before case error capture.
+            bool previousBootstrap = bootstrap;
+            try
+            {
+                bootstrap = true;
+                RuntimeHelpers.RunClassConstructor(typeof(rjw.xxx).TypeHandle);
+            }
+            finally { bootstrap = previousBootstrap; }
             xml.Load(Path.Combine(repo, "1.7/Defs/LetterDefs/SSC_BreakdownTrainingRequest.xml"));
             var requestDef = DirectXmlToObject.ObjectFromXml<LetterDef>(xml.DocumentElement.SelectSingleNode("LetterDef"), false);
             DefDatabase<LetterDef>.Add(requestDef);
@@ -140,6 +151,10 @@ internal static partial class Program
             Prefix(AccessTools.Method(typeof(AttackTargetsCache), nameof(AttackTargetsCache.UpdateTarget)), nameof(Skip));
             Prefix(AccessTools.Method(typeof(MapPawns), "DoListChangedNotifications"), nameof(Skip));
             Prefix(AccessTools.Method(typeof(Pawn), nameof(Pawn.ClearReservationsForJob)), nameof(BreakdownReservationBoundary));
+            Prefix(AccessTools.Method(typeof(GridsUtility), nameof(GridsUtility.Fogged), new[] { typeof(IntVec3), typeof(Map) }),
+                nameof(BreakdownInvitationFogBoundary));
+            Prefix(AccessTools.Method(typeof(rjw.CasualSex_Helper), nameof(rjw.CasualSex_Helper.CanTargetHookup)),
+                nameof(BreakdownInvitationAppraisalBoundary));
             Prefix(AccessTools.Method(typeof(Rand), nameof(Rand.MTBEventOccurs)), nameof(ControlBreakdownRoll));
             Prefix(AccessTools.Method(typeof(MentalBreakWorker_SSCSlaveBreakdown), nameof(MentalBreakWorker_SSCSlaveBreakdown.TryStart)), nameof(ObserveMoodBreakChoice));
             Prefix(AccessTools.Method(typeof(MentalBreaker), "RandomFinalStraw"), nameof(Skip));
@@ -529,6 +544,160 @@ internal static partial class Program
                 Require(pawn.CurJob == null && !state.HasBehaviorJob);
                 Equal(MentalState_SSCSlaveBreakdown.OpeningPhase.Wander, state.Phase);
                 Equal(unrelated, pawn.jobs.jobQueue.Single().job);
+            });
+
+            Case("wander invitations preserve both cooldowns across Scribe and consume only an actual proposal", () =>
+            {
+                var (pawn, need) = BreakdownPawn();
+                var (first, _) = BreakdownPawn();
+                var (second, _) = BreakdownPawn();
+                var state = StartWanderingBreakdown(pawn, need);
+                var position = AccessTools.Field(typeof(Thing), "positionInt");
+                position.SetValue(pawn, IntVec3.Zero);
+                position.SetValue(first, new IntVec3(15, 0, 0));
+                position.SetValue(second, new IntVec3(16, 0, 0));
+                Require(state.TryBeginInvitationScan());
+                Require(state.CanInvite(first) && !state.CanInvite(second));
+                // An empty scan is throttled, but leaves the 1,250-tick invitation cooldown untouched.
+                SetBreakdownTick(1150);
+                Require(state.TryBeginInvitationScan());
+                Require(state.TryRecordInvitation(first, SSCPersonalityRuntimeUtility.Capture(first), false, out Job rejected));
+                Require(rejected == null && !state.HasBehaviorJob);
+
+                string path = SaveBreakdown(new SlaveBreakdownSaveFixture(pawn, SSCMod.settings));
+                var (loaded, _) = BreakdownPawn();
+                position.SetValue(loaded, IntVec3.Zero);
+                position.SetValue(second, new IntVec3(1, 0, 0));
+                LoadBreakdown(path, loaded, first);
+                var restored = (MentalState_SSCSlaveBreakdown)loaded.MentalState;
+                SetBreakdownTick(2399);
+                Require(!restored.TryBeginInvitationScan());
+                SetBreakdownTick(2400);
+                Require(restored.TryBeginInvitationScan() && !restored.CanInvite(first) && restored.CanInvite(second));
+                SetBreakdownTick(3649);
+                Require(!restored.CanInvite(first));
+                SetBreakdownTick(3650);
+                Require(restored.CanInvite(first));
+            });
+
+            Case("training approval cancels invitation preparation but waits for a Quickie that actually started", () =>
+            {
+                foreach (bool started in new[] { false, true })
+                {
+                    var (pawn, need) = BreakdownPawn();
+                    var (trainer, _) = BreakdownPawn(PawnIdentity.Master);
+                    var partner = started ? trainer : BreakdownPawn().Pawn;
+                    SetBreakdownTick(1000);
+                    reachableBreakdownTrainer = trainer;
+                    var state = StartWanderingBreakdown(pawn, need);
+                    var letter = InstallBreakdownRequest(state, pawn, trainer, requestDef);
+                    // A pending letter leaves the invitation slot free.
+                    Require(state.TryBeginInvitationScan());
+                    var (job, driver) = InstallBreakdownInvitation(pawn, state, partner);
+                    var invitation = state.InvitationFor(job);
+                    Job receive = JobMaker.MakeJob(rjw.xxx.getting_quickie, pawn, partner);
+                    JobCondition? receiverOutcome = null;
+                    RunBreakdownInvitationPreparation(driver, () =>
+                    {
+                        partner.jobs.curJob = receive;
+                        var receiving = new rjw.JobDriver_SexBaseRecieverQuickie { pawn = partner, job = receive };
+                        receiving.AddFinishAction(condition => receiverOutcome = condition);
+                        partner.jobs.curDriver = receiving;
+                    });
+                    Require(invitation.HasReceiver(pawn));
+                    if (started) Require(SSCRestrictionJobGuard.TryMarkStarted(driver, true));
+
+                    state.Decide(letter, true);
+                    Require(state.HasApprovedTraining && !state.TryBeginInvitationScan());
+                    if (started)
+                    {
+                        Require(state.InvitationFor(pawn.CurJob) == invitation && partner.CurJob == receive);
+                        Require(!state.CanReceiveBreakdownTraining);
+                        pawn.jobs.EndCurrentJob(JobCondition.Succeeded, startNewJob: false);
+                    }
+                    Require(!state.HasBehaviorJob && pawn.CurJob == null && partner.CurJob == null);
+                    Require(state.CanReceiveBreakdownTraining && state.HasApprovedTraining);
+                    Equal(started ? JobCondition.Succeeded : JobCondition.Incompletable, receiverOutcome.GetValueOrDefault());
+                    SetBreakdownTick(2250);
+                    Require(!state.TryBeginInvitationScan());
+                }
+            });
+
+            Case("an invitation cannot enter RJW Start without its own installed receiver", () =>
+            {
+                foreach (bool directStart in new[] { false, true })
+                {
+                    var (pawn, need) = BreakdownPawn();
+                    var (partner, _) = BreakdownPawn();
+                    var ownWork = JobMaker.MakeJob(JobDefOf.Wait, 300);
+                    partner.jobs.curJob = ownWork;
+                    partner.jobs.curDriver = new JobDriver_Wait { pawn = partner, job = ownWork };
+                    var state = StartWanderingBreakdown(pawn, need);
+                    var (_, driver) = InstallBreakdownInvitation(pawn, state, partner);
+
+                    // The native receiver installation can fail while the partner's original work is still current.
+                    if (directStart)
+                        Require(SSCRestrictionJobGuard.TryCheck(driver, "Start", out bool allowed) && !allowed);
+                    else
+                    {
+                        bool ranNativeScene = false;
+                        RunBreakdownInvitationPreparation(driver, () => ranNativeScene = true, ToilCompleteMode.Never);
+                        Require(!ranNativeScene);
+                    }
+                    Require(!state.HasBehaviorJob && pawn.CurJob == null && partner.CurJob == ownWork);
+                }
+            });
+
+            Case("a loaded invitation resumes its original job and interruption removes only its saved preparation", () =>
+            {
+                var (pawn, need) = BreakdownPawn();
+                var (partner, _) = BreakdownPawn();
+                var state = StartWanderingBreakdown(pawn, need);
+                var (job, driver) = InstallBreakdownInvitation(pawn, state, partner);
+                Job prepare = JobMaker.MakeJob(JobDefOf.Wait, 100);
+                RunBreakdownInvitationPreparation(driver, () => partner.jobs.jobQueue.EnqueueLast(prepare));
+                Equal(prepare, partner.jobs.jobQueue.Single().job);
+                string path = SaveBreakdown(new SlaveBreakdownSaveFixture(pawn, SSCMod.settings));
+
+                var (loaded, _) = BreakdownPawn();
+                var resumedJob = new Job { def = job.def, targetA = partner, loadID = job.loadID };
+                loaded.jobs.curJob = resumedJob;
+                loaded.jobs.curDriver = new rjw.JobDriver_SexQuick { pawn = loaded, job = resumedJob };
+                LoadBreakdown(path, loaded, partner);
+                var restored = (MentalState_SSCSlaveBreakdown)loaded.MentalState;
+                SetBreakdownTick(2300); // The cooldown elapsed, but the exact saved invitation still owns the slot.
+                Equal(resumedJob, new ThinkNode_SSCSlaveBreakdownBehavior().TryIssueJobPackage(loaded, default).Job);
+                Require(restored.InvitationFor(resumedJob)?.Partner == partner && !restored.TryBeginInvitationScan());
+
+                Job unrelated = JobMaker.MakeJob(JobDefOf.Wait, 200);
+                partner.jobs.jobQueue.EnqueueLast(unrelated);
+                loaded.mindState.mentalStateHandler.Reset();
+                Require(loaded.CurJob == null && !restored.HasBehaviorJob);
+                Equal(unrelated, partner.jobs.jobQueue.Single().job);
+            });
+
+            Case("saving just after invitee personality replacement cannot reauthorize the old invitation", () =>
+            {
+                var (pawn, need) = BreakdownPawn();
+                var (partner, _) = BreakdownPawn();
+                var state = StartWanderingBreakdown(pawn, need);
+                var (job, driver) = InstallBreakdownInvitation(pawn, state, partner);
+                Job prepare = JobMaker.MakeJob(JobDefOf.Wait, 100);
+                RunBreakdownInvitationPreparation(driver, () => partner.jobs.jobQueue.EnqueueLast(prepare));
+                Require(SSCPersonalityRuntimeUtility.TryBeginMutation(partner, out var mutation));
+                mutation.Dispose();
+
+                string path = SaveBreakdown(new SlaveBreakdownSaveFixture(pawn, SSCMod.settings));
+                var (loaded, _) = BreakdownPawn();
+                var resumedJob = new Job { def = job.def, targetA = partner, loadID = job.loadID };
+                loaded.jobs.curJob = resumedJob;
+                loaded.jobs.curDriver = new rjw.JobDriver_SexQuick { pawn = loaded, job = resumedJob };
+                LoadBreakdown(path, loaded, partner);
+                var restored = (MentalState_SSCSlaveBreakdown)loaded.MentalState;
+                SetBreakdownTick(1001);
+                restored.MentalStateTick(1);
+                Require(loaded.MentalState == restored && loaded.CurJob == null && !restored.HasBehaviorJob &&
+                    partner.jobs.jobQueue.Count == 0 && !restored.TryBeginInvitationScan());
             });
 
             Case("disabling a native gather spot switches available anchors immediately", () =>
@@ -1025,6 +1194,7 @@ internal static partial class Program
             Current.ProgramState = previousState;
             StatDefOf.MentalBreakThreshold = previousThreshold;
             RecordDefOf.TimesInMentalState = previousRecord;
+            JobDefOf.Wait = previousWait;
             frequency = previousFrequency;
             satisfaction = previousSatisfaction;
             vulnerability = previousVulnerability;
@@ -1173,6 +1343,36 @@ internal static partial class Program
 
     // 宿主没有地图预约管理器，原版任务卸载、挂起和 Job 队列仍真实运行。
     private static bool BreakdownReservationBoundary(Pawn __instance) => !breakdownPawns.Contains(__instance);
+
+    private static bool BreakdownInvitationFogBoundary(Map map, ref bool __result)
+    {
+        if (map != breakdownMap) return true;
+        __result = false;
+        return false;
+    }
+
+    // The isolated map has no RJW appraisal services. The production request and native job tracker still run.
+    private static bool BreakdownInvitationAppraisalBoundary(Pawn __0, Pawn __1, ref bool __result)
+    {
+        if (!breakdownPawns.Contains(__0) || !breakdownPawns.Contains(__1)) return true;
+        __result = true;
+        return false;
+    }
+
+    private static (Job Job, rjw.JobDriver_SexQuick Driver) InstallBreakdownInvitation(
+        Pawn pawn, MentalState_SSCSlaveBreakdown state, Pawn partner)
+    {
+        Require(state.TryRecordInvitation(partner, SSCPersonalityRuntimeUtility.Capture(partner), true, out Job job));
+        var driver = new rjw.JobDriver_SexQuick { pawn = pawn, job = job };
+        pawn.jobs.curJob = job;
+        pawn.jobs.curDriver = driver;
+        return (job, driver);
+    }
+
+    private static void RunBreakdownInvitationPreparation(rjw.JobDriver_SexQuick driver, Action install,
+        ToilCompleteMode mode = ToilCompleteMode.Instant)
+        => SSCRestrictionJobGuard.TrackPreparation(driver,
+            new[] { new Toil { initAction = install, defaultCompleteMode = mode } }).Single().initAction();
 
     private sealed class BreakdownCandidateNode(Job job) : ThinkNode
     {

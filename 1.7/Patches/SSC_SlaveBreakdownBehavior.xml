@@ -20,6 +20,8 @@
               </li>
               <li Class="SexSlaveCraft.ThinkNode_SSCSlaveBreakdownWandering">
                 <subNodes>
+                  <!-- 发作驱动邀约；失败、拒绝或冷却时继续检查原有单人需求。 -->
+                  <li Class="SexSlaveCraft.ThinkNode_SSCSlaveBreakdownInvitation" />
                   <!-- 游荡期的性需求沿用 RJW 日常资格和掷骰，完成后回到选址。 -->
                   <li Class="rjw.ThinkNode_ConditionalSexChecks">
                     <subNodes>
