@@ -23,7 +23,8 @@ namespace SexSlaveCraft
         private int requestId = -1;
         private int trainingJobId = -1;
         private long nextRequestAt;
-        private long originalDeadline = -1; // 仅获准延时后设置，用于恢复最初的发作期限。
+        // 延时只给已经开场的这份批准。原期限用于决定窗口和撤销恢复，运行期限始终由 Hediff 提供。
+        private long originalDeadline = -1;
         private bool trainingStarted;
         private bool outcomeIssued;
 
@@ -31,7 +32,7 @@ namespace SexSlaveCraft
         /// <summary>JobDef 划定特批路径。实际权限还需向当前发作核对受方、调教员和任务编号。</summary>
         internal static bool IsBreakdownTraining(Job job) => job?.def?.defName == TrainingDefName;
 
-        private long RequestDeadline => originalDeadline >= 0 ? originalDeadline : expiresAt;
+        private long RequestDeadline => originalDeadline >= 0 ? originalDeadline : Deadline;
         private bool TrainerIdentityCurrent => requestTrainer != null &&
             SSCPersonalityRuntimeUtility.IsCurrent(requestTrainer, trainerPersonality) &&
             !SSCPersonalityRuntimeUtility.IsMutating(requestTrainer);
@@ -236,12 +237,12 @@ namespace SexSlaveCraft
 
         private void ExtendStartedTraining(int now)
         {
-            if (!trainingStarted || originalDeadline >= 0 || now >= expiresAt ||
-                expiresAt - now > GenDate.TicksPerHour || !HasEffect()) return;
+            long deadline = Deadline;
+            if (!trainingStarted || originalDeadline >= 0 || now >= deadline ||
+                deadline - now > GenDate.TicksPerHour || !HasEffect()) return;
             // 保留原决定期限。延长只用于完成已开场的任务，中断后恢复原到期点。
-            originalDeadline = expiresAt;
-            expiresAt += GenDate.TicksPerHour;
-            effect.ExpiresAt = expiresAt;
+            originalDeadline = deadline;
+            effect.ExpiresAt = deadline + GenDate.TicksPerHour;
         }
 
         /// <summary>真实开场且当前仍是原获批任务，才可进入完成 Toil。</summary>
@@ -275,9 +276,9 @@ namespace SexSlaveCraft
                 nextRequestAt = (long)SSCSlaveBreakdown.Now + RequestInterval;
                 if (originalDeadline >= 0)
                 {
-                    expiresAt = originalDeadline;
+                    // 在原版任务清理的回调之前恢复截止点。状态刷新会在本轮重新检查是否已经到期。
+                    if (HasEffect()) effect.ExpiresAt = originalDeadline;
                     originalDeadline = -1;
-                    if (HasEffect()) effect.ExpiresAt = expiresAt;
                 }
             }
             trainingStarted = false;

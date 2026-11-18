@@ -1,5 +1,7 @@
 # 子宫开发第 1～5 批原生专项
 
+2026-11-18，第 7 项 Hediff 计时在 `--imprint` 净增 3 项 Core，本轮 **86／86**。覆盖实际截止点和健康页标签、外部移除、早期开发档迁移，以及延时中读档后的正常到期和撤销。真实 Scribe 恢复发作与 Hediff，隔离宿主重新接回原调教任务。 [实现与回归](../../Docs/Design/第7项奴性爆发开发方案.md#ssc-slave-breakdown-hediff-duration-validation)
+
 2026-11-18，第 7 项单次开场与两类邀约调整通过实机验收。最终候选的 `--imprint` 为 **83／83**，其中新增串联用例覆盖开场、两类冷却、读档去重和调教接管。 [本轮构建与验收](../../Docs/Development/Completed/第7项奴性爆发开场与邀约实机验收.md)
 
 2026-11-17，[凝胶与淫堕传道统一结算](../../Docs/Development/Completed/堕落凝胶与淫堕传道统一结算实现与验收.md)在 `--corruption-gel` 新增 3 项 Core，分区 79／79。覆盖原版 XML 与 DefOf 绑定、两条冷却到期、同场额度的原生 Scribe、旧档和配置调低后的余额。关联 `--imprint` 71／71、`UapGroupNative` 19／19。该隔离候选已获维护者实机确认。本轮自动验证范围为上述专项。

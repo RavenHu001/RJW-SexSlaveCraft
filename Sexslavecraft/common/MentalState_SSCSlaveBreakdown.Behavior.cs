@@ -24,14 +24,14 @@ namespace SexSlaveCraft
         internal OpeningPhase Phase => openingPhase;
         // 求用可在尚无发起 Job 编号时先占住邀约槽，防止读档或 AI 再取一份候选。
         internal bool HasBehaviorJob => behaviorJobId >= 0 || invitation != null;
-        /// <summary>只有当前、已确认且尚未到期的发作才可派发行为任务。</summary>
+        /// <summary>当前发作须已确认、效果仍挂载且尚未到期。外部移除后立即关闭派发和既有任务的授权。</summary>
         internal bool CanIssueBehavior
         {
             get
             {
-                if (!initialized || Scribe.mode != LoadSaveMode.Inactive || SSCSlaveBreakdown.Now >= expiresAt) return false;
+                if (!initialized || Scribe.mode != LoadSaveMode.Inactive || SSCSlaveBreakdown.Now >= Deadline) return false;
                 CaptureCarrier();
-                return CanInitializeOrContinue() && SSCIdentityUtility.IsSexSlave(pawn);
+                return HasEffect() && CanInitializeOrContinue() && SSCIdentityUtility.IsSexSlave(pawn);
             }
         }
 

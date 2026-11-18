@@ -13,10 +13,12 @@ namespace SexSlaveCraft
     /// </summary>
     public sealed partial class MentalState_SSCSlaveBreakdown : MentalState
     {
-        // 使用绝对游戏 tick。首步存档保留了到期时间，尚未执行 PostStart 的新实例则没有时限。
-        private long expiresAt = -1L;
+        // 仅早期开发档在首次有效刷新补挂 Hediff 前使用。已初始化的发作始终读取 Hediff。
+        private long legacyExpiresAt = -1L;
         private long nextBrokenAt;
         private Hediff_SSCSlaveBreakdown effect;
+        // 即使效果被外部移除，也保留原实例到退出结算结束。准入要再检查实例是否仍挂在当前身体上。
+        private long Deadline => effect?.ExpiresAt ?? -1L;
         private bool initialized;
         // 只有从 Unset 写入 Slave 时才认领回退权。已有 Slave 或同场印记分化属于原身份。
         private bool temporaryIdentity;
@@ -25,8 +27,6 @@ namespace SexSlaveCraft
         private object personalityToken;
         private CompSexSlaveTraining training;
         private Pawn_HealthTracker health;
-        // attemptedStart 区分刚尝试且失败的新发作和仍待补齐效果的第一步存档。
-        private bool attemptedStart;
         private bool ending;
         private bool ended;
 
@@ -39,9 +39,8 @@ namespace SexSlaveCraft
         /// <summary>原版已安装状态。身份和健康效果就绪后，才由 SSC 确认本次启动。</summary>
         public override void PostStart(string reason)
         {
-            attemptedStart = true;
-            expiresAt = (long)SSCSlaveBreakdown.Now + SSCSlaveBreakdown.DurationTicks;
-            if (!TryInitialize())
+            long deadline = (long)SSCSlaveBreakdown.Now + SSCSlaveBreakdown.DurationTicks;
+            if (!TryInitialize(deadline))
             {
                 EndCurrentState();
                 return;
@@ -60,13 +59,23 @@ namespace SexSlaveCraft
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref expiresAt, "sscSlaveBreakdownExpiresAt", -1L);
             Scribe_Values.Look(ref nextBrokenAt, "sscSlaveBreakdownNextBrokenAt", 0L);
             Scribe_Values.Look(ref initialized, "sscSlaveBreakdownInitialized", false);
+            // 已有 Hediff 的旧档可能保存两份期限。已初始化时忽略旧状态字段，始终以 Hediff 为准。
+            // 暂停中读过早期旧档后可能立即再保存，兼容字段保留到首次有效刷新完成迁移。
+            if (!initialized && (Scribe.mode == LoadSaveMode.LoadingVars ||
+                (Scribe.mode == LoadSaveMode.Saving && legacyExpiresAt >= 0)))
+                Scribe_Values.Look(ref legacyExpiresAt, "sscSlaveBreakdownExpiresAt", -1L);
             Scribe_Values.Look(ref temporaryIdentity, "sscSlaveBreakdownTemporaryIdentity", false);
             Scribe_Values.Look(ref personalityInvalidated, "sscSlaveBreakdownPersonalityInvalidated", false);
-            // 只恢复本场挂载的具体实例。健康列表由原版单独保存，引用在 Scribe 的交叉解析阶段接回。
-            Scribe_References.Look(ref effect, "sscSlaveBreakdownEffect");
+            // 健康列表由原版单独深存，状态只恢复本场的实例引用。外部移除后立即存档时，
+            // 写空引用避免读档寻找已经离体的对象。当前会话仍持有原实例，退出可读取它的截止点。
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                Hediff_SSCSlaveBreakdown attachedEffect = HasEffect() ? effect : null;
+                Scribe_References.Look(ref attachedEffect, "sscSlaveBreakdownEffect");
+            }
+            else Scribe_References.Look(ref effect, "sscSlaveBreakdownEffect");
             ExposeBehavior();
             ExposeInvitations();
             ExposeTrainingRequest();
@@ -76,10 +85,11 @@ namespace SexSlaveCraft
         {
             CaptureCarrier();
             int now = SSCSlaveBreakdown.Now;
-            // 第一步的进行中存档只有到期时间。首次有效刷新补齐身份和效果，并从当前 tick 开始累计。
+            // 首步开发档只有状态期限。沿用该值补挂原效果，增量从恢复时开始累计。
+            // 到期先走退出结算，避免调教刷新把已用完的延长期误判为任务失效并退回原截止点。
             if (!CanInitializeOrContinue() ||
-                (!initialized && (now >= expiresAt || !TryInitialize())) ||
-                !SSCIdentityUtility.IsSexSlave(pawn) || (now < expiresAt && !HasEffect()))
+                (!initialized && (effect != null || now >= legacyExpiresAt || !TryInitialize(legacyExpiresAt))) ||
+                !SSCIdentityUtility.IsSexSlave(pawn) || !HasEffect() || now >= Deadline)
             {
                 EndCurrentState();
                 return;
@@ -88,20 +98,21 @@ namespace SexSlaveCraft
             // 先清理未能恢复的邀约，再处理批准，避免失效的邀请仍占着发起者或调教员。
             TickInvitation();
             if (pawn.MentalState != this) return;
-            // 已开场的调教可以同步延长状态和 Hediff，用最新期限结算整小时增量。
+            // 已开场的调教可延长 Hediff，撤销时恢复原截止点并于本轮复查。
             TickTrainingRequest(now, delta);
             if (pawn.MentalState != this) return;
-            // 到期时健康追踪器可能已移除兜底 Hediff，最后一个完整小时仍由原发作结算。
-            AdvanceBroken(Math.Min(now, expiresAt));
-            // 添加或修改 FeelingBroken 会进入健康回调，回调可能已经结束或替换了状态。
-            if (pawn.MentalState != this) return;
-            if (now >= expiresAt) EndCurrentState();
-            else
+            if (!HasEffect() || now >= Deadline)
             {
-                // 预约未成功安装的任务可能没有结束回调，按实际当前任务编号清理候选。
-                RetireMissingBehaviorJob();
-                if (pawn.MentalState == this) base.MentalStateTick(delta);
+                EndCurrentState();
+                return;
             }
+
+            AdvanceBroken(now);
+            // 添加或修改 FeelingBroken 会进入健康回调，其中可能清除或替换状态。
+            if (pawn.MentalState != this) return;
+            // 预约未成功安装的任务可能没有结束回调，按实际当前任务编号清理候选。
+            RetireMissingBehaviorJob();
+            if (pawn.MentalState == this) base.MentalStateTick(delta);
         }
 
         /// <summary>常规恢复的兜底。原版硬重置或静默替换经各自的 Harmony 入口进入同一清理。</summary>
@@ -127,7 +138,8 @@ namespace SexSlaveCraft
 
         private bool CanInitializeOrContinue() => !ending && pawn.MentalState == this && SameCarrier() && SSCSlaveBreakdown.IsEligiblePawn(pawn);
 
-        private bool HasEffect() => effect != null && effect.pawn == pawn && health?.hediffSet?.hediffs.Contains(effect) == true;
+        // 存档可能发生在读档后的首次状态刷新之前，此时还未捕获运行时载体。直接核对当前健康列表。
+        private bool HasEffect() => effect != null && effect.pawn == pawn && pawn?.health?.hediffSet?.hediffs.Contains(effect) == true;
 
         // 交叉引用恢复完成后、首次精神状态 tick 之前，已保存的具体实例即可恢复属性。
         // 一旦捕获过凭据，每次检查同时核对人格和载体。
@@ -147,7 +159,7 @@ namespace SexSlaveCraft
                 ? PawnIdentity.Unset : current;
         }
 
-        private bool TryInitialize()
+        private bool TryInitialize(long deadline)
         {
             CaptureCarrier();
             try
@@ -160,13 +172,14 @@ namespace SexSlaveCraft
                 if (!CanInitializeOrContinue() || !SSCIdentityUtility.IsSexSlave(pawn)) return false;
 
                 effect = (Hediff_SSCSlaveBreakdown)HediffMaker.MakeHediff(def, pawn);
-                effect.ExpiresAt = expiresAt;
+                effect.ExpiresAt = deadline;
                 // 先保存实例引用，再交给原版健康系统。添加过程可因状态或健康回调重入而中止。
                 health.AddHediff(effect);
                 if (!CanInitializeOrContinue() || !SSCIdentityUtility.IsSexSlave(pawn) || !HasEffect()) return false;
                 nextBrokenAt = (long)SSCSlaveBreakdown.Now + GenDate.TicksPerHour;
                 // AddHediff 已刷新健康缓存，属性读取会查询 CurStage。确认启动后即可生效。
                 initialized = true;
+                legacyExpiresAt = -1L;
                 return true;
             }
             catch (Exception ex)
@@ -191,6 +204,8 @@ namespace SexSlaveCraft
 
         private void EndCurrentState()
         {
+            // 冷却 Hediff 的添加可同步触发状态刷新。原版已在清除本状态时，由外层恢复调用继续完成。
+            if (ending || ended) return;
             if (pawn.MentalState == this) RecoverFromState();
             else FinishEnding();
         }
@@ -203,9 +218,9 @@ namespace SexSlaveCraft
             ending = true;
             // 只有确认开始过的发作才结算。完成出口先写入成功，原版恢复不会把成功改成中断。
             if (episodeResult == EpisodeResult.None && initialized) episodeResult = EpisodeResult.Failure;
-            // 第一步存档里的已启动状态只有到期时间。原版启动通知在 PostStart 前撤销状态时没有到期时间。
+            // 尚未迁移的旧档仍代表已启动的发作。新发作须安装效果且确认成功才会开始冷却。
             int now = SSCSlaveBreakdown.Now;
-            if ((initialized || (!attemptedStart && expiresAt >= 0)) && now >= 0 &&
+            if ((initialized || legacyExpiresAt >= 0) && now >= 0 &&
                 pawn.TryGetComp<CompSexSlaveTraining>() is CompSexSlaveTraining comp)
                 comp.RecordSlaveBreakdownCooldown((long)now + SSCSlaveBreakdown.CooldownTicks);
         }
@@ -214,12 +229,14 @@ namespace SexSlaveCraft
         internal void FinishEnding()
         {
             if (ended || Scribe.mode != LoadSaveMode.Inactive) return;
-            BeginEnding();
+            // 静默替换可直接进入这里。先认领清理，再让 BeginEnding 写冷却，避免健康回调重入结算。
             ended = true;
             // 先保留应计的 RJW 整小时增量，再清理任务、临时效果以及身份。前一阶段异常仍尝试后续清理。
             try
             {
-                AdvanceBroken(Math.Min(SSCSlaveBreakdown.Now, expiresAt));
+                BeginEnding();
+                // 到期补齐最后一个整小时。提前移除后仍可从原实例读取截止点，以中断刷新为上限。
+                AdvanceBroken(Math.Min(SSCSlaveBreakdown.Now, Deadline));
             }
             finally
             {
