@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
+  <!-- SSC 在恶堕判定后直接进入这个状态。原版低心情抽选使用 MentalBreakDef，因此这里仅注册状态本身。 -->
   <MentalStateDef>
     <defName>SSC_SlaveBreakdown</defName>
     <label>submission breakdown</label>
@@ -13,25 +14,4 @@
     <beginLetterDef>NegativeEvent</beginLetterDef>
     <baseInspectLine>Mental state: submission breakdown</baseInspectLine>
   </MentalStateDef>
-  <MentalBreakDef>
-    <defName>SSC_SlaveBreakdownMinor</defName>
-    <workerClass>SexSlaveCraft.MentalBreakWorker_SSCSlaveBreakdown</workerClass>
-    <mentalState>SSC_SlaveBreakdown</mentalState>
-    <baseCommonality>2.0</baseCommonality>
-    <intensity>Minor</intensity>
-  </MentalBreakDef>
-  <MentalBreakDef>
-    <defName>SSC_SlaveBreakdownMajor</defName>
-    <workerClass>SexSlaveCraft.MentalBreakWorker_SSCSlaveBreakdown</workerClass>
-    <mentalState>SSC_SlaveBreakdown</mentalState>
-    <baseCommonality>1.5</baseCommonality>
-    <intensity>Major</intensity>
-  </MentalBreakDef>
-  <MentalBreakDef>
-    <defName>SSC_SlaveBreakdownExtreme</defName>
-    <workerClass>SexSlaveCraft.MentalBreakWorker_SSCSlaveBreakdown</workerClass>
-    <mentalState>SSC_SlaveBreakdown</mentalState>
-    <baseCommonality>1.5</baseCommonality>
-    <intensity>Extreme</intensity>
-  </MentalBreakDef>
 </Defs>

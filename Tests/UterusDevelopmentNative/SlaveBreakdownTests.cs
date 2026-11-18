@@ -21,7 +21,6 @@ internal static partial class Program
     private static Pawn reachableBreakdownTrainer;
     private static bool breakdownRollSucceeds;
     private static int breakdownRolls;
-    private static MentalBreakIntensity? selectedBreakdownIntensity;
     private static bool tickDuringImprintLetter;
     private static Pawn skipBreakdownEffectFor;
     private static Pawn interruptBeforeBreakdownStart;
@@ -86,6 +85,16 @@ internal static partial class Program
             DefDatabase<MentalStateDef>.Add(DirectXmlToObject.ObjectFromXml<MentalStateDef>(xml.DocumentElement.SelectSingleNode("MentalStateDef"), false));
             foreach (XmlNode node in xml.DocumentElement.SelectNodes("MentalBreakDef"))
                 DefDatabase<MentalBreakDef>.Add(DirectXmlToObject.ObjectFromXml<MentalBreakDef>(node, false));
+            // 用实际原版候选走完整低心情抽选，宿主只补齐该状态引用的宣泄 Def。
+            if (DefDatabase<ThoughtDef>.GetNamedSilentFail("Catharsis") == null)
+                DefDatabase<ThoughtDef>.Add(new ThoughtDef { defName = "Catharsis" });
+            string gameRoot = Path.GetDirectoryName(typeof(Pawn).Assembly.Location);
+            xml.Load(Path.Combine(gameRoot, "Data/Core/Defs/MentalStateDefs/MentalStates_Mood.xml"));
+            var sadWander = DirectXmlToObject.ObjectFromXml<MentalStateDef>(
+                xml.DocumentElement.SelectSingleNode("MentalStateDef[defName='Wander_Sad']"), false);
+            DefDatabase<MentalStateDef>.Add(sadWander);
+            DefDatabase<MentalBreakDef>.Add(DirectXmlToObject.ObjectFromXml<MentalBreakDef>(
+                xml.DocumentElement.SelectSingleNode("MentalBreakDef[defName='Wander_Sad']"), false));
             // 宿主不模拟技能和身体能力。边界从实际 RJW 定义读取，数值仍经过原版 StatWorker 和 RJW 需求计算。
             var rjwStats = XDocument.Load(RjwResource("Defs/StatDefs/Stats.xml"));
             StatDef LoadNeutralStat(string name)
@@ -146,8 +155,8 @@ internal static partial class Program
             Require(errors.Count == 0, string.Join('\n', errors));
 
             // 安装生产补丁，保留原版选池、状态赋值、Scribe 和信件构造。隔离地图网格、其 UI 更新及掷骰抽样。
-            foreach (Type type in new[] { typeof(Patch_SSCSlaveBreakdownMoodSelection), typeof(Patch_SSCSlaveBreakdownClear),
-                         typeof(Patch_SSCSlaveBreakdownTransition), typeof(Patch_SSCSlaveBreakdownDeath),
+            foreach (Type type in new[] { typeof(Patch_SSCSlaveBreakdownClear), typeof(Patch_SSCSlaveBreakdownTransition),
+                         typeof(Patch_SSCSlaveBreakdownDeath),
                          typeof(Patch_SSCSlaveBreakdownBehaviorCleanup),
                          typeof(Patch_SSCBreakdownMasturbateEverywhere), typeof(Patch_SSCBreakdownVisibility),
                          typeof(Patch_SSCBreakdownActivityLocation) })
@@ -170,7 +179,6 @@ internal static partial class Program
             Prefix(AccessTools.Method(typeof(Pawn_JobTracker), nameof(Pawn_JobTracker.StartJob)), nameof(BreakdownInvitedUseStartBoundary));
             Prefix(AccessTools.Method(typeof(rjw.JobDriver_Sex), nameof(rjw.JobDriver_Sex.setup_ticks)), nameof(BreakdownInvitedUseTimerBoundary));
             Prefix(AccessTools.Method(typeof(Rand), nameof(Rand.MTBEventOccurs)), nameof(ControlBreakdownRoll));
-            Prefix(AccessTools.Method(typeof(MentalBreakWorker_SSCSlaveBreakdown), nameof(MentalBreakWorker_SSCSlaveBreakdown.TryStart)), nameof(ObserveMoodBreakChoice));
             Prefix(AccessTools.Method(typeof(MentalBreaker), "RandomFinalStraw"), nameof(Skip));
             Prefix(AccessTools.Method(typeof(GenText), nameof(GenText.AdjustedFor),
                 new[] { typeof(string), typeof(Pawn), typeof(string), typeof(bool) }), nameof(BreakdownGrammarBoundary));
@@ -204,7 +212,6 @@ internal static partial class Program
                     reachableBreakdownTrainer = null;
                     breakdownRollSucceeds = false;
                     breakdownRolls = 0;
-                    selectedBreakdownIntensity = null;
                     tickDuringImprintLetter = false;
                     skipBreakdownEffectFor = null;
                     interruptBeforeBreakdownStart = null;
@@ -396,7 +403,8 @@ internal static partial class Program
                 Require(runtime.HasFullRequest(pawn) && pawn.MentalState == null);
                 Require(breakdownLetters.SequenceEqual(new[] { (pawn, "imprint", SSCImprintKind.Slave, false) }));
                 runtime.GameComponentTick();
-                Require(pawn.MentalState is MentalState_SSCSlaveBreakdown);
+                Require(pawn.MentalState is MentalState_SSCSlaveBreakdown { causedByMood: false });
+                Require(!runtime.HasFullRequest(pawn) && !SSCSlaveBreakdown.IsAtRisk(pawn));
                 need.SetCorruption(1f);
                 need.NeedInterval();
                 runtime.GameComponentTick();
@@ -1187,7 +1195,7 @@ internal static partial class Program
                 need.SetCorruption(.95f);
                 need.NeedInterval();
                 Equal(1, breakdownRolls);
-                Require(pawn.MentalState is MentalState_SSCSlaveBreakdown && need.CurLevel < .95f);
+                Require(pawn.MentalState is MentalState_SSCSlaveBreakdown { causedByMood: false } && need.CurLevel < .95f);
 
                 SSCMod.settings.enableCorruptionDecay = false;
                 var (restored, restoredNeed) = BreakdownPawn();
@@ -1198,22 +1206,21 @@ internal static partial class Program
                 Require(restored.MentalState == null);
             });
 
-            Case("only native mood selection can choose the three breakdown intensities", () =>
+            Case("low mood still starts a vanilla break and cannot select SSC slave breakdown", () =>
             {
-                foreach (var intensity in new[] { MentalBreakIntensity.Minor, MentalBreakIntensity.Major, MentalBreakIntensity.Extreme })
-                {
-                    var (pawn, need) = BreakdownPawn();
-                    need.RestoreCorruption(1f, 1f);
-                    var breaker = SetBreakdownLowMood(pawn, intensity);
-                    Require(!breaker.TryGetRandomMentalBreak(intensity, out _));
-                    Require(breaker.TryDoRandomMoodCausedMentalBreak());
-                    Equal<MentalBreakIntensity?>(intensity, selectedBreakdownIntensity);
-                    Require(pawn.MentalState is MentalState_SSCSlaveBreakdown state && state.causedByMood);
-                    Require(!pawn.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownFullTriggerUsed);
-                }
+                Require(!DefDatabase<MentalBreakDef>.AllDefsListForReading.Any(def => def.mentalState == SSCSlaveBreakdown.StateDef));
+                var (pawn, need) = BreakdownPawn();
+                need.RestoreCorruption(1f, 1f);
+                var breaker = SetBreakdownLowMood(pawn, MentalBreakIntensity.Minor);
+                Require(breaker.TryDoRandomMoodCausedMentalBreak());
+                Require(pawn.MentalState?.def == sadWander && pawn.MentalState.causedByMood);
+                Require(!pawn.health.hediffSet.HasHediff(breakdownEffect));
+                Require(breakdownLetters.Count == 1 && breakdownLetters[0].Pawn == pawn && !breakdownLetters[0].InBreakdown);
+                Equal(PawnIdentity.Unset, SSCIdentityUtility.GetIdentity(pawn));
+                Require(!pawn.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownFullTriggerUsed);
             });
 
-            Case("risk report locates colonists and colony slaves, excludes masters and even a zero-stage chain", () =>
+            Case("risk report follows random eligibility and pending full crossings, independently of mood", () =>
             {
                 var (free, freeNeed) = BreakdownPawn();
                 var (slave, slaveNeed) = BreakdownPawn(PawnIdentity.Slave);
@@ -1232,13 +1239,19 @@ internal static partial class Program
                 AlertReport report = alert.GetReport();
                 Require(report.active && report.culpritsPawns.Contains(free) && report.culpritsPawns.Contains(slave));
                 Require(!report.culpritsPawns.Contains(master) && !report.culpritsPawns.Contains(chained));
+                using (SSCFullCorruptionImprint.BeginRitual(free))
+                    Require(!alert.GetReport().culpritsPawns.Contains(free));
                 freeNeed.RestoreCorruption(1f, 1f);
                 Require(!alert.GetReport().culpritsPawns.Contains(free));
                 SetBreakdownLowMood(free, MentalBreakIntensity.Minor);
+                Require(!alert.GetReport().culpritsPawns.Contains(free));
+                freeNeed.SetCorruption(.97f);
+                freeNeed.SetCorruption(1f);
+                Require(runtime.HasFullRequest(free));
                 Require(alert.GetReport().culpritsPawns.Contains(free));
                 Equal(0, breakdownRolls);
                 SSCMod.settings.EnableSlaveBreakdown = false;
-                Require(!alert.GetReport().active);
+                Require(!runtime.HasFullRequest(free) && !alert.GetReport().active);
             });
 
             Case("cooldown follows a hard reset, does not block imprint and rearms the spent full trigger only below 94 percent", () =>
@@ -1288,7 +1301,7 @@ internal static partial class Program
                 otherNeed.SetCorruption(.97f);
                 otherNeed.NeedInterval();
                 Equal(0, breakdownRolls);
-                Require(!SetBreakdownLowMood(other, MentalBreakIntensity.Minor).TryDoRandomMoodCausedMentalBreak());
+                Require(!SSCSlaveBreakdown.IsAtRisk(other));
                 otherNeed.SetCorruption(1f);
                 SSCMod.settings.EnableSlaveBreakdown = true;
                 runtime.GameComponentTick();
@@ -1326,11 +1339,17 @@ internal static partial class Program
                 var (ready, readyNeed) = BreakdownPawn();
                 var (expired, expiredNeed) = BreakdownPawn();
                 var (changed, changedNeed) = BreakdownPawn();
+                readyNeed.SetCorruption(.97f);
                 foreach (Pawn pawn in new[] { ready, expired, changed })
                     Require(pawn.mindState.mentalStateHandler.TryStartMentalState(external));
+                // 其他精神状态阻止当下掷骰。真实满值跨越则可登记，风险提示跟随这份短期请求。
+                Require(!SSCSlaveBreakdown.IsAtRisk(ready));
+                readyNeed.NeedInterval();
+                Equal(0, breakdownRolls);
                 foreach (Need_Corruption need in new[] { readyNeed, expiredNeed, changedNeed }) need.SetCorruption(1f);
                 runtime.GameComponentTick();
                 Require(runtime.HasFullRequest(ready) && runtime.HasFullRequest(expired) && runtime.HasFullRequest(changed));
+                Require(SSCSlaveBreakdown.IsAtRisk(ready));
                 Require(SSCPersonalityRuntimeUtility.TryBeginMutation(changed, out var mutation));
                 mutation.Dispose();
                 SetBreakdownTick(3499);
@@ -1342,7 +1361,7 @@ internal static partial class Program
                 SetBreakdownTick(3500);
                 expired.mindState.mentalStateHandler.Reset();
                 runtime.GameComponentTick();
-                Require(expired.MentalState == null && !runtime.HasFullRequest(expired));
+                Require(expired.MentalState == null && !runtime.HasFullRequest(expired) && !SSCSlaveBreakdown.IsAtRisk(expired));
             });
 
             Case("native Scribe preserves a running breakdown, its settings and cooldown and gives missing fields safe defaults", () =>
@@ -1393,10 +1412,9 @@ internal static partial class Program
                 afterNeed.SetCorruption(1f);
                 runtime.GameComponentTick();
                 afterNeed.SetCorruption(.97f);
-                var breaker = SetBreakdownLowMood(after, MentalBreakIntensity.Minor);
                 afterNeed.NeedInterval();
                 Equal(0, breakdownRolls);
-                Require(!breaker.TryDoRandomMoodCausedMentalBreak() && !SSCSlaveBreakdown.IsAtRisk(after));
+                Require(!SSCSlaveBreakdown.IsAtRisk(after));
                 Require(after.MentalState == null);
                 SetBreakdownTick(76000);
                 Require(cooldown.ShouldRemove);
@@ -1486,9 +1504,6 @@ internal static partial class Program
         __result = breakdownRollSucceeds;
         return false;
     }
-
-    private static void ObserveMoodBreakChoice(MentalBreakWorker_SSCSlaveBreakdown __instance)
-        => selectedBreakdownIntensity = __instance.def.intensity;
 
     private static bool BreakdownAsexualBoundary(Pawn __0, ref bool __result)
     {

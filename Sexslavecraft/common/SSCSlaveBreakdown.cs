@@ -29,7 +29,8 @@ namespace SexSlaveCraft
                (SSCIdentityUtility.GetIdentity(pawn) is PawnIdentity.Unset or PawnIdentity.Slave) &&
                !Utils.HasChainHediff(pawn) && !SSCPersonalityRuntimeUtility.IsMutating(pawn);
 
-        // 满值增长可从任意较低值直接跨入，捕获事件时这里只检查身份与冷却。
+        // 满值跨越可以从低于随机门槛的值开始。这里先核对开关、载体、角色资格与冷却，
+        // 数值范围和暂时阻塞再由各入口检查，方便满值请求等待小人醒来或结束其他精神状态。
         internal static bool CanConsider(Pawn pawn, Need_Corruption need)
             => Enabled && Now >= 0 && Scribe.mode == LoadSaveMode.Inactive && need != null &&
                IsEligiblePawn(pawn) && GetNeed(pawn) == need &&
@@ -38,8 +39,10 @@ namespace SexSlaveCraft
                pawn.TryGetComp<CompSexSlaveTraining>() is CompSexSlaveTraining comp &&
                Now >= comp.SlaveBreakdownCooldownUntil;
 
+        // 这些状态只推迟有效的满值待办。随机入口下次需求刷新时重新判断。
         internal static bool TemporarilyBlocked(Pawn pawn) => pawn.Downed || !pawn.Awake() || pawn.InMentalState;
 
+        // 直接启动仍遵守原版对精神状态的禁用条件，包括教程和阻止精神崩溃的变异体。
         internal static bool BlockedByVanilla(Pawn pawn)
             => pawn.mindState.mentalStateHandler.MentalBreaksBlocked() ||
                (pawn.IsMutant && pawn.mutant.Def.preventsMentalBreaks) ||
@@ -52,9 +55,10 @@ namespace SexSlaveCraft
                    !TemporarilyBlocked(pawn) && !BlockedByVanilla(pawn);
         }
 
-        /// <summary>在衰减前按原始值掷骰。启动可经原版中断任务，之后只允许原载体继续刷新。</summary>
+        /// <summary>在衰减前用实际恶堕掷骰。启动可中断原版任务，之后只允许原需求与人格继续刷新。</summary>
         internal static bool RefreshBeforeDecay(Pawn pawn, Need_Corruption need)
         {
+            // 95% 包含在随机区间内。满值由实际跨越触发，满值待办及印记结算优先处理。
             if (!(need.CurLevel >= TriggerLevel && need.CurLevel < need.MaxLevel)) return true;
             var runtime = SSCSlaveBreakdownGameComponent.Current;
             if (runtime == null || runtime.HasFullRequest(pawn) || SSCFullCorruptionImprint.IsSettling(pawn, need) ||
@@ -79,20 +83,19 @@ namespace SexSlaveCraft
                 comp.SlaveBreakdownFullTriggerUsed = false;
         }
 
+        /// <summary>只读查询两条恶堕入口。查看警报不会登记满值待办，也不会消耗随机判定。</summary>
         internal static bool IsAtRisk(Pawn pawn)
         {
             Need_Corruption need = GetNeed(pawn);
             if (!(need?.CurLevel >= TriggerLevel) || !CanConsider(pawn, need) || BlockedByVanilla(pawn))
                 return false;
-            if (SSCSlaveBreakdownGameComponent.Current?.HasFullRequest(pawn) == true) return true;
-            if (StateDef?.Worker.StateCanOccur(pawn) != true) return false;
-            if (need.CurLevel < need.MaxLevel) return true;
-
-            // 持续满值且没有跨越待办时，只剩原版低心情的发作机会。
-            MentalBreaker breaker = pawn.mindState.mentalBreaker;
-            return pawn.needs.mood != null && DebugSettings.enableRandomMentalStates && breaker.CanDoRandomMentalBreaks &&
-                   !QuestUtility.AnyQuestDisablesRandomMoodCausedMentalBreaksFor(pawn) &&
-                   (breaker.BreakMinorIsImminent || breaker.BreakMajorIsImminent || breaker.BreakExtremeIsImminent);
+            var runtime = SSCSlaveBreakdownGameComponent.Current;
+            if (runtime == null) return false;
+            // 短期满值待办可在印记重试、睡眠或其他精神状态结束后继续，等待期间仍算有风险。
+            if (runtime.HasFullRequest(pawn)) return true;
+            // 没有待办时只看实际随机资格。持续满值和低心情都不会产生这条警报。
+            return need.CurLevel < need.MaxLevel && !SSCFullCorruptionImprint.IsSettling(pawn, need) &&
+                   StateDef?.Worker.StateCanOccur(pawn) == true;
         }
     }
 

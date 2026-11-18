@@ -1,4 +1,4 @@
-// AI 辅助生成：复用原版精神状态、低心情候选、开始信和清除入口。
+// AI 辅助生成：复用原版精神状态、开始信和清除入口。
 using System;
 using HarmonyLib;
 using RimWorld;
@@ -248,39 +248,10 @@ namespace SexSlaveCraft
         }
     }
 
+    /// <summary>供 SSC 的恶堕判定和风险查询检查启动资格，随后仍由原版精神状态处理器执行。</summary>
     public sealed class MentalStateWorker_SSCSlaveBreakdown : MentalStateWorker
     {
         public override bool StateCanOccur(Pawn pawn) => SSCSlaveBreakdown.CanStart(pawn) && base.StateCanOccur(pawn);
-    }
-
-    public sealed class MentalBreakWorker_SSCSlaveBreakdown : MentalBreakWorker
-    {
-        public override bool BreakCanOccur(Pawn pawn)
-            => Patch_SSCSlaveBreakdownMoodSelection.IsSelectingFor(pawn) &&
-               SSCSlaveBreakdownGameComponent.Current is SSCSlaveBreakdownGameComponent runtime &&
-               !runtime.HasFullRequest(pawn) && !SSCFullCorruptionImprint.IsSettling(pawn, SSCSlaveBreakdown.GetNeed(pawn)) &&
-               base.BreakCanOccur(pawn);
-
-        public override bool TryStart(Pawn pawn, string reason, bool causedByMood)
-            => causedByMood && BreakCanOccur(pawn) &&
-               SSCSlaveBreakdownGameComponent.Current.TryStart(pawn, reason, causedByMood: true);
-    }
-
-    // 原版读书和异常尸体也使用通用候选。仅在本人的实际低心情抽选中开放三个 Def。
-    [HarmonyPatch(typeof(MentalBreaker), nameof(MentalBreaker.TryDoRandomMoodCausedMentalBreak))]
-    internal static class Patch_SSCSlaveBreakdownMoodSelection
-    {
-        [ThreadStatic] private static Pawn selectingFor;
-
-        internal static bool IsSelectingFor(Pawn pawn) => ReferenceEquals(selectingFor, pawn);
-
-        internal static void Prefix(Pawn ___pawn, out Pawn __state)
-        {
-            __state = selectingFor;
-            selectingFor = ___pawn;
-        }
-
-        internal static void Finalizer(Pawn __state) => selectingFor = __state;
     }
 
     // 普通 Recover 和硬重置共用原版清除入口。Prefix 在退出信号前写冷却，Finalizer 在实际清除后清理。
