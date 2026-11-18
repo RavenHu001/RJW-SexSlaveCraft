@@ -25,6 +25,8 @@ internal static partial class Program
     private static bool tickDuringImprintLetter;
     private static Pawn skipBreakdownEffectFor;
     private static Pawn interruptBeforeBreakdownStart;
+    private static int invitedUseDispatches;
+    private static Action invitedUseReachCallback;
 
     private static void SlaveBreakdownTests(string repo, MethodBase receiveLetter)
     {
@@ -133,6 +135,9 @@ internal static partial class Program
             xml.Load(Path.Combine(repo, "1.7/Defs/JobDef/SSC_BreakdownTraining.xml"));
             var trainingDef = DirectXmlToObject.ObjectFromXml<JobDef>(xml.DocumentElement.SelectSingleNode("JobDef"), false);
             DefDatabase<JobDef>.Add(trainingDef);
+            xml.Load(Path.Combine(repo, "1.7/Defs/JobDef/SSC_BreakdownInvitedUse.xml"));
+            DefDatabase<JobDef>.Add(DirectXmlToObject.ObjectFromXml<JobDef>(xml.DocumentElement.SelectSingleNode("JobDef"), false));
+            Equal(typeof(JobDriver_SSCBreakdownInvitedUse), JobDriver_SSCBreakdownInvitedUse.Def?.driverClass);
             xml.Load(Path.Combine(repo, "1.7/Defs/ThoughtDefs/SSC_BreakdownOutcome.xml"));
             foreach (XmlNode node in xml.DocumentElement.SelectNodes("ThoughtDef"))
                 DefDatabase<ThoughtDef>.Add(DirectXmlToObject.ObjectFromXml<ThoughtDef>(node, false));
@@ -155,6 +160,15 @@ internal static partial class Program
                 nameof(BreakdownInvitationFogBoundary));
             Prefix(AccessTools.Method(typeof(rjw.CasualSex_Helper), nameof(rjw.CasualSex_Helper.CanTargetHookup)),
                 nameof(BreakdownInvitationAppraisalBoundary));
+            Prefix(AccessTools.Method(typeof(rjw.PawnDesignations_Hero), nameof(rjw.PawnDesignations_Hero.IsDesignatedHero)),
+                nameof(BreakdownInvitedUseHeroBoundary));
+            Prefix(AccessTools.Method(typeof(rjw.xxx), nameof(rjw.xxx.can_rape)), nameof(BreakdownInvitedUseBodyBoundary));
+            Prefix(AccessTools.Method(typeof(rjw.CasualSex_Helper), nameof(rjw.CasualSex_Helper.CanHaveSex)),
+                nameof(BreakdownInvitedUseBodyBoundary));
+            Prefix(AccessTools.Method(typeof(MentalState_SSCSlaveBreakdown), nameof(MentalState_SSCSlaveBreakdown.CanReachInvitedUse)),
+                nameof(BreakdownInvitedUseReachBoundary));
+            Prefix(AccessTools.Method(typeof(Pawn_JobTracker), nameof(Pawn_JobTracker.StartJob)), nameof(BreakdownInvitedUseStartBoundary));
+            Prefix(AccessTools.Method(typeof(rjw.JobDriver_Sex), nameof(rjw.JobDriver_Sex.setup_ticks)), nameof(BreakdownInvitedUseTimerBoundary));
             Prefix(AccessTools.Method(typeof(Rand), nameof(Rand.MTBEventOccurs)), nameof(ControlBreakdownRoll));
             Prefix(AccessTools.Method(typeof(MentalBreakWorker_SSCSlaveBreakdown), nameof(MentalBreakWorker_SSCSlaveBreakdown.TryStart)), nameof(ObserveMoodBreakChoice));
             Prefix(AccessTools.Method(typeof(MentalBreaker), "RandomFinalStraw"), nameof(Skip));
@@ -194,6 +208,8 @@ internal static partial class Program
                     tickDuringImprintLetter = false;
                     skipBreakdownEffectFor = null;
                     interruptBeforeBreakdownStart = null;
+                    invitedUseDispatches = 0;
+                    invitedUseReachCallback = null;
                     action();
                 });
             }
@@ -698,6 +714,170 @@ internal static partial class Program
                 restored.MentalStateTick(1);
                 Require(loaded.MentalState == restored && loaded.CurJob == null && !restored.HasBehaviorJob &&
                     partner.jobs.jobQueue.Count == 0 && !restored.TryBeginInvitationScan());
+            });
+
+            Case("invited use and ordinary invitations share cooldowns and refusal never dispatches", () =>
+            {
+                var (subject, need) = BreakdownPawn();
+                var (actor, _) = BreakdownPawn();
+                var (other, _) = BreakdownPawn();
+                var state = StartWanderingBreakdown(subject, need);
+                Require(state.TryRecordInvitation(actor, SSCPersonalityRuntimeUtility.Capture(actor), false,
+                    out Job rejected, invitedUse: true));
+                Require(rejected == null && !state.HasBehaviorJob && !state.TryBeginInvitationScan());
+                state.MentalStateTick(1);
+                Equal(0, invitedUseDispatches);
+
+                SetBreakdownTick(2250);
+                Require(state.TryBeginInvitationScan() && !state.CanInvite(actor) && !state.CanInvite(actor, invitedUse: true));
+                Require(state.TryRecordInvitation(other, SSCPersonalityRuntimeUtility.Capture(other), false, out _));
+                SetBreakdownTick(3500);
+                Require(state.TryBeginInvitationScan() && state.CanInvite(actor, invitedUse: true) && !state.CanInvite(other));
+            });
+
+            Case("an accepted invited use dispatches once across load and uses the actual RJW forced direction", () =>
+            {
+                var (subject, need) = BreakdownPawn();
+                var (actor, _) = BreakdownPawn();
+                var state = StartWanderingBreakdown(subject, need);
+                RecordInvitedUse(state, actor);
+                string path = SaveBreakdown(new SlaveBreakdownSaveFixture(subject, SSCMod.settings));
+                var (loaded, _) = BreakdownPawn();
+                LoadBreakdown(path, loaded, actor);
+                var restored = (MentalState_SSCSlaveBreakdown)loaded.MentalState;
+
+                restored.MentalStateTick(1);
+                restored.MentalStateTick(1);
+                Equal(1, invitedUseDispatches);
+                Require(actor.jobs.curDriver is JobDriver_SSCBreakdownInvitedUse && loaded.CurJob == null);
+                var driver = (JobDriver_SSCBreakdownInvitedUse)actor.jobs.curDriver;
+                Require(SSCRestrictionJobContext.TryCreate(driver, out var request) &&
+                    request.DirectionKnown && request.Kind == SSCInteractionKind.Forced &&
+                    request.Initiator == actor && request.Receiver == loaded);
+                Require(SSCBreakdownPublicActivity.Permits(actor, loaded) && !SSCBreakdownPublicActivity.Permits(loaded, actor));
+
+                Job receiver = JobMaker.MakeJob(rjw.xxx.gettin_raped, actor);
+                RunBreakdownInvitationPreparation(driver, () =>
+                {
+                    loaded.jobs.curJob = receiver;
+                    loaded.jobs.curDriver = new rjw.JobDriver_SexBaseRecieverRaped { pawn = loaded, job = receiver };
+                });
+                Require(SSCRestrictionJobGuard.TryCheck(driver, "Start", out bool allowed) && allowed);
+                Require(SSCRestrictionJobGuard.TryMarkStarted(driver, true));
+                Equal(receiver, new ThinkNode_SSCSlaveBreakdownBehavior().TryIssueJobPackage(loaded, default).Job);
+
+                path = SaveBreakdown(new SlaveBreakdownSaveFixture(loaded, SSCMod.settings));
+                LoadBreakdown(path, loaded, actor);
+                restored = (MentalState_SSCSlaveBreakdown)loaded.MentalState;
+                restored.MentalStateTick(1);
+                Equal(1, invitedUseDispatches);
+                Require(restored.InvitedUseReceiverFor(receiver) != null && actor.jobs.curDriver == driver);
+                actor.jobs.EndCurrentJob(JobCondition.Succeeded, startNewJob: false);
+                Require(!restored.HasBehaviorJob && loaded.CurJob == null && actor.CurJob == null);
+            });
+
+            Case("invited use rechecks replaced work after path callbacks and cancels its actor when the receiver is interrupted", () =>
+            {
+                var (subject, need) = BreakdownPawn();
+                var (actor, _) = BreakdownPawn();
+                var state = StartWanderingBreakdown(subject, need);
+                RecordInvitedUse(state, actor);
+                Job otherJob = JobMaker.MakeJob(JobDefOf.Wait, 100);
+                // Let the original availability check pass. An integration callback swaps the work during path validation.
+                invitedUseReachCallback = () =>
+                {
+                    actor.jobs.curJob = otherJob;
+                    actor.jobs.curDriver = new JobDriver_Wait { pawn = actor, job = otherJob };
+                };
+                state.MentalStateTick(1);
+                Require(!state.HasBehaviorJob && actor.CurJob == otherJob);
+                Equal(0, invitedUseDispatches);
+                actor.jobs.EndCurrentJob(JobCondition.Succeeded, startNewJob: false);
+
+                SetBreakdownTick(2250);
+                RecordInvitedUse(state, actor);
+                state.MentalStateTick(1);
+                var driver = (JobDriver_SSCBreakdownInvitedUse)actor.jobs.curDriver;
+                Job receiver = JobMaker.MakeJob(rjw.xxx.gettin_raped, actor);
+                RunBreakdownInvitationPreparation(driver, () =>
+                {
+                    subject.jobs.curJob = receiver;
+                    subject.jobs.curDriver = new rjw.JobDriver_SexBaseRecieverRaped { pawn = subject, job = receiver };
+                });
+                Require(state.InvitedUseReceiverFor(receiver) != null);
+                Job unrelated = JobMaker.MakeJob(JobDefOf.Wait, 200);
+                actor.jobs.jobQueue.EnqueueLast(unrelated);
+                subject.jobs.EndCurrentJob(JobCondition.InterruptForced, startNewJob: false);
+                Require(!state.HasBehaviorJob && subject.CurJob == null && actor.CurJob == null);
+                Equal(unrelated, actor.jobs.jobQueue.Single().job);
+            });
+
+            Case("a started invited use cannot settle after its exact receiver is lost", () =>
+            {
+                var (subject, need) = BreakdownPawn();
+                var (actor, _) = BreakdownPawn();
+                var state = StartWanderingBreakdown(subject, need);
+                RecordInvitedUse(state, actor);
+                state.MentalStateTick(1);
+                var driver = (JobDriver_SSCBreakdownInvitedUse)actor.jobs.curDriver;
+                Job receiver = JobMaker.MakeJob(rjw.xxx.gettin_raped, actor);
+                RunBreakdownInvitationPreparation(driver, () =>
+                {
+                    subject.jobs.curJob = receiver;
+                    subject.jobs.curDriver = new rjw.JobDriver_SexBaseRecieverRaped { pawn = subject, job = receiver };
+                });
+                Require(SSCRestrictionJobGuard.TryCheck(driver, "Start", out bool allowed) && allowed);
+                Require(SSCRestrictionJobGuard.TryMarkStarted(driver, true));
+
+                // Model a receiver changed before the actor ticks, without relying on the normal cleanup notification.
+                Job unrelated = JobMaker.MakeJob(JobDefOf.Wait, 200);
+                subject.jobs.curJob = unrelated;
+                subject.jobs.curDriver = new JobDriver_Wait { pawn = subject, job = unrelated };
+                bool resolvedNativeOutcome = false;
+                RunBreakdownInvitationPreparation(driver, () => resolvedNativeOutcome = true);
+                Require(!resolvedNativeOutcome && !state.HasBehaviorJob && actor.CurJob == null);
+                Equal(unrelated, subject.CurJob);
+            });
+
+            Case("invited use preserves saved RJW timers when native toils are rebuilt on load", () =>
+            {
+                var (subject, need) = BreakdownPawn();
+                var (actor, _) = BreakdownPawn();
+                var state = StartWanderingBreakdown(subject, need);
+                RecordInvitedUse(state, actor);
+                state.MentalStateTick(1);
+                var driver = (JobDriver_SSCBreakdownInvitedUse)actor.jobs.curDriver;
+                var saved = (300, 1200, 50, 180, 730, 90, 92, 120);
+                (driver.ticks_left, driver.duration, driver.sex_ticks, driver.orgasmstick, driver.orgasmStartTick,
+                    driver.ticks_between_hearts, driver.ticks_between_hits, driver.ticks_between_thrusts) = saved;
+                var makeToils = AccessTools.DeclaredMethod(typeof(JobDriver_SSCBreakdownInvitedUse), "MakeNewToils");
+
+                Scribe.mode = LoadSaveMode.PostLoadInit;
+                try
+                {
+                    var toils = ((IEnumerable<Toil>)makeToils.Invoke(driver, null)).ToList();
+                    Equal(1200, toils.Single(toil => toil.defaultCompleteMode == ToilCompleteMode.Never).defaultDuration);
+                    Equal(saved, (driver.ticks_left, driver.duration, driver.sex_ticks, driver.orgasmstick, driver.orgasmStartTick,
+                        driver.ticks_between_hearts, driver.ticks_between_hits, driver.ticks_between_thrusts));
+                }
+                finally { Scribe.mode = LoadSaveMode.Inactive; }
+            });
+
+            Case("approval withdraws accepted invited use before it can take the other pawn's job", () =>
+            {
+                var (subject, need) = BreakdownPawn();
+                var (actor, _) = BreakdownPawn(PawnIdentity.Master);
+                reachableBreakdownTrainer = actor;
+                var state = StartWanderingBreakdown(subject, need);
+                var letter = InstallBreakdownRequest(state, subject, actor, requestDef);
+                RecordInvitedUse(state, actor);
+
+                state.Decide(letter, true);
+                Require(state.HasApprovedTraining && !state.HasBehaviorJob && state.CanReceiveBreakdownTraining);
+                Require(actor.CurJob == null && actor.jobs.jobQueue.Count == 0 && subject.CurJob == null);
+                Equal(0, invitedUseDispatches);
+                SetBreakdownTick(2250);
+                Require(!state.TryBeginInvitationScan());
             });
 
             Case("disabling a native gather spot switches available anchors immediately", () =>
@@ -1359,6 +1539,57 @@ internal static partial class Program
         return false;
     }
 
+    private static bool BreakdownInvitedUseBodyBoundary(Pawn __0, ref bool __result)
+    {
+        if (!breakdownPawns.Contains(__0)) return true;
+        __result = true;
+        return false;
+    }
+
+    private static bool BreakdownInvitedUseReachBoundary(Pawn __0, Pawn __1, ref bool __result)
+    {
+        if (!breakdownPawns.Contains(__0) || !breakdownPawns.Contains(__1)) return true;
+        Action callback = invitedUseReachCallback;
+        invitedUseReachCallback = null;
+        callback?.Invoke();
+        __result = true;
+        return false;
+    }
+
+    private static bool BreakdownInvitedUseHeroBoundary(Pawn __0, ref bool __result)
+    {
+        if (!breakdownPawns.Contains(__0)) return true;
+        __result = false;
+        return false;
+    }
+
+    // 地图宿主只隔离预约和行走的安装边界。生产代码仍负责何时以及向哪个追踪器派发，终止流程走原版。
+    private static bool BreakdownInvitedUseStartBoundary(Pawn_JobTracker __instance, Pawn ___pawn, Job newJob)
+    {
+        if (!breakdownPawns.Contains(___pawn) || !JobDriver_SSCBreakdownInvitedUse.IsInvitedJob(newJob)) return true;
+        invitedUseDispatches++;
+        __instance.curJob = newJob;
+        __instance.curDriver = new JobDriver_SSCBreakdownInvitedUse { pawn = ___pawn, job = newJob };
+        return false;
+    }
+
+    private static bool BreakdownInvitedUseTimerBoundary(rjw.JobDriver_Sex __instance)
+    {
+        if (__instance is not JobDriver_SSCBreakdownInvitedUse || !breakdownPawns.Contains(__instance.pawn)) return true;
+        // Model a fresh roll from setup_ticks without invoking graphics or loading unrelated RJW Defs in this host.
+        (__instance.ticks_left, __instance.duration, __instance.sex_ticks, __instance.orgasmstick, __instance.orgasmStartTick,
+            __instance.ticks_between_hearts, __instance.ticks_between_hits, __instance.ticks_between_thrusts) =
+            (1500, 1500, 1000, 180, 1000, 70, 80, 120);
+        return false;
+    }
+
+    private static void RecordInvitedUse(MentalState_SSCSlaveBreakdown state, Pawn actor)
+    {
+        Require(state.TryRecordInvitation(actor, SSCPersonalityRuntimeUtility.Capture(actor), true,
+            out Job candidate, invitedUse: true));
+        Require(candidate == null && state.HasBehaviorJob);
+    }
+
     private static (Job Job, rjw.JobDriver_SexQuick Driver) InstallBreakdownInvitation(
         Pawn pawn, MentalState_SSCSlaveBreakdown state, Pawn partner)
     {
@@ -1369,7 +1600,7 @@ internal static partial class Program
         return (job, driver);
     }
 
-    private static void RunBreakdownInvitationPreparation(rjw.JobDriver_SexQuick driver, Action install,
+    private static void RunBreakdownInvitationPreparation(rjw.JobDriver_SexBaseInitiator driver, Action install,
         ToilCompleteMode mode = ToilCompleteMode.Instant)
         => SSCRestrictionJobGuard.TrackPreparation(driver,
             new[] { new Toil { initAction = install, defaultCompleteMode = mode } }).Single().initAction();

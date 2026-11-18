@@ -12,4 +12,6 @@
   <SSC_SlaveBreakdown_DebugBlocked>該角色目前無法陷入奴性爆發。</SSC_SlaveBreakdown_DebugBlocked>
   <SSC_BreakdownInvitation_Accepted>{0} 接受了邀約</SSC_BreakdownInvitation_Accepted>
   <SSC_BreakdownInvitation_Refused>{0} 拒絕了邀約</SSC_BreakdownInvitation_Refused>
+  <SSC_BreakdownInvitedUse_Accepted>{0} 接受了求用邀約</SSC_BreakdownInvitedUse_Accepted>
+  <SSC_BreakdownInvitedUse_Refused>{0} 拒絕了求用邀約</SSC_BreakdownInvitedUse_Refused>
 </LanguageData>

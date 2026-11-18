@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <JobDef>
+    <defName>SSC_BreakdownInvitedUse</defName>
+    <driverClass>SexSlaveCraft.JobDriver_SSCBreakdownInvitedUse</driverClass>
+    <reportString>answering TargetA's invitation.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+    <suspendable>false</suspendable>
+    <alwaysShowWeapon>false</alwaysShowWeapon>
+  </JobDef>
+</Defs>

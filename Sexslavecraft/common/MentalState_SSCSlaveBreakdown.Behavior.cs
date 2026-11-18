@@ -22,7 +22,8 @@ namespace SexSlaveCraft
         internal bool SelectingOpeningJob { get; set; }
 
         internal OpeningPhase Phase => openingPhase;
-        internal bool HasBehaviorJob => behaviorJobId >= 0;
+        // 求用可在尚无发起 Job 编号时先占住邀约槽，防止读档或 AI 再取一份候选。
+        internal bool HasBehaviorJob => behaviorJobId >= 0 || invitation != null;
         /// <summary>只有当前、已确认且尚未到期的发作才可派发行为任务。</summary>
         internal bool CanIssueBehavior
         {
@@ -50,13 +51,15 @@ namespace SexSlaveCraft
         internal void RetireMissingBehaviorJob()
         {
             // 候选在预约或覆写处被拒时可能没有结束回调。下一轮发现当前任务不匹配，才释放该派发。
-            if (behaviorJobId >= 0 && !OwnsBehaviorJob(pawn.CurJob) && SSCSlaveBreakdown.Now > behaviorIssuedAt)
+            if (behaviorJobId >= 0 && !OwnsBehaviorJob(BehaviorJobOwner.CurJob) && SSCSlaveBreakdown.Now > behaviorIssuedAt)
                 CompleteBehaviorJob();
         }
 
         internal void CompleteBehaviorJob(bool invitationSucceeded = false)
         {
             int jobId = behaviorJobId;
+            // 求用的发起追踪器在另一名小人身上，必须在清空邀约之前取出原主人。
+            Pawn owner = BehaviorJobOwner;
             SSCBreakdownInvitation completedInvitation = invitation;
             // 原版任务结束、被打断及派发未安装都汇到这里。先撤销认领，再处理可能触发回调的队列。
             invitation = null;
@@ -66,7 +69,7 @@ namespace SexSlaveCraft
             try
             {
                 if (jobId >= 0)
-                    pawn.jobs?.jobQueue.RemoveAll(pawn, queued => queued?.loadID == jobId && queued != pawn.CurJob);
+                    owner.jobs?.jobQueue.RemoveAll(owner, queued => queued?.loadID == jobId && queued != owner.CurJob);
             }
             finally { completedInvitation?.Release(pawn, invitationSucceeded); }
         }
@@ -74,9 +77,10 @@ namespace SexSlaveCraft
         private void StopBehaviorJob()
         {
             // 硬重置可以跳过原版 Recover。只结束本场互动或由专用游荡节点派发的任务。
-            bool owned = OwnsBehaviorJob(pawn.CurJob) || pawn.CurJob?.jobGiver is JobGiver_SSCSlaveBreakdownWander;
             try
             {
+                if (invitation?.InvitedUse == true) CancelInvitation();
+                bool owned = OwnsBehaviorJob(pawn.CurJob) || pawn.CurJob?.jobGiver is JobGiver_SSCSlaveBreakdownWander;
                 if (owned && pawn.jobs?.curDriver is { ended: false })
                     pawn.jobs.EndCurrentJob(JobCondition.InterruptForced, startNewJob: false);
             }
@@ -101,24 +105,35 @@ namespace SexSlaveCraft
     internal static class Patch_SSCSlaveBreakdownBehaviorCleanup
     {
         internal static void Prefix(Pawn_JobTracker __instance, Pawn ___pawn, JobCondition condition,
-            out (MentalState_SSCSlaveBreakdown State, int Id, bool InvitationSucceeded) __state)
+            out (MentalState_SSCSlaveBreakdown State, int Id, bool InvitationSucceeded, SSCBreakdownInvitation Receiver) __state)
         {
             __state = default;
             var state = MentalState_SSCSlaveBreakdown.CurrentFor(___pawn);
             Job job = __instance.curJob;
+            if (state?.InvitedUseReceiverFor(job) is { } receiver)
+            {
+                // 受方单独退场时记录原邀请实例。保留同一编号的新状态和无关任务，晚到的回调只认领本场。
+                __state = (state, job.loadID, false, receiver);
+                return;
+            }
+            if (JobDriver_SSCBreakdownInvitedUse.IsInvitedJob(job))
+                // 实际发起者完成求用时，沿目标 A 找回保存预约和接收任务的发作。
+                state = MentalState_SSCSlaveBreakdown.CurrentFor(job.targetA.Pawn);
             if (state?.OwnsBehaviorJob(job) != true) return;
             // 发起端正常完成后，原 RJW 接收端本来也会返回 Succeeded。只有真实开场过的成功可保留这一结果。
-            bool invitationSucceeded = condition == JobCondition.Succeeded && state.InvitationFor(job) != null &&
-                __instance.curDriver is JobDriver_SexQuick quick &&
-                SSCRestrictionJobGuard.HasStartedScene(quick, SSCInteractionKind.Consensual);
-            __state = (state, job.loadID, invitationSucceeded);
+            bool invitationSucceeded = condition == JobCondition.Succeeded &&
+                __instance.curDriver is JobDriver_SexBaseInitiator driver && state.InvitationFor(job)?.HasStarted(driver) == true;
+            __state = (state, job.loadID, invitationSucceeded, null);
         }
 
         internal static void Finalizer(Pawn_JobTracker __instance, System.Exception __exception,
-            (MentalState_SSCSlaveBreakdown State, int Id, bool InvitationSucceeded) __state)
+            (MentalState_SSCSlaveBreakdown State, int Id, bool InvitationSucceeded, SSCBreakdownInvitation Receiver) __state)
         {
             // 进入回调时冻结编号，原版可能已经归池旧 Job，或者回调已经撤销本场。
-            if (__state.State?.OwnsBehaviorJobId(__state.Id) == true && __instance.curJob?.loadID != __state.Id)
+            if (__state.State == null || __instance.curJob?.loadID == __state.Id) return;
+            if (__state.Receiver != null)
+                __state.State.CancelIfCurrentInvitation(__state.Receiver);
+            else if (__state.State.OwnsBehaviorJobId(__state.Id))
                 __state.State.CompleteBehaviorJob(__state.InvitationSucceeded && __exception == null);
         }
     }

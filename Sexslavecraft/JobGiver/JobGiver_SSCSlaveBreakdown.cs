@@ -21,7 +21,8 @@ namespace SexSlaveCraft
             // 读档后编号匹配时返回追踪器里的同一个 Job。原版覆写比较会保留它，不会从头启动。
             // 主树的安全响应仍可中断这一分支。
             // 获批接收器由训练驱动安装。行为树返回当前任务，让接收器继续运行。
-            if (state.OwnsBehaviorJob(pawn.CurJob) || state.HoldsTrainingReceiver(pawn.CurJob))
+            if (state.OwnsBehaviorJob(pawn.CurJob) || state.HoldsTrainingReceiver(pawn.CurJob) ||
+                state.InvitedUseReceiverFor(pawn.CurJob) != null)
                 return new ThinkResult(pawn.CurJob, pawn.CurJob.jobGiver ?? this, JobTag.InMentalState, false);
             state.RetireMissingBehaviorJob();
             return state.CanIssueBehavior ? base.TryIssueJobPackage(pawn, jobParams) : ThinkResult.NoJob;
@@ -93,19 +94,37 @@ namespace SexSlaveCraft
         private ThinkResult TryInvite(Pawn pawn, MentalState_SSCSlaveBreakdown state)
         {
             // 发作与 SSC 的冷却负责触发节奏。仍遵守 RJW 的启用、工作时段、身体条件，以及 SSC 生命周期钩子的可用性。
+            if (pawn.Drafted || pawn.Downed || !pawn.Awake() || pawn.IsFighting() || pawn.Fogged() ||
+                (pawn.IsDesignatedHero() && !RJWSettings.RPG_hero_control_AI_sex) || !xxx.can_do_loving(pawn) ||
+                !pawn.HasParts() || !CasualSex_Helper.CanHaveSex(pawn) || pawn.mindState?.duty?.def == DutyDefOf.TravelOrLeave ||
+                !SSCSceneHookAvailability.SharedReady)
+                return ThinkResult.NoJob;
+
+            // 找不到可提出的求用才查普通邀约。拒绝也消耗本轮机会，不在同一扫描里改问另一种。
+            if (xxx.gettin_raped != null && JobDriver_SSCBreakdownInvitedUse.Def != null && RJWSettings.rape_enabled &&
+                SSCSceneHookAvailability.DriverReady(typeof(JobDriver_SSCBreakdownInvitedUse)) &&
+                TryOffer(pawn, state, pawn.Map.mapPawns.AllPawnsSpawned, invitedUse: true, out ThinkResult useResult))
+                return useResult;
+
             if (xxx.quick_sex == null || !RJWHookupSettings.HookupsEnabled || !RJWHookupSettings.QuickHookupsEnabled ||
                 (!RJWHookupSettings.ColonistsCanHookup && pawn.IsFreeColonist && !RJWSettings.WildMode) ||
                 (RJWHookupSettings.NoHookupsDuringWorkHours && pawn.timetable?.CurrentAssignment == TimeAssignmentDefOf.Work &&
-                    !xxx.is_nympho(pawn)) ||
-                pawn.Drafted || pawn.Downed || !pawn.Awake() || pawn.IsFighting() || pawn.Fogged() ||
-                (pawn.IsDesignatedHero() && !RJWSettings.RPG_hero_control_AI_sex) || !xxx.can_do_loving(pawn) ||
-                !pawn.HasParts() || !CasualSex_Helper.CanHaveSex(pawn) || pawn.mindState?.duty?.def == DutyDefOf.TravelOrLeave ||
-                !SSCSceneHookAvailability.SharedReady || !SSCSceneHookAvailability.DriverReady(typeof(JobDriver_SexQuick)))
+                    !xxx.is_nympho(pawn)) || !SSCSceneHookAvailability.DriverReady(typeof(JobDriver_SexQuick)))
                 return ThinkResult.NoJob;
 
+            TryOffer(pawn, state, CasualSex_Helper.PotentialPartnersFor(pawn), invitedUse: false, out ThinkResult result);
+            return result;
+        }
+
+        private bool TryOffer(Pawn pawn, MentalState_SSCSlaveBreakdown state, IEnumerable<Pawn> candidates, bool invitedUse,
+            out ThinkResult result)
+        {
+            result = ThinkResult.NoJob;
             // 游荡邀约按发作和自己的冷却搜索，仍使用 RJW 的可达性、配对设置和候选人准入。
             bool prioritizePartners = !RJWSettings.HippieMode;
-            var targets = CasualSex_Helper.PotentialPartnersFor(pawn).Where(state.CanInvite)
+            var targets = candidates.Where(target => state.CanInvite(target, invitedUse) &&
+                (!invitedUse || (xxx.can_rape(target, forced: true) &&
+                    MentalState_SSCSlaveBreakdown.CanReachInvitedUse(target, pawn))))
                 .OrderByDescending(target => prioritizePartners && IsPartner(pawn, target))
                 .ThenBy(target => pawn.Position.DistanceToSquared(target.Position));
             foreach (AppraisalResult appraisal in SexAppraiser.CandidatesAsTargets(new AppraisalParams(pawn, targets)))
@@ -122,21 +141,24 @@ namespace SexSlaveCraft
                     (preferred || CasualSex_Helper.CasualHookupAllowedViaSettings(appraisal));
                 if ((partner.CurJob?.loadID ?? -1) != originalJobId) continue;
                 // 只有经过角色、原任务及当前许可复查后才消费本场机会。空结果仍走游荡分支的日常需求。
-                if (!state.TryRecordInvitation(partner, personality, accepted, out Job job)) return ThinkResult.NoJob;
+                if (!state.TryRecordInvitation(partner, personality, accepted, out Job job, invitedUse)) return false;
                 MoteMaker.ThrowText(pawn.DrawPos, pawn.Map,
-                    (accepted ? "SSC_BreakdownInvitation_Accepted" : "SSC_BreakdownInvitation_Refused")
+                    (invitedUse
+                        ? (accepted ? "SSC_BreakdownInvitedUse_Accepted" : "SSC_BreakdownInvitedUse_Refused")
+                        : (accepted ? "SSC_BreakdownInvitation_Accepted" : "SSC_BreakdownInvitation_Refused"))
                         .Translate(partner.LabelShort).ToString(), 3f);
-                if (job == null) return ThinkResult.NoJob;
+                if (job == null) return true;
                 // 显示回调若已撤销发作或改变了当前工作，不能把此前的候选带入原版任务跟踪器。
                 if (state.InvitationFor(job) == null || !state.CanIssueBehavior || state.HasApprovedTraining || pawn.CurJob != null)
                 {
                     if (state.InvitationFor(job) != null) state.CancelUnstartedInvitation();
                     JobMaker.ReturnToPool(job);
-                    return ThinkResult.NoJob;
+                    return true;
                 }
-                return new ThinkResult(job, this, JobTag.InMentalState, false);
+                result = new ThinkResult(job, this, JobTag.InMentalState, false);
+                return true;
             }
-            return ThinkResult.NoJob;
+            return false;
         }
 
         private static bool IsPartner(Pawn pawn, Pawn target)
@@ -195,11 +217,24 @@ namespace SexSlaveCraft
     {
         internal static bool Permits(Pawn pawn, Pawn partner = null)
         {
+            if (pawn == null) return false;
             var state = MentalState_SSCSlaveBreakdown.CurrentFor(pawn);
+            if (partner != null)
+            {
+                Job job = pawn.CurJob;
+                if (job?.targetA.Pawn != partner) return false;
+                // 求用的发作持有者是实际受方。只有持有原任务编号的准确方向才继承公开选址。
+                if (JobDriver_SSCBreakdownInvitedUse.IsInvitedJob(job))
+                {
+                    var subject = MentalState_SSCSlaveBreakdown.CurrentFor(partner);
+                    return subject?.CanIssueBehavior == true &&
+                        subject.InvitationFor(job) is { InvitedUse: true } invited && invited.Partner == pawn &&
+                        invited.ParticipantsAreCurrent(partner);
+                }
+                return state?.CanIssueBehavior == true &&
+                    state.InvitationFor(job) is { InvitedUse: false } invitation && invitation.Partner == partner;
+            }
             if (state?.CanIssueBehavior != true) return false;
-            // 双人例外只认可原发起者和原对象。对方发起的其他任务仍遵循 RJW 的常规选址。
-            if (partner != null) return state.InvitationFor(pawn.CurJob)?.Partner == partner &&
-                pawn.CurJob.targetA.Pawn == partner;
             if (state.SelectingOpeningJob || JobGiver_SSCSlaveBreakdownMasturbate.CandidatePawn == pawn)
                 return true;
             return state.OwnsBehaviorJob(pawn.CurJob) && pawn.CurJob.targetA.Pawn == pawn;
@@ -245,6 +280,9 @@ namespace SexSlaveCraft
     {
         protected override Job TryGiveJob(Pawn pawn)
         {
+            // 对方接受后在原地短等，避免接近过程中不断追逐新的游荡落点。食物和休息仍先由上层判断。
+            if (MentalState_SSCSlaveBreakdown.CurrentFor(pawn)?.WaitingForInvitedUse == true)
+                return JobMaker.MakeJob(JobDefOf.Wait_Wander, 150);
             IntVec3 cell = FindDestination(pawn);
             if (!cell.IsValid || cell == pawn.Position)
                 return JobMaker.MakeJob(JobDefOf.Wait_Wander, 150);

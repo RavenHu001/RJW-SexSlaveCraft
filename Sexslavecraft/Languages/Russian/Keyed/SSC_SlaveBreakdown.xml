@@ -12,4 +12,6 @@
   <SSC_SlaveBreakdown_DebugBlocked>У этого персонажа сейчас нельзя вызвать приступ покорности.</SSC_SlaveBreakdown_DebugBlocked>
   <SSC_BreakdownInvitation_Accepted>{0} принимает приглашение</SSC_BreakdownInvitation_Accepted>
   <SSC_BreakdownInvitation_Refused>{0} отклоняет приглашение</SSC_BreakdownInvitation_Refused>
+  <SSC_BreakdownInvitedUse_Accepted>{0} принимает просьбу использовать их</SSC_BreakdownInvitedUse_Accepted>
+  <SSC_BreakdownInvitedUse_Refused>{0} отклоняет просьбу использовать их</SSC_BreakdownInvitedUse_Refused>
 </LanguageData>
