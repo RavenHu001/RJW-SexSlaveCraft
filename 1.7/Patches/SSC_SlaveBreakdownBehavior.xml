@@ -14,15 +14,7 @@
               <li Class="SexSlaveCraft.JobGiver_SSCSlaveBreakdownRest"><maxLevelPercentage>0.20</maxLevelPercentage></li>
               <li Class="SexSlaveCraft.ThinkNode_SSCSlaveBreakdownOpening">
                 <subNodes>
-                  <!-- 两个子项分别由开场阶段选取，顺序对应双人尝试和单人后备。 -->
-                  <li Class="rjw.ThinkNode_ConditionalSexChecks">
-                    <subNodes>
-                      <li Class="rjw.ThinkNode_ConditionalHornyOrFrustrated">
-                        <subNodes><li Class="rjw.JobGiver_DoQuickie" /></subNodes>
-                      </li>
-                    </subNodes>
-                  </li>
-                  <!-- 开场后备立即检查一次，保留 RJW 自慰任务自身和 SSC 分流的准入。 -->
+                  <!-- 新开场只查询这一项一次，沿用 RJW 自慰候选和 SSC 自我调教分流。 -->
                   <li Class="rjw.JobGiver_Masturbate" />
                 </subNodes>
               </li>

@@ -46,8 +46,8 @@ namespace SexSlaveCraft
                 EndCurrentState();
                 return;
             }
-            // 标记新发作的开场。原版状态处理器完成本次切换后，由行为树派发具体任务。
-            openingPhase = OpeningPhase.Pair;
+            // 赋予新发作一次单人候选机会。等原版完成切换且小人空闲后再由行为树尝试。
+            openingPhase = OpeningPhase.Solo;
             // Start 确认后才清空真实需求。读档恢复与启动被撤销的场次沿用当前需求值。
             if (pawn.needs?.TryGetNeed<rjw.Need_Sex>() is rjw.Need_Sex sexNeed) sexNeed.CurLevel = 0f;
             SSCSlaveBreakdownGameComponent.Current?.NotifyStarted(pawn);

@@ -1,7 +1,5 @@
 // AI 辅助生成：开场和游荡任务的归属随当前精神状态保存。
-using System;
 using HarmonyLib;
-using rjw;
 using Verse;
 using Verse.AI;
 
@@ -9,25 +7,22 @@ namespace SexSlaveCraft
 {
     public sealed partial class MentalState_SSCSlaveBreakdown
     {
-        // Pair 成功直接进入 Wander，失败进入 Solo。Solo 只有一次，无论结果都进入 Wander。
-        internal enum OpeningPhase { Wander, Pair, Solo }
+        // Solo 表示尚未检查候选，或唯一一次开场已认领且等待任务结束。两者用行为任务编号区分。
+        // Wander 表示开场机会已用完，后续单人行为只通过游荡期的日常候选。
+        internal enum OpeningPhase { Wander, Solo }
 
-        // 第二步的旧档从 Wander 开始。只有新的 PostStart 才进入 Pair。
+        // 新发作由 PostStart 标为 Solo。完成或用尽开场机会后进入 Wander。
         private OpeningPhase openingPhase;
-        // 引擎可把 Job 对象归池，因此存档和回调以 loadID 标识本次派发。
+        // Job 会归池，读档也会重建实例。用 loadID 跟踪本次派发，不能用引用或同名 JobDef 判定归属。
         private int behaviorJobId = -1;
+        // 返回候选与原版安装任务之间存在同步窗口，当轮看到 CurJob 为空还不能认定派发失败。
         private int behaviorIssuedAt = -1;
-        private Pawn openingPartner;
-        // 在准备期间只接管邀请时的普通工作、本场准备工作，以及本场安装的接收任务。
-        private int originalPartnerJobId = -1;
-        private int receiverJobId = -1;
-        private object partnerPersonality;
-        // 只标记当前调用栈。候选查询触发重新思考时，仍由原查询负责消费这一轮。
+        // 只在候选调用栈内设置。回调若触发重新思考，外层让原查询完成，由它负责消费开场机会。
         internal bool SelectingOpeningJob { get; set; }
 
         internal OpeningPhase Phase => openingPhase;
         internal bool HasBehaviorJob => behaviorJobId >= 0;
-        /// <summary>派发与 RJW 准备都需要当前、已确认且尚未到期的发作。</summary>
+        /// <summary>只有当前、已确认且尚未到期的发作才可派发行为任务。</summary>
         internal bool CanIssueBehavior
         {
             get
@@ -42,90 +37,31 @@ namespace SexSlaveCraft
 
         internal bool OwnsBehaviorJobId(int id) => behaviorJobId >= 0 && behaviorJobId == id;
 
-        /// <summary>在返回候选时认领。预约失败或被覆写的候选同样消耗本轮尝试。</summary>
+        /// <summary>认领已经通过 RJW 和 SSC 处理的最终候选。预约失败或任务覆写同样消耗本轮尝试。</summary>
         internal void SetBehaviorJob(Job job)
         {
             behaviorJobId = job.loadID;
             behaviorIssuedAt = SSCSlaveBreakdown.Now;
-            if (openingPhase != OpeningPhase.Pair) return;
-            openingPartner = job.targetA.Pawn;
-            originalPartnerJobId = openingPartner?.CurJob?.loadID ?? -1;
-            partnerPersonality = SSCPersonalityRuntimeUtility.Capture(openingPartner);
         }
 
-        internal void SkipOpeningAttempt()
-        {
-            openingPhase = openingPhase == OpeningPhase.Pair ? OpeningPhase.Solo : OpeningPhase.Wander;
-        }
+        internal void FinishOpening() => openingPhase = OpeningPhase.Wander;
 
         internal void RetireMissingBehaviorJob()
         {
-            // 候选可能在预约或原版覆写判定处被拒。给同步安装留出当轮，再推进一次状态。
+            // 候选在预约或覆写处被拒时可能没有结束回调。下一轮发现当前任务不匹配，才释放该派发。
             if (behaviorJobId >= 0 && !OwnsBehaviorJob(pawn.CurJob) && SSCSlaveBreakdown.Now > behaviorIssuedAt)
-                CompleteBehaviorJob(false);
+                CompleteBehaviorJob();
         }
 
-        internal void CompleteBehaviorJob(bool succeeded)
+        internal void CompleteBehaviorJob()
         {
             int jobId = behaviorJobId;
-            int receiver = receiverJobId;
-            Pawn partner = openingPartner;
-            if (openingPhase == OpeningPhase.Pair && succeeded) openingPhase = OpeningPhase.Wander;
-            else SkipOpeningAttempt();
-            behaviorJobId = behaviorIssuedAt = originalPartnerJobId = receiverJobId = -1;
-            openingPartner = null;
-            partnerPersonality = null;
+            // 原版任务结束、被打断及派发未安装都汇到这里。先撤销认领，再处理可能触发回调的队列。
+            FinishOpening();
+            behaviorJobId = behaviorIssuedAt = -1;
             // 原版可先把当前工作挂回队列，再清理驱动。只取消本场任务，保留玩家和其他模块的队列。
             if (jobId >= 0)
                 pawn.jobs?.jobQueue.RemoveAll(pawn, queued => queued?.loadID == jobId && queued != pawn.CurJob);
-            if (!succeeded) ReleaseReceiver(pawn, partner, receiver);
-        }
-
-        /// <summary>在 RJW 可能接管对方前复查。场景已开始后的正常收尾由原驱动处理。</summary>
-        internal bool CanContinuePair(JobDriver_SexBaseInitiator driver)
-        {
-            Pawn partner = driver.Partner;
-            if (!CanIssueBehavior || openingPhase != OpeningPhase.Pair || !OwnsBehaviorJob(driver.job) ||
-                pawn.jobs?.curDriver != driver || partner != openingPartner ||
-                !ThinkNode_SSCSlaveBreakdownOpening.AvailablePartner(pawn, partner) ||
-                !CasualSex_Helper.CanTargetHookup(pawn, partner)) return false;
-            // RJW 意愿查询可能进入兼容回调。返回后确认任务和发作仍属于原来的双方。
-            if (!CanIssueBehavior || pawn.jobs?.curDriver != driver || !OwnsBehaviorJob(driver.job) ||
-                partner != driver.Partner || !ThinkNode_SSCSlaveBreakdownOpening.AvailablePartner(pawn, partner))
-                return false;
-            if (!SSCPersonalityRuntimeUtility.IsCurrent(partner, partnerPersonality) ||
-                SSCPersonalityRuntimeUtility.IsMutating(partner)) return false;
-            foreach (QueuedJob queued in partner.jobs.jobQueue)
-                if (!SSCRestrictionJobGuard.OwnsPreparedJob(driver, partner, queued.job)) return false;
-            Job current = partner.CurJob;
-            return (current?.loadID ?? -1) == originalPartnerJobId ||
-                SSCRestrictionJobGuard.OwnsPreparedJob(driver, partner, current) ||
-                (current?.loadID == receiverJobId && IsReceiver(pawn, partner) &&
-                 pawn.Position.DistanceToSquared(partner.Position) <= 1f);
-        }
-
-        internal void ObservePairReceiver(Pawn partner, int previousJobId, int actorJobId)
-        {
-            // 比较原生回调前后，区分本回调新建的接收任务和已存在的同类任务。
-            if (!IsReceiver(pawn, partner) || partner.CurJob.loadID == previousJobId) return;
-            int newId = partner.CurJob.loadID;
-            if (!ending && openingPhase == OpeningPhase.Pair && behaviorJobId == actorJobId && partner == openingPartner)
-                receiverJobId = newId;
-            else ReleaseReceiver(pawn, partner, newId);
-        }
-
-        private static bool IsReceiver(Pawn actor, Pawn partner)
-            => partner?.CurJob?.def == xxx.getting_quickie &&
-                partner.jobs.curDriver is JobDriver_SexBaseReciever receiver && receiver.Partner == actor;
-
-        private static void ReleaseReceiver(Pawn actor, Pawn partner, int id)
-        {
-            // 相同的 JobDef 可被其他场景重用，只有编号和指回的发起者都相符才允许释放。
-            if (id < 0 || partner?.CurJob?.loadID != id || !IsReceiver(actor, partner)) return;
-            var receiver = (JobDriver_SexBaseReciever)partner.jobs.curDriver;
-            receiver.parteners?.Remove(actor);
-            if (receiver.parteners == null || receiver.parteners.Count == 0)
-                partner.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
         }
 
         private void StopBehaviorJob()
@@ -139,48 +75,39 @@ namespace SexSlaveCraft
             }
             finally
             {
-                if (HasBehaviorJob) CompleteBehaviorJob(false);
+                if (HasBehaviorJob) CompleteBehaviorJob();
             }
         }
 
         private void ExposeBehavior()
         {
+            // 保存阶段和已认领任务。读档后凭当前 Job 的编号接续，未安装的候选仍按缺失任务收尾。
+            // 正在查询候选是同步过程，SelectingOpeningJob 不随存档恢复。
             Scribe_Values.Look(ref openingPhase, "sscBreakdownOpeningPhase", OpeningPhase.Wander);
             Scribe_Values.Look(ref behaviorJobId, "sscBreakdownBehaviorJob", -1);
             Scribe_Values.Look(ref behaviorIssuedAt, "sscBreakdownBehaviorIssuedAt", -1);
-            Scribe_References.Look(ref openingPartner, "sscBreakdownOpeningPartner");
-            Scribe_Values.Look(ref originalPartnerJobId, "sscBreakdownPartnerOriginalJob", -1);
-            Scribe_Values.Look(ref receiverJobId, "sscBreakdownReceiverJob", -1);
-            // 引用解析完成即可恢复运行期凭据，防止首次运行前发生替换后再认领新的目标人格。
-            if (Scribe.mode == LoadSaveMode.PostLoadInit)
-                partnerPersonality = SSCPersonalityRuntimeUtility.Capture(openingPartner);
         }
     }
 
-    // 原版在驱动 Cleanup 返回后才清空当前 Job。跟踪整个任务结束流程，避免回收仍被跟踪器访问的挂起任务。
+    // 原版清掉 CurJob 前还会访问挂起任务。前缀只记录归属，等 Finalizer 确认该任务退场才移除它的队列项。
     [HarmonyPatch(typeof(Pawn_JobTracker), "CleanupCurrentJob")]
     internal static class Patch_SSCSlaveBreakdownBehaviorCleanup
     {
-        internal static void Prefix(Pawn_JobTracker __instance, Pawn ___pawn, JobCondition condition,
-            out (MentalState_SSCSlaveBreakdown State, int Id, bool Succeeded) __state)
+        internal static void Prefix(Pawn_JobTracker __instance, Pawn ___pawn,
+            out (MentalState_SSCSlaveBreakdown State, int Id) __state)
         {
             __state = default;
             var state = MentalState_SSCSlaveBreakdown.CurrentFor(___pawn);
             Job job = __instance.curJob;
             if (state?.OwnsBehaviorJob(job) != true) return;
-            // 配对任务同时需要原版完成结果和 SSC 的真实 Start 凭据。
-            bool succeeded = condition == JobCondition.Succeeded &&
-                (state.Phase != MentalState_SSCSlaveBreakdown.OpeningPhase.Pair ||
-                 __instance.curDriver is JobDriver_Sex sex && SSCRestrictionJobGuard.HasStartedScene(sex, SSCInteractionKind.Consensual));
-            __state = (state, job.loadID, succeeded);
+            __state = (state, job.loadID);
         }
 
-        internal static void Finalizer(Pawn_JobTracker __instance, Exception __exception,
-            (MentalState_SSCSlaveBreakdown State, int Id, bool Succeeded) __state)
+        internal static void Finalizer(Pawn_JobTracker __instance, (MentalState_SSCSlaveBreakdown State, int Id) __state)
         {
             // 进入回调时冻结编号，原版可能已经归池旧 Job，或者回调已经撤销本场。
             if (__state.State?.OwnsBehaviorJobId(__state.Id) == true && __instance.curJob?.loadID != __state.Id)
-                __state.State.CompleteBehaviorJob(__state.Succeeded && __exception == null);
+                __state.State.CompleteBehaviorJob();
         }
     }
 }

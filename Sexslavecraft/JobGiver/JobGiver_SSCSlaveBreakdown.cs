@@ -10,14 +10,15 @@ using Verse.AI;
 
 namespace SexSlaveCraft
 {
-    /// <summary>保留已派发的互动。空闲时按 XML 顺序查询需求、开场和游荡。</summary>
+    /// <summary>维持已安装的本场任务。空闲时按 XML 顺序查询进食、休息、单次开场和游荡。</summary>
     public sealed class ThinkNode_SSCSlaveBreakdownBehavior : ThinkNode_Priority
     {
         public override ThinkResult TryIssueJobPackage(Pawn pawn, JobIssueParams jobParams)
         {
             var state = MentalState_SSCSlaveBreakdown.CurrentFor(pawn);
-            if (state?.CanIssueBehavior != true) return ThinkResult.NoJob;
-            // 原版覆写比较识别同一个 Job，因此不会重新启动此任务。更高层的安全响应仍可中断。
+            if (state?.CanIssueBehavior != true || state.SelectingOpeningJob) return ThinkResult.NoJob;
+            // 读档后编号匹配时返回追踪器里的同一个 Job。原版覆写比较会保留它，不会从头启动。
+            // 主树的安全响应仍可中断这一分支。
             // 获批接收器由训练驱动安装。行为树返回当前任务，让接收器继续运行。
             if (state.OwnsBehaviorJob(pawn.CurJob) || state.HoldsTrainingReceiver(pawn.CurJob))
                 return new ThinkResult(pawn.CurJob, pawn.CurJob.jobGiver ?? this, JobTag.InMentalState, false);
@@ -34,76 +35,38 @@ namespace SexSlaveCraft
                 ? base.TryGiveJob(pawn) : null;
     }
 
+    /// <summary>空闲后最多查询一次 XML 中的 RJW 自慰候选。开场只负责记录最终任务及其生命周期。</summary>
     public sealed class ThinkNode_SSCSlaveBreakdownOpening : ThinkNode
     {
-        // 只在调用本场的双人候选子节点时标记发起者，嵌套调用返回后恢复上一层。
-        [ThreadStatic] internal static Pawn PairSearchActor;
-        private const float SearchRadius = 15f;
-
-        /// <summary>发作一侧额外要求近距离和可接管性。RJW 原有寻路、配对及身体条件仍由其候选器处理。</summary>
-        internal static bool AvailablePartner(Pawn actor, Pawn target)
-        {
-            if (actor?.Map == null || target == null || target == actor || !target.Spawned || target.Map != actor.Map ||
-                !target.RaceProps.Humanlike || target.Dead || target.Downed || target.Drafted || target.InMentalState ||
-                target.IsFighting() || target.jobs == null || target.CurJob?.playerForced == true ||
-                !target.Awake() || !actor.Position.InHorDistOf(target.Position, SearchRadius)) return false;
-            Area area = actor.playerSettings?.EffectiveAreaRestrictionInPawnCurrentMap;
-            // 发作中原版会放宽 IsForbidden。这里显式使用玩家对该 Pawn 生效的允许区。
-            return (area == null || area.TrueCount == 0 || area[target.Position]) && !target.Position.Fogged(actor.Map);
-        }
-
         public override ThinkResult TryIssueJobPackage(Pawn pawn, JobIssueParams jobParams)
         {
             var state = MentalState_SSCSlaveBreakdown.CurrentFor(pawn);
-            // 原生 Quickie 只在没有当前任务时产生候选，覆写查询不应消耗开场。
-            if (state == null || state.HasBehaviorJob || state.SelectingOpeningJob || pawn.CurJob != null)
+            // 等空闲后才消费开场。读档中的原任务或准备中的候选都不会再次进入 RJW 查询。
+            if (state?.CanIssueBehavior != true || state.Phase != MentalState_SSCSlaveBreakdown.OpeningPhase.Solo ||
+                state.HasBehaviorJob || state.SelectingOpeningJob || pawn.CurJob != null)
                 return ThinkResult.NoJob;
             state.SelectingOpeningJob = true;
-            try { return IssueOpening(pawn, jobParams, state); }
-            finally { state.SelectingOpeningJob = false; }
-        }
-
-        private ThinkResult IssueOpening(Pawn pawn, JobIssueParams jobParams, MentalState_SSCSlaveBreakdown state)
-        {
-            // XML 首项走 RJW 双人候选，次项是一次性单人后备。无候选可在本次选任务中直接推进。
-            while (state.CanIssueBehavior && state.Phase != MentalState_SSCSlaveBreakdown.OpeningPhase.Wander)
+            try
             {
-                bool pair = state.Phase == MentalState_SSCSlaveBreakdown.OpeningPhase.Pair;
-                Pawn previous = PairSearchActor;
-                ThinkResult candidate;
-                try
+                // 通过原版 TryIssueJobPackage 查询 RJW 节点。SSC 的通用后缀先分流，再核对最终任务的许可。
+                // 直接返回处理后的 ThinkResult，让自我调教保留其任务、目标和来源。
+                ThinkResult candidate = subNodes[0].TryIssueJobPackage(pawn, jobParams);
+                if (!candidate.IsValid) return ThinkResult.NoJob;
+                // 候选查询可能触发身份或任务回调。只有本场依然有效且角色仍空闲时才认领。
+                if (state.CanIssueBehavior && !state.HasBehaviorJob && pawn.CurJob == null)
                 {
-                    if (pair) PairSearchActor = pawn;
-                    candidate = subNodes[pair ? 0 : 1].TryIssueJobPackage(pawn, jobParams);
+                    state.SetBehaviorJob(candidate.Job);
+                    return candidate;
                 }
-                finally { PairSearchActor = previous; }
-                if (candidate.IsValid)
-                {
-                    // 候选生成已经执行 RJW 和 SSC 回调。离开前复核发作、空闲状态及接收方队列。
-                    if (state.CanIssueBehavior && !state.HasBehaviorJob && pawn.CurJob == null &&
-                        (!pair || AvailablePartner(pawn, candidate.Job.targetA.Pawn) &&
-                        candidate.Job.targetA.Pawn.jobs.jobQueue.Count == 0))
-                    {
-                        state.SetBehaviorJob(candidate.Job);
-                        return candidate;
-                    }
-                    JobMaker.ReturnToPool(candidate.Job);
-                }
-                state.SkipOpeningAttempt();
+                JobMaker.ReturnToPool(candidate.Job);
+                return ThinkResult.NoJob;
             }
-            return ThinkResult.NoJob;
-        }
-    }
-
-    [HarmonyPatch(typeof(CasualSex_Helper), nameof(CasualSex_Helper.PotentialPartnersFor))]
-    internal static class Patch_SSCSlaveBreakdownPartners
-    {
-        internal static void Postfix(Pawn pawn, bool bedsex, ref IEnumerable<Pawn> __result)
-        {
-            // FindPartner 当场枚举。提前过滤本场范围及已有排队任务，保留原伴侣排序和双方意愿判断。
-            if (!bedsex && pawn != null && ThinkNode_SSCSlaveBreakdownOpening.PairSearchActor == pawn)
-                __result = __result.Where(target => ThinkNode_SSCSlaveBreakdownOpening.AvailablePartner(pawn, target) &&
-                    target.jobs.jobQueue.Count == 0);
+            finally
+            {
+                // 无候选时继续同一棵树的游荡分支。已返回的候选由任务清理或缺失检测收束到游荡。
+                if (!state.HasBehaviorJob) state.FinishOpening();
+                state.SelectingOpeningJob = false;
+            }
         }
     }
 
@@ -140,19 +103,18 @@ namespace SexSlaveCraft
         }
     }
 
-    // RJW 的公开地点开关与旁人可见性评分分别发生在候选期和执行期。
-    // 仅放行本场候选或已认领任务。第三方普通任务即使涉及同一 Pawn 也不会继承例外。
+    // 公开地点例外只覆盖本场查询中的单人候选或已认领的本人任务。
+    // 有搭档的请求继续走 RJW 常规选址，即使发起者刚好处于同一场发作。
     internal static class SSCBreakdownPublicActivity
     {
         internal static bool Permits(Pawn pawn, Pawn partner = null)
         {
+            if (partner != null) return false;
             var state = MentalState_SSCSlaveBreakdown.CurrentFor(pawn);
             if (state?.CanIssueBehavior != true) return false;
-            if (partner == null && (state.SelectingOpeningJob || JobGiver_SSCSlaveBreakdownMasturbate.CandidatePawn == pawn))
+            if (state.SelectingOpeningJob || JobGiver_SSCSlaveBreakdownMasturbate.CandidatePawn == pawn)
                 return true;
-            return state.OwnsBehaviorJob(pawn.CurJob) && (partner == null
-                ? pawn.CurJob.targetA.Pawn == pawn
-                : pawn.CurJob.targetA.Pawn == partner);
+            return state.OwnsBehaviorJob(pawn.CurJob) && pawn.CurJob.targetA.Pawn == pawn;
         }
     }
 
@@ -183,8 +145,7 @@ namespace SexSlaveCraft
     {
         internal static bool Prefix(Pawn pawn, Pawn partner, ref IntVec3 __result)
         {
-            // 单人任务优先用当前位置；仍由 RJW 判定格子能否安全使用。
-            // 双人快速任务的原版进阶由 MightBeSeen 接入，保留其温度与走位流程。
+            // 单人任务优先用当前位置。原地不可用时仍调用 RJW 搜索，评分只免除本场单人的旁观限制。
             if (partner != null || !SSCBreakdownPublicActivity.Permits(pawn) ||
                 !CasualSex_Helper.IsAcceptableSexSpot(pawn.Position, pawn, null)) return true;
             __result = pawn.Position;

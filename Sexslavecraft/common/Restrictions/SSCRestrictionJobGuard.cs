@@ -461,17 +461,6 @@ namespace SexSlaveCraft
                 {
                     Pawn target = driver.Partner;
                     SceneState state = State(driver);
-#if SSC_RW17
-                    // 只为发作开场重查对方当前任务。在 RJW 原准备可能调用 StopAll 前兑现取消。
-                    var episode = MentalState_SSCSlaveBreakdown.CurrentFor(driver.pawn);
-                    bool opening = driver is JobDriver_SexQuick && episode?.OwnsBehaviorJob(driver.job) == true;
-                    int previousTargetJobId = target?.CurJob?.loadID ?? -1;
-                    if (opening && !state.Started && !episode.CanContinuePair(driver))
-                    {
-                        if (driver.pawn?.jobs?.curDriver == driver) driver.EndJobWith(JobCondition.Incompletable);
-                        return;
-                    }
-#endif
                     HashSet<int> before = SSCRestrictionJobPreparation.Snapshot(target);
                     try
                     {
@@ -487,10 +476,6 @@ namespace SexSlaveCraft
                             if (driver.pawn?.jobs?.curDriver != driver || driver.job != state.Job ||
                                 driver.job?.loadID != state.JobId) state.Preparation.Cleanup();
                         }
-#if SSC_RW17
-                        // RJW 接收任务与通用移动、等待不同，需要单独登记本回调实际安装的编号。
-                        if (opening && !state.Started) episode.ObservePairReceiver(target, previousTargetJobId, state.JobId);
-#endif
                     }
                 };
                 yield return toil;
