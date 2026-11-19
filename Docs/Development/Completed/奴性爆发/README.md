@@ -11,13 +11,14 @@
 | 有链发作与升阶 | [有链调教升阶实机验收](第7项奴性爆发有链调教升阶实机验收.md)记录主人附近游荡、主人请求与升阶反馈。 |
 | 最终邀约派发与冷却 | [立即派发和一小时对象冷却](../../../Design/Archive/第7项奴性爆发开发方案.md#ssc-slave-breakdown-invited-use-cooldown-acceptance)记录最终同步版的实机反馈。 |
 | 合入后测试精简 | `d57cea4f` 将第 7 项原生用例从 46 项精简为 44 项，印记与发作分区 86／86 通过。 [验证范围](../../../Design/Archive/第7项奴性爆发开发方案.md#ssc-slave-breakdown-test-pruning) |
+| 后续 12 条四语定稿 | `2032a924` 落实四语文案并对齐英文默认 Def。18 份 1.7 XML 已安装同步，逐份 SHA-256 核对通过。 [新增文案定稿](../../Reference/History/第7项奴性爆发新增简中文案交接清单.md) |
 
 ## 文件归属
 
 | 资料 | 入口 |
 | --- | --- |
 | 现行规则与历次设计 | [已交付开发方案](../../../Design/Archive/第7项奴性爆发开发方案.md) |
-| 初版中文定稿和交接 | [历史交接清单](../../Reference/History/第7项奴性爆发简中文案交接清单.md)，现行文本查 [1.7 Languages](../../../../1.7/Languages/) |
+| 中文定稿和交接 | [初版交接](../../Reference/History/第7项奴性爆发简中文案交接清单.md) · [新增条目交接](../../Reference/History/第7项奴性爆发新增简中文案交接清单.md) · [1.7 运行资源](../../../../1.7/Languages/) |
 | 触发和发作生命周期 | [准入及风险警报](../../../../Sexslavecraft/common/SSCSlaveBreakdown.cs) · [满值触发](../../../../Sexslavecraft/common/SSCSlaveBreakdownGameComponent.cs) · [精神状态](../../../../Sexslavecraft/common/MentalState_SSCSlaveBreakdown.cs) · [Hediff 计时](../../../../Sexslavecraft/Hediff/Hediff_SSCSlaveBreakdown.cs) |
 | 行为、邀约和调教 | [行为树任务](../../../../Sexslavecraft/JobGiver/JobGiver_SSCSlaveBreakdown.cs) · [邀约派发](../../../../Sexslavecraft/common/MentalState_SSCSlaveBreakdown.Invitation.cs) · [调教结算](../../../../Sexslavecraft/common/MentalState_SSCSlaveBreakdown.Training.cs) |
 | 1.7 运行配置与镜像 | [行为树补丁](../../../../1.7/Patches/SSC_SlaveBreakdownBehavior.xml) · [运行 Def](../../../../1.7/Defs/) · [源码 Def 镜像](../../../../Sexslavecraft/Defs/) |
