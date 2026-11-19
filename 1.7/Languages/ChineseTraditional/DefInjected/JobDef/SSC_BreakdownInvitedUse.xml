@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <SSC_BreakdownInvitedUse.reportString>回應 TargetA 的求用邀約。</SSC_BreakdownInvitedUse.reportString>
+  <SSC_BreakdownInvitationWait.reportString>等待對方赴約。</SSC_BreakdownInvitationWait.reportString>
 </LanguageData>

@@ -10,8 +10,6 @@
   <SSC_SlaveBreakdown_DebugStartDesc>Немедленно вызывает приступ покорности у выбранного персонажа, чтобы проверить, как он проходит и чем заканчивается.</SSC_SlaveBreakdown_DebugStartDesc>
   <SSC_SlaveBreakdown_DebugCooldown>До конца перерыва: {0}</SSC_SlaveBreakdown_DebugCooldown>
   <SSC_SlaveBreakdown_DebugBlocked>У этого персонажа сейчас нельзя вызвать приступ покорности.</SSC_SlaveBreakdown_DebugBlocked>
-  <SSC_BreakdownInvitation_Accepted>{0} принимает приглашение</SSC_BreakdownInvitation_Accepted>
-  <SSC_BreakdownInvitation_Refused>{0} отклоняет приглашение</SSC_BreakdownInvitation_Refused>
   <SSC_BreakdownInvitedUse_Accepted>{0} принимает просьбу использовать их</SSC_BreakdownInvitedUse_Accepted>
   <SSC_BreakdownInvitedUse_Refused>{0} отклоняет просьбу использовать их</SSC_BreakdownInvitedUse_Refused>
 </LanguageData>

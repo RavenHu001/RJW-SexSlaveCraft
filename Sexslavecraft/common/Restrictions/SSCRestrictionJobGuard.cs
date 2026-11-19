@@ -156,15 +156,13 @@ namespace SexSlaveCraft
                 Reject(driver, request, Strings.Train_Reason_AlreadyBeingTrained);
                 return true;
             }
-            if (phase == "Start" && driver is JobDriver_SexBaseInitiator invitationDriver &&
-                invitationDriver is JobDriver_SexQuick or JobDriver_SSCBreakdownInvitedUse)
+            if (phase == "Start" && driver is JobDriver_SSCBreakdownInvitedUse invitationDriver)
             {
-                Pawn subject = BreakdownInvitationSubject(invitationDriver);
+                Pawn subject = invitationDriver.Partner;
                 var breakdown = MentalState_SSCSlaveBreakdown.CurrentFor(subject);
                 var invitation = breakdown?.InvitationFor(invitationDriver.job);
                 // 兼容驱动直接调用 Start 时仍须持有正确方向的接收任务。
-                if ((invitation != null && !invitation.CanStartScene(breakdown, subject, invitationDriver)) ||
-                    (invitation == null && IsBreakdownInvitationJob(invitationDriver)))
+                if (invitation?.CanStartScene(breakdown, subject, invitationDriver) != true)
                 {
                     allowed = false;
                     AbortBreakdownInvitation(invitationDriver);
@@ -481,9 +479,9 @@ namespace SexSlaveCraft
                 toil.initAction = () =>
                 {
 #if SSC_RW17
-                    if (driver is JobDriver_SexQuick or JobDriver_SSCBreakdownInvitedUse)
+                    if (driver is JobDriver_SSCBreakdownInvitedUse)
                     {
-                        Pawn subject = BreakdownInvitationSubject(driver);
+                        Pawn subject = driver.Partner;
                         var breakdown = MentalState_SSCSlaveBreakdown.CurrentFor(subject);
                         if (breakdown?.InvitationFor(driver.job) is { } invitation)
                         {
@@ -491,12 +489,8 @@ namespace SexSlaveCraft
                             invitation.RunNativeStep(breakdown, subject, driver, original, requiresInvitationReceiver);
                             return;
                         }
-                        if (IsBreakdownInvitationJob(driver))
-                        {
-                            // 已撤销的候选即使后来被安装，也不能借普通 Quickie 路径继续。
-                            AbortBreakdownInvitation(driver);
-                            return;
-                        }
+                        AbortBreakdownInvitation(driver);
+                        return;
                     }
 #endif
                     Pawn target = driver.Partner;
@@ -523,12 +517,6 @@ namespace SexSlaveCraft
         }
 
 #if SSC_RW17
-        private static Pawn BreakdownInvitationSubject(JobDriver_SexBaseInitiator driver)
-            => driver is JobDriver_SSCBreakdownInvitedUse ? driver.Partner : driver.pawn;
-
-        private static bool IsBreakdownInvitationJob(JobDriver_SexBaseInitiator driver)
-            => driver is JobDriver_SSCBreakdownInvitedUse || driver.job?.jobGiver is ThinkNode_SSCSlaveBreakdownInvitation;
-
         internal static void AbortBreakdownInvitation(JobDriver_SexBaseInitiator driver)
         {
             if (driver.pawn?.jobs?.curDriver != driver) return;

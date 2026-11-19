@@ -20,10 +20,10 @@ namespace SexSlaveCraft
             Pawn subject = Partner;
             var state = MentalState_SSCSlaveBreakdown.CurrentFor(subject);
             // StartJob 在原生预约前已安装当前任务。缺少发作授权时直接拒绝预约，避免触碰其他任务或地图资源。
-            return state?.InvitationFor(job) is { InvitedUse: true } invitation &&
+            return state?.InvitationFor(job) is { } invitation &&
                 state.CanIssueBehavior && !state.HasApprovedTraining && invitation.MatchesDirection(subject, this) &&
-                invitation.ParticipantsAreCurrent(subject) && invitation.HoldsOriginalWork(subject) &&
-                SSCBreakdownInvitation.IsAllowed(subject, pawn, invitedUse: true) &&
+                invitation.ParticipantsAreCurrent(subject) && invitation.CanPrepareRecipient(subject) &&
+                SSCBreakdownInvitation.IsAllowed(subject, pawn) &&
                 base.TryMakePreToilReservations(errorOnFailed);
         }
 

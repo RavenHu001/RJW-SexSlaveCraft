@@ -6,6 +6,15 @@
     <reportString>answering TargetA's invitation.</reportString>
     <casualInterruptible>false</casualInterruptible>
     <suspendable>false</suspendable>
+    <allowOpportunisticPrefix>false</allowOpportunisticPrefix>
     <alwaysShowWeapon>false</alwaysShowWeapon>
+  </JobDef>
+  <JobDef>
+    <defName>SSC_BreakdownInvitationWait</defName>
+    <driverClass>JobDriver_Wait</driverClass>
+    <reportString>waiting for the other participant to arrive.</reportString>
+    <casualInterruptible>false</casualInterruptible>
+    <suspendable>false</suspendable>
+    <allowOpportunisticPrefix>false</allowOpportunisticPrefix>
   </JobDef>
 </Defs>

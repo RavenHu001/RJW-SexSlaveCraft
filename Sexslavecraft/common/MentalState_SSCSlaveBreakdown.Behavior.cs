@@ -83,7 +83,7 @@ namespace SexSlaveCraft
             // 常规恢复和硬重置都只结束本场互动或由专用游荡节点派发的任务。
             try
             {
-                if (invitation?.InvitedUse == true) CancelInvitation();
+                if (invitation != null) CancelInvitation();
                 bool owned = OwnsBehaviorJob(pawn.CurJob) || pawn.CurJob?.jobGiver is JobGiver_SSCSlaveBreakdownWander;
                 if (owned && pawn.jobs?.curDriver is { ended: false })
                     pawn.jobs.EndCurrentJob(JobCondition.InterruptForced, startNewJob: false);
@@ -101,6 +101,40 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref openingPhase, "sscBreakdownOpeningPhase", OpeningPhase.Wander);
             Scribe_Values.Look(ref behaviorJobId, "sscBreakdownBehaviorJob", -1);
             Scribe_Values.Look(ref behaviorIssuedAt, "sscBreakdownBehaviorIssuedAt", -1);
+        }
+    }
+
+    [HarmonyPatch(typeof(Pawn_JobTracker), nameof(Pawn_JobTracker.StartJob))]
+    internal static class Patch_SSCBreakdownInvitationWaitInstallation
+    {
+        // 记下候选编号，再等原版完成安装。双方相邻时，反向派发可立即把等待换成正式接收任务。
+        [HarmonyPriority(Priority.First)]
+        internal static bool Prefix(Pawn_JobTracker __instance, Pawn ___pawn, Job newJob,
+            out (MentalState_SSCSlaveBreakdown State, SSCBreakdownInvitation Invitation, int Id) __state)
+        {
+            __state = default;
+            if (!SSCBreakdownInvitation.IsWait(newJob)) return true;
+            var state = MentalState_SSCSlaveBreakdown.CurrentFor(___pawn);
+            var invitation = state?.WaitingInvitationFor(newJob);
+            if (invitation == null)
+            {
+                if (newJob != __instance.curJob && !__instance.jobQueue.Contains(newJob))
+                    JobMaker.ReturnToPool(newJob);
+                return false;
+            }
+            __state = (state, invitation, newJob.loadID);
+            return true;
+        }
+
+        internal static void Postfix(
+            (MentalState_SSCSlaveBreakdown State, SSCBreakdownInvitation Invitation, int Id) __state)
+            => __state.State?.FinishInvitedUseWaitInstallation(__state.Invitation, __state.Id);
+
+        internal static void Finalizer(System.Exception __exception,
+            (MentalState_SSCSlaveBreakdown State, SSCBreakdownInvitation Invitation, int Id) __state)
+        {
+            // 等待安装和后续预约都可能抛错。原异常继续交给调用方，同时撤销已经认领的本场任务。
+            if (__exception != null) __state.State?.CancelIfCurrentInvitation(__state.Invitation);
         }
     }
 
