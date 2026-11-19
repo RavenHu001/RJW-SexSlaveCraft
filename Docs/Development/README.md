@@ -1,6 +1,6 @@
 # 开发资料入口
 
-2026-11-18，第 7 项游荡期求用邀约的立即派发与 1 游戏小时对象冷却通过实机验收。 [本轮实机验收](../Design/第7项奴性爆发开发方案.md#ssc-slave-breakdown-invited-use-cooldown-acceptance)
+2026-11-18，第 7 项游荡期求用邀约的立即派发与 1 游戏小时对象冷却通过实机验收。 [现行规则](../Design/第7项奴性爆发开发方案.md#ssc-slave-breakdown-current-rules) · [本轮实机验收](../Design/第7项奴性爆发开发方案.md#ssc-slave-breakdown-invited-use-cooldown-acceptance) · [暂缓处理的调教读档边界](../Design/第7项奴性爆发开发方案.md#ssc-slave-breakdown-deferred-trainer-save-edge)
 
 2026-11-18，第 7 项有链发作、主人调教升阶和成功反馈经实机测试，维护者确认功能基本正常。 [有链调教升阶实机验收](Completed/第7项奴性爆发有链调教升阶实机验收.md)
 
