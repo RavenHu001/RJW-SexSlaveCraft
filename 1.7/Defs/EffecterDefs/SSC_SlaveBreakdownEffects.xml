@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 发作 Hediff 按游戏时间放出短暂的倒置爱心，粒子独立淡出。 -->
+  <FleckDef ParentName="FleckBase_Thrown">
+    <defName>SSC_SlaveBreakdownHeart</defName>
+    <graphicData>
+      <texPath>Things/Mote/Heart</texPath>
+      <shaderType>Mote</shaderType>
+      <renderInstanced>true</renderInstanced>
+    </graphicData>
+    <altitudeLayer>MetaOverlays</altitudeLayer>
+    <useAttachLink>false</useAttachLink>
+    <realTime>false</realTime>
+    <fadeInTime>0.06</fadeInTime>
+    <solidTime>0.50</solidTime>
+    <fadeOutTime>0.44</fadeOutTime>
+    <growthRate>0</growthRate>
+    <collide>false</collide>
+  </FleckDef>
+</Defs>

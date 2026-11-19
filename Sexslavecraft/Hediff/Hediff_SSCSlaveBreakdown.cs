@@ -1,6 +1,7 @@
-// AI 辅助生成：用同一 Hediff 截止点驱动本场发作和健康页倒计时。
+// AI 辅助生成：用同一 Hediff 截止点驱动本场发作、健康页倒计时与地图提示。
 using System;
 using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace SexSlaveCraft
@@ -9,6 +10,10 @@ namespace SexSlaveCraft
     public sealed class Hediff_SSCSlaveBreakdown : HediffWithComps
     {
         internal const string DefName = "SSC_Hediff_SlaveBreakdown";
+        private const string HeartFleckDefName = "SSC_SlaveBreakdownHeart";
+        // 地图粒子只在本次运行中排程。读档后先等一次随机延迟，再开始新一轮。
+        private long nextHeartAt = -1L;
+        private int heartsRemaining;
         // 唯一运行时发作期限。这里保存绝对游戏 tick，界面刷新和暂停不会推进计时。
         internal long ExpiresAt = -1L;
         private static readonly HediffStage NeutralStage = new HediffStage();
@@ -18,6 +23,59 @@ namespace SexSlaveCraft
             MentalState_SSCSlaveBreakdown.CurrentFor(pawn)?.EffectIsActive(this) == true;
 
         public override HediffStage CurStage => IsActiveAt(SSCSlaveBreakdown.Now) ? base.CurStage : NeutralStage;
+
+        public override void PostTickInterval(int delta)
+        {
+            base.PostTickInterval(delta);
+            if (pawn?.Spawned != true) return;
+            int now = SSCSlaveBreakdown.Now;
+            if (now < nextHeartAt || !IsActiveAt(now) || !pawn.health.hediffSet.hediffs.Contains(this)) return;
+
+            try
+            {
+                // 隔离视觉排程和粒子初始化的随机数。镜头移动不会改变玩法的随机结果。
+                Rand.PushState(Gen.HashCombineInt(pawn.thingIDNumber, now));
+                try
+                {
+                    if (nextHeartAt < 0)
+                    {
+                        nextHeartAt = (long)now + Rand.RangeInclusive(12, 72);
+                        return;
+                    }
+
+                    // 一轮的 1～3 颗依次出现。每次只处理一颗，按当前 tick 安排下一颗，画面切回时也不补发。
+                    if (heartsRemaining == 0) heartsRemaining = Rand.RangeInclusive(1, 3);
+                    heartsRemaining--;
+                    nextHeartAt = (long)now + (heartsRemaining > 0
+                        ? Rand.RangeInclusive(8, 25)
+                        : Rand.RangeInclusive(55, 125));
+                    TryDrawHeart();
+                }
+                finally { Rand.PopState(); }
+            }
+            catch (Exception error)
+            {
+                // 原版会移除刷新中抛出异常的 Hediff。把显示故障留在粒子分支，保留本场发作。
+                Log.ErrorOnce("[SSC] Could not show the slave breakdown heart: " + error, 194706057);
+            }
+        }
+
+        private void TryDrawHeart()
+        {
+            Map map = pawn.Map;
+            if (map == null || map != Find.CurrentMap || pawn.Position.Fogged(map)) return;
+
+            Vector3 position = pawn.DrawPos + new Vector3(Rand.Range(-.05f, .62f), 0f, Rand.Range(.55f, .78f));
+            if (!position.ShouldSpawnMotesAt(map, drawOffscreen: false)) return;
+            var def = DefDatabase<FleckDef>.GetNamedSilentFail(HeartFleckDefName);
+            if (def == null) return;
+
+            var data = FleckMaker.GetDataStatic(position, map, def, .45f);
+            data.instanceColor = new Color(.85f, .50f, 1.25f, .92f);
+            data.rotation = 180f;
+            data.velocity = new Vector3(Rand.Range(-.16f, .16f), 0f, Rand.Range(.24f, .42f));
+            map.flecks.CreateFleck(data);
+        }
 
         public override string LabelInBrackets
         {
