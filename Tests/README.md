@@ -1,5 +1,7 @@
 # 测试说明索引
 
+第 7 项原生回归精简净减 2 项 Core。 `UterusDevelopmentNative --imprint` 通过 **86／86**，其中第 7 项 44 项。 [精简范围与验证](../Docs/Design/第7项奴性爆发开发方案.md#ssc-slave-breakdown-test-pruning)
+
 2026-11-17，[凝胶与淫堕传道统一结算](../Docs/Development/Completed/堕落凝胶与淫堕传道统一结算实现与验收.md)新增 3 项 Core，`UterusDevelopmentNative --corruption-gel` 79／79，关联印记 71／71、UAP 19／19。隔离构建及 Def／四语镜像检查通过，维护者确认同一候选实机有效。整仓门禁另记。
 
 2026-11-16，[奴性爆发第四步](../Docs/Design/第7项奴性爆发开发方案.md#第四步实现与自动回归)在 `UterusDevelopmentNative --imprint` 新增 5 项 Core，其中 1 项来自提交前复核。本轮印记与发作 70／70，相关六个验证范围合计 608／608。全仓门禁另行记录。

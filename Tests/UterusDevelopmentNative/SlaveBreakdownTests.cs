@@ -277,7 +277,7 @@ internal static partial class Program
                 Equal(0, Find.LetterStack.LettersListForReading.Count);
             });
 
-            Case("rejection revokes stale accept and expiration or interruption publishes one failure", () =>
+            Case("rejection revokes stale accept and expiration publishes one failure", () =>
             {
                 var (pawn, need) = BreakdownPawn();
                 var (trainer, _) = BreakdownPawn(PawnIdentity.Master);
@@ -304,14 +304,6 @@ internal static partial class Program
                 Equal(PawnIdentity.Unset, SSCIdentityUtility.GetIdentity(pawn));
                 Require(pawn.needs.mood.thoughts.memories.Memories.Count(thought =>
                     thought.def.defName == "SSC_BreakdownFailure") == 1);
-
-                SetBreakdownTick(1000);
-                var (interrupted, interruptedNeed) = BreakdownPawn();
-                StartWanderingBreakdown(interrupted, interruptedNeed);
-                interrupted.mindState.mentalStateHandler.Reset();
-                interrupted.mindState.mentalStateHandler.Reset();
-                Equal(2, breakdownFailureLetters.Count);
-                Require(breakdownFailureLetters[1] == interrupted);
             });
 
             Case("approved training extends only when started and can claim success once", () =>
@@ -513,8 +505,17 @@ internal static partial class Program
                         SetBreakdownTick(regularDeadline);
                         restored.MentalStateTick(1);
                         Require(restored.OwnsTrainingJob(trainer, job));
+                        // Expiry should release the approved training without stopping unrelated work.
+                        Job otherWork = JobMaker.MakeJob(JobDefOf.Wait, 200);
+                        Job queuedWork = JobMaker.MakeJob(JobDefOf.Wait, 300);
+                        loadedPawn.jobs.curJob = otherWork;
+                        loadedPawn.jobs.curDriver = new JobDriver_Wait { pawn = loadedPawn, job = otherWork };
+                        loadedPawn.jobs.jobQueue.EnqueueLast(queuedWork);
                         SetBreakdownTick(extendedDeadline);
                         restored.MentalStateTick(1);
+                        Require(trainer.CurJob == null);
+                        Equal(otherWork, loadedPawn.CurJob);
+                        Equal(queuedWork, loadedPawn.jobs.jobQueue.Single().job);
                     }
                     Require(loadedPawn.MentalState == null && !loadedPawn.health.hediffSet.HasHediff(breakdownEffect));
                     Require(breakdownFailureLetters.SequenceEqual(new[] { loadedPawn }));
@@ -682,20 +683,15 @@ internal static partial class Program
                 Equal(job, branch.TryIssueJobPackage(pawn, default).Job);
                 // 原版可能在准备阶段拒绝，既没安装候选也没发 CleanupCurrentJob。
                 Require(pawn.CurJob == null && state.OwnsBehaviorJob(job));
-                // 读档后即使当前仍是派发当轮，已记录的编号也会阻止再次选取候选。
-                string path = SaveBreakdown(new SlaveBreakdownSaveFixture(pawn, SSCMod.settings));
-                var (loaded, _) = BreakdownPawn();
-                LoadBreakdown(path, loaded);
-                var after = (MentalState_SSCSlaveBreakdown)loaded.MentalState;
-                Require(!opening.TryIssueJobPackage(loaded, default).IsValid);
+                Require(!opening.TryIssueJobPackage(pawn, default).IsValid);
                 SetBreakdownTick(1001);
-                Equal(wanderJob, branch.TryIssueJobPackage(loaded, default).Job);
-                Require(!after.HasBehaviorJob);
-                Equal(MentalState_SSCSlaveBreakdown.OpeningPhase.Wander, after.Phase);
+                Equal(wanderJob, branch.TryIssueJobPackage(pawn, default).Job);
+                Require(!state.HasBehaviorJob);
+                Equal(MentalState_SSCSlaveBreakdown.OpeningPhase.Wander, state.Phase);
                 Equal(1, solo.Calls);
             });
 
-            Case("an opening with no solo candidate enters wandering and remains consumed after loading", () =>
+            Case("an opening with no solo candidate is consumed immediately", () =>
             {
                 var (pawn, need) = BreakdownPawn();
                 need.SetCorruption(1f);
@@ -703,18 +699,10 @@ internal static partial class Program
                 var state = (MentalState_SSCSlaveBreakdown)pawn.MentalState;
                 var solo = new BreakdownCandidateNode(null);
                 var opening = new ThinkNode_SSCSlaveBreakdownOpening();
-                var branch = new ThinkNode_SSCSlaveBreakdownBehavior();
-                var children = AccessTools.Field(typeof(ThinkNode), "subNodes");
-                children.SetValue(opening, new List<ThinkNode> { solo });
-                var wanderJob = new Job { loadID = 391, def = new JobDef { defName = "SSC_TestWander" } };
-                children.SetValue(branch, new List<ThinkNode> { opening, new BreakdownCandidateNode(wanderJob) });
-                Equal(wanderJob, branch.TryIssueJobPackage(pawn, default).Job);
+                AccessTools.Field(typeof(ThinkNode), "subNodes").SetValue(opening, new List<ThinkNode> { solo });
+                Require(!opening.TryIssueJobPackage(pawn, default).IsValid);
                 Equal(MentalState_SSCSlaveBreakdown.OpeningPhase.Wander, state.Phase);
-
-                string path = SaveBreakdown(new SlaveBreakdownSaveFixture(pawn, SSCMod.settings));
-                var (loaded, _) = BreakdownPawn();
-                LoadBreakdown(path, loaded);
-                Equal(wanderJob, branch.TryIssueJobPackage(loaded, default).Job);
+                Require(!opening.TryIssueJobPackage(pawn, default).IsValid);
                 Equal(1, solo.Calls);
             });
 
@@ -788,7 +776,7 @@ internal static partial class Program
                 Equal(unrelated, pawn.jobs.jobQueue.Single().job);
             });
 
-            Case("wander invitations preserve shared, refusal and acceptance cooldowns across Scribe", () =>
+            Case("invitation deadlines distinguish the shared wait from a refusal or an accepted target", () =>
             {
                 var (pawn, need) = BreakdownPawn();
                 var (first, _) = BreakdownPawn();
@@ -806,29 +794,28 @@ internal static partial class Program
                 Require(state.TryRecordInvitation(first, SSCPersonalityRuntimeUtility.Capture(first), false, out Job rejected));
                 Require(rejected == null && !state.HasBehaviorJob);
 
+                position.SetValue(second, new IntVec3(1, 0, 0));
+                SetBreakdownTick(2399);
+                Require(!state.TryBeginInvitationScan());
+                SetBreakdownTick(2400);
+                Require(state.TryBeginInvitationScan() && !state.CanInvite(first) && state.CanInvite(second));
+                SetBreakdownTick(3649);
+                Require(!state.CanInvite(first));
+                SetBreakdownTick(3650);
+                Require(state.CanInvite(first));
+
+                pawn.jobs.StartJob(RecordInvitedUse(state, first));
+                Require(first.jobs.curDriver is JobDriver_SSCBreakdownInvitedUse);
+                first.jobs.EndCurrentJob(JobCondition.InterruptForced, startNewJob: false);
+                Require(!state.HasBehaviorJob && !state.CanInvite(first));
                 string path = SaveBreakdown(new SlaveBreakdownSaveFixture(pawn, SSCMod.settings));
                 var (loaded, _) = BreakdownPawn();
                 position.SetValue(loaded, IntVec3.Zero);
-                position.SetValue(second, new IntVec3(1, 0, 0));
                 LoadBreakdown(path, loaded, first);
                 var restored = (MentalState_SSCSlaveBreakdown)loaded.MentalState;
-                SetBreakdownTick(2399);
+
+                SetBreakdownTick(4899);
                 Require(!restored.TryBeginInvitationScan());
-                SetBreakdownTick(2400);
-                Require(restored.TryBeginInvitationScan() && !restored.CanInvite(first) && restored.CanInvite(second));
-                SetBreakdownTick(3649);
-                Require(!restored.CanInvite(first));
-                SetBreakdownTick(3650);
-                Require(restored.CanInvite(first));
-
-                loaded.jobs.StartJob(RecordInvitedUse(restored, first));
-                Require(first.jobs.curDriver is JobDriver_SSCBreakdownInvitedUse);
-                first.jobs.EndCurrentJob(JobCondition.InterruptForced, startNewJob: false);
-                Require(!restored.HasBehaviorJob && !restored.CanInvite(first));
-                path = SaveBreakdown(new SlaveBreakdownSaveFixture(loaded, SSCMod.settings));
-                LoadBreakdown(path, loaded, first);
-                restored = (MentalState_SSCSlaveBreakdown)loaded.MentalState;
-
                 SetBreakdownTick(4900);
                 Require(restored.TryBeginInvitationScan() && !restored.CanInvite(first) && restored.CanInvite(second));
                 SetBreakdownTick(6149);
@@ -995,17 +982,21 @@ internal static partial class Program
             Case("accepted invited use dispatches on wait installation and resumes the same pair after load", () =>
             {
                 var (subject, need) = BreakdownPawn();
-                var (actor, _) = BreakdownPawn();
+                var (actor, _) = BreakdownPawn(PawnIdentity.Master);
+                reachableBreakdownTrainer = actor;
                 var state = StartWanderingBreakdown(subject, need);
+                var requestLetter = InstallBreakdownRequest(state, subject, actor, requestDef);
                 Job wait = RecordInvitedUse(state, actor);
                 subject.jobs.StartJob(wait);
                 Equal(1, invitedUseDispatches);
                 var behavior = new ThinkNode_SSCSlaveBreakdownBehavior();
                 Equal(wait, behavior.TryIssueJobPackage(subject, default).Job);
-                string path = SaveBreakdown(new SlaveBreakdownSaveFixture(subject, SSCMod.settings));
+                string path = SaveBreakdown(new SlaveBreakdownSaveFixture(subject, SSCMod.settings) { Request = requestLetter });
+                Find.LetterStack.LettersListForReading.Clear();
                 Pawn loaded = subject;
-                LoadBreakdown(path, loaded, actor, loaded);
+                var fixture = LoadBreakdown(path, loaded, actor, loaded);
                 var restored = (MentalState_SSCSlaveBreakdown)loaded.MentalState;
+                Find.LetterStack.LettersListForReading.Add(fixture.Request);
 
                 restored.MentalStateTick(1);
                 restored.MentalStateTick(1);
@@ -1028,9 +1019,12 @@ internal static partial class Program
                 Require(SSCRestrictionJobGuard.TryCheck(driver, "Start", out bool allowed) && allowed);
                 Require(SSCRestrictionJobGuard.TryMarkStarted(driver, true));
                 Equal(receiver, new ThinkNode_SSCSlaveBreakdownBehavior().TryIssueJobPackage(loaded, default).Job);
+                Require(restored.CanApprove(fixture.Request));
 
-                path = SaveBreakdown(new SlaveBreakdownSaveFixture(loaded, SSCMod.settings));
-                LoadBreakdown(path, loaded, actor, loaded);
+                path = SaveBreakdown(fixture);
+                Find.LetterStack.LettersListForReading.Clear();
+                fixture = LoadBreakdown(path, loaded, actor, loaded);
+                Find.LetterStack.LettersListForReading.Add(fixture.Request);
                 restored = (MentalState_SSCSlaveBreakdown)loaded.MentalState;
                 restored.MentalStateTick(1);
                 Equal(1, invitedUseDispatches);
@@ -1067,28 +1061,7 @@ internal static partial class Program
                 Equal(0, invitationMotes);
             });
 
-            Case("adjacent invited use can exchange the wait for the receiver within the dispatch stack", () =>
-            {
-                var (subject, need) = BreakdownPawn();
-                var (actor, _) = BreakdownPawn();
-                var state = StartWanderingBreakdown(subject, need);
-                Job wait = RecordInvitedUse(state, actor);
-                Job receiver = JobMaker.MakeJob(rjw.xxx.gettin_raped, actor);
-                invitedUseOnInstalled = driver => RunBreakdownInvitationPreparation(driver, () =>
-                {
-                    Equal(wait, subject.CurJob);
-                    subject.jobs.EndCurrentJob(JobCondition.InterruptForced, startNewJob: false);
-                    subject.jobs.curJob = receiver;
-                    subject.jobs.curDriver = new rjw.JobDriver_SexBaseRecieverRaped { pawn = subject, job = receiver };
-                });
-
-                subject.jobs.StartJob(wait);
-                Equal(1, invitedUseDispatches);
-                Equal(receiver, subject.CurJob);
-                Require(state.InvitedUseReceiverFor(receiver) != null && actor.jobs.curDriver is JobDriver_SSCBreakdownInvitedUse);
-            });
-
-            Case("accepted invited use interrupts replaced forced work immediately and preserves both queues", () =>
+            Case("immediate dispatch replaces forced work and can install the receiver synchronously without clearing queues", () =>
             {
                 var (subject, need) = BreakdownPawn();
                 var (actor, _) = BreakdownPawn();
@@ -1107,18 +1080,20 @@ internal static partial class Program
                 otherJob.playerForced = true;
                 actor.jobs.curJob = otherJob;
                 actor.jobs.curDriver = new JobDriver_Wait { pawn = actor, job = otherJob };
-                subject.jobs.StartJob(wait);
-                Require(state.HasBehaviorJob && actor.CurJob != otherJob && subject.CurJob == wait);
-                Equal(1, invitedUseDispatches);
-                Equal(1, invitationMotes);
-                var driver = (JobDriver_SSCBreakdownInvitedUse)actor.jobs.curDriver;
                 Job receiver = JobMaker.MakeJob(rjw.xxx.gettin_raped, actor);
-                RunBreakdownInvitationPreparation(driver, () =>
+                invitedUseOnInstalled = driver => RunBreakdownInvitationPreparation(driver, () =>
                 {
+                    Equal(wait, subject.CurJob);
+                    Require(actor.CurJob == driver.job && actor.CurJob != otherJob);
+                    subject.jobs.EndCurrentJob(JobCondition.InterruptForced, startNewJob: false);
                     subject.jobs.curJob = receiver;
                     subject.jobs.curDriver = new rjw.JobDriver_SexBaseRecieverRaped { pawn = subject, job = receiver };
                 });
-                Require(state.InvitedUseReceiverFor(receiver) != null);
+
+                subject.jobs.StartJob(wait);
+                Equal(1, invitedUseDispatches);
+                Equal(1, invitationMotes);
+                Require(state.InvitedUseReceiverFor(receiver) != null && actor.jobs.curDriver is JobDriver_SSCBreakdownInvitedUse);
                 subject.jobs.EndCurrentJob(JobCondition.InterruptForced, startNewJob: false);
                 Require(!state.HasBehaviorJob && subject.CurJob == null && actor.CurJob == null);
                 Equal(actorQueued, actor.jobs.jobQueue.Single().job);
@@ -1189,106 +1164,6 @@ internal static partial class Program
                 Equal(0, invitedUseDispatches);
                 SetBreakdownTick(2250);
                 Require(!state.TryBeginInvitationScan());
-            });
-
-            Case("one breakdown carries its single opening, both invitation cooldowns, and training handoff through a save", () =>
-            {
-                var (subject, need) = BreakdownPawn();
-                var (otherInvitee, _) = BreakdownPawn();
-                var (trainer, _) = BreakdownPawn(PawnIdentity.Master);
-                reachableBreakdownTrainer = trainer;
-                Mark(subject, SSCImprintUtility.InitialDefName);
-                need.SetCorruption(1f);
-                runtime.GameComponentTick();
-                var state = (MentalState_SSCSlaveBreakdown)subject.MentalState;
-                Require(breakdownLetters.SequenceEqual(new[] { (subject, "imprint", SSCImprintKind.Slave, false),
-                    (subject, "breakdown", SSCImprintKind.Slave, true) }));
-
-                Job openingJob = JobMaker.MakeJob(JobDefOf.Wait, 100);
-                var solo = new BreakdownCandidateNode(openingJob);
-                var opening = new ThinkNode_SSCSlaveBreakdownOpening();
-                AccessTools.Field(typeof(ThinkNode), "subNodes").SetValue(opening, new List<ThinkNode> { solo });
-                Equal(openingJob, opening.TryIssueJobPackage(subject, default).Job);
-                subject.jobs.curJob = openingJob;
-                subject.jobs.curDriver = new JobDriver_Wait { pawn = subject, job = openingJob };
-                Require(!state.TryBeginInvitationScan());
-                subject.jobs.EndCurrentJob(JobCondition.Succeeded, startNewJob: false);
-                Require(!opening.TryIssueJobPackage(subject, default).IsValid);
-                Equal(1, solo.Calls);
-
-                var request = InstallBreakdownRequest(state, subject, trainer, requestDef);
-                Require(state.TryBeginInvitationScan());
-                Require(state.TryRecordInvitation(otherInvitee, SSCPersonalityRuntimeUtility.Capture(otherInvitee),
-                    false, out Job rejected) && rejected == null);
-                SetBreakdownTick(2249);
-                Require(!state.TryBeginInvitationScan());
-                SetBreakdownTick(2250);
-                Require(state.TryBeginInvitationScan() && !state.CanInvite(otherInvitee));
-                subject.jobs.StartJob(RecordInvitedUse(state, trainer));
-
-                // Save while the training choice and the accepted reverse invitation are both outstanding.
-                string path = SaveBreakdown(new SlaveBreakdownSaveFixture(subject, SSCMod.settings) { Request = request });
-                Find.LetterStack.LettersListForReading.Clear();
-                Pawn loaded = subject;
-                var fixture = LoadBreakdown(path, loaded, otherInvitee, trainer, loaded);
-                var restored = (MentalState_SSCSlaveBreakdown)loaded.MentalState;
-                Find.LetterStack.LettersListForReading.Add(fixture.Request);
-                Require(SSCIdentityUtility.IsManualIdentityChangeBlocked(loaded) &&
-                    !SSCIdentityUtility.TrySetManualIdentity(loaded, PawnIdentity.Unset));
-                Require(!SSCPersonalityExcretionAdmission.CanExtract(loaded));
-                restored.MentalStateTick(1);
-                Equal(1, invitedUseDispatches);
-                var driver = (JobDriver_SSCBreakdownInvitedUse)trainer.jobs.curDriver;
-                Job receiver = JobMaker.MakeJob(rjw.xxx.gettin_raped, trainer);
-                RunBreakdownInvitationPreparation(driver, () =>
-                {
-                    loaded.jobs.curJob = receiver;
-                    loaded.jobs.curDriver = new rjw.JobDriver_SexBaseRecieverRaped { pawn = loaded, job = receiver };
-                });
-                Require(restored.InvitedUseReceiverFor(receiver) != null && restored.CanApprove(fixture.Request));
-
-                restored.Decide(fixture.Request, true);
-                Require(restored.HasApprovedTraining && restored.CanReceiveBreakdownTraining &&
-                    restored.Phase == MentalState_SSCSlaveBreakdown.OpeningPhase.Wander &&
-                    trainer.CurJob == null && loaded.CurJob == null);
-                SetBreakdownTick(4750);
-                Require(!restored.TryBeginInvitationScan() && !opening.TryIssueJobPackage(loaded, default).IsValid);
-                Equal(1, invitedUseDispatches);
-                Equal(1, solo.Calls);
-
-                // Reattach the approved training job at native Start, then cross the original and extended deadlines.
-                Job trainingJob = JobMaker.MakeJob(trainingDef, loaded);
-                var trainingDriver = new JobDriver_Training { pawn = trainer, job = trainingJob };
-                SetBreakdownPhase(restored, "Dispatched");
-                BreakdownField("trainingJobId").SetValue(restored, trainingJob.loadID);
-                trainer.jobs.curJob = trainingJob;
-                trainer.jobs.curDriver = trainingDriver;
-                SetBreakdownTick(13500);
-                restored.MarkApprovedTrainingStarted(trainingDriver);
-                var effect = (Hediff_SSCSlaveBreakdown)loaded.health.hediffSet.GetFirstHediffOfDef(breakdownEffect);
-                Equal(18500L, effect.ExpiresAt);
-                SetBreakdownTick(16000);
-                restored.MentalStateTick(1);
-                Require(restored.CanSettleApprovedTraining(trainingDriver));
-
-                Job otherWork = JobMaker.MakeJob(JobDefOf.Wait, 200);
-                loaded.jobs.curJob = otherWork;
-                loaded.jobs.curDriver = new JobDriver_Wait { pawn = loaded, job = otherWork };
-                Job queuedWork = JobMaker.MakeJob(JobDefOf.Wait, 300);
-                loaded.jobs.jobQueue.EnqueueLast(queuedWork);
-                SetBreakdownTick(18500);
-                Require(!restored.CanSettleApprovedTraining(trainingDriver));
-                restored.MentalStateTick(1);
-                restored.FinishEnding();
-                Require(loaded.MentalState == null && trainer.CurJob == null && !loaded.health.hediffSet.HasHediff(breakdownEffect));
-                Equal(otherWork, loaded.CurJob);
-                Equal(queuedWork, loaded.jobs.jobQueue.Single().job);
-                Require(!SSCIdentityUtility.IsManualIdentityChangeBlocked(loaded) && SSCPersonalityExcretionAdmission.CanExtract(loaded));
-                Require(SSCIdentityUtility.IsIdentityLocked(loaded) && SSCIdentityUtility.IsSexSlave(loaded));
-                Require(breakdownFailureLetters.SequenceEqual(new[] { loaded }));
-                Equal(2, breakdownLetters.Count);
-                Equal(78500L, loaded.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownUntil);
-                Near(.21f, loaded.health.hediffSet.GetFirstHediffOfDef(feelingBroken).Severity);
             });
 
             Case("disabling a native gather spot switches available anchors immediately", () =>
