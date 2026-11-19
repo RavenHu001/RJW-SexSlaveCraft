@@ -1,16 +1,8 @@
 # 开发资料入口
 
-2026-11-18，第 7 项游荡期求用邀约的立即派发与 1 游戏小时对象冷却通过实机验收。 [现行规则](../Design/第7项奴性爆发开发方案.md#ssc-slave-breakdown-current-rules) · [本轮实机验收](../Design/第7项奴性爆发开发方案.md#ssc-slave-breakdown-invited-use-cooldown-acceptance) · [暂缓处理的调教读档边界](../Design/第7项奴性爆发开发方案.md#ssc-slave-breakdown-deferred-trainer-save-edge)
-
-2026-11-18，第 7 项有链发作、主人调教升阶和成功反馈经实机测试，维护者确认功能基本正常。 [有链调教升阶实机验收](Completed/第7项奴性爆发有链调教升阶实机验收.md)
-
-2026-11-18，第 7 项健康页倒计时、调教延时读档和中断、身份限制及退出时的任务保留通过实机验收。 [计时与退出验收](Completed/第7项奴性爆发独立触发与Hediff计时实机验收.md)
-
-2026-11-18，第 7 项奴性爆发的单次开场、游荡邀约、调教接管和读档清理通过实机验收。 [本轮实机验收](Completed/第7项奴性爆发开场与邀约实机验收.md)
+2026-11-18，第 7 项奴性爆发随 PR #47 合入 `main`。分批实机验收、测试精简和现行规则从完成索引进入。四语逐语显示仍待专项核验。 [第 7 项完成索引](Completed/奴性爆发/README.md) · [现行规则](../Design/Archive/第7项奴性爆发开发方案.md#ssc-slave-breakdown-current-rules)
 
 2026-11-17，堕落凝胶与淫堕传道 1.7 统一结算已实机确认。 [实现与验收](Completed/堕落凝胶与淫堕传道统一结算实现与验收.md)
-
-2026-11-17，第 7 项奴性爆发初版开发完成。首批机制调整已实机复测，四语定稿已落实。 [开发状态](../Design/第7项奴性爆发开发方案.md#ssc-slave-breakdown-initial-development) · [文案资源](Reference/第7项奴性爆发简中文案交接清单.md)
 
 2026-11-16，第 19 项随 PR #46 合入 `main`。 [实机验收与合并前回归](Completed/第19项恶堕率与性奴化阶段解耦实机验收.md) · [归档设计](../Design/Archive/第19项恶堕率与性奴化阶段解耦开发方案.md)
 
