@@ -5,4 +5,10 @@
   <SSC_BreakdownRequest_Unavailable>调教员或场地当前不可用。</SSC_BreakdownRequest_Unavailable>
   <SSC_BreakdownFailure_Label>恢复理智</SSC_BreakdownFailure_Label>
   <SSC_BreakdownFailure_Text>{0} 的奴性爆发结束了，只留下一身又痒又空的烦躁，怎么也静不下来。</SSC_BreakdownFailure_Text>
+  <SSC_BreakdownSuccess_Label>奴性爆发结束</SSC_BreakdownSuccess_Label>
+  <SSC_BreakdownSuccess_Text>{0} 在与 {1} 完成调教后结束了奴性爆发。</SSC_BreakdownSuccess_Text>
+  <SSC_BreakdownSuccess_BoundText>主人 {1} 完成了对 {0} 的调教，{0} 的奴性爆发结束了。</SSC_BreakdownSuccess_BoundText>
+  <SSC_BreakdownSuccess_StageAdvanced>锁链阶段从 {0} 阶升至 {1} 阶。</SSC_BreakdownSuccess_StageAdvanced>
+  <SSC_BreakdownSuccess_ProgressAdvanced>当前为 {0} 阶，锁链严重度从 {1} 提高到 {2}。</SSC_BreakdownSuccess_ProgressAdvanced>
+  <SSC_BreakdownSuccess_StageUnchanged>本场没有推进锁链进度。</SSC_BreakdownSuccess_StageUnchanged>
 </LanguageData>

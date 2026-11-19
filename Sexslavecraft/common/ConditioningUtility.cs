@@ -22,9 +22,10 @@ namespace SexSlaveCraft
 #if SSC_RW17
         internal const float BreakdownScoreBonus = 50f;
 
-        /// <summary>加分用于本场正式收益，常规模式以基础分写历史。两套评分均跳过首次建链。</summary>
-        internal static void ExecuteBreakdownOutcome(Pawn trainer, Pawn subject, float baseScore)
-            => ExecuteOutcomeCore(trainer, subject, baseScore + BreakdownScoreBonus, baseScore, true);
+        /// <summary>本场采用传入加分，常规模式以基础分写历史。有链和无链特批均跳过建链。</summary>
+        internal static void ExecuteBreakdownOutcome(Pawn trainer, Pawn subject, float baseScore,
+            float scoreBonus = BreakdownScoreBonus)
+            => ExecuteOutcomeCore(trainer, subject, baseScore + scoreBonus, baseScore, true);
 #endif
 
         private static void ExecuteOutcomeCore(Pawn master, Pawn sexSlave, float score, float historyScore, bool breakdown)

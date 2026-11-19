@@ -80,6 +80,10 @@ internal static partial class Program
                 new LetterDef { defName = "NegativeEvent", letterClass = typeof(StandardLetter) };
             if (DefDatabase<LetterDef>.GetNamedSilentFail("NegativeEvent") == null)
                 DefDatabase<LetterDef>.Add(LetterDefOf.NegativeEvent);
+            LetterDefOf.PositiveEvent ??= DefDatabase<LetterDef>.GetNamedSilentFail("PositiveEvent") ??
+                new LetterDef { defName = "PositiveEvent", letterClass = typeof(StandardLetter) };
+            if (DefDatabase<LetterDef>.GetNamedSilentFail("PositiveEvent") == null)
+                DefDatabase<LetterDef>.Add(LetterDefOf.PositiveEvent);
 
             var xml = new XmlDocument();
             xml.Load(Path.Combine(repo, "1.7/Defs/MentalStateDefs/SSC_SlaveBreakdown.xml"));
@@ -315,15 +319,123 @@ internal static partial class Program
                 var wrongJob = JobMaker.MakeJob(trainingDef, pawn);
                 Require(!state.OwnsTrainingJob(trainer, wrongJob));
                 Require(state.ClaimTrainingSuccess(driver) && !state.ClaimTrainingSuccess(driver));
-                state.FinishSuccessfulTraining();
-                state.FinishSuccessfulTraining();
+                int unboundCompletions = 0;
+                void OnUnboundCompletion(Pawn subject, Pawn actor)
+                {
+                    Require(subject == pawn && actor == trainer);
+                    unboundCompletions++;
+                }
+                MentalState_SSCSlaveBreakdown.UnboundTrainingCompletedAtFullCorruption += OnUnboundCompletion;
+                try
+                {
+                    state.FinishSuccessfulTraining();
+                    state.FinishSuccessfulTraining();
+                }
+                finally
+                {
+                    MentalState_SSCSlaveBreakdown.UnboundTrainingCompletedAtFullCorruption -= OnUnboundCompletion;
+                }
+                Equal(1, unboundCompletions);
                 Require(!pawn.InMentalState && !pawn.health.hediffSet.hediffs.Contains(effect) &&
                     breakdownFailureLetters.Count == 0);
                 Equal(PawnIdentity.Slave, SSCIdentityUtility.GetIdentity(pawn));
                 var memories = pawn.needs.mood.thoughts.memories.Memories;
-                Require(memories.Count(thought => thought.def.defName == "SSC_BreakdownSuccess") == 1);
+                Equal(0, memories.Single(thought => thought.def.defName == "SSC_BreakdownSuccess").CurStageIndex);
                 Require(memories.Count(thought => thought.def.defName == "SSC_BreakdownTrainerOpinion" &&
                     thought.otherPawn == trainer) == 1);
+                Equal(1, breakdownLetters.Count(item => item.Pawn == pawn && item.Type == "success"));
+            });
+
+            Case("a bound request survives temporary owner unavailability and closes when the owner changes", () =>
+            {
+                var (pawn, need) = BreakdownPawn(PawnIdentity.Slave);
+                var (owner, _) = BreakdownPawn(PawnIdentity.Master);
+                var (other, _) = BreakdownPawn(PawnIdentity.Master);
+                Hediff_ChainOfSexSlave.AddToPawn(pawn, owner).Severity = .30f;
+                need.RestoreCorruption(.95f, .95f);
+                Require(SSCSlaveBreakdown.IsAtRisk(pawn));
+                need.NeedInterval();
+                Equal(1, breakdownRolls);
+                var state = StartWanderingBreakdown(pawn, need);
+                Require(state.BoundEpisode && state.BoundOwner == owner && SSCSlaveBreakdown.IsEligiblePawn(pawn));
+
+                // An available trainer other than the linked owner has no authority to accept this request.
+                reachableBreakdownTrainer = other;
+                var wrong = InstallBreakdownRequest(state, pawn, other, requestDef);
+                Require(!state.CanApprove(wrong));
+                Find.LetterStack.RemoveLetter(wrong);
+
+                reachableBreakdownTrainer = owner;
+                var letter = InstallBreakdownRequest(state, pawn, owner, requestDef);
+                Require(state.CanApprove(letter));
+                Action openDialogAccept = letter.Choices.First().action;
+                var busy = JobMaker.MakeJob(JobDefOf.Wait);
+                busy.playerForced = true;
+                owner.jobs.curJob = busy;
+                state.MentalStateTick(1);
+                Require(state.IsPendingDecision(letter) && !state.CanApprove(letter));
+                openDialogAccept();
+                Require(state.IsPendingDecision(letter) && !state.HasApprovedTraining);
+                owner.jobs.curJob = null;
+                Require(state.CanApprove(letter));
+
+                Hediff_ChainOfSexSlave.AddToPawn(pawn, other);
+                openDialogAccept();
+                state.MentalStateTick(1);
+                Require(!pawn.InMentalState && !Find.LetterStack.LettersListForReading.Contains(letter) &&
+                    !state.HasApprovedTraining && state.BoundOwner == null);
+                Require(SSCBondUtility.IsBoundTo(pawn, other) && SSCIdentityUtility.IsSexSlave(pawn));
+            });
+
+            Case("a restored bound episode advances only its original stage on successful training", () =>
+            {
+                foreach (var (initial, external, expected) in new[]
+                {
+                    (.50f, .50f, .80f),
+                    (.70f, .70f, .90f),
+                    (.70f, .90f, .90f)
+                })
+                {
+                    var (pawn, need) = BreakdownPawn(PawnIdentity.Slave);
+                    var (owner, _) = BreakdownPawn(PawnIdentity.Master);
+                    Hediff_ChainOfSexSlave.AddToPawn(pawn, owner).Severity = initial;
+                    reachableBreakdownTrainer = owner;
+                    var state = StartWanderingBreakdown(pawn, need);
+                    var request = InstallBreakdownRequest(state, pawn, owner, requestDef);
+                    string path = SaveBreakdown(new SlaveBreakdownSaveFixture(pawn, SSCMod.settings) { Request = request });
+                    Find.LetterStack.LettersListForReading.Clear();
+                    var (loaded, loadedNeed) = BreakdownPawn();
+                    loaded.thingIDNumber = pawn.thingIDNumber;
+                    var fixture = LoadBreakdown(path, loaded, loaded, owner);
+                    var restored = (MentalState_SSCSlaveBreakdown)loaded.MentalState;
+                    var chain = SSCBondUtility.GetChain(loaded);
+                    Require(chain != null && restored.BoundEpisode && restored.BoundOwner == owner);
+                    chain.Severity = external;
+                    loadedNeed.RestoreCorruption(.95f, 1f);
+                    SetBreakdownLowMood(loaded, MentalBreakIntensity.Minor);
+                    var memories = loaded.needs.mood.thoughts.memories;
+                    memories.TryGainMemoryFast(DefDatabase<ThoughtDef>.GetNamed("SSC_BreakdownSuccess"), 0);
+                    Find.LetterStack.LettersListForReading.Add(fixture.Request);
+                    Require(restored.CanApprove(fixture.Request));
+                    fixture.Request.Choices.First().action();
+
+                    var job = JobMaker.MakeJob(trainingDef, loaded);
+                    var driver = new JobDriver_Training { pawn = owner, job = job };
+                    SetBreakdownPhase(restored, "Dispatched");
+                    BreakdownField("trainingJobId").SetValue(restored, job.loadID);
+                    restored.MarkApprovedTrainingStarted(driver);
+                    Require(restored.ClaimTrainingSuccess(driver) && !restored.ClaimTrainingSuccess(driver));
+                    restored.FinishSuccessfulTraining();
+                    restored.FinishSuccessfulTraining();
+
+                    Require(Math.Abs(chain.Severity - expected) < .0001f);
+                    Require(!loaded.InMentalState && SSCBondUtility.GetChain(loaded) == chain &&
+                        SSCBondUtility.IsBoundTo(loaded, owner));
+                    Equal(expected < .90f, SSCSlaveBreakdown.IsEligiblePawn(loaded));
+                    Equal(1, memories.Memories.Single(thought => thought.def.defName == "SSC_BreakdownSuccess").CurStageIndex);
+                    Equal(1, breakdownLetters.Count(item => item.Pawn == loaded && item.Type == "success"));
+                    Require(!breakdownFailureLetters.Contains(loaded));
+                }
             });
 
             Case("extended training deadline survives Scribe and rolls back if the restored job is lost", () =>
@@ -434,27 +546,43 @@ internal static partial class Program
                 }
             });
 
-            Case("the scene bonus feeds both scoring modes without writing a bond or an inflated history score", () =>
+            Case("only unbound training adds a scene bonus in either scoring mode", () =>
             {
                 SkillDef previousSocial = SkillDefOf.Social;
                 try
                 {
                     SkillDefOf.Social = DefDatabase<SkillDef>.GetNamedSilentFail("Social") ?? new SkillDef { defName = "Social" };
                     if (DefDatabase<SkillDef>.GetNamedSilentFail("Social") == null) DefDatabase<SkillDef>.Add(SkillDefOf.Social);
-                    var (trainer, _) = BreakdownPawn(PawnIdentity.Master);
-                    trainer.skills = new Pawn_SkillTracker(trainer);
-                    trainer.skills.GetSkill(SkillDefOf.Social).Level = 15;
                     foreach (bool legacy in new[] { false, true })
                     {
                         SSCMod.settings.useOldScoring = legacy;
+                        var (trainer, _) = BreakdownPawn(PawnIdentity.Master);
+                        trainer.skills = new Pawn_SkillTracker(trainer);
+                        trainer.skills.GetSkill(SkillDefOf.Social).Level = 15;
                         var (pawn, need) = BreakdownPawn(PawnIdentity.Slave);
                         need.SetCorruption(.30f);
                         var comp = pawn.TryGetComp<CompSexSlaveTraining>();
                         comp.lastTrainingScore = 12f;
                         ConditioningUtility.ExecuteBreakdownOutcome(trainer, pawn, 5f);
-                        Require(Math.Abs(need.CurLevel - (legacy ? .38f : .42f)) < .0001f);
+                        Require(Math.Abs(need.CurLevel - (legacy ? .38f : .42f)) < .0001f,
+                            $"{(legacy ? "legacy" : "current")} unbound corruption: {need.CurLevel}");
                         Equal(legacy ? 12f : 5f, comp.lastTrainingScore);
                         Require(!Utils.HasChainHediff(pawn) && SSCBondUtility.GetBoundMaster(pawn) == null);
+
+                        var (bound, boundNeed) = BreakdownPawn(PawnIdentity.Slave);
+                        var chain = Hediff_ChainOfSexSlave.AddToPawn(bound, trainer);
+                        chain.Severity = .30f;
+                        boundNeed.SetCorruption(.30f);
+                        ConditioningUtility.ExecuteBreakdownOutcome(trainer, bound, 5f, scoreBonus: 0f);
+                        var (daily, dailyNeed) = BreakdownPawn(PawnIdentity.Slave);
+                        Hediff_ChainOfSexSlave.AddToPawn(daily, trainer).Severity = .30f;
+                        dailyNeed.SetCorruption(.30f);
+                        ConditioningUtility.ExecuteOutcome(trainer, daily, 5f);
+                        Equal(dailyNeed.CurLevel, boundNeed.CurLevel);
+                        Equal(daily.TryGetComp<CompSexSlaveTraining>().lastTrainingScore,
+                            bound.TryGetComp<CompSexSlaveTraining>().lastTrainingScore);
+                        Require(boundNeed.CurLevel < need.CurLevel && SSCBondUtility.GetChain(bound) == chain);
+                        Equal(.30f, chain.Severity);
                     }
                 }
                 finally { SkillDefOf.Social = previousSocial; }
@@ -1758,7 +1886,8 @@ internal static partial class Program
             breakdownFailureLetters.Add(pawn);
             return false;
         }
-        string type = label.RawText == "SSC_Imprint_FullCorruptionLetterLabel".Translate().RawText ? "imprint" :
+        string type = label.RawText == "SSC_BreakdownSuccess_Label".Translate().RawText ? "success" :
+            label.RawText == "SSC_Imprint_FullCorruptionLetterLabel".Translate().RawText ? "imprint" :
             label.RawText.StartsWith(SSCSlaveBreakdown.StateDef.LabelCap.RawText + ": ", StringComparison.Ordinal) ? "breakdown" : label.RawText;
         breakdownLetters.Add((pawn, type, SSCImprintUtility.GetKind(pawn), pawn.MentalState is MentalState_SSCSlaveBreakdown));
         if (type == "imprint" && tickDuringImprintLetter)

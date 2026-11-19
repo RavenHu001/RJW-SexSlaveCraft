@@ -18,6 +18,12 @@ namespace SexSlaveCraft
         // 即使效果被外部移除，也保留原实例到退出结算结束。准入要再检查实例是否仍挂在当前身体上。
         private long Deadline => effect?.ExpiresAt ?? -1L;
         private bool initialized;
+        // 记录入场分支。原链日后移除、换主或无法在读档中恢复时，仍需按有链发作退出。
+        private bool boundEpisode;
+        private Hediff_ChainOfSexSlave boundChain;
+        private Pawn boundOwner;
+        // 起始阶段只限制额外成长。原链在发作期间由仪式升阶，可照常结算本场普通调教。
+        private int startingChainStage;
         // 只有从 Unset 写入 Slave 时才认领回退权。已有 Slave 或同场印记分化属于原身份。
         private bool temporaryIdentity;
         private bool personalityInvalidated;
@@ -37,6 +43,17 @@ namespace SexSlaveCraft
         /// <summary>原版已安装状态。身份和健康效果就绪后，才由 SSC 确认本次启动。</summary>
         public override void PostStart(string reason)
         {
+            // 原版安装精神状态后还会运行通知。再次核对资格与原绑定，避免将启动转交给回调建立的新关系。
+            if (!SSCSlaveBreakdown.IsEligiblePawn(pawn) ||
+                SSCSlaveBreakdownGameComponent.Current?.MatchesStartingBinding(pawn) == false)
+            {
+                EndCurrentState();
+                return;
+            }
+            boundChain = SSCBondUtility.GetChain(pawn);
+            boundEpisode = boundChain != null;
+            boundOwner = boundChain?.LinkedPawn;
+            startingChainStage = TrainingOutcomeUtility.GetChainStage(boundChain).Stage;
             long deadline = (long)SSCSlaveBreakdown.Now + SSCSlaveBreakdown.DurationTicks;
             if (!TryInitialize(deadline))
             {
@@ -59,6 +76,17 @@ namespace SexSlaveCraft
             base.ExposeData();
             Scribe_Values.Look(ref nextBrokenAt, "sscSlaveBreakdownNextBrokenAt", 0L);
             Scribe_Values.Look(ref initialized, "sscSlaveBreakdownInitialized", false);
+            Scribe_Values.Look(ref boundEpisode, "sscBreakdownBoundEpisode", false);
+            Scribe_Values.Look(ref startingChainStage, "sscBreakdownStartingChainStage", 0);
+            // 原版健康列表负责深存锁链。这里只保存同一实例的交叉引用，连同独立的入场分支和起始阶段。
+            // 链已离体时写空引用，读档后有链状态据此退出，避免把失去锁链误认成无链发作。
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                Hediff_ChainOfSexSlave attachedChain = SSCBondUtility.GetChain(pawn) == boundChain ? boundChain : null;
+                Scribe_References.Look(ref attachedChain, "sscBreakdownBoundChain");
+            }
+            else Scribe_References.Look(ref boundChain, "sscBreakdownBoundChain");
+            Scribe_References.Look(ref boundOwner, "sscBreakdownBoundOwner");
             Scribe_Values.Look(ref temporaryIdentity, "sscSlaveBreakdownTemporaryIdentity", false);
             Scribe_Values.Look(ref personalityInvalidated, "sscSlaveBreakdownPersonalityInvalidated", false);
             // 健康列表由原版单独深存，状态只恢复本场的实例引用。外部移除后立即存档时，
@@ -127,7 +155,19 @@ namespace SexSlaveCraft
             SSCPersonalityRuntimeUtility.IsCurrent(pawn, personalityToken) && training != null &&
             pawn.TryGetComp<CompSexSlaveTraining>() == training && pawn.health == health;
 
-        private bool CanInitializeOrContinue() => !ending && pawn.MentalState == this && SameCarrier() && SSCSlaveBreakdown.IsEligiblePawn(pawn);
+        /// <summary>本场入场分支，用于选择评分、成功心情和信件。</summary>
+        internal bool BoundEpisode => boundEpisode;
+
+        /// <summary>原绑定仍有效时返回当时的实际主人。主人临时忙碌或离图仍保有原绑定。</summary>
+        internal Pawn BoundOwner => boundEpisode && HasCurrentBinding() ? boundOwner : null;
+
+        private bool HasCurrentBinding() => (!boundEpisode || boundChain != null) &&
+            SSCSlaveBreakdown.MatchesBinding(pawn, boundChain, boundOwner);
+
+        // 已开场只复查角色与原绑定。若外部动作推进了同一条锁链，调教仍可完成，
+        // 阶段变化由成功结算单独判断，以免把当前发作或本场自己的升阶误判成失效。
+        private bool CanInitializeOrContinue() => !ending && pawn.MentalState == this && SameCarrier() &&
+            SSCSlaveBreakdown.IsEligibleSubject(pawn) && HasCurrentBinding();
 
         // 存档可能发生在读档后的首次状态刷新之前，此时还未捕获运行时载体。直接核对当前健康列表。
         private bool HasEffect() => effect != null && effect.pawn == pawn && pawn?.health?.hediffSet?.hediffs.Contains(effect) == true;
@@ -232,7 +272,8 @@ namespace SexSlaveCraft
             {
                 try
                 {
-                    // 发布仍需原调教员作好感对象。无论回调结果，都释放信件、批准与本场行为。
+                    // 成功发布需要原调教员和原批准的数据，先计算锁链进展并发放结果，再清除请求字段。
+                    // 无论健康、记忆或信件回调结果如何，都释放本场行为并移除本场效果。
                     try { PublishEpisodeOutcome(); }
                     finally
                     {

@@ -299,10 +299,21 @@ namespace SexSlaveCraft
             Map map = pawn.Map;
             Area home = map.areaManager.Home;
             Area allowed = pawn.playerSettings?.EffectiveAreaRestrictionInPawnCurrentMap;
-            // Home 和个人允许区均检查最终落点。所有退路都经过同一格子检查。
-            bool Usable(IntVec3 cell) => cell.InBounds(map) && home[cell] &&
+            bool SafeToWander(IntVec3 cell) => cell.InBounds(map) &&
                 (allowed == null || allowed.TrueCount == 0 || allowed[cell]) && !cell.Fogged(map) &&
                 cell.Standable(map) && pawn.CanReach(cell, PathEndMode.OnCell, Danger.None);
+            // 只有聚集点和原游荡退路要求落在居住区。两种选址都遵守个人活动区与安全寻路。
+            bool Usable(IntVec3 cell) => cell.InBounds(map) && home[cell] && SafeToWander(cell);
+
+            // 每段游荡重新查原绑定主人和地图位置。主人可在居住区外活动，目标仍是附近可站立的合法格。
+            // 征召、失去行动能力、离图或找不到合法格时，本轮继续走聚集点、房间与居住区选址。
+            Pawn owner = MentalState_SSCSlaveBreakdown.CurrentFor(pawn)?.BoundOwner;
+            if (owner?.Spawned == true && owner.Map == map && !owner.Drafted && !owner.Downed &&
+                owner.health.capacities.CapableOf(PawnCapacityDefOf.Consciousness) &&
+                owner.health.capacities.CapableOf(PawnCapacityDefOf.Moving) &&
+                CellFinder.TryFindRandomCellNear(owner.Position, map, 4, cell =>
+                    cell != pawn.Position && cell != owner.Position && SafeToWander(cell), out IntVec3 nearOwner))
+                return nearOwner;
 
             var population = map.mapPawns.SpawnedPawnsInFaction(Faction.OfPlayer)
                 .Where(other => other != pawn && !other.Downed && other.Awake()).Select(other => other.Position).ToArray();

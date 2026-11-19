@@ -172,6 +172,18 @@ namespace SexSlaveCraft
         }
 
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
+        /// <summary>用本场额度推进已有锁链，受实际恶堕和下一阶起点限制。</summary>
+        /// <remarks>纯数值计算。仪式和发作分别核对自己的参与者与原锁链，再决定是否写入及发反馈。</remarks>
+        internal static float CalculateChainProgress(float severity, float corruption, float? nextStage)
+        {
+            // 恶堕达到 30% 才能推进。50% 起提高单场额度。已有锁链进度高于任一限制时保留原进度。
+            if (!float.IsFinite(severity) || !float.IsFinite(corruption) || corruption < 0.3f) return severity;
+            float budget = corruption < 0.5f ? 0.2f : 0.3f;
+            float next = UnityEngine.Mathf.Min(severity + budget, corruption);
+            // 至多推进到下一阶起点。nextStage 为空供最高阶仪式继续补同阶进度。
+            return UnityEngine.Mathf.Max(severity, UnityEngine.Mathf.Min(next, nextStage ?? 1f));
+        }
+
         /// <summary>
         /// 保存一场已认领仪式的锁链与参与者上下文。完整结算在质量、记忆和恶堕收益回调前捕获；
         /// 直接调用的公共入口在入口捕获。锁链主人和当场主持可分别为不同角色。
@@ -255,15 +267,8 @@ namespace SexSlaveCraft
                 float before = chain.Severity;
                 if (!float.IsFinite(corruption) || !float.IsFinite(before)) return;
                 var stage = TrainingOutcomeUtility.GetChainStage(chain);
-                if (corruption >= 0.3f)
-                {
-                    // 30% 是成长起点，50% 起可用更高的单场预算。写入同时受当前恶堕、预算和下一阶起点限制。
-                    // 最高阶可继续增加同阶进度至 100%。已有严重度高于当前恶堕时保持原值。
-                    float budget = corruption < 0.5f ? 0.2f : 0.3f;
-                    float next = UnityEngine.Mathf.Min(before + budget, corruption);
-                    next = UnityEngine.Mathf.Min(next, stage.Next ?? 1f);
-                    if (next > before) chain.SetRitualSeverity(target, next);
-                }
+                float next = CalculateChainProgress(before, corruption, stage.Next);
+                if (next > before) chain.SetProgressSeverity(target, next);
 
                 // 写严重度会派发阶段通知。通知结束后确认原链仍有效，按实际结果选结算反馈。
                 // 此处允许阶段已改变，因为实际升阶就是此写入的预期结果。

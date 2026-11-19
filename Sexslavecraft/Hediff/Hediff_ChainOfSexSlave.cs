@@ -213,9 +213,9 @@ namespace SexSlaveCraft
         }
 
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
-        /// <summary>将仪式已验证的绝对严重度写到捕获的锁链，并沿用通用阶段通知。</summary>
+        /// <summary>将结算已验证的绝对严重度写到捕获的锁链，并沿用通用阶段通知。</summary>
         /// <remarks>直接写入 Def 的阶段端点可避免先减后加导致的浮点舍入。单场额度由调用方判定。</remarks>
-        internal void SetRitualSeverity(Pawn pawn, float severity) => SetChainSeverity(this, pawn, severity);
+        internal void SetProgressSeverity(Pawn pawn, float severity) => SetChainSeverity(this, pawn, severity);
 #endif
 
         private static void SetChainSeverity(Hediff_ChainOfSexSlave hediff, Pawn pawn, float severity)

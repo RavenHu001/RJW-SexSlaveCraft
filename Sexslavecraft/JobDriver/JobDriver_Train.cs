@@ -576,8 +576,12 @@ namespace SexSlaveCraft
 #if SSC_RW17
             if (episode != null)
             {
-                ConditioningUtility.ExecuteBreakdownOutcome(pawn, target, score);
-                score += ConditioningUtility.BreakdownScoreBonus;
+                // RJW 收尾与评分都可能经过外部回调。收益入账前仍须持有原批准和原实际主人。
+                if (!episode.CanSettleApprovedTraining(this)) return;
+                // 有链特批沿用普通评分。无链特批的加分同时用于实际收益和后续经验，历史分照旧采用基础分。
+                float bonus = episode.BoundEpisode ? 0f : ConditioningUtility.BreakdownScoreBonus;
+                ConditioningUtility.ExecuteBreakdownOutcome(pawn, target, score, bonus);
+                score += bonus;
             }
             else
 #endif

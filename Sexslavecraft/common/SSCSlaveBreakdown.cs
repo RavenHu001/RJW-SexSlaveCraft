@@ -22,12 +22,32 @@ namespace SexSlaveCraft
         internal static Need_Corruption GetNeed(Pawn pawn) => pawn?.needs?.TryGetNeed<Need_Corruption>();
 
         // IsColonistPlayerControlled 会在发作期间返回 false。直接检查归属，排除临时借调的殖民者。
-        internal static bool IsEligiblePawn(Pawn pawn)
+        // 这个基础检查供启动和续行共用。完整的入场条件还须检查锁链和当前阶段。
+        internal static bool IsEligibleSubject(Pawn pawn)
             => pawn?.Spawned == true && !pawn.Dead && !pawn.Discarded && !pawn.Suspended &&
                pawn.RaceProps.Humanlike && !pawn.IsSubhuman && !pawn.IsPrisoner &&
                ((pawn.IsColonist && pawn.HostFaction == null) || pawn.IsSlaveOfColony) &&
                (SSCIdentityUtility.GetIdentity(pawn) is PawnIdentity.Unset or PawnIdentity.Slave) &&
-               !Utils.HasChainHediff(pawn) && !SSCPersonalityRuntimeUtility.IsMutating(pawn);
+               !SSCPersonalityRuntimeUtility.IsMutating(pawn);
+
+        /// <summary>两种恶堕触发、风险警报和开发者启动共用的角色准入。</summary>
+        /// <remarks>有链角色须具备真实的主从身份，且当前阶段还有下一阶。主人同图与可行动性留给游荡选址和调教准入。</remarks>
+        internal static bool IsEligiblePawn(Pawn pawn)
+        {
+            if (!IsEligibleSubject(pawn)) return false;
+            if (!Utils.HasChainHediff(pawn)) return true;
+            var chain = SSCBondUtility.GetChain(pawn);
+            return chain != null && MatchesBinding(pawn, chain, chain.LinkedPawn) &&
+                TrainingOutcomeUtility.GetChainStage(chain).Next.HasValue;
+        }
+
+        // 比对启动时捕获的锁链实例与目标。换链即使绑回同一个主人也属于新关系，
+        // 同一条锁链换主同样撤权。无链待办若在结算过程中首次建链也会失效。
+        internal static bool MatchesBinding(Pawn pawn, Hediff_ChainOfSexSlave chain, Pawn owner)
+            => chain == null ? !Utils.HasChainHediff(pawn) :
+                owner != null && owner != pawn && !owner.Dead && !owner.Destroyed && !owner.Discarded &&
+                SSCIdentityUtility.IsMaster(owner) && SSCIdentityUtility.IsSexSlave(pawn) &&
+                SSCBondUtility.GetChain(pawn) == chain && chain.LinkedPawn == owner;
 
         // 满值跨越可以从低于随机门槛的值开始。这里先核对开关、载体、角色资格与冷却，
         // 数值范围和暂时阻塞再由各入口检查，方便满值请求等待小人醒来或结束其他精神状态。

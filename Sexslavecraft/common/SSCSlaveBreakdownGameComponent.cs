@@ -17,6 +17,9 @@ namespace SexSlaveCraft
             private readonly Pawn_HealthTracker health;
             private readonly object token;
             private readonly long expiresAt;
+            // 满值增长写入前捕获所属关系。印记分化可以先完成，原待办仍只属于原锁链或当时的无链角色。
+            private readonly Hediff_ChainOfSexSlave chain;
+            private readonly Pawn owner;
 
             internal FullRequest(Pawn pawn, Need_Corruption need, CompSexSlaveTraining comp, int cancellationVersion)
             {
@@ -26,12 +29,16 @@ namespace SexSlaveCraft
                 this.comp = comp;
                 health = pawn.health;
                 token = SSCPersonalityRuntimeUtility.Capture(pawn);
+                chain = SSCBondUtility.GetChain(pawn);
+                owner = chain?.LinkedPawn;
                 expiresAt = (long)SSCSlaveBreakdown.Now + GenDate.TicksPerHour;
             }
 
-            // 入队必须达到满值。等待期间允许回落到 95%，换人格、进入冷却或达到期限都会使旧请求失效。
+            // 入队必须达到满值。等待期间允许回落到 95%，仍须保有捕获时的身体、人格和绑定。
+            // 例如同一次仪式先写入满值、再首次建链时，待办不会转给新的有链分支。
             internal bool IsCurrent => SSCSlaveBreakdown.Now < expiresAt &&
                 Need.CurLevel >= SSCSlaveBreakdown.TriggerLevel && SSCSlaveBreakdown.CanConsider(Pawn, Need) &&
+                SSCSlaveBreakdown.MatchesBinding(Pawn, chain, owner) &&
                 Pawn.health == health && Pawn.TryGetComp<CompSexSlaveTraining>() == comp &&
                 !comp.SlaveBreakdownFullTriggerUsed && SSCPersonalityRuntimeUtility.IsCurrent(Pawn, token);
         }
@@ -41,7 +48,8 @@ namespace SexSlaveCraft
         private readonly List<FullRequest> refresh = new();
         // 原版可能返回 true，但 PostStart 未运行或 SSC 身份和 Hediff 没有安装完成。
         // 只有 PostStart 提交成功才把 Started 写为 true。满值来源另用于更新直发记录。
-        private readonly Dictionary<Pawn, (bool FromFull, bool Started)> starting = new();
+        // 这里的锁链与主人只跨越本次同步启动调用。启动完成后，由精神状态保存本场对应的引用。
+        private readonly Dictionary<Pawn, (Hediff_ChainOfSexSlave Chain, Pawn Owner, bool FromFull, bool Started)> starting = new();
         private int fullRequestCancellationVersion;
 
         public SSCSlaveBreakdownGameComponent(Game game) { }
@@ -96,8 +104,8 @@ namespace SexSlaveCraft
                     Pawn pawn = request.Pawn;
                     if (!IsRegistered(request)) continue;
                     bool canAttempt = request.IsCurrent && !SSCSlaveBreakdown.BlockedByVanilla(pawn);
-                    // 等印记事务完成，包括可能在后续需求刷新中进行的重试。之后复查实际锁链及其他准入，
-                    // 让同一次跨越先完成分化，而无链且仍合格的小人仍能接着发作。
+                    // 先等印记事务完成，包括后续需求刷新中的重试。仍持有原绑定（或仍无链）且合格时，
+                    // 同一次满值跨越可以先发分化信，再进入发作。暂时睡眠或其他精神状态也在原期限内等候。
                     if (canAttempt && (SSCFullCorruptionImprint.IsSettling(pawn, request.Need) ||
                         SSCSlaveBreakdown.TemporarilyBlocked(pawn))) continue;
                     try
@@ -131,8 +139,10 @@ namespace SexSlaveCraft
         private bool StartState(Pawn pawn, bool fromFull, bool forced)
         {
             MentalStateDef def = SSCSlaveBreakdown.StateDef;
+            var chain = SSCBondUtility.GetChain(pawn);
+            Pawn owner = chain?.LinkedPawn;
             if (def == null || (!forced && !def.Worker.StateCanOccur(pawn)) ||
-                !starting.TryAdd(pawn, (fromFull, false))) return false;
+                !starting.TryAdd(pawn, (chain, owner, fromFull, false))) return false;
             try
             {
                 // 直接向原版状态处理器启动，沿用状态槽、任务中断和开始信。原版低心情抽选有自己的候选入口。
@@ -141,12 +151,16 @@ namespace SexSlaveCraft
             finally { starting.Remove(pawn); }
         }
 
+        // 原版在安装精神状态与 PostStart 之间会发通知。旧启动不能借这次回调切换到另一条链。
+        internal bool MatchesStartingBinding(Pawn pawn) => !starting.TryGetValue(pawn, out var attempt) ||
+            SSCSlaveBreakdown.MatchesBinding(pawn, attempt.Chain, attempt.Owner);
+
         /// <summary>身份与效果就绪后确认启动，在原版任务中断和发信之前清理本场的满值待办。</summary>
         internal void NotifyStarted(Pawn pawn)
         {
             CancelFullRequest(pawn);
             if (!starting.TryGetValue(pawn, out var attempt)) return;
-            starting[pawn] = (attempt.FromFull, true);
+            starting[pawn] = (attempt.Chain, attempt.Owner, attempt.FromFull, true);
             if (attempt.FromFull &&
                 pawn.TryGetComp<CompSexSlaveTraining>() is CompSexSlaveTraining comp)
                 comp.SlaveBreakdownFullTriggerUsed = true;

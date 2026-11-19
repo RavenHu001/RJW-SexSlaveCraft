@@ -1,4 +1,5 @@
 // AI 辅助生成：一场发作持有唯一的信件决定、任务授权和结局。
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -28,6 +29,12 @@ namespace SexSlaveCraft
         private bool trainingStarted;
         private bool outcomeIssued;
 
+        /// <summary>
+        /// 供第 6 项接入。无链特批完成后，原受训者仍无链且当前实际恶堕满值时，依次传递受训者和调教员。
+        /// 事件随本场结局发布一次，正式身份与阶段由后续消费者处理。
+        /// </summary>
+        internal static event Action<Pawn, Pawn> UnboundTrainingCompletedAtFullCorruption;
+
         internal const string TrainingDefName = "SSC_BreakdownTraining";
         /// <summary>JobDef 划定特批路径。实际权限还需向当前发作核对受方、调教员和任务编号。</summary>
         internal static bool IsBreakdownTraining(Job job) => job?.def?.defName == TrainingDefName;
@@ -50,7 +57,8 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref originalDeadline, "sscBreakdownOriginalDeadline", -1L);
             Scribe_Values.Look(ref trainingStarted, "sscBreakdownTrainingStarted", false);
             Scribe_Values.Look(ref outcomeIssued, "sscBreakdownOutcomeIssued", false);
-            // 交叉引用解析后才能取得当前进程的人格凭据。首次使用时仍须核对原信件或原任务。
+            // 交叉引用解析后才能取得当前进程的人格凭据。首次使用时仍须核对原信件或原任务，
+            // 有链时还要核对精神状态保存的原链和实际主人。读档本身没有新的批准或派发。
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
                 trainerPersonality = SSCPersonalityRuntimeUtility.Capture(requestTrainer);
         }
@@ -63,9 +71,11 @@ namespace SexSlaveCraft
         internal bool HasApprovedTraining => requestPhase is RequestPhase.Approved or RequestPhase.Dispatched;
 
         /// <summary>从扫描到执行都需要的基础资格。路径距离和可打断的旧工作仅在派发前检查。</summary>
+        /// <remarks>绑定主人决定有链场次的调教员范围，现有行为许可与训练身份资格仍在此检查。</remarks>
         private bool TrainerEligible(Pawn trainer)
             => trainer?.Spawned == true && trainer != pawn && trainer.Map == pawn.Map && !trainer.Drafted &&
                 !trainer.InMentalState && !trainer.IsFighting() && trainer.Awake() &&
+                (!boundEpisode || trainer == BoundOwner) &&
                 !SSCPersonalityRuntimeUtility.IsMutating(trainer) &&
                 SSCRestrictionTrainingUtility.EvaluateBreakdown(trainer, pawn).Allowed;
 
@@ -96,11 +106,13 @@ namespace SexSlaveCraft
                 .FirstOrDefault(letter => letter.ID == requestId && letter.Subject == pawn);
 
         /// <summary>只接受原版信堆仍持有的那封活信。归档、旧对话回调和相同角色后来的申请均独立。</summary>
+        /// <remarks>此处核对选择权，与当前能否接受分开。有效的有链请求可在主人暂时不适合接单时等待。</remarks>
         internal bool IsPendingDecision(ChoiceLetter_SSCBreakdownTraining letter)
             => requestPhase == RequestPhase.Waiting && letter != null && requestId == letter.ID &&
-                requestTrainer == letter.Trainer && letter.Subject == pawn && CanRequestTraining && ActiveLetter == letter;
+                requestTrainer == letter.Trainer && (!boundEpisode || requestTrainer == BoundOwner) &&
+                letter.Subject == pawn && CanRequestTraining && ActiveLetter == letter;
 
-        /// <summary>界面的接受按钮和真正的提交共用同一准入，界面状态随点击时的现场重新检查。</summary>
+        /// <summary>界面绘制和实际提交共用一套接受准入，点击时重新查询可达性、预约和调教员占用。</summary>
         internal bool CanApprove(ChoiceLetter_SSCBreakdownTraining letter)
             => IsPendingDecision(letter) && TrainerIdentityCurrent &&
                 (CanWaitForInvitedTrainer() || (CanApproach(requestTrainer) && AvailableToTeach(requestTrainer)));
@@ -113,9 +125,16 @@ namespace SexSlaveCraft
         internal void Decide(ChoiceLetter_SSCBreakdownTraining letter, bool accept)
         {
             if (!IsPendingDecision(letter)) return;
-            if (!accept || !CanApprove(letter))
+            if (!accept)
             {
-                if (IsPendingDecision(letter)) CancelTrainingRequest();
+                CancelTrainingRequest();
+                return;
+            }
+            if (!CanApprove(letter))
+            {
+                // 主人暂时不可用时，已打开的旧对话也不能消费仍然有效的原请求。
+                // 无链分支沿用原有撤销规则，在申请间隔后重新寻找可用调教员。
+                if (!boundEpisode && IsPendingDecision(letter)) CancelTrainingRequest();
                 return;
             }
             if (!IsPendingDecision(letter) || !TrainerIdentityCurrent) return;
@@ -147,9 +166,11 @@ namespace SexSlaveCraft
             if (!CanRequestTraining) return;
             if (requestPhase == RequestPhase.Waiting)
             {
-                // 调教员暂时接到其他工作时接受选项可恢复。离图、失格、离开范围或换人格会使旧信失效。
-                if (ActiveLetter == null || !TrainerIdentityCurrent || !TrainerEligible(requestTrainer) ||
-                    !requestTrainer.Position.InHorDistOf(pawn.Position, RequestRadius)) CancelTrainingRequest();
+                // 有链请求随同一个主人保留到期限。征召、离图、距离或忙碌只影响 CanApprove，
+                // 旧人格或旧绑定则使信件失效。批准一旦提交，下一段逻辑仍按现有规则处理派发失败。
+                bool trainerStillApplies = boundEpisode ? requestTrainer == BoundOwner :
+                    TrainerEligible(requestTrainer) && requestTrainer.Position.InHorDistOf(pawn.Position, RequestRadius);
+                if (ActiveLetter == null || !TrainerIdentityCurrent || !trainerStillApplies) CancelTrainingRequest();
                 return;
             }
             if (requestPhase == RequestPhase.Approved)
@@ -175,9 +196,14 @@ namespace SexSlaveCraft
                 !SSCSceneHookAvailability.CanStartDaily(false)) return;
             var def = DefDatabase<LetterDef>.GetNamedSilentFail("SSC_BreakdownTrainingRequest");
             if (def == null || Find.LetterStack == null) return;
-            Pawn trainer = pawn.Map.mapPawns.FreeColonistsSpawned.OrderBy(other =>
+            // 有链只询问实际主人。主人尚不可用时继续游荡，等待下一轮检查。
+            // 无链角色沿用按距离扫描调教员，两个分支共用同一种选择信。
+            Pawn trainer = boundEpisode ? BoundOwner : pawn.Map.mapPawns.FreeColonistsSpawned.OrderBy(other =>
                 other.Position.DistanceToSquared(pawn.Position)).FirstOrDefault(other => AvailableToTeach(other) && CanApproach(other));
             if (trainer == null || !CanRequestTraining || requestPhase != RequestPhase.None) return;
+            // 路径、预约和身体兼容查询可能触发回调。选定主人后再检查当前发作及请求槽。
+            if (boundEpisode && (!AvailableToTeach(trainer) || !CanApproach(trainer) ||
+                !CanRequestTraining || requestPhase != RequestPhase.None)) return;
             var letter = (ChoiceLetter_SSCBreakdownTraining)LetterMaker.MakeLetter(
                 "SSC_BreakdownRequest_Label".Translate(), "SSC_BreakdownRequest_Text".Translate(pawn.LabelShort, trainer.LabelShort),
                 def, new LookTargets(pawn, trainer));
@@ -294,26 +320,81 @@ namespace SexSlaveCraft
                 trainer.jobs.EndCurrentJob(JobCondition.InterruptForced, startNewJob: false);
         }
 
+        /// <summary>普通调教收益入账后，只对本场原锁链应用额外进度，并读取实际写入结果。</summary>
+        private (int BeforeStage, int AfterStage, float Before, float After)? ApplyBoundChainProgress()
+        {
+            if (!SameCarrier() || pawn.Dead || pawn.Destroyed || requestTrainer == null ||
+                !TrainerIdentityCurrent || BoundOwner != requestTrainer) return null;
+
+            Need_Corruption need = SSCSlaveBreakdown.GetNeed(pawn);
+            if (need == null) return null;
+            var stage = TrainingOutcomeUtility.GetChainStage(boundChain);
+            float before = boundChain.Severity;
+            // 用当前严重度和普通调教入账后的实际恶堕。起始阶段只用于确认本场的额外进度资格。
+            // 同一条链期间已换档时，本场只结算普通调教成功。
+            if (startingChainStage == stage.Stage && stage.Next.HasValue)
+            {
+                float next = CorruptionProgressionUtility.CalculateChainProgress(before, need.CurLevel, stage.Next);
+                if (next > before) boundChain.SetProgressSeverity(pawn, next);
+            }
+            // 写入可能触发换链或换人格，只用仍能确认的原链产生进度反馈。
+            if (!SameCarrier() || BoundOwner != requestTrainer || SSCSlaveBreakdown.GetNeed(pawn) != need) return null;
+            return (stage.Stage, TrainingOutcomeUtility.GetChainStage(boundChain).Stage, before, boundChain.Severity);
+        }
+
         private void PublishEpisodeOutcome()
         {
             if (episodeResult == EpisodeResult.None || outcomeIssued) return;
-            // 心情与信件回调都可能重入结束入口。先认领发布，再把记忆写到原人格。
+            // 普通调教已认领成功。在写链、心情与信件之前先认领本次发布，防止同步回调重复发奖。
+            // 整个退出流程还持有本场请求的原调教员，本方法返回后才释放相关字段。
             outcomeIssued = true;
             bool success = episodeResult == EpisodeResult.Success;
+            var progress = success && boundEpisode ? ApplyBoundChainProgress() : null;
             var memories = SameCarrier() && !pawn.Dead ? pawn.needs?.mood?.thoughts?.memories : null;
             var mood = DefDatabase<ThoughtDef>.GetNamedSilentFail(success ? "SSC_BreakdownSuccess" : "SSC_BreakdownFailure");
-            if (mood != null) memories?.TryGainMemory(mood);
+            if (mood != null)
+            {
+                // 原版刷新同一 ThoughtDef 的单条成功记忆，并切换到本场分支的描述。
+                if (success) memories?.TryGainMemoryFast(mood, boundEpisode ? 1 : 0);
+                else memories?.TryGainMemory(mood);
+            }
             if (success)
             {
                 var opinion = DefDatabase<ThoughtDef>.GetNamedSilentFail("SSC_BreakdownTrainerOpinion");
                 if (opinion != null && TrainerIdentityCurrent && SameCarrier())
                     memories?.TryGainMemory(opinion, requestTrainer);
+                if (LetterDefOf.PositiveEvent != null && Find.LetterStack != null)
+                {
+                    string trainerName = requestTrainer?.LabelShort ?? "Unknown".Translate().ToString();
+                    TaggedString text = boundEpisode
+                        ? "SSC_BreakdownSuccess_BoundText".Translate(pawn.LabelShort, trainerName) +
+                            "\n\n" + FormatBoundProgress(progress)
+                        : "SSC_BreakdownSuccess_Text".Translate(pawn.LabelShort, trainerName);
+                    Find.LetterStack.ReceiveLetter("SSC_BreakdownSuccess_Label".Translate(), text, LetterDefOf.PositiveEvent, pawn);
+                }
+                // 收信回调之后复核实际恶堕、原人格和无链条件，再将完成事件交给未来的消费者。
+                var need = SSCSlaveBreakdown.GetNeed(pawn);
+                if (!boundEpisode && SameCarrier() && !pawn.Dead && HasCurrentBinding() &&
+                    TrainerIdentityCurrent && need != null && need.CurLevel == need.MaxLevel)
+                    UnboundTrainingCompletedAtFullCorruption?.Invoke(pawn, requestTrainer);
             }
             else if (LetterDefOf.NegativeEvent != null && Find.LetterStack != null)
             {
                 Find.LetterStack.ReceiveLetter("SSC_BreakdownFailure_Label".Translate(),
                     "SSC_BreakdownFailure_Text".Translate(pawn.LabelShort), LetterDefOf.NegativeEvent, pawn);
             }
+        }
+
+        // 同一封成功信显示跨阶、同阶增长或本场未推进。结果来自实际原链，写入计划只用于计算增量。
+        private static TaggedString FormatBoundProgress((int BeforeStage, int AfterStage, float Before, float After)? progress)
+        {
+            if (progress is not { } result) return "SSC_BreakdownSuccess_StageUnchanged".Translate();
+            if (result.AfterStage > result.BeforeStage)
+                return "SSC_BreakdownSuccess_StageAdvanced".Translate(result.BeforeStage, result.AfterStage);
+            if (result.After > result.Before)
+                return "SSC_BreakdownSuccess_ProgressAdvanced".Translate(result.AfterStage,
+                    result.Before.ToStringPercent(), result.After.ToStringPercent());
+            return "SSC_BreakdownSuccess_StageUnchanged".Translate();
         }
     }
 
