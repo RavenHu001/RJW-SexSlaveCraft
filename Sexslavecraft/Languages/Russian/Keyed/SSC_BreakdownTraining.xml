@@ -5,9 +5,9 @@
   <SSC_BreakdownRequest_Unavailable>Дрессировщик или место сейчас недоступны.</SSC_BreakdownRequest_Unavailable>
   <SSC_BreakdownFailure_Label>Возвращение рассудка</SSC_BreakdownFailure_Label>
   <SSC_BreakdownFailure_Text>Приступ покорности миновал. Теперь {0} никак не может успокоиться: остались лишь зуд, пустота и раздражение.</SSC_BreakdownFailure_Text>
-  <SSC_BreakdownSuccess_Label>Рассудок вернулся</SSC_BreakdownSuccess_Label>
-  <SSC_BreakdownSuccess_Text>Приступ покорности у {0} закончился после тренировки с {1}.</SSC_BreakdownSuccess_Text>
-  <SSC_BreakdownSuccess_BoundText>Хозяин {1} завершил тренировку {0}, и приступ покорности прошёл.</SSC_BreakdownSuccess_BoundText>
+  <SSC_BreakdownSuccess_Label>Жажда подчинения утихла</SSC_BreakdownSuccess_Label>
+  <SSC_BreakdownSuccess_Text>Дрессировка с {1} уняла жажду подчинения у {0} и утопила рассудок {0} в наслаждении. Когда {0} удалось опомниться, сексуальное рабство уже стало реальностью.</SSC_BreakdownSuccess_Text>
+  <SSC_BreakdownSuccess_BoundText>Дрессировка с {1} уняла жажду подчинения у {0} и утопила рассудок {0} в наслаждении. Когда {0} удалось опомниться, подчинение зашло так далеко, что повернуть назад было трудно.</SSC_BreakdownSuccess_BoundText>
   <SSC_BreakdownSuccess_StageAdvanced>Цепь перешла со стадии {0} на стадию {1}.</SSC_BreakdownSuccess_StageAdvanced>
   <SSC_BreakdownSuccess_ProgressAdvanced>Стадия цепи: {0}. Выраженность выросла с {1} до {2}.</SSC_BreakdownSuccess_ProgressAdvanced>
   <SSC_BreakdownSuccess_StageUnchanged>Эта тренировка не продвинула развитие цепи.</SSC_BreakdownSuccess_StageUnchanged>

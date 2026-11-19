@@ -3,7 +3,7 @@
   <JobDef>
     <defName>SSC_BreakdownInvitedUse</defName>
     <driverClass>SexSlaveCraft.JobDriver_SSCBreakdownInvitedUse</driverClass>
-    <reportString>answering TargetA's invitation.</reportString>
+    <reportString>going to fuck TargetA as requested.</reportString>
     <casualInterruptible>false</casualInterruptible>
     <suspendable>false</suspendable>
     <allowOpportunisticPrefix>false</allowOpportunisticPrefix>
@@ -12,7 +12,7 @@
   <JobDef>
     <defName>SSC_BreakdownInvitationWait</defName>
     <driverClass>JobDriver_Wait</driverClass>
-    <reportString>waiting for the other participant to arrive.</reportString>
+    <reportString>waiting for their partner to come fuck them.</reportString>
     <casualInterruptible>false</casualInterruptible>
     <suspendable>false</suspendable>
     <allowOpportunisticPrefix>false</allowOpportunisticPrefix>

@@ -10,6 +10,6 @@
   <SSC_SlaveBreakdown_DebugStartDesc>立即讓該角色陷入奴性爆發，供測試發作流程與結局使用。</SSC_SlaveBreakdown_DebugStartDesc>
   <SSC_SlaveBreakdown_DebugCooldown>剩餘冷卻：{0}</SSC_SlaveBreakdown_DebugCooldown>
   <SSC_SlaveBreakdown_DebugBlocked>該角色目前無法陷入奴性爆發。</SSC_SlaveBreakdown_DebugBlocked>
-  <SSC_BreakdownInvitedUse_Accepted>{0} 接受了求用邀約</SSC_BreakdownInvitedUse_Accepted>
-  <SSC_BreakdownInvitedUse_Refused>{0} 拒絕了求用邀約</SSC_BreakdownInvitedUse_Refused>
+  <SSC_BreakdownInvitedUse_Accepted>{0} 接受了求肏</SSC_BreakdownInvitedUse_Accepted>
+  <SSC_BreakdownInvitedUse_Refused>{0} 拒絕了求肏</SSC_BreakdownInvitedUse_Refused>
 </LanguageData>

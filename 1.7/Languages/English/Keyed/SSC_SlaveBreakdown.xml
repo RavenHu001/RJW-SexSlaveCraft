@@ -10,6 +10,6 @@
   <SSC_SlaveBreakdown_DebugStartDesc>Immediately trigger a submission breakdown in this pawn to test how it plays out and ends.</SSC_SlaveBreakdown_DebugStartDesc>
   <SSC_SlaveBreakdown_DebugCooldown>Cooldown remaining: {0}</SSC_SlaveBreakdown_DebugCooldown>
   <SSC_SlaveBreakdown_DebugBlocked>This pawn cannot have a submission breakdown right now.</SSC_SlaveBreakdown_DebugBlocked>
-  <SSC_BreakdownInvitedUse_Accepted>{0} accepted the request to use them</SSC_BreakdownInvitedUse_Accepted>
-  <SSC_BreakdownInvitedUse_Refused>{0} declined the request to use them</SSC_BreakdownInvitedUse_Refused>
+  <SSC_BreakdownInvitedUse_Accepted>{0} agreed to fuck the one who asked</SSC_BreakdownInvitedUse_Accepted>
+  <SSC_BreakdownInvitedUse_Refused>{0} refused to fuck the one who asked</SSC_BreakdownInvitedUse_Refused>
 </LanguageData>

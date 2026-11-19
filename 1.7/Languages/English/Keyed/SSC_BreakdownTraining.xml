@@ -5,9 +5,9 @@
   <SSC_BreakdownRequest_Unavailable>The trainer or location is currently unavailable.</SSC_BreakdownRequest_Unavailable>
   <SSC_BreakdownFailure_Label>Regained composure</SSC_BreakdownFailure_Label>
   <SSC_BreakdownFailure_Text>{0}'s submission breakdown is over. All that's left is an empty, itching frustration that won't let them settle down.</SSC_BreakdownFailure_Text>
-  <SSC_BreakdownSuccess_Label>Composure restored</SSC_BreakdownSuccess_Label>
-  <SSC_BreakdownSuccess_Text>{0}'s submission breakdown ended after completing training with {1}.</SSC_BreakdownSuccess_Text>
-  <SSC_BreakdownSuccess_BoundText>{1} finished training {0}, bringing their submission breakdown to an end.</SSC_BreakdownSuccess_BoundText>
+  <SSC_BreakdownSuccess_Label>Lust for submission soothed</SSC_BreakdownSuccess_Label>
+  <SSC_BreakdownSuccess_Text>{1}'s training soothed {0}'s lust for submission and drowned {0}'s reason in pleasure. By the time {0} came to their senses, they had already become a sex slave.</SSC_BreakdownSuccess_Text>
+  <SSC_BreakdownSuccess_BoundText>{1}'s training soothed {0}'s lust for submission and drowned {0}'s reason in pleasure. By the time {0} came to their senses, they had sunk deeper into submission, with little hope of turning back.</SSC_BreakdownSuccess_BoundText>
   <SSC_BreakdownSuccess_StageAdvanced>Chain stage advanced from {0} to {1}.</SSC_BreakdownSuccess_StageAdvanced>
   <SSC_BreakdownSuccess_ProgressAdvanced>Chain stage {0}. Severity increased from {1} to {2}.</SSC_BreakdownSuccess_ProgressAdvanced>
   <SSC_BreakdownSuccess_StageUnchanged>This session did not advance the chain.</SSC_BreakdownSuccess_StageUnchanged>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_BreakdownInvitedUse.reportString>回应 TargetA 的求用邀约。</SSC_BreakdownInvitedUse.reportString>
-  <SSC_BreakdownInvitationWait.reportString>等待对方赴约。</SSC_BreakdownInvitationWait.reportString>
+  <SSC_BreakdownInvitedUse.reportString>去满足 TargetA 的求肏。</SSC_BreakdownInvitedUse.reportString>
+  <SSC_BreakdownInvitationWait.reportString>等着对方来肏自己。</SSC_BreakdownInvitationWait.reportString>
 </LanguageData>
