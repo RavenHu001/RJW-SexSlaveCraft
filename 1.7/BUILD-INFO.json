@@ -4,13 +4,13 @@
   "binaryOrigin": "rebuilt",
   "sourceVersion": "2.5.1",
   "modVersion": "2.5.1",
-  "sourceCommit": "a6e9a33cea5fe2608d46f10c14305d3fdfd862de",
+  "sourceCommit": "cde5d24ad2e3bc53b9eafa2f9bdee119d746c599",
   "sourceWorkingTreeDirty": true,
   "assemblyPath": "1.7/Assemblies/Sexslavecraft.dll",
-  "sha256": "d049e906b86c628098ad34628e4cb92d571815ee52aa29da2029574d0573098e",
-  "gameBuild": "1.7.5011 rev24",
+  "sha256": "7ec2adcce4271a608316f7835b90badffbc4a93bcea3b0f9332cc9ecfc7bf8a2",
+  "gameBuild": "1.7.5013 rev802",
   "gameAssemblyPath": "D:\\STEAM\\steamapps\\common\\RimWorld\\Assembly-CSharp.dll",
-  "gameAssemblySha256": "7fbce7a5b2a26cac500150d3cff408cdbbd8f1797456bc741252e44c2d27bdc4",
+  "gameAssemblySha256": "6dad9299955ff5196c59f02da05f8928dd3bb3266d4320e34f9d0a6f7fdc9715",
   "sdkVersion": "10.0.402",
   "references": [
     {
@@ -26,7 +26,7 @@
     {
       "name": "GameHarmonyAssemblyPath",
       "path": "D:\\STEAM\\steamapps\\workshop\\content\\294100\\2009463077\\1.7\\Assemblies\\0Harmony.dll",
-      "sha256": "c8ef7856b2be3cf24b345c9b5c2f197f68fcf92649635064fce7b3ccc8f77cb0"
+      "sha256": "7252fbe77bc96fcfb5e6aa446a4957f4547de312d889046fe3ec7d15f7f0fcf5"
     }
   ],
   "gameRuntimeVerified": false

@@ -112,8 +112,10 @@ internal static partial class Program
     /// <summary>只提供实际 RJW 类的程序集定位，不替换保存数据或序列化行为。</summary>
     private static bool RjwScribeTypeBoundary(string typeName, ref Type __result)
     {
-        if (typeName != typeof(SexProps).FullName) return true;
-        __result = typeof(SexProps); return false;
+        if (typeName == typeof(SexProps).FullName) __result = typeof(SexProps);
+        else if (typeName == typeof(JobDriver_SexQuick).FullName) __result = typeof(JobDriver_SexQuick);
+        else return true;
+        return false;
     }
 
     /// <summary>通过真实基类 ExposeData 后缀执行守卫，保持先基类/守卫、后日常或仪式派生字段的顺序。</summary>

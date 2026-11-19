@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_BreakdownRequest_Label>Мольба о дрессировке</SSC_BreakdownRequest_Label>
+  <SSC_BreakdownRequest_Text>{0} больше ни о чём не может думать, кроме как о том, чтобы с этим телом обращались как с секс-рабом, и умоляет {1} о дрессировке. Примите решение до конца приступа.</SSC_BreakdownRequest_Text>
+  <SSC_BreakdownRequest_Unavailable>Дрессировщик или место сейчас недоступны.</SSC_BreakdownRequest_Unavailable>
+  <SSC_BreakdownFailure_Label>Возвращение рассудка</SSC_BreakdownFailure_Label>
+  <SSC_BreakdownFailure_Text>Приступ покорности миновал. Теперь {0} никак не может успокоиться: остались лишь зуд, пустота и раздражение.</SSC_BreakdownFailure_Text>
+  <SSC_BreakdownSuccess_Label>Рассудок вернулся</SSC_BreakdownSuccess_Label>
+  <SSC_BreakdownSuccess_Text>Приступ покорности у {0} закончился после тренировки с {1}.</SSC_BreakdownSuccess_Text>
+  <SSC_BreakdownSuccess_BoundText>Хозяин {1} завершил тренировку {0}, и приступ покорности прошёл.</SSC_BreakdownSuccess_BoundText>
+  <SSC_BreakdownSuccess_StageAdvanced>Цепь перешла со стадии {0} на стадию {1}.</SSC_BreakdownSuccess_StageAdvanced>
+  <SSC_BreakdownSuccess_ProgressAdvanced>Стадия цепи: {0}. Выраженность выросла с {1} до {2}.</SSC_BreakdownSuccess_ProgressAdvanced>
+  <SSC_BreakdownSuccess_StageUnchanged>Эта тренировка не продвинула развитие цепи.</SSC_BreakdownSuccess_StageUnchanged>
+</LanguageData>

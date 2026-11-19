@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Setting_EnableSlaveBreakdown>启用奴性爆发</SSC_Setting_EnableSlaveBreakdown>
+  <SSC_Setting_EnableSlaveBreakdown_Desc>允许符合条件的高恶堕殖民者和殖民地奴隶陷入奴性爆发。</SSC_Setting_EnableSlaveBreakdown_Desc>
+  <SSC_SlaveBreakdown_RiskLabel>奴性爆发风险</SSC_SlaveBreakdown_RiskLabel>
+  <SSC_SlaveBreakdown_RiskExplanation>以下小人的恶堕已深到奴性随时可能冲垮理智。\n\n{0}</SSC_SlaveBreakdown_RiskExplanation>
+  <SSC_SlaveBreakdown_IdentityLocked>奴性爆发期间无法手动切换身份。</SSC_SlaveBreakdown_IdentityLocked>
+  <SSC_SlaveBreakdown_ExcretionBlocked>目标正处于精神状态中，暂时无法进行人格排泄。</SSC_SlaveBreakdown_ExcretionBlocked>
+  <SSC_SlaveBreakdown_DebugStart>启动奴性爆发</SSC_SlaveBreakdown_DebugStart>
+  <SSC_SlaveBreakdown_DebugStartDesc>立即让该角色陷入奴性爆发，供测试发作流程与结局使用。</SSC_SlaveBreakdown_DebugStartDesc>
+  <SSC_SlaveBreakdown_DebugCooldown>剩余冷却：{0}</SSC_SlaveBreakdown_DebugCooldown>
+  <SSC_SlaveBreakdown_DebugBlocked>该角色当前无法陷入奴性爆发。</SSC_SlaveBreakdown_DebugBlocked>
+  <SSC_BreakdownInvitedUse_Accepted>{0} 接受了求用邀约</SSC_BreakdownInvitedUse_Accepted>
+  <SSC_BreakdownInvitedUse_Refused>{0} 拒绝了求用邀约</SSC_BreakdownInvitedUse_Refused>
+</LanguageData>

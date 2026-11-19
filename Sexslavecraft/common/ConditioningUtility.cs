@@ -17,6 +17,18 @@ namespace SexSlaveCraft
 
         /// <summary>日常驱动传入本次唯一评分，旧评分的随机项也只采样一次。</summary>
         public static void ExecuteOutcome(Pawn master, Pawn sexSlave, float score)
+            => ExecuteOutcomeCore(master, sexSlave, score, score, false);
+
+#if SSC_RW17
+        internal const float BreakdownScoreBonus = 50f;
+
+        /// <summary>本场采用传入加分，常规模式以基础分写历史。有链和无链特批均跳过建链。</summary>
+        internal static void ExecuteBreakdownOutcome(Pawn trainer, Pawn subject, float baseScore,
+            float scoreBonus = BreakdownScoreBonus)
+            => ExecuteOutcomeCore(trainer, subject, baseScore + scoreBonus, baseScore, true);
+#endif
+
+        private static void ExecuteOutcomeCore(Pawn master, Pawn sexSlave, float score, float historyScore, bool breakdown)
         {
             if (sexSlave == null || master == null) return;
 
@@ -25,7 +37,7 @@ namespace SexSlaveCraft
             TrainingMemorySet memorySet = TrainerTrainingMemoryUtility.Resolve(master);
             if (SSCMod.settings?.useOldScoring ?? false)
             {
-                ExecuteOutcome_Legacy(master, sexSlave, score, memorySet);
+                ExecuteOutcome_Legacy(master, sexSlave, score, memorySet, breakdown);
                 return;
             }
 
@@ -40,7 +52,8 @@ namespace SexSlaveCraft
             CorruptionUtility.AddCorruption(sexSlave, corruptionGain);
 
             WillReductionUtility.ApplyWillReductionByCorruptionBand(master, sexSlave, corruptionGain, false);
-            CorruptionProgressionUtility.ProcessCorruptionProgression(master, sexSlave, false, score);
+            // 日常进展入口达到门槛会尝试首次绑定。特批只写受训收益。
+            if (!breakdown) CorruptionProgressionUtility.ProcessCorruptionProgression(master, sexSlave, false, score);
 
             // 保留原算法的取整结果决定档位与是否变化；弱化只在后续按基准整数换算，
             // 因此主人路径的 D 与所有原有效果完全不变。
@@ -55,11 +68,11 @@ namespace SexSlaveCraft
             CompSexSlaveTraining comp = sexSlave.TryGetComp<CompSexSlaveTraining>();
             if (comp != null)
             {
-                comp.lastTrainingScore = score;
+                comp.lastTrainingScore = historyScore;
             }
         }
 
-        private static void ExecuteOutcome_Legacy(Pawn master, Pawn sexSlave, float score, TrainingMemorySet memorySet)
+        private static void ExecuteOutcome_Legacy(Pawn master, Pawn sexSlave, float score, TrainingMemorySet memorySet, bool breakdown)
         {
             int finalLevel = LegacyTrainingUtility.DetermineLevel_Legacy(master, score);
 
@@ -68,7 +81,8 @@ namespace SexSlaveCraft
             CorruptionUtility.AddCorruption(sexSlave, corruptionGain);
 
             WillReductionUtility.ApplyWillReductionByCorruptionBand(master, sexSlave, corruptionGain, false);
-            CorruptionProgressionUtility.ProcessCorruptionProgression(master, sexSlave, false, score);
+            // 旧评分的特批也跳过绑定，且沿用旧评分的历史写入行为。
+            if (!breakdown) CorruptionProgressionUtility.ProcessCorruptionProgression(master, sexSlave, false, score);
 
             string logMsg = Strings.DailyTrainingOutcome_Legacy(
                 score.ToString("F1"), finalLevel, corruptionGain.ToString("P1"));

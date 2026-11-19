@@ -71,6 +71,21 @@ namespace SexSlaveCraft
         /// <summary>先查询统一许可，再核对工作资格；自动日常工作只交给指定者，主人手动发起及主持不受指派排除。</summary>
         /// <remarks>总开关停用不取消首次建绑资质与唯一指派；这里没有公交车、装备或旧开放字段的许可分支。</remarks>
         public static SSCTrainingAdmission Evaluate(SSCRestrictionRequest request, bool requireAssignment)
+            => EvaluateCore(request, requireAssignment, false);
+
+#if SSC_RW17
+        /// <summary>候选阶段尚未创建驱动，用请求涉及的两名角色构造预检方向。</summary>
+        internal static SSCTrainingAdmission EvaluateBreakdown(Pawn trainer, Pawn subject)
+            => EvaluateBreakdown(new SSCRestrictionRequest(trainer, subject, SSCInteractionKind.DailyTraining,
+                trainer != null && subject != null && trainer != subject));
+
+        /// <summary>特批只绕过日常任务的调度条件。发起和接收必须符合本场 Job 的实际方向。</summary>
+        internal static SSCTrainingAdmission EvaluateBreakdown(SSCRestrictionRequest request)
+            => request.DirectionKnown ? EvaluateCore(request, false, true)
+                : new SSCTrainingAdmission(SSCRestrictionPolicy.Evaluate(null), SSCTrainingFailure.PermissionDenied);
+#endif
+
+        private static SSCTrainingAdmission EvaluateCore(SSCRestrictionRequest request, bool requireAssignment, bool breakdown)
         {
             SSCRestrictionDecision decision = SSCRestrictionPolicy.Evaluate(request);
             // 身份是工作资格，不受主人最高许可、总限制开关或强制命令豁免。
@@ -87,6 +102,8 @@ namespace SexSlaveCraft
                 return new SSCTrainingAdmission(decision, SSCTrainingFailure.TrainerRequired);
             if (target.TryGetComp<CompSexSlaveTraining>() == null || target.Dead || target.Destroyed)
                 return new SSCTrainingAdmission(decision, SSCTrainingFailure.TargetInvalid);
+            // 特批授权由发作和 Job 验证。此处保留普通调教许可与任职要求，跳过日常指派。
+            if (breakdown) return new SSCTrainingAdmission(decision, SSCTrainingFailure.None);
             // 首次准备只能由指定且可建立所有权的主人完成；停用行为限制也不能授予新主人身份。
             if (request.Kind == SSCInteractionKind.BindingPreparation && !SSCIdentityUtility.IsMaster(actor))
                 return new SSCTrainingAdmission(decision, SSCTrainingFailure.BindingMasterRequired);

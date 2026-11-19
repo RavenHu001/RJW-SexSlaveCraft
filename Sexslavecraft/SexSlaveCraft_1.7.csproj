@@ -68,6 +68,16 @@
     <Compile Include="common/SSCImprintUtility.cs" />
     <Compile Include="common/SSCFullCorruptionImprint.cs" />
     <Compile Include="common/SSCImprintLetters.cs" />
+    <Compile Include="common/SSCSlaveBreakdown.cs" />
+    <Compile Include="common/SSCSlaveBreakdownGameComponent.cs" />
+    <Compile Include="common/MentalState_SSCSlaveBreakdown.cs" />
+    <Compile Include="common/MentalState_SSCSlaveBreakdown.Behavior.cs" />
+    <Compile Include="common/MentalState_SSCSlaveBreakdown.Invitation.cs" />
+    <Compile Include="JobDriver/JobDriver_SSCBreakdownInvitedUse.cs" />
+    <Compile Include="common/MentalState_SSCSlaveBreakdown.Training.cs" />
+    <Compile Include="JobGiver/JobGiver_SSCSlaveBreakdown.cs" />
+    <Compile Include="Hediff/Hediff_SSCSlaveBreakdown.cs" />
+    <Compile Include="Comps/Comp_Train.SlaveBreakdown.cs" />
     <Compile Include="common/FertilitySpecializationUtility.cs" />
     <Compile Include="common/FertilityAbilityUtility.cs" />
     <Compile Include="common/FertilitySceneUtility.cs" />
@@ -224,7 +234,7 @@
     <Compile Include="common/SSCCorruptionGelProductionUtility.cs" />
     <Compile Include="common/SSCCorruptionGelProductionToggleBackend.cs" />
     <Compile Include="common/SSCCorruptionGelSceneRuntime.cs" />
-    <Compile Include="common/SSCCorruptionGelConsumptionUtility.cs" />
+    <Compile Include="common/SSCCorruptionGainUtility.cs" />
     <Compile Include="common/Culture/SSCCulturePartnerCorruption.cs" />
     <Compile Include="common/Culture/SSCCulturePartnerCorruptionGameComponent.cs" />
     <Compile Include="common/Culture/SSCPartnerCorruptionScene.cs" />

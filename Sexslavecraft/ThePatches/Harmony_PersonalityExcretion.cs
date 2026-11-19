@@ -13,7 +13,7 @@ using Verse;
 namespace SexSlaveCraft
 {
 #if SSC_RW17
-    /// <summary>已排队手术执行时复查主人及孕期／临产准入；拒绝不删除孕期已有准备。</summary>
+    /// <summary>已排队手术执行时再次使用共用准入，覆盖排队后出现的精神状态、孕期及主人身份变化。</summary>
     [HarmonyPatch(typeof(Recipe_AddHediff), nameof(Recipe_AddHediff.ApplyOnPawn))]
     internal static class Harmony_MasterBlocksExcretionOperation
     {

@@ -238,11 +238,12 @@ internal static partial class Program
         var node = new GelSceneFixture(driver); string path = Path.Combine(saveDirectory, "gel-scene-" + ++nextId + ".xml");
         Scribe.saver.InitSaving(path, "GelScene"); Scribe_Deep.Look(ref node, "scene"); Scribe.saver.FinalizeSaving(); return path;
     }
-    private static JobDriver_Sex GelLoad(string path, Pawn pawn)
+    private static JobDriver_Sex GelLoad(string path, Pawn pawn, params Pawn[] participants)
     {
         GelSceneFixture node = null; Scribe.loader.InitLoading(path);
         var directory = (LoadedObjectDirectory)AccessTools.Field(typeof(CrossRefHandler), "loadedObjectDirectory").GetValue(Scribe.loader.crossRefs);
         directory.RegisterLoaded(pawn);
+        foreach (Pawn participant in participants) directory.RegisterLoaded(participant);
         Scribe_Deep.Look(ref node, "scene", pawn); Scribe.loader.FinalizeLoading(); return node.Driver;
     }
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <HediffDef>
+    <defName>SSC_Hediff_SlaveBreakdown</defName>
+    <hediffClass>SexSlaveCraft.Hediff_SSCSlaveBreakdown</hediffClass>
+    <label>submission breakdown</label>
+    <description>Lust for submission fills every thought. All this pawn wants is to be treated like a sex slave. Their body burns with heat, and their pussy won't stop dripping.</description>
+    <initialSeverity>1</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <!-- 原版副本不继承单次发作的身体效果。SSC 兔克隆的手动复制也显式排除此定义。 -->
+    <duplicationAllowed>false</duplicationAllowed>
+    <stages>
+      <li>
+        <statFactors>
+          <!-- RJW 读取这些属性计算需求下降和满足度，使用角色原有倍率与全局设置。 -->
+          <SexFrequency>10</SexFrequency>
+          <SexSatisfaction>0.25</SexSatisfaction>
+        </statFactors>
+        <statOffsets>
+          <!-- +10 是加算偏移，最终脆弱度仍由原 RJW 属性定义限制为 300%。 -->
+          <Vulnerability>10</Vulnerability>
+        </statOffsets>
+      </li>
+    </stages>
+  </HediffDef>
+  <HediffDef>
+    <defName>SSC_Hediff_SlaveBreakdownCooldown</defName>
+    <hediffClass>SexSlaveCraft.Hediff_SSCSlaveBreakdownCooldown</hediffClass>
+    <label>submission breakdown cooldown</label>
+    <isBad>false</isBad>
+    <duplicationAllowed>false</duplicationAllowed>
+    <stages>
+      <li><becomeVisible>false</becomeVisible></li>
+    </stages>
+  </HediffDef>
+</Defs>

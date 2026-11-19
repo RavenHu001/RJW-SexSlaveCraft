@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_SlaveBreakdown.label>приступ покорности</SSC_SlaveBreakdown.label>
+  <SSC_SlaveBreakdown.beginLetter>Развращённость довела {0} до того, что жажда подчинения полностью затмила рассудок. Осталось лишь желание, чтобы кто-то подчинил себе и использовал это тело.</SSC_SlaveBreakdown.beginLetter>
+  <SSC_SlaveBreakdown.baseInspectLine>Психическое состояние: приступ покорности</SSC_SlaveBreakdown.baseInspectLine>
+</LanguageData>

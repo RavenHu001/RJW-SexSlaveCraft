@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- SSC 在恶堕判定后直接进入这个状态。原版低心情抽选使用 MentalBreakDef，因此这里仅注册状态本身。 -->
+  <MentalStateDef>
+    <defName>SSC_SlaveBreakdown</defName>
+    <label>submission breakdown</label>
+    <stateClass>SexSlaveCraft.MentalState_SSCSlaveBreakdown</stateClass>
+    <workerClass>SexSlaveCraft.MentalStateWorker_SSCSlaveBreakdown</workerClass>
+    <category>Misc</category>
+    <colonistsOnly>true</colonistsOnly>
+    <prisonersCanDo>false</prisonersCanDo>
+    <slavesCanDo>true</slavesCanDo>
+    <beginLetter>Corruption has driven {0} so far that the urge to submit has overwhelmed all reason. All that remains is a craving to be dominated and used.</beginLetter>
+    <beginLetterDef>NegativeEvent</beginLetterDef>
+    <baseInspectLine>Mental state: submission breakdown</baseInspectLine>
+  </MentalStateDef>
+</Defs>

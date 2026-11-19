@@ -105,8 +105,10 @@ internal static partial class Program
             HediffDefOf.PregnantHuman = PregnancyDef("PregnantHuman");
             // RJW 类初始化会读取遗传排除表；本批只使用其妊娠登记，不执行遗传逻辑。
             DefDatabase<rjw.StringListDef>.Add(new rjw.StringListDef { defName = "NonInheritedTraits", strings = new() });
-            // RJW只读Def缓存必须在其类初始化前就具备实际接收Job定义。
+            // RJW 只读 Def 缓存必须在类初始化前就具备实际 Quickie 发起与接收任务。
+            DefDatabase<JobDef>.Add(new JobDef { defName = "Quickie", driverClass = typeof(rjw.JobDriver_SexQuick) });
             DefDatabase<JobDef>.Add(new JobDef { defName = "GettingQuickie", driverClass = typeof(rjw.JobDriver_SexBaseRecieverQuickie) });
+            DefDatabase<JobDef>.Add(new JobDef { defName = "GettinRaped", driverClass = typeof(rjw.JobDriver_SexBaseRecieverRaped) });
             bootstrap = false;
             // 第 4 批新增真实属性引用；宿主只提供正常基础值，能力、装备等修正不参与阶段专项。
             LoadStageStatReferences(game);

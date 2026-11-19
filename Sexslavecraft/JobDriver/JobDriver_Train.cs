@@ -65,7 +65,7 @@ namespace SexSlaveCraft
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
 #if SSC_RW17
-            if (!TrainerAssignmentUtility.CanStartDailyTraining(Partner, pawn, job.playerForced, out _) ||
+            if (!CanStartThisTraining(Partner) ||
                 !TrainerAssignmentUtility.CanReserveDailyTraining(pawn, Partner))
                 return false;
 #endif
@@ -90,6 +90,8 @@ namespace SexSlaveCraft
 #if SSC_RW17
             this.FailOn(() => preparedTrainingTarget != null && dailyOccupancy?.IsCurrent != true);
             this.FailOn(() => dailyOccupancy?.IsHeld != true && !TrainerAssignmentUtility.CanReserveDailyTraining(pawn, Partner));
+            // 发作结束或批准失效时，发起 Job 通过原有训练清理释放自己的接收方和占用。
+            this.FailOn(() => IsBreakdownTraining && BreakdownEpisode?.OwnsTrainingJob(pawn, job) != true);
 #else
             this.FailOn(() => !pawn.CanReserve(Partner, 1, 0));
 #endif
@@ -109,7 +111,7 @@ namespace SexSlaveCraft
                     if (!ValidateTargetIdentityOrAbort(context, target, requireOccupancy: false)) return;
 #if SSC_RW17
                     if (dailyOccupancy?.IsCurrentFor(context) == true) return;
-                    if (!TrainerAssignmentUtility.CanStartDailyTraining(target, pawn, job.playerForced, out _) ||
+                    if (!CanStartThisTraining(target) ||
                         (dailyOccupancy = SSCDailyTrainingOccupancy.TryClaim(target, context)) == null)
                     {
                         if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
@@ -191,6 +193,12 @@ namespace SexSlaveCraft
 #if SSC_RW17
                 // 共享步骤守卫本身也可能被撤销。交接前直接复查必要钩子，避免先启动另一方再发现无法写入凭据。
                 if (!CheckLifecycleBeforeScene()) return;
+                // 接到受方前复查其当前工作。签信时的空闲不代表到达时仍可接管。
+                if (IsBreakdownTraining && BreakdownEpisode?.CanReceiveBreakdownTraining != true)
+                {
+                    if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
+                    return;
+                }
                 var occupancy = dailyOccupancy;
                 occupancy.EnterCallback();
                 bool started;
@@ -319,6 +327,7 @@ namespace SexSlaveCraft
                     if (context.IsCurrent) pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
                     return;
                 }
+                if (IsBreakdownTraining) BreakdownEpisode?.MarkApprovedTrainingStarted(this);
 #else
                 sceneStarted = true;
 #endif
@@ -385,6 +394,11 @@ namespace SexSlaveCraft
                         Sexprops == null || target == null || target.Dead || target.Destroyed ||
                         !ValidateTargetIdentityOrAbort(context, target)) return;
                     SexProps props = Sexprops;
+#if SSC_RW17
+                    // 固定本次发作；晚到的收尾回调不能向受方后来开始的状态认领成功。
+                    var episode = IsBreakdownTraining ? BreakdownEpisode : null;
+                    if (IsBreakdownTraining && episode?.CanSettleApprovedTraining(this) != true) return;
+#endif
                     // 先保存认领事实，覆盖外部回调重入及结算中途异常后的重复通知。
                     dailyOutcomeClaimed = true;
 #if SSC_RW17
@@ -395,10 +409,22 @@ namespace SexSlaveCraft
 #endif
                         SexUtility.ProcessSex(props);
                         if (!ValidateTargetIdentityOrAbort(context, target)) return;
-                        ExecuteConditioningOutcome(context, target, props);
+                        ExecuteConditioningOutcome(context, target, props
+#if SSC_RW17
+                            , episode
+#endif
+                            );
 #if SSC_RW17
                     }
-                    finally { occupancy.ExitCallback(); }
+                    finally
+                    {
+                        try { occupancy.ExitCallback(); }
+                        finally
+                        {
+                            // 原版精神恢复可同步中断任务。先退出占用回调，再进行恢复。
+                            episode?.FinishSuccessfulTraining();
+                        }
+                    }
 #endif
                 },
                 defaultCompleteMode = ToilCompleteMode.Instant
@@ -440,7 +466,7 @@ namespace SexSlaveCraft
                 dailyReceiver = new TrainingJobUtility.JobContext(receiver);
         }
 
-        private bool HasDailyReceiver(Pawn target)
+        internal bool HasDailyReceiver(Pawn target)
             => dailyReceiver.Actor == target && dailyReceiver.IsCurrent && !dailyReceiver.Driver.ended &&
                 dailyReceiver.Driver is JobDriver_SexBaseReciever receiver &&
                 (OnaholeCompatibilityUtility.IsBeOnaholeDriver(receiver)
@@ -477,6 +503,8 @@ namespace SexSlaveCraft
 
         internal int DailyTrainingLoadEvidence()
         {
+            // 先恢复原发作授权，再由原发起 Job 参加日常占用仲裁。
+            if (IsBreakdownTraining && BreakdownEpisode?.OwnsTrainingJob(pawn, job) != true) return 0;
             Pawn target = Partner;
             var context = new TrainingJobUtility.JobContext(this);
             if (!context.IsCurrent || context.Map == null || target?.Map != context.Map) return 0;
@@ -488,6 +516,7 @@ namespace SexSlaveCraft
 
         internal void RestoreDailyTrainingOccupancy()
         {
+            if (IsBreakdownTraining && BreakdownEpisode?.OwnsTrainingJob(pawn, job) != true) return;
             var context = new TrainingJobUtility.JobContext(this);
             if (dailyOccupancy?.IsCurrentFor(context) == true) return;
             dailyOccupancy = SSCDailyTrainingOccupancy.TryClaim(Partner, context);
@@ -496,6 +525,15 @@ namespace SexSlaveCraft
         }
 
         internal bool HasDailyTrainingOccupancy => dailyOccupancy?.IsCurrent == true;
+
+        private bool IsBreakdownTraining => MentalState_SSCSlaveBreakdown.IsBreakdownTraining(job);
+        private MentalState_SSCSlaveBreakdown BreakdownEpisode => MentalState_SSCSlaveBreakdown.CurrentFor(Partner);
+
+        // 特批与普通调教各有派发入口，在预约、占用和真实 Start 上复用同一驱动。
+        private bool CanStartThisTraining(Pawn target)
+            => IsBreakdownTraining ? SSCSceneHookAvailability.CanStartDaily(false) &&
+                BreakdownEpisode?.OwnsTrainingJob(pawn, job) == true
+                : TrainerAssignmentUtility.CanStartDailyTraining(target, pawn, job.playerForced, out _);
 #endif
 
         /// <summary>回调只可继续操作它进入时固定的任务及目标，不能借用重入后替换的目标。</summary>
@@ -508,7 +546,8 @@ namespace SexSlaveCraft
             if (!IsCurrentTarget(context, target)) return false;
 #if SSC_RW17
             if (ended) return false;
-            if (requireOccupancy && dailyOccupancy?.IsCurrentFor(context) != true)
+            if ((requireOccupancy && dailyOccupancy?.IsCurrentFor(context) != true) ||
+                (IsBreakdownTraining && BreakdownEpisode?.OwnsTrainingJob(pawn, job) != true))
             {
                 pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
                 return false;
@@ -522,7 +561,11 @@ namespace SexSlaveCraft
         }
 
         /// <summary>对仍存活的目标结算日常调教评分和对应部位经验，随后通知训练完成并启动冷却。</summary>
-        private void ExecuteConditioningOutcome(TrainingJobUtility.JobContext context, Pawn target, SexProps props)
+        private void ExecuteConditioningOutcome(TrainingJobUtility.JobContext context, Pawn target, SexProps props
+#if SSC_RW17
+            , MentalState_SSCSlaveBreakdown episode
+#endif
+            )
         {
             if (target.Dead || target.Destroyed || !ValidateTargetIdentityOrAbort(context, target)) return;
 
@@ -530,7 +573,19 @@ namespace SexSlaveCraft
             // CN: 步骤 1：先记下这次日常调教分数，再进入正式结算。
             float score = ConditioningUtility.GetScore(pawn, target);
             if (!ValidateTargetIdentityOrAbort(context, target)) return;
-            ConditioningUtility.ExecuteOutcome(pawn, target, score);
+#if SSC_RW17
+            if (episode != null)
+            {
+                // RJW 收尾与评分都可能经过外部回调。收益入账前仍须持有原批准和原实际主人。
+                if (!episode.CanSettleApprovedTraining(this)) return;
+                // 有链特批沿用普通评分。无链特批的加分同时用于实际收益和后续经验，历史分照旧采用基础分。
+                float bonus = episode.BoundEpisode ? 0f : ConditioningUtility.BreakdownScoreBonus;
+                ConditioningUtility.ExecuteBreakdownOutcome(pawn, target, score, bonus);
+                score += bonus;
+            }
+            else
+#endif
+                ConditioningUtility.ExecuteOutcome(pawn, target, score);
             if (!ValidateTargetIdentityOrAbort(context, target)) return;
             if (props != null)
             {
@@ -561,6 +616,11 @@ namespace SexSlaveCraft
             {
                 compToggle.Notify_TrainingCompleted();
             }
+#if SSC_RW17
+            // 场景先按原日常出口写入日期和冷却，再把该次结算确认为精神状态的成功。
+            if (episode != null && (compToggle == null || !ValidateTargetIdentityOrAbort(context, target) ||
+                !episode.ClaimTrainingSuccess(this))) return;
+#endif
 
             // 整次认领已在进入结算前保存；受训者只领取当前方向的一份基础经验，
             // 施教者的训导官特色经验独立判断。RJW 普通双人经验补丁排除 SSC 日常 Job。

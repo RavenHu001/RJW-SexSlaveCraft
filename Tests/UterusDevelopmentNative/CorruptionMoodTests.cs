@@ -145,7 +145,7 @@ internal static partial class Program
             Require((bool)dirty.GetValue(handler), "dropping below 91% must invalidate");
             AssertMood(pawn, null);
             // 保持同一个极重度档，从一阶升至三阶只减轻扣分，升至四阶时心情消失。
-            chain.SetRitualSeverity(pawn, .2f);
+            chain.SetProgressSeverity(pawn, .2f);
             need.CurLevel = .5f;
             AssertMood(pawn, -6f, textStage: 5);
             need.CurLevel = .91f;
@@ -153,13 +153,13 @@ internal static partial class Program
             foreach (var (severity, offset) in new[] { (.4f, -6f), (.8f, -3f) })
             {
                 dirty.SetValue(handler, false);
-                chain.SetRitualSeverity(pawn, severity);
+                chain.SetProgressSeverity(pawn, severity);
                 Require((bool)dirty.GetValue(handler), "stage change must refresh the offset even though the text stage stays the same");
                 Equal(.91f, need.CurLevel);
                 Equal(extremeLabel, AssertMood(pawn, offset, textStage: 6).LabelCap);
             }
             dirty.SetValue(handler, false);
-            chain.SetRitualSeverity(pawn, .9f);
+            chain.SetProgressSeverity(pawn, .9f);
             Require((bool)dirty.GetValue(handler), "ritual stage write did not invalidate");
             AssertMood(pawn, null);
             need.CurLevel = 1f;

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- 心情和好感使用原版定时记忆。精神状态负责在结束时按一次性结果发放。 -->
+  <ThoughtDef>
+    <defName>SSC_BreakdownSuccess</defName>
+    <durationDays>2</durationDays>
+    <stackLimit>1</stackLimit>
+    <stages><li>
+      <label>lust for submission sated</label>
+      <description>I was used like a sex slave and filled up so completely. It felt so good I don't even want to move now… ahh ❤</description>
+      <baseMoodEffect>20</baseMoodEffect>
+    </li><li>
+      <label>At ease under my master's care</label>
+      <description>My master answered my request. After our training, I can finally feel at ease.</description>
+      <baseMoodEffect>20</baseMoodEffect>
+    </li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>SSC_BreakdownTrainerOpinion</defName>
+    <thoughtClass>Thought_MemorySocial</thoughtClass>
+    <durationDays>3</durationDays>
+    <stackLimit>1</stackLimit>
+    <stackLimitForSameOtherPawn>1</stackLimitForSameOtherPawn>
+    <stages><li>
+      <label>sated my lust for submission</label>
+      <description>Just when I thought I'd go mad from wanting it, they pinned me beneath them and used me hard.</description>
+      <baseOpinionOffset>35</baseOpinionOffset>
+    </li></stages>
+  </ThoughtDef>
+  <ThoughtDef>
+    <defName>SSC_BreakdownFailure</defName>
+    <durationDays>1</durationDays>
+    <stackLimit>1</stackLimit>
+    <stages><li>
+      <label>lust for submission unsated</label>
+      <description>No one came to use me. My body feels empty and itchy, and I can't settle down.</description>
+      <baseMoodEffect>-10</baseMoodEffect>
+    </li></stages>
+  </ThoughtDef>
+</Defs>

@@ -25,7 +25,11 @@ namespace SexSlaveCraft
 
         /// <summary>仅接受已核对的准备类型，未知第三方任务和行为接收任务均由其自身生命周期处理。</summary>
         private static bool IsPreparationJob(Job job) => job != null && !job.playerForced &&
-            (job.def == JobDefOf.Goto || job.def == JobDefOf.Wait || job.def == JobDefOf.GotoMindControlled);
+            (job.def == JobDefOf.Goto || job.def == JobDefOf.Wait || job.def == JobDefOf.GotoMindControlled
+#if SSC_RW17
+                || SSCBreakdownInvitation.IsWait(job)
+#endif
+            );
 
         /// <summary>登记原生准备回调新增的任务；回调之前存在的队列和当前工作不属于本请求。</summary>
         public void RecordNew(Pawn pawn, HashSet<int> before)

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_BreakdownRequest_Label>渴求被調教</SSC_BreakdownRequest_Label>
+  <SSC_BreakdownRequest_Text>{0} 滿腦子只剩下被當作性奴的念頭，正哀求 {1} 調教自己。請在本次發作結束前作出決定。</SSC_BreakdownRequest_Text>
+  <SSC_BreakdownRequest_Unavailable>調教員或場地目前無法使用。</SSC_BreakdownRequest_Unavailable>
+  <SSC_BreakdownFailure_Label>恢復理智</SSC_BreakdownFailure_Label>
+  <SSC_BreakdownFailure_Text>{0} 的奴性爆發結束了，只留下一身又癢又空的煩躁，怎麼也靜不下來。</SSC_BreakdownFailure_Text>
+  <SSC_BreakdownSuccess_Label>奴性爆發結束</SSC_BreakdownSuccess_Label>
+  <SSC_BreakdownSuccess_Text>{0} 在與 {1} 完成調教後結束了奴性爆發。</SSC_BreakdownSuccess_Text>
+  <SSC_BreakdownSuccess_BoundText>主人 {1} 完成了對 {0} 的調教，{0} 的奴性爆發結束了。</SSC_BreakdownSuccess_BoundText>
+  <SSC_BreakdownSuccess_StageAdvanced>鎖鏈階段從 {0} 階升至 {1} 階。</SSC_BreakdownSuccess_StageAdvanced>
+  <SSC_BreakdownSuccess_ProgressAdvanced>目前為 {0} 階，鎖鏈嚴重度從 {1} 提高至 {2}。</SSC_BreakdownSuccess_ProgressAdvanced>
+  <SSC_BreakdownSuccess_StageUnchanged>本場沒有推進鎖鏈進度。</SSC_BreakdownSuccess_StageUnchanged>
+</LanguageData>

@@ -31,14 +31,17 @@ namespace SexSlaveCraft
             {
                 float before = base.CurLevel;
                 base.CurLevel = value;
-                if (before != base.CurLevel)
-                    SSCCorruptionStages.NotifyLevelChanged(pawn, this, before, base.CurLevel);
+                float after = base.CurLevel;
+                if (before == after) return;
+                SSCSlaveBreakdown.NotifyLevelChanged(pawn, this, before, after);
+                SSCCorruptionStages.NotifyLevelChanged(pawn, this, before, after);
             }
         }
 
         public override void OnNeedRemoved()
         {
             base.OnNeedRemoved();
+            SSCSlaveBreakdownGameComponent.Current?.CancelFullRequest(pawn, this);
             SSCCorruptionStages.NotifyContextChanged(pawn);
         }
 #endif
@@ -158,11 +161,20 @@ namespace SexSlaveCraft
 #endif
             float next = Mathf.Clamp(level, 0f, MaxLevel);
 #if SSC_RW17
-            // 在需求 setter 和特性通知可能重入绑定之前捕获原载体。分化时再核对是否写到了满值。
+            SSCSlaveBreakdownGameComponent breakdown = null;
+            SSCSlaveBreakdownGameComponent.FullRequest fullBreakdown = null;
+            // 在需求 setter 和特性通知可能重入绑定之前捕获原载体。双方各自认领本次真实满值。
             if (!resetHistory && CurLevel < MaxLevel && next == MaxLevel)
+            {
                 SSCFullCorruptionImprint.CaptureCandidate(pawn, this);
+                breakdown = SSCSlaveBreakdownGameComponent.Current;
+                fullBreakdown = breakdown?.CaptureFullCrossing(pawn, this);
+            }
 #endif
             CurLevel = next;
+#if SSC_RW17
+            if (fullBreakdown != null) breakdown.QueueFullCrossing(fullBreakdown);
+#endif
             if (resetHistory)
                 highestCorruptionLevel = CurLevel;
             else
@@ -195,6 +207,9 @@ namespace SexSlaveCraft
 #endif
             if (IsFrozen) return;
 
+#if SSC_RW17
+            if (!SSCSlaveBreakdown.RefreshBeforeDecay(pawn, this)) return;
+#endif
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
             // 先记下实际达过的峰值。装备按原资格生效，旧评分仍允许使用无阶段限制的维护来源。
             RecordCurrentCorruption();

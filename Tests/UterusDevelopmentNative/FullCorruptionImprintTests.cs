@@ -15,7 +15,7 @@ internal static partial class Program
     private static Action<Hediff_SSCImprint> onDifferentiatedImprintAdded;
     private static Hediff throwAfterRollbackRemoval;
 
-    private static void FullCorruptionImprintTests()
+    private static void FullCorruptionImprintTests(string repo)
     {
         var boundary = new Harmony("ssc.tests.full-corruption-imprint");
         var letterStackField = AccessTools.Field(typeof(Game), "letterStack");
@@ -287,6 +287,7 @@ internal static partial class Program
                     finally { SSCMod.settings.useOldScoring = false; }
                 }
             });
+            SlaveBreakdownTests(repo, receiveLetter);
         }
         finally
         {

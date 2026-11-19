@@ -220,6 +220,13 @@ namespace SexSlaveCraft
         {
             reason = null;
 #if SSC_RW17
+            // 发作暂时赋予正式身份，仍需暂停日常调教。自动查询、手动提交和准备中的驱动共用此门槛。
+            if (MentalState_SSCSlaveBreakdown.CurrentFor(targetPawn) != null)
+            {
+                reason = "SSC_Restrictions_TrainingTargetInvalid".Translate();
+                return false;
+            }
+
             // 此入口同时供自动候选、手动命令与驱动预约使用。统一前置拒绝可避免创建接收任务后才发现缺少开始凭据。
             if (!SSCSceneHookAvailability.CanStartDaily(forced))
             {

@@ -203,6 +203,11 @@ namespace SexSlaveCraft
             base.CompTickRare();
 
             if (!(parent is Pawn pawn)) return;
+
+#if SSC_RW17
+            // 读档初始化通常已迁移，死亡时产生的记录等角色复活后再挂到健康列表。
+            MigrateSlaveBreakdownCooldown();
+#endif
             // 旧终极狗保存的普通 Hediff 没有授予组件；按真实成果维护技能，保留已有实例及冷却。
             PetDogAbilityUtility.Maintain(pawn);
             ReconcileManualSelfTraining(pawn);
@@ -228,6 +233,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
             // 浪漫许可使用独立人格配置与授权节点，不与能力字典或旧性行为模板混存。
             ExposeRomance();
+            ExposeSlaveBreakdown();
 #endif
 
             Scribe_Values.Look(ref mode, "mode", TrainingMode.Disabled);
@@ -406,6 +412,26 @@ namespace SexSlaveCraft
             }
 
             if (pawn.Faction != Faction.OfPlayer) yield break;
+
+#if SSC_RW17
+            if (SSCSlaveBreakdown.IsEligiblePawn(pawn))
+            {
+                long remaining = SlaveBreakdownCooldownUntil - SSCSlaveBreakdown.Now;
+                string description = "SSC_SlaveBreakdown_DebugStartDesc".Translate();
+                if (remaining > 0)
+                    description += "\n\n" + "SSC_SlaveBreakdown_DebugCooldown".Translate(((int)remaining).ToStringTicksToPeriod());
+                yield return new Command_Action
+                {
+                    defaultLabel = "SSC_SlaveBreakdown_DebugStart".Translate(),
+                    defaultDesc = description,
+                    action = () =>
+                    {
+                        if (SSCSlaveBreakdownGameComponent.Current?.TryStartForDebug(pawn) != true)
+                            Messages.Message("SSC_SlaveBreakdown_DebugBlocked".Translate(), pawn, MessageTypeDefOf.RejectInput, false);
+                    }
+                };
+            }
+#endif
 
             // 第一批先提供独立调试入口；实际训练经验在下一批接入同一个增加方法。
             // 上方已要求开发模式、SSC 调试开关与玩家阵营；这里只展示已有成长的非空壳主人。

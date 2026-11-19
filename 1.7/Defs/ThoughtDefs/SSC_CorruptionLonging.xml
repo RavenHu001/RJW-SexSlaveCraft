@@ -7,23 +7,23 @@
     <validWhileDespawned>true</validWhileDespawned>
     <stages>
       <li>
-        <label>Corrupted Submission (Curious)</label>
-        <description>Sometimes I wonder what it would feel like to be dominated. Once the thought comes up, I keep getting distracted, and my legs go a little weak.</description>
+        <label>Corrupted Submission (Budding)</label>
+        <description>Out of nowhere, I want someone to pin me down and order me around… As soon as the thought comes up, my mind wanders and my legs go a little weak.</description>
         <baseMoodEffect>-1</baseMoodEffect>
       </li>
       <li>
-        <label>Corrupted Submission (Acquiescent)</label>
-        <description>There doesn't seem to be anything wrong with being ordered around... I catch myself waiting for another command. My pussy starts to itch, and the longer I wait, the more restless I get.</description>
+        <label>Corrupted Submission (Taking Root)</label>
+        <description>I keep thinking about being dominated. My pussy starts to itch and burn. The harder I try to push the thought away, the more it comes back. I'm so restless I can't sit still…</description>
         <baseMoodEffect>-3</baseMoodEffect>
       </li>
       <li>
-        <label>Corrupted Submission (Infatuated)</label>
-        <description>Ah... it feels so good to be dominated. I want someone to pin me down and fuck me until I can't speak. My pussy is already wet, and I can't clench it shut...</description>
+        <label>Corrupted Submission (Bone-Deep)</label>
+        <description>Just thinking about it gets me so wet I can't even clench shut. It's driving me mad, but I keep thinking about it over and over. I can't focus on anything…</description>
         <baseMoodEffect>-6</baseMoodEffect>
       </li>
       <li>
-        <label>Corrupted Submission (Desperate)</label>
-        <description>I want to be someone's sex slave completely—stripped, held down, and filled up❤ The thought fills my head, and my pussy twitches and leaks on its own. I can't shake it...</description>
+        <label>Corrupted Submission (All-Consuming)</label>
+        <description>I can't hold it back anymore… All I can think about is being pinned down and used. My pussy keeps twitching and dripping on its own. Ahh… Someone use me. Someone pin me beneath them…</description>
         <baseMoodEffect>-10</baseMoodEffect>
       </li>
       <li>

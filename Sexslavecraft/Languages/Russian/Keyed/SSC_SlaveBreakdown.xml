@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Setting_EnableSlaveBreakdown>Включить приступы покорности</SSC_Setting_EnableSlaveBreakdown>
+  <SSC_Setting_EnableSlaveBreakdown_Desc>Разрешить приступы покорности у подходящих колонистов и рабов колонии с высокой развращённостью.</SSC_Setting_EnableSlaveBreakdown_Desc>
+  <SSC_SlaveBreakdown_RiskLabel>Риск приступа покорности</SSC_SlaveBreakdown_RiskLabel>
+  <SSC_SlaveBreakdown_RiskExplanation>Эти персонажи настолько развращены, что жажда подчинения в любой момент может лишить их рассудка.\n\n{0}</SSC_SlaveBreakdown_RiskExplanation>
+  <SSC_SlaveBreakdown_IdentityLocked>Во время приступа покорности нельзя сменить статус вручную.</SSC_SlaveBreakdown_IdentityLocked>
+  <SSC_SlaveBreakdown_ExcretionBlocked>Извлечение личности временно недоступно, пока цель находится в особом психическом состоянии.</SSC_SlaveBreakdown_ExcretionBlocked>
+  <SSC_SlaveBreakdown_DebugStart>Запустить приступ покорности</SSC_SlaveBreakdown_DebugStart>
+  <SSC_SlaveBreakdown_DebugStartDesc>Немедленно вызывает приступ покорности у выбранного персонажа, чтобы проверить, как он проходит и чем заканчивается.</SSC_SlaveBreakdown_DebugStartDesc>
+  <SSC_SlaveBreakdown_DebugCooldown>До конца перерыва: {0}</SSC_SlaveBreakdown_DebugCooldown>
+  <SSC_SlaveBreakdown_DebugBlocked>У этого персонажа сейчас нельзя вызвать приступ покорности.</SSC_SlaveBreakdown_DebugBlocked>
+  <SSC_BreakdownInvitedUse_Accepted>{0} принимает просьбу использовать их</SSC_BreakdownInvitedUse_Accepted>
+  <SSC_BreakdownInvitedUse_Refused>{0} отклоняет просьбу использовать их</SSC_BreakdownInvitedUse_Refused>
+</LanguageData>

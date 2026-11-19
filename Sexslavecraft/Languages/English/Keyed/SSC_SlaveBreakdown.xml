@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Setting_EnableSlaveBreakdown>Enable submission breakdowns</SSC_Setting_EnableSlaveBreakdown>
+  <SSC_Setting_EnableSlaveBreakdown_Desc>Allow eligible colonists and colony slaves with high corruption to suffer submission breakdowns.</SSC_Setting_EnableSlaveBreakdown_Desc>
+  <SSC_SlaveBreakdown_RiskLabel>Submission breakdown risk</SSC_SlaveBreakdown_RiskLabel>
+  <SSC_SlaveBreakdown_RiskExplanation>These pawns are so deeply corrupted that the urge to submit could overwhelm their reason at any moment.\n\n{0}</SSC_SlaveBreakdown_RiskExplanation>
+  <SSC_SlaveBreakdown_IdentityLocked>Identity cannot be changed manually during a submission breakdown.</SSC_SlaveBreakdown_IdentityLocked>
+  <SSC_SlaveBreakdown_ExcretionBlocked>Personality excretion is temporarily unavailable while the target is in a mental state.</SSC_SlaveBreakdown_ExcretionBlocked>
+  <SSC_SlaveBreakdown_DebugStart>Start submission breakdown</SSC_SlaveBreakdown_DebugStart>
+  <SSC_SlaveBreakdown_DebugStartDesc>Immediately trigger a submission breakdown in this pawn to test how it plays out and ends.</SSC_SlaveBreakdown_DebugStartDesc>
+  <SSC_SlaveBreakdown_DebugCooldown>Cooldown remaining: {0}</SSC_SlaveBreakdown_DebugCooldown>
+  <SSC_SlaveBreakdown_DebugBlocked>This pawn cannot have a submission breakdown right now.</SSC_SlaveBreakdown_DebugBlocked>
+  <SSC_BreakdownInvitedUse_Accepted>{0} accepted the request to use them</SSC_BreakdownInvitedUse_Accepted>
+  <SSC_BreakdownInvitedUse_Refused>{0} declined the request to use them</SSC_BreakdownInvitedUse_Refused>
+</LanguageData>

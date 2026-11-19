@@ -14,9 +14,10 @@ namespace SexSlaveCraft
         {
             if (actor == null || target == null) return false;
 #if SSC_RW17
+            // 在占用和寻路前核对受方。玩家强制指派时报告正在等待的身体或精神状态。
             if (!SSCPersonalityExcretionAdmission.CanExtract(target))
             {
-                string reason = SSCPersonalityExcretionAdmission.PregnancyBlockReason(target);
+                string reason = SSCPersonalityExcretionAdmission.TemporaryBlockReason(target);
                 if (forced && reason != null) JobFailReason.Is(reason);
                 return false;
             }

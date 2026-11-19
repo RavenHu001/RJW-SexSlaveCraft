@@ -227,7 +227,10 @@ namespace SexSlaveCraft
             if (view.ImprintLabel != null)
                 view.ImprintRect = inline ? new Rect(row.x + imprintX, row.y, imprintWidth, row.height) : Row(imprintHeight);
 
-            if (SSCIdentityUtility.IsIdentityLocked(source))
+            // 每次刷新概况都重新读取发作状态，临时禁用仅用于手动身份区域。
+            if (SSCIdentityUtility.IsManualIdentityChangeBlocked(source))
+                view.LockTip = "SSC_SlaveBreakdown_IdentityLocked".Translate();
+            else if (SSCIdentityUtility.IsIdentityLocked(source))
                 view.LockTip = (SSCImprintUtility.GetImprintLockedIdentity(source) != PawnIdentity.Unset ?
                     "SSC_Imprint_GelTooltip" : "SSC_Identity_BoundTip").Translate();
 
@@ -360,7 +363,8 @@ namespace SexSlaveCraft
         /// <summary>使用原主人准入和身份 setter 构造菜单。回调只提交所捕获的编辑请求。</summary>
         private void OpenIdentityMenu(PageEdit edit)
         {
-            if (!PageEditIsCurrent(edit) || SSCIdentityUtility.IsIdentityLocked(edit.Pawn)) return;
+            if (!PageEditIsCurrent(edit) || SSCIdentityUtility.IsManualIdentityChangeBlocked(edit.Pawn) ||
+                SSCIdentityUtility.IsIdentityLocked(edit.Pawn)) return;
             bool canSelectMaster = edit.Identity == PawnIdentity.Master || SSCMasterQualificationUtility.CanSelectMaster(edit.Pawn);
             string masterLabel = Strings.ITab_SetAsMaster;
             if (!canSelectMaster) masterLabel += " (" + "SSC_Identity_MasterQualificationRequired".Translate() + ")";
@@ -379,8 +383,9 @@ namespace SexSlaveCraft
         /// <summary>身份变化和锁定都可能发生在菜单打开之后，提交时重新检查。</summary>
         private void SubmitIdentity(FloatMenu menu, PageEdit edit, PawnIdentity identity)
         {
+            // 保留打开菜单时的人格和组件。提交层再次检查是否在菜单打开后进入发作。
             if (!EditPopupIsCurrent(menu, edit) || SSCIdentityUtility.IsIdentityLocked(edit.Pawn)) return;
-            if (!SSCIdentityUtility.TrySetIdentity(edit.Pawn, identity) && identity == PawnIdentity.Master)
+            if (!SSCIdentityUtility.TrySetManualIdentity(edit.Pawn, identity) && identity == PawnIdentity.Master)
                 Messages.Message("SSC_Identity_SelectionUnavailable".Translate(), edit.Pawn, MessageTypeDefOf.RejectInput, false);
             RefreshAfterEdit();
         }

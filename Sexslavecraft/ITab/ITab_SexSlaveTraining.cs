@@ -374,27 +374,42 @@ namespace SexSlaveCraft
 
                     string idLabel = GetIdentityLabel(comp.pawnIdentity);
                     bool identityLocked = SSCIdentityUtility.IsIdentityLocked(SelPawn);
+                    string lockTip = "SSC_Identity_BoundTip";
+#if SSC_RW17
+                    if (SSCIdentityUtility.IsManualIdentityChangeBlocked(SelPawn))
+                    {
+                        identityLocked = true;
+                        lockTip = "SSC_SlaveBreakdown_IdentityLocked";
+                    }
+#endif
                     Rect identityRect = listing.GetRect(IdentityButtonHeight);
                     bool identityClicked = SSCUIWidgets.Button(identityRect, idLabel, !identityLocked);
-                    // 同为不可切换，仍区分永久印记锁和普通绑定锁，避免解绑后的定型人格收到错误提示。
+                    // 发作期间显示临时锁提示。该状态结束后，按钮继续按原有身份锁刷新。
                     if (identityLocked)
-                        TooltipHandler.TipRegion(identityRect,
-                                "SSC_Identity_BoundTip".Translate());
+                        TooltipHandler.TipRegion(identityRect, lockTip.Translate());
                     listing.Gap(2f);
                     if (identityClicked)
                     {
                         Pawn identityPawn = SelPawn;
+                        // 菜单展开后也可能发作。点击时向打开菜单时的 Pawn 和 Comp 重新提交。
+                        bool Submit(PawnIdentity identity)
+                        {
+                            if (identityPawn?.TryGetComp<CompSexSlaveTraining>() != comp) return false;
+#if SSC_RW17
+                            return SSCIdentityUtility.TrySetManualIdentity(identityPawn, identity);
+#else
+                            return SSCIdentityUtility.TrySetIdentity(identityPawn, identity);
+#endif
+                        }
                         List<FloatMenuOption> identityOptions = new List<FloatMenuOption>
                         {
                             new FloatMenuOption(Strings.ITab_SetIdentityUnset, delegate
                             {
-                                if (identityPawn?.TryGetComp<CompSexSlaveTraining>() != comp) return;
-                                SSCIdentityUtility.TrySetIdentity(identityPawn, PawnIdentity.Unset);
+                                Submit(PawnIdentity.Unset);
                             }),
                             new FloatMenuOption(Strings.ITab_SetAsSlave, delegate
                             {
-                                if (identityPawn?.TryGetComp<CompSexSlaveTraining>() != comp) return;
-                                SSCIdentityUtility.TrySetIdentity(identityPawn, PawnIdentity.Slave);
+                                Submit(PawnIdentity.Slave);
                             })
                         };
                         bool canSelectMaster = comp.pawnIdentity == PawnIdentity.Master ||
@@ -406,7 +421,7 @@ namespace SexSlaveCraft
                             canSelectMaster ? (Action)delegate
                             {
                                 if (identityPawn?.TryGetComp<CompSexSlaveTraining>() != comp) return;
-                                if (!SSCIdentityUtility.TrySetIdentity(identityPawn, PawnIdentity.Master))
+                                if (!Submit(PawnIdentity.Master))
                                     Messages.Message("SSC_Identity_SelectionUnavailable".Translate(), identityPawn,
                                         MessageTypeDefOf.RejectInput, false);
                             } : null));

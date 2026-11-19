@@ -97,6 +97,20 @@ namespace SexSlaveCraft
                     SSCIdentityUtility.IsSexSlave(request.Receiver)) && HasStarted(driver, request);
         }
 
+        private static JobDriver_Sex ResolveInitiator(JobDriver_Sex driver)
+            => driver is JobDriver_SexBaseReciever receiver ? SSCRestrictionJobContext.FindInitiator(receiver) : driver;
+
+        /// <summary>普通场景可沿用开始凭据。发作特批的准入始终由受方的当前发作持有。</summary>
+        private static bool CanReuseStartedPermission(JobDriver_Sex driver, SSCRestrictionRequest request)
+        {
+#if SSC_RW17
+            // 接收端与发起端同样复核特批。已有 RJW Start 凭据不能延续已撤销的玩家批准。
+            if (MentalState_SSCSlaveBreakdown.IsBreakdownTraining(ResolveInitiator(driver)?.job)) return false;
+#endif
+            return HasStarted(driver, request) && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
+                SSCIdentityUtility.IsSexSlave(request.Receiver));
+        }
+
         /// <summary>预约阶段只返回许可，不结束正在被任务跟踪器安装的驱动，也不创建配置或玩家命令豁免。</summary>
         public static bool TryReserve(JobDriver_Sex driver, out bool allowed, bool ordered = false)
         {
@@ -107,8 +121,7 @@ namespace SexSlaveCraft
             { State(driver).Rejected = true; return true; }
 #endif
             if (!SSCRestrictionJobContext.TryCreate(driver, out SSCRestrictionRequest request)) return false;
-            if (HasStarted(driver, request) && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
-                SSCIdentityUtility.IsSexSlave(request.Receiver))) return true;
+            if (CanReuseStartedPermission(driver, request)) return true;
 #if SSC_RW17
             // 只拒绝已确认失配的驱动的新请求。已具备有效凭据的场景优先沿用原收尾路径。
             if (!CanStartWithInstalledHooks(driver, ordered))
@@ -143,9 +156,21 @@ namespace SexSlaveCraft
                 Reject(driver, request, Strings.Train_Reason_AlreadyBeingTrained);
                 return true;
             }
+            if (phase == "Start" && driver is JobDriver_SSCBreakdownInvitedUse invitationDriver)
+            {
+                Pawn subject = invitationDriver.Partner;
+                var breakdown = MentalState_SSCSlaveBreakdown.CurrentFor(subject);
+                var invitation = breakdown?.InvitationFor(invitationDriver.job);
+                // 兼容驱动直接调用 Start 时仍须持有正确方向的接收任务。
+                if (invitation?.CanStartScene(breakdown, subject, invitationDriver) != true)
+                {
+                    allowed = false;
+                    AbortBreakdownInvitation(invitationDriver);
+                    return true;
+                }
+            }
 #endif
-            if (HasStarted(driver, request) && (!SSCRestrictionTrainingUtility.IsTraining(request) ||
-                SSCIdentityUtility.IsSexSlave(request.Receiver))) return true;
+            if (CanReuseStartedPermission(driver, request)) return true;
 #if SSC_RW17
             // 在途任务也可能来自读档或绕过常规派发的调用。准备检查继续用现有拒绝清理，防止遗留等待任务。
             if (!CanStartWithInstalledHooks(driver))
@@ -176,8 +201,19 @@ namespace SexSlaveCraft
             // 专用适配只处理已登记请求；其他用途继续走下方统一策略，不能形成玩家命令通用白名单。
             if (SSCUapGroupRuntime.Evaluate(driver, out decision, out reason)) return decision.Allowed;
 #endif
-            JobDriver_Sex actor = driver is JobDriver_SexBaseReciever receiver
-                ? SSCRestrictionJobContext.FindInitiator(receiver) : driver;
+            JobDriver_Sex actor = ResolveInitiator(driver);
+#if SSC_RW17
+            if (MentalState_SSCSlaveBreakdown.IsBreakdownTraining(actor?.job))
+            {
+                // 此处使用驱动提供的实际方向，保留 SexProps 配对失效等信息。只有候选扫描才能用两名 Pawn 构造方向。
+                SSCTrainingAdmission approved = SSCRestrictionTrainingUtility.EvaluateBreakdown(request);
+                decision = approved.Permission;
+                bool authorized = MentalState_SSCSlaveBreakdown.CurrentFor(request.Receiver)
+                    ?.OwnsTrainingJob(request.Initiator, actor.job) == true;
+                reason = authorized ? approved.Reason : Strings.Train_Reason_InvalidFaction;
+                return authorized && approved.Allowed;
+            }
+#endif
             bool automaticDaily = actor is JobDriver_Training && !ordered && actor.job?.playerForced != true;
             SSCTrainingAdmission admission = SSCRestrictionTrainingUtility.Evaluate(request, automaticDaily);
             decision = admission.Permission;
@@ -433,9 +469,30 @@ namespace SexSlaveCraft
             foreach (Toil toil in toils)
             {
                 Action original = toil.initAction;
+#if SSC_RW17
+                // RJW 持续场景的 Never 步骤会在 Start 前访问接收驱动。原生阵营通知同样需要已安装的受方。
+                // 两个入口都在原委托前核对，避免预约失败后访问错误驱动或发布场景通知。
+                bool requiresInvitationReceiver = toil.defaultCompleteMode == ToilCompleteMode.Never ||
+                    (driver is JobDriver_SSCBreakdownInvitedUse && toil.debugName == "Notify_MemberRaped");
+#endif
                 // 包装初始化回调只用于记录归属；许可检查仍在统一的步骤和开始入口执行。
                 toil.initAction = () =>
                 {
+#if SSC_RW17
+                    if (driver is JobDriver_SSCBreakdownInvitedUse)
+                    {
+                        Pawn subject = driver.Partner;
+                        var breakdown = MentalState_SSCSlaveBreakdown.CurrentFor(subject);
+                        if (breakdown?.InvitationFor(driver.job) is { } invitation)
+                        {
+                            // 归属随发作保存。即使发起 Job 未能恢复，仍可清理接收方的准备任务。
+                            invitation.RunNativeStep(breakdown, subject, driver, original, requiresInvitationReceiver);
+                            return;
+                        }
+                        AbortBreakdownInvitation(driver);
+                        return;
+                    }
+#endif
                     Pawn target = driver.Partner;
                     SceneState state = State(driver);
                     HashSet<int> before = SSCRestrictionJobPreparation.Snapshot(target);
@@ -458,6 +515,17 @@ namespace SexSlaveCraft
                 yield return toil;
             }
         }
+
+#if SSC_RW17
+        internal static void AbortBreakdownInvitation(JobDriver_SexBaseInitiator driver)
+        {
+            if (driver.pawn?.jobs?.curDriver != driver) return;
+            // 未 Start 的 Toil 若已附带 RJW End，必须跳过未开始的收尾。接收器由本场记录精确释放。
+            State(driver).Rejected = true;
+            // 仍在原生步骤的初始化栈内，等原版下一轮选任务，避免同步再进另一个 Toil。
+            driver.pawn.jobs.EndCurrentJob(JobCondition.Incompletable, startNewJob: false);
+        }
+#endif
 
         /// <summary>事件调度前检查实际Job驱动并登记来源；拒绝时尚未打断任何工作，也不以事件名推测许可。</summary>
         public static bool PrepareEvent(Pawn actor, Job job, SSCRestrictionEvent source)
