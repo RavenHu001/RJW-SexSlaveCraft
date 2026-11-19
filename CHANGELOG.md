@@ -1,5 +1,17 @@
 # 更新日志 / Changelog — SexSlaveCraft（TieJin 接续版 / TieJin continuation）
 
+## [2.5.2] — 2026-11-19 — 开发版 / Unreleased — 恶堕成长与奴性爆发 / Corruption and Submission Breakdown
+
+纳入 `v2.5.1` 后至 `1ada9192` 的 66 个非合并提交、3 个合并提交和 332 个净变更路径，新增面向 RimWorld 1.7。[双语说明](Docs/Releases/2.5.2/2.5.2发布说明.md) · [开发归并](Docs/Releases/2.5.2/2.5.2开发归并核对.md) · [验证记录](Docs/Releases/2.5.2/2.5.2版本验证.md)
+
+- **恶堕与锁链解耦。** 恶堕上限统一为 100%，保留锁链阶段硬下限；单场绑定仪式最多升一阶。自然衰减的锁链倍率统一为 1.0，显示与持续心情共用整数档位，有链角色按超出阶段的档差扣分。
+- **身份、印记与信件。** 性奴特性按正式 SSC 身份及历史峰值重算；补齐满恶堕印记分化、取得通知、新生成原版复制体的身份恢复和有限重试。
+- **奴性爆发。** 默认关闭的独立高恶堕精神状态，包含风险警报、健康页倒计时、一次单人开场、游荡期求用邀约、玩家批准的调教请求及一天冷却。有链角色请求实际主人调教，成功后原锁链最多升一阶。接受邀约后立即派发，同一对象冷却一小时。
+- **淫堕传道与凝胶结算。** 新增文化四档和图标，依据同场真实事件结算。与堕落凝胶共用入口、独立保存冷却和单场额度，增量由 XML 配置。
+- **文案与维护。** 落实四语信件、恶堕持续心情和发作文案，增加发作特效；两轮精简重复测试并补齐轻量本地化校验。
+
+SSC 2.5.2 groups the post-2.5.1 implementation of Corruption and Chain decoupling, formal slave identity and imprint notifications, the optional Submission Breakdown state, and Preaching Corruption with shared Depravity Gel event bookkeeping. Four-language resources, visual effects, regression cleanup and documentation maintenance are included. Scoped automated and in-game results are recorded by development batch. Formal 2.5.2 release checks remain pending.
+
 ## [2.5.1] — 2026-11-15 — 正式版 / Release — PNA 雾气与兼容修复 / PNA Mist and Compatibility
 
 从 `v2.5.0` 后至 `5d9c999d`，纳入 32 个非合并提交、1 个合并提交和 193 个净变更路径。面向 RimWorld 1.7。[双语说明](Docs/Releases/2.5.1/2.5.1发布说明.md) · [提交归并](Docs/Releases/2.5.1/2.5.1开发归并核对.md) · [验证记录](Docs/Releases/2.5.1/2.5.1版本验证.md)

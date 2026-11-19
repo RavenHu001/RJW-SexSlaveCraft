@@ -1,5 +1,7 @@
 # 测试说明索引
 
+**2.5.2 开发验证已登记。** 第 19 项、第 7 项、文化／凝胶结算与测试精简各按受测批次记录。完整发布门禁待执行，现有专项结果见[版本验证](../Docs/Releases/2.5.2/2.5.2版本验证.md)。
+
 第 7 项原生回归精简净减 2 项 Core。 `UterusDevelopmentNative --imprint` 通过 **86／86**，其中第 7 项 44 项。 [精简范围与验证](../Docs/Design/Archive/第7项奴性爆发开发方案.md#ssc-slave-breakdown-test-pruning)
 
 2026-11-17，[凝胶与淫堕传道统一结算](../Docs/Development/Completed/堕落凝胶与淫堕传道统一结算实现与验收.md)新增 3 项 Core，`UterusDevelopmentNative --corruption-gel` 79／79，关联印记 71／71、UAP 19／19。隔离构建及 Def／四语镜像检查通过，维护者确认同一候选实机有效。整仓门禁另记。

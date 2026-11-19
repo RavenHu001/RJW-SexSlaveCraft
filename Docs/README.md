@@ -2,6 +2,10 @@
 
 [项目首页](../README.md) · [玩家阅读入口](Players/README.md) · [当前规划](Design/README.md) · [开发资料](Development/README.md)
 
+## 当前开发版本
+
+**2.5.2 开发版（2026-11-19 登记）。** 恶堕与锁链解耦、奴性爆发、淫堕传道及凝胶结算已合入。[版本说明](Releases/2.5.2/2.5.2发布说明.md) · [归并核对](Releases/2.5.2/2.5.2开发归并核对.md) · [完成索引](Development/Completed/README.md#ssc-252-completed) · [分批验证与发布准备](Releases/2.5.2/2.5.2版本验证.md)
+
 ## 当前正式版本
 
 **2.5.1 于 2026-11-15 正式发布。** 完整门禁通过 52 套、6350/6350 项。 [下载 2.5.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.1) · [版本说明](Releases/2.5.1/2.5.1发布说明.md) · [发布归档](Releases/2.5.1/2.5.1版本验证.md#ssc-251-release) · [完成索引](Development/Completed/README.md#ssc-251-completed)
@@ -30,8 +34,8 @@
 ## 三条阅读路线
 
 - **新玩家**：[模组介绍](模组介绍.md) → [快速入门](../读我，玩法介绍.md) → [机制详解](../机制详解.md)。英文路线见 [English reading order](Players/README.md#english-reading-order)。
-- **接手开发**：[开发协作约定](../AGENTS.md) → [开发规范与历史参考](Development/Reference/README.md) → [2.5.1 接手顺序](Development/README.md#ssc-251-reading-order)。实施与验收见[完成记录](Development/Completed/README.md#ssc-251-completed)，独立复测见[待验收](Development/Verification/README.md#ssc-251-open-checks)，未完需求见[当前规划](Design/README.md#当前专项规划)。
-- **准备发布**：[2.5.1 版本验证](Releases/2.5.1/2.5.1版本验证.md) → [构建与打包](Maintenance/发布与打包.md) → [测试索引](../Tests/README.md)。
+- **接手开发**：[开发协作约定](../AGENTS.md) → [开发规范与历史参考](Development/Reference/README.md) → [2.5.2 接手顺序](Development/README.md#ssc-252-reading-order)。实施与验收见[完成记录](Development/Completed/README.md#ssc-252-completed)，独立复测见[待验收](Development/Verification/README.md)，未完需求见[当前规划](Design/README.md#当前专项规划)。
+- **准备发布**：[2.5.2 版本验证](Releases/2.5.2/2.5.2版本验证.md) → [构建与打包](Maintenance/发布与打包.md) → [测试索引](../Tests/README.md)。
 
 ## 目录与状态
 

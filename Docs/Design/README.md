@@ -2,6 +2,8 @@
 
 **当前公开基线为 SSC 2.5.1。** 本页汇总仍待设计、实现或合入的需求。
 
+**2.5.2 开发归属已登记。** 第 19 项、第 7 项及淫堕传道／凝胶结算的已合入实现见[完成索引](../Development/Completed/README.md#ssc-252-completed)，受测范围见[版本验证](../Releases/2.5.2/2.5.2版本验证.md)。
+
 [文档总索引](../README.md) · [总体规划](未来内容开发规划.md) · [待验收](../Development/Verification/README.md#当前专项) · [已交付设计](Archive/README.md)
 
 ## 推荐阅读顺序
