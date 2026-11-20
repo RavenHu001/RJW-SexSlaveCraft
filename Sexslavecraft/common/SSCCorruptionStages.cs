@@ -39,9 +39,10 @@ namespace SexSlaveCraft
         private static (int ChainStage, int SatisfiedThrough) GetMoodContext(Pawn pawn)
         {
             if (SSCIdentityUtility.IsMaster(pawn)) return (0, 100);
+            // 正式身份决定是否采用阶段容许区间。有主与无主同阶使用同一个下一阶段阈值。
             if (SSCIdentityUtility.IsSexSlave(pawn))
             {
-                var stage = TrainingOutcomeUtility.GetChainStage(SSCBondUtility.GetChain(pawn));
+                var stage = TrainingOutcomeUtility.GetSexSlaveProgressStage(TrainingOutcomeUtility.GetSexSlaveProgress(pawn));
                 // 按显示的整数判定，三阶显示 90% 时仍满足。无实际阶段时沿用普通角色的当前档位。
                 if (stage.Stage >= 4) return (stage.Stage, 100);
                 if (stage.Stage > 0) return (stage.Stage, GetWholePercentage(stage.Next ?? 1f));
@@ -61,7 +62,7 @@ namespace SexSlaveCraft
             int? moodStage = GetMoodStage(percentage, satisfiedThrough);
             if (!moodStage.HasValue) return ThoughtState.Inactive;
 
-            // 锁链文案从中度开始，追加在通用四档之后。两组仍按当前恶堕档选文字。
+            // 已进入性奴化阶段的文案从中度开始，追加在通用四档之后。有主和无主共用这组落差文案。
             int textStage = chainStage > 0 && moodStage.Value > 0
                 ? FirstBoundTextStage + moodStage.Value - 1 : moodStage.Value;
             return ThoughtState.ActiveAtStage(textStage);
@@ -103,7 +104,7 @@ namespace SexSlaveCraft
                 int chainStage = SSCIdentityUtility.IsSexSlave(pawn) ? SSCIdentityUtility.GetSexSlaveStage(pawn) : 0;
                 if (chainStage == 0) return base.BaseMoodOffset;
 
-                // 两套文案在 Def 中有不同索引。按实际恶堕档与锁链阶段的落差计算扣分。
+                // 将两组文案索引还原为恶堕档位，再按它与性奴化阶段的差值计算扣分。
                 return (SSCCorruptionStages.GetTierForThoughtStage(CurStageIndex) - chainStage) switch
                 {
                     1 => -3f,

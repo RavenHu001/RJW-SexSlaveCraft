@@ -5,7 +5,7 @@ using RimWorld;
 using Verse;
 using Verse.Sound;
 
-// 结算日常与仪式共用的绑定。仪式另按当前恶堕进行原版转奴掷骰，并按本场起始阶段推进锁链。
+// 仪式建立绑定、尝试原版转奴，并按本场起始阶段推进锁链。旧版保留日常建链。
 namespace SexSlaveCraft
 {
     public static class CorruptionProgressionUtility
@@ -19,6 +19,10 @@ namespace SexSlaveCraft
             RitualChainProgress progress)
 #endif
         {
+#if SSC_RW17
+            // 公共适配入口还有旧调用者。明确拒绝非仪式的进度请求，避免绕过日常结算边界。
+            if (!isRitual) return null;
+#endif
             Need_Corruption need = sexSlave.needs.TryGetNeed<Need_Corruption>();
             if (need == null) return null;
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
@@ -74,11 +78,13 @@ namespace SexSlaveCraft
         )
         {
             if (corruption < 0.1f) return null;
+#if !SSC_RW17
             if (!isRitual)
             {
                 SSCBondUtility.Bind(master, sexSlave);
                 return null;
             }
+#endif
 
             bool hadBridleTarget = SSCBondUtility.GetBridle(master)?.targets.Contains(sexSlave) == true;
             bool hadChain = SSCBondUtility.GetChain(sexSlave) != null;
@@ -213,9 +219,11 @@ namespace SexSlaveCraft
                 hostToken = SSCPersonalityRuntimeUtility.Capture(host);
                 targetToken = SSCPersonalityRuntimeUtility.Capture(target);
                 need = target?.needs?.TryGetNeed<Need_Corruption>();
+                // 现行仪式验证实际锁链实例和主人，锁链进度写入也只针对这条链。
+                // 正式无主目标需要专门的仪式分支来交接进度，沿用首次建链会取默认 20%。
                 chain = SSCBondUtility.GetChain(target);
                 owner = chain?.LinkedPawn;
-                startingStage = TrainingOutcomeUtility.GetChainStage(chain).Stage;
+                startingStage = TrainingOutcomeUtility.GetSexSlaveProgressStage(chain).Stage;
             }
 
             private bool MatchesParticipants() => host != null && target != null && !host.Dead && !target.Dead &&
@@ -234,7 +242,7 @@ namespace SexSlaveCraft
 
             private bool MatchesStartingStage(Hediff_ChainOfSexSlave expected, Pawn expectedOwner) =>
                 MatchesChain(expected, expectedOwner) &&
-                (chain == null || (expected == chain && TrainingOutcomeUtility.GetChainStage(expected).Stage == startingStage));
+                (chain == null || (expected == chain && TrainingOutcomeUtility.GetSexSlaveProgressStage(expected).Stage == startingStage));
 
             private bool CanUseChain(Hediff_ChainOfSexSlave expected, Pawn expectedOwner)
             {
@@ -266,14 +274,14 @@ namespace SexSlaveCraft
                 float corruption = need.CurLevel;
                 float before = chain.Severity;
                 if (!float.IsFinite(corruption) || !float.IsFinite(before)) return;
-                var stage = TrainingOutcomeUtility.GetChainStage(chain);
+                var stage = TrainingOutcomeUtility.GetSexSlaveProgressStage(chain);
                 float next = CalculateChainProgress(before, corruption, stage.Next);
                 if (next > before) chain.SetProgressSeverity(target, next);
 
                 // 写严重度会派发阶段通知。通知结束后确认原链仍有效，按实际结果选结算反馈。
                 // 此处允许阶段已改变，因为实际升阶就是此写入的预期结果。
                 if (!CanContinueSettlement() || !MatchesChain(chain, owner)) return;
-                int reached = TrainingOutcomeUtility.GetChainStage(chain).Stage;
+                int reached = TrainingOutcomeUtility.GetSexSlaveProgressStage(chain).Stage;
                 if (reached > startingStage)
                     changes.Add(Strings.Ritual_ChainStageReached(reached));
                 else if (chain.Severity > before)

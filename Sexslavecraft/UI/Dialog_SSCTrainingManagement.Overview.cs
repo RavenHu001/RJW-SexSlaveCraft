@@ -49,28 +49,29 @@ namespace SexSlaveCraft
             var daily = new SettingsColumn(statusWidth, panel: true, verticalPanelPadding: 6f);
             string heading = "<b>" + "SSC_TrainingManagement_SlaveProgress".Translate() + "</b>";
 
-            var chain = SSCBondUtility.GetChain(edit.Pawn);
-            if (chain == null || !float.IsFinite(chain.Severity))
+            // 概况展示性奴化进度。实际主人仍由关系视图读取。
+            Hediff record = TrainingOutcomeUtility.GetSexSlaveProgress(edit.Pawn);
+            if (record == null || !float.IsFinite(record.Severity))
             {
                 progress.AddLabel(heading);
                 progress.AddLabel("SSC_TrainingManagement_NoChainProgress".Translate());
             }
             else
             {
-                // 玩法阶段从身份工具读取，刻度使用同一条锁链的 Def，避免复制阈值。
-                var stages = chain.def.stages;
+                // 进度数字、阶段名和刻度都从同一实例取值，无主角色也能显示完整进度条。
+                var stages = record.def.stages;
                 int total = stages?.Count ?? 0;
-                int reached = Mathf.Clamp(SSCIdentityUtility.GetSexSlaveStageFromChain(chain), 0, total);
+                int reached = Mathf.Clamp(TrainingOutcomeUtility.GetSexSlaveProgressStage(record).Stage, 0, total);
                 string stage = reached > 0 ? stages[reached - 1]?.label : null;
                 stage ??= "SSC_TrainingManagement_BeforeChainStage".Translate();
                 bool maxStage = total > 0 && reached == total;
-                // 向下显示整数百分比，跨过实际门槛之前不提前显示目标值。
-                string value = (Mathf.Floor(Mathf.Clamp01(chain.Severity) * 100f) / 100f).ToString("0%");
+                // 计算阶段使用原始严重度。整数百分比向下显示，避免门槛前显示已到目标值。
+                string value = (SSCCorruptionStages.GetWholePercentage(record.Severity) / 100f).ToString("0%");
                 Color accent = SlaveStageText(StageAccent(PawnIdentity.Slave, reached, total));
                 AddOverviewValue(progress, heading, value, accent);
                 progress.AddLabel(stage,
                     tooltip: maxStage ? "SSC_MasterProgression_MaxStage".Translate().ToString() : null, textColor: accent);
-                AddOverviewProgressScale(progress, chain, chain.Severity, reached, asPercent: true);
+                AddOverviewProgressScale(progress, record, record.Severity, reached, asPercent: true);
             }
 
             // 恶堕率独立读取当前需求。缺少该需求时直接收起面板及其间距。
@@ -519,14 +520,14 @@ namespace SexSlaveCraft
         {
             var identity = SSCIdentityUtility.GetIdentity(pawn);
             if (identity == PawnIdentity.Unset || rect.width < 16f || rect.height < 16f) return null;
-            var chain = identity == PawnIdentity.Slave ? SSCBondUtility.GetChain(pawn) : null;
-            Hediff record = identity == PawnIdentity.Master ? SSCMasterProgressionUtility.GetRecord(pawn) : chain;
+            Hediff record = identity == PawnIdentity.Master ? SSCMasterProgressionUtility.GetRecord(pawn)
+                : TrainingOutcomeUtility.GetSexSlaveProgress(pawn);
 
             int total = record?.def.stages?.Count ?? 0;
-            // 主人成长索引从零开始，锁链返回已达到的阶段数。两者统一为已达到的阶段数再绘制。
+            // 主人成长索引从零开始，性奴化进度使用已达到的阶段数。
             int reached = total == 0 || !float.IsFinite(record.Severity) ? 0 : identity == PawnIdentity.Master
                 ? Mathf.Clamp(record.CurStageIndex + 1, 0, total)
-                : Mathf.Clamp(SSCIdentityUtility.GetSexSlaveStageFromChain(chain), 0, total);
+                : Mathf.Clamp(TrainingOutcomeUtility.GetSexSlaveProgressStage(record).Stage, 0, total);
             Color accent = StageAccent(identity, reached, total);
             DrawStateOutline(rect, accent);
             if (total > 0 && reached == total) DrawStateOutline(rect.ContractedBy(2f), accent);

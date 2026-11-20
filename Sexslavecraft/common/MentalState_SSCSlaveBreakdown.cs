@@ -53,7 +53,7 @@ namespace SexSlaveCraft
             boundChain = SSCBondUtility.GetChain(pawn);
             boundEpisode = boundChain != null;
             boundOwner = boundChain?.LinkedPawn;
-            startingChainStage = TrainingOutcomeUtility.GetChainStage(boundChain).Stage;
+            startingChainStage = TrainingOutcomeUtility.GetSexSlaveProgressStage(boundChain).Stage;
             long deadline = (long)SSCSlaveBreakdown.Now + SSCSlaveBreakdown.DurationTicks;
             if (!TryInitialize(deadline))
             {

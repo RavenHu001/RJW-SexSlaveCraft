@@ -214,6 +214,7 @@ namespace SexSlaveCraft
             // 先记下实际达过的峰值。装备按原资格生效，旧评分仍允许使用无阶段限制的维护来源。
             RecordCurrentCorruption();
             bool oldScoring = SSCMod.settings?.useOldScoring ?? false;
+            // 本阶起点来自共用进度。这里限制恶堕需求下限，推进进度由场次结算负责。
             float stageFloor = TrainingOutcomeUtility.GetCorruptionStageFloor(pawn);
             float maintenanceFloor = oldScoring ? GetMinLevel() :
                 GetMinLevel(stageFloor, TrainingOutcomeUtility.GetCorruptionMaintenanceStageUpper(pawn));

@@ -38,7 +38,7 @@ namespace SexSlaveCraft
             if (!Utils.HasChainHediff(pawn)) return true;
             var chain = SSCBondUtility.GetChain(pawn);
             return chain != null && MatchesBinding(pawn, chain, chain.LinkedPawn) &&
-                TrainingOutcomeUtility.GetChainStage(chain).Next.HasValue;
+                TrainingOutcomeUtility.GetSexSlaveProgressStage(chain).Next.HasValue;
         }
 
         // 比对启动时捕获的锁链实例与目标。换链即使绑回同一个主人也属于新关系，

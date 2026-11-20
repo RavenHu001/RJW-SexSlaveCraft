@@ -12,6 +12,9 @@ internal static partial class Program
         xml.Load(Path.Combine(repo, "1.7/Defs/ThoughtDefs/SSC_CorruptionLonging.xml"));
         var thought = DirectXmlToObject.ObjectFromXml<ThoughtDef>(xml.DocumentElement["ThoughtDef"], false);
         var dirty = AccessTools.Field(typeof(SituationalThoughtHandler), "thoughtsDirty");
+        xml.Load(Path.Combine(repo, "1.7/Defs/HediffDefs/SSC_OwnerlessSlave.xml"));
+        var ownerlessDef = DirectXmlToObject.ObjectFromXml<HediffDef>(xml.DocumentElement["HediffDef"], false);
+        DefDatabase<HediffDef>.Add(ownerlessDef);
 
         (Pawn pawn, Need_Corruption need) Subject(PawnIdentity identity = PawnIdentity.Unset)
         {
@@ -42,6 +45,76 @@ internal static partial class Program
             }
             return active.Count == 0 ? null : active[0];
         }
+
+        Check("ownerless and bound stage three survive native health Scribe and share stage effects", () =>
+        {
+            var master = ImprintPawn(PawnIdentity.Master);
+            var (bound, _) = Subject(PawnIdentity.Slave);
+            Require(SSCBondUtility.Bind(master, bound));
+            SSCBondUtility.GetChain(bound).Severity = .8f;
+            var (ownerless, _) = Subject(PawnIdentity.Slave);
+            var record = ownerless.health.AddHediff(ownerlessDef);
+            Equal(.2f, record.Severity);
+            record.Severity = .8f;
+
+            foreach (var (source, expectedMaster) in new[] { (bound, master), (ownerless, (Pawn)null) })
+            {
+                // 正式身份由夹具提供，原版 Scribe 恢复健康记录、严重度和锁链引用。
+                var (body, need) = Subject(PawnIdentity.Slave);
+                Load(Save(source), body, master);
+                Equal(expectedMaster, SSCBondUtility.GetBoundMaster(body));
+                Equal(.8f, TrainingOutcomeUtility.GetSexSlaveProgress(body).Severity);
+                Equal(3, SSCIdentityUtility.GetSexSlaveStage(body));
+                Equal(1.6f, TrainingOutcomeUtility.GetChainStageMult(body));
+                Equal(.5f, TrainingOutcomeUtility.GetCorruptionStageFloor(body));
+                need.SetCorruption(.95f);
+                AssertMood(body, -3f);
+            }
+        });
+
+        Check("ownerless progress locks the ordinary identity submission and refreshes the mood when it changes", () =>
+        {
+            var (pawn, need) = Subject(PawnIdentity.Slave);
+            need.SetCorruption(.95f);
+            Equal(0, SSCIdentityUtility.GetSexSlaveStage(pawn));
+            Require(!SSCIdentityUtility.IsIdentityLocked(pawn));
+            AssertMood(pawn, -10f);
+            var record = pawn.health.AddHediff(ownerlessDef);
+            Require(SSCIdentityUtility.IsIdentityLocked(pawn));
+            Require(!SSCIdentityUtility.TrySetManualIdentity(pawn, PawnIdentity.Unset));
+            Require(!SSCIdentityUtility.TrySetIdentity(pawn, PawnIdentity.Unset));
+            AssertMood(pawn, -10f, textStage: 6);
+            record.Severity = .5f;
+            AssertMood(pawn, -3f);
+            pawn.health.RemoveHediff(record);
+            Require(!SSCIdentityUtility.IsIdentityLocked(pawn));
+            AssertMood(pawn, -10f, textStage: 3);
+        });
+
+        Check("the RJW designation and outfit read ownerless stage boundaries", () =>
+        {
+            var (pawn, _) = Subject(PawnIdentity.Slave);
+            var record = pawn.health.AddHediff(ownerlessDef);
+            if (DefDatabase<TraitDef>.GetNamedSilentFail("Masochist") == null)
+                DefDatabase<TraitDef>.Add(new TraitDef { defName = "Masochist" });
+            Require(!SSCComfortDesignationCompatibility.IsMasochistOrSexSlave(pawn));
+            record.Severity = .3f;
+            Require(SSCComfortDesignationCompatibility.IsMasochistOrSexSlave(pawn));
+
+            var previousDef = SSCDefOf.EFOutfit;
+            try
+            {
+                var outfit = new Apparel { def = Bare<ThingDef>() };
+                SSCDefOf.EFOutfit = outfit.def;
+                string reason = null;
+                bool result = true;
+                record.Severity = MathF.BitDecrement(.9f);
+                Require(!Patch_SexSlaveApparelRestriction.Prefix(outfit, pawn, ref reason, ref result) && !result);
+                record.Severity = .9f;
+                Require(Patch_SexSlaveApparelRestriction.Prefix(outfit, pawn, ref reason, ref result));
+            }
+            finally { SSCDefOf.EFOutfit = previousDef; }
+        });
 
         Check("corruption display and native thought use the same exact four boundaries", () =>
         {

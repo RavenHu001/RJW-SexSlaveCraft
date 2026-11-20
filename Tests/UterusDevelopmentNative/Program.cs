@@ -415,10 +415,18 @@ internal static partial class Program
         return path;
     }
     /// <summary>加载健康记录并执行引用恢复及 PostLoadInit，返回承载记录的新身体。</summary>
-    private static Pawn Load(string path)
+    private static Pawn Load(string path, Pawn body = null, params Pawn[] references)
     {
         HealthFixture loaded = null; Scribe.loader.InitLoading(path);
-        Scribe_Deep.Look(ref loaded, "body", NewPawn()); Scribe.loader.FinalizeLoading(); return loaded.Pawn;
+        if (references.Length > 0)
+        {
+            var directory = (LoadedObjectDirectory)AccessTools.Field(typeof(CrossRefHandler), "loadedObjectDirectory")
+                .GetValue(Scribe.loader.crossRefs);
+            foreach (Pawn reference in references) directory.RegisterLoaded(reference);
+        }
+        Scribe_Deep.Look(ref loaded, "body", body ?? NewPawn());
+        Scribe.loader.FinalizeLoading();
+        return loaded.Pawn;
     }
     /// <summary>只修改本例隔离存档，用于模拟旧字段缺失或损坏数据。</summary>
     private static void Edit(string path, Action<XDocument> edit) { var doc = XDocument.Load(path); edit(doc); doc.Save(path); }

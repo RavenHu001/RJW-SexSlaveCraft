@@ -328,7 +328,7 @@ namespace SexSlaveCraft
 
             Need_Corruption need = SSCSlaveBreakdown.GetNeed(pawn);
             if (need == null) return null;
-            var stage = TrainingOutcomeUtility.GetChainStage(boundChain);
+            var stage = TrainingOutcomeUtility.GetSexSlaveProgressStage(boundChain);
             float before = boundChain.Severity;
             // 用当前严重度和普通调教入账后的实际恶堕。起始阶段只用于确认本场的额外进度资格。
             // 同一条链期间已换档时，本场只结算普通调教成功。
@@ -339,7 +339,7 @@ namespace SexSlaveCraft
             }
             // 写入可能触发换链或换人格，只用仍能确认的原链产生进度反馈。
             if (!SameCarrier() || BoundOwner != requestTrainer || SSCSlaveBreakdown.GetNeed(pawn) != need) return null;
-            return (stage.Stage, TrainingOutcomeUtility.GetChainStage(boundChain).Stage, before, boundChain.Severity);
+            return (stage.Stage, TrainingOutcomeUtility.GetSexSlaveProgressStage(boundChain).Stage, before, boundChain.Severity);
         }
 
         private void PublishEpisodeOutcome()

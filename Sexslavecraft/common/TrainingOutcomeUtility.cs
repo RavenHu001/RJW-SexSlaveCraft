@@ -114,12 +114,14 @@ namespace SexSlaveCraft
             return found;
         }
 
+        /// <summary>沿用现有公开名称，按性奴化阶段返回部位经验与身体开发倍率。</summary>
         public static float GetChainStageMult(Pawn pawn)
         {
-            Hediff chain = GetChainHediff(pawn);
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
-            return GetChainStage(chain).Stage switch { 4 => 2.0f, 3 => 1.6f, 2 => 1.3f, 1 => 1.1f, _ => 1f };
+            return GetSexSlaveProgressStage(GetSexSlaveProgress(pawn)).Stage switch
+                { 4 => 2.0f, 3 => 1.6f, 2 => 1.3f, 1 => 1.1f, _ => 1f };
 #else
+            Hediff chain = GetChainHediff(pawn);
             if (chain == null) return 1.0f;
 
             float stageFloor = GetCurrentChainStageFloor(chain);
@@ -139,10 +141,7 @@ namespace SexSlaveCraft
         internal static float GetCorruptionMaintenanceStageUpper(Pawn pawn)
 #endif
         {
-            Hediff chain = GetChainHediff(pawn);
-            if (chain == null) return 0.12f;
-
-            return GetCurrentChainStageUpper(chain);
+            return GetCurrentChainStageUpper(GetSexSlaveProgress(pawn));
         }
 
         public static float GetChainDecayFactor(Pawn pawn)
@@ -187,21 +186,12 @@ namespace SexSlaveCraft
             return Mathf.Max(1f - totalReduction, 0.1f);
         }
 
+        /// <summary>返回当前阶段起点，供恶堕需求刷新时保底。三阶 80% 的下限为 50%。</summary>
         public static float GetCorruptionStageFloor(Pawn pawn)
-        {
-            Hediff chain = GetChainHediff(pawn);
-            if (chain == null) return 0f;
-
-            return GetCurrentChainStageFloor(chain);
-        }
+            => GetCurrentChainStageFloor(GetSexSlaveProgress(pawn));
 
         public static float GetCorruptionStageMinSeverity(Pawn pawn)
-        {
-            Hediff chain = GetChainHediff(pawn);
-            if (chain == null) return 0f;
-
-            return GetCurrentChainStageFloor(chain);
-        }
+            => GetCorruptionStageFloor(pawn);
 
         /// <summary>
         /// 返回当前锁链阶段的前一级起点，供旧版本的自然衰减退阶使用。
@@ -213,7 +203,7 @@ namespace SexSlaveCraft
         {
             Hediff chain = GetChainHediff(pawn);
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
-            return GetChainStage(chain).Previous;
+            return GetSexSlaveProgressStage(chain).Previous;
 #else
             if (chain == null) return 0f;
 
@@ -231,6 +221,22 @@ namespace SexSlaveCraft
             }
 
             return previousFloor;
+#endif
+        }
+
+        /// <summary>选择当前性奴化进度载体。有锁链时沿用锁链，1.7 无锁链时读取无主 Hediff。</summary>
+        /// <remarks>
+        /// 锁链优先保留现有绑定和旧档低于一阶阈值的读法。单有 SSC 性奴身份或印记时可以没有进度记录。
+        /// 如两个载体同时可见，查询仍读原有锁链。成功转换时，提交方负责交接原严重度并移除来源载体。
+        /// 要查询实际主人或核对在途任务的原绑定，使用 SSCBondUtility 的绑定查询。
+        /// </remarks>
+        internal static Hediff GetSexSlaveProgress(Pawn pawn)
+        {
+            Hediff chain = GetChainHediff(pawn);
+#if SSC_RW17
+            return chain ?? Hediff_SSCOwnerlessSlave.Find(pawn);
+#else
+            return chain;
 #endif
         }
 
@@ -262,31 +268,32 @@ namespace SexSlaveCraft
 
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
         /// <summary>
-        /// 根据实际锁链严重度判定阶段，供身份查询、成长倍率、需求和仪式共用。
-        /// 正好达到 Def 阈值即进入该阶，阈值下方的浮点余量仍归前一阶。
+        /// 使用进度载体的正阈值判定阶段，供身份查询、成长倍率、需求和仪式共用。
+        /// 读取原始严重度。恰好到达阈值即进阶，界面显示的整数百分比只用于展示。
         /// </summary>
         /// <returns>
         /// Stage 为已达到的正阈值数量。Floor 和 Previous 分别是本阶、前一阶起点，
-        /// 缺失的起点取 0。Next 是下一阶起点，无链或已到最高阶时为空。
-        /// 已挂链但尚未达到首个阈值时为零阶，Next 仍指向一阶起点。
+        /// 缺失的起点取 0。Next 是下一阶起点，无进度载体或已到最高阶时为空。
+        /// 尚未达到首个阈值的进度载体属于零阶，Next 仍指向一阶起点。
+        /// 例如 80% 返回三阶、本阶起点 50%、前阶起点 30% 和下阶起点 90%。
         /// </returns>
-        internal static (int Stage, float Floor, float Previous, float? Next) GetChainStage(Hediff chain)
+        internal static (int Stage, float Floor, float Previous, float? Next) GetSexSlaveProgressStage(Hediff progress)
         {
-            if (chain == null) return (0, 0f, 0f, null);
-            List<float> thresholds = GetChainStageThresholds(chain);
+            if (progress == null) return (0, 0f, 0f, null);
+            List<float> thresholds = GetChainStageThresholds(progress);
             int stage = 0;
-            while (stage < thresholds.Count && chain.Severity >= thresholds[stage]) stage++;
+            while (stage < thresholds.Count && progress.Severity >= thresholds[stage]) stage++;
             return (stage, stage > 0 ? thresholds[stage - 1] : 0f,
                 stage > 1 ? thresholds[stage - 2] : 0f,
                 stage < thresholds.Count ? thresholds[stage] : null);
         }
 
-        private static float GetCurrentChainStageFloor(Hediff chain) => GetChainStage(chain).Floor;
+        private static float GetCurrentChainStageFloor(Hediff chain) => GetSexSlaveProgressStage(chain).Floor;
 
         private static float GetCurrentChainStageUpper(Hediff chain)
         {
             // 这是维护资格的旧区间。零阶保留 12% 的资格上界，仪式限阶直接使用实际阈值。
-            var stage = GetChainStage(chain);
+            var stage = GetSexSlaveProgressStage(chain);
             return stage.Stage == 0 ? 0.12f : stage.Next ?? 1f;
         }
 #else

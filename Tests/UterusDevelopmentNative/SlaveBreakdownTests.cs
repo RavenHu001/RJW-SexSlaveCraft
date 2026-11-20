@@ -610,6 +610,54 @@ internal static partial class Program
                 finally { SkillDefOf.Social = previousSocial; }
             });
 
+            Case("daily training uses assignment and pays normally without binding zero-stage or ownerless targets", () =>
+            {
+                SkillDef previousSocial = SkillDefOf.Social;
+                try
+                {
+                    SkillDefOf.Social = DefDatabase<SkillDef>.GetNamedSilentFail("Social") ?? new SkillDef { defName = "Social" };
+                    if (DefDatabase<SkillDef>.GetNamedSilentFail("Social") == null) DefDatabase<SkillDef>.Add(SkillDefOf.Social);
+                    var (trainer, _) = BreakdownPawn(PawnIdentity.Master);
+                    trainer.skills.GetSkill(SkillDefOf.Social).Level = 15;
+
+                    foreach (bool legacy in new[] { false, true })
+                    foreach (bool ownerless in new[] { false, true })
+                    {
+                        SSCMod.settings.useOldScoring = legacy;
+                        var (target, need) = BreakdownPawn(PawnIdentity.Slave);
+                        Hediff record = null;
+                        if (ownerless)
+                        {
+                            record = target.health.AddHediff(DefDatabase<HediffDef>.GetNamed(Hediff_SSCOwnerlessSlave.DefName));
+                            record.Severity = .8f;
+                            need.SetCorruption(.1f);
+                            need.NeedInterval();
+                            Equal(.5f, need.CurLevel);
+                        }
+                        need.SetCorruption(.5f);
+                        var request = SSCRestrictionTrainingUtility.CreateRequest(trainer, target, false);
+                        Equal(SSCInteractionKind.DailyTraining, request.Kind);
+                        Require(!SSCRestrictionTrainingUtility.Evaluate(request, true).Allowed);
+                        target.TryGetComp<CompSexSlaveTraining>().ReplaceAssignedTrainers(new[] { trainer });
+                        Require(SSCRestrictionTrainingUtility.Evaluate(request, true).Allowed);
+                        Equal(SSCInteractionKind.BindingPreparation,
+                            SSCRestrictionTrainingUtility.CreateRequest(trainer, target, true).Kind);
+
+                        ConditioningUtility.ExecuteOutcome(trainer, target, 50f);
+                        Require(need.CurLevel > .5f);
+                        Require(SSCBondUtility.GetChain(target) == null, "daily outcome created a binding");
+
+                        // 旧调用者可直达公开进度入口。此入口同样只处理仪式的进度请求。
+                        ConditioningUtility.ProcessCorruptionProgression(trainer, target, false, 50f);
+                        Equal(record, TrainingOutcomeUtility.GetSexSlaveProgress(target));
+                        Equal(ownerless ? 3 : 0, SSCIdentityUtility.GetSexSlaveStage(target));
+                        Require(SSCBondUtility.GetChain(target) == null && SSCBondUtility.GetBridle(trainer) == null);
+                        if (record != null) Equal(.8f, record.Severity);
+                    }
+                }
+                finally { SkillDefOf.Social = previousSocial; }
+            });
+
             Case("one actual full crossing differentiates first and sends exactly one letter for each outcome", () =>
             {
                 var (pawn, need) = BreakdownPawn();
