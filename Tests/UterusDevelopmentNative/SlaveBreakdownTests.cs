@@ -673,13 +673,20 @@ internal static partial class Program
             {
                 var (pawn, need) = BreakdownPawn(PawnIdentity.Slave);
                 var record = pawn.health.AddHediff(DefDatabase<HediffDef>.GetNamed(Hediff_SSCOwnerlessSlave.DefName));
+                // 关闭档通常可提交。跨过一阶阈值后，原上下文和重新捕获的上下文都不能手动提交。
+                record.Severity = MathF.BitDecrement(.1f);
+                var sensitivity = SSCOrgasmSensitivityUtility.Capture(pawn);
+                Require(SSCOrgasmSensitivityUtility.CanSet(sensitivity, 0, out _));
+                record.Severity = .1f;
+                Require(!SSCOrgasmSensitivityUtility.TrySet(sensitivity, 0, out _));
+                Require(!SSCOrgasmSensitivityUtility.TrySet(SSCOrgasmSensitivityUtility.Capture(pawn), 0, out _));
                 record.Severity = .5f;
                 Near(3f, rjw.xxx.get_vulnerability(pawn));
                 Require(SSCSlaveBreakdown.IsEligiblePawn(pawn));
 
                 record.Severity = .9f;
                 var stat = rjw.RJWStatDefOf.Vulnerability;
-                Near(4.5f, stat.Worker.GetValue(StatRequest.For(pawn), applyPostProcess: false));
+                Near(18f, stat.Worker.GetValue(StatRequest.For(pawn), applyPostProcess: false));
                 var panel = pawn.GetStatValue(stat);
                 Near(3f, panel);
                 Near(panel, rjw.xxx.get_vulnerability(pawn));

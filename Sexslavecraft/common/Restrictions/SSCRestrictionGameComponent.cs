@@ -48,7 +48,11 @@ namespace SexSlaveCraft
             var traitPawns = new HashSet<Pawn>(pawns);
             using (var world = SSCBondOverviewWorld.Rent())
                 world.CollectCandidates(null, pawn => { if (pawn != null) traitPawns.Add(pawn); });
-            foreach (Pawn pawn in traitPawns) SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(pawn);
+            foreach (Pawn pawn in traitPawns)
+            {
+                SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(pawn);
+                SSCOrgasmSensitivityUtility.SyncOwnerless(pawn);
+            }
 
             // 角色引用、绑定及人格完整恢复后，才认领原存档的当前/排队命令。
             SSCDailyTrainingOccupancy.ReconcileAfterLoad(pawns);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Ownerless_PhaseRules>当前阶段：{0}（自动）</SSC_Ownerless_PhaseRules>
+  <SSC_Ownerless_PhaseRules>（无主性奴阶段{0}）</SSC_Ownerless_PhaseRules>
+  <SSC_Ownerless_StageLocked>随无主阶段自动调整，无法手动修改。</SSC_Ownerless_StageLocked>
   <SSC_Ownerless_RuleSummary>{0}：{1} · {2}</SSC_Ownerless_RuleSummary>
   <SSC_Restrictions_Source_OwnerlessStage>阶段规则</SSC_Restrictions_Source_OwnerlessStage>
   <SSC_Ownerless_OwnerOnlyBlocked>仅限主人（当前无主）</SSC_Ownerless_OwnerOnlyBlocked>

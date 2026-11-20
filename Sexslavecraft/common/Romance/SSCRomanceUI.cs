@@ -34,7 +34,7 @@ namespace SexSlaveCraft
             string fullTitle = "SSC_Romance_SexSection".Translate();
             bool embedded = prepare != null;
             string title = embedded ? "SSC_Romance_SexSectionShort".Translate().ToString() : fullTitle;
-            DrawBlock(listing, title, inner =>
+            DrawBlock(listing, WithOwnerlessStage(title, pawn), inner =>
             {
                 if (showSexSwitches) Dialog_SSCRestrictions.DrawGlobalSwitches(inner);
                 SSCRestrictionUI.DrawPawn(inner, pawn, true, prepare);
@@ -51,13 +51,24 @@ namespace SexSlaveCraft
             bool expanded = true, Action toggle = null)
         {
             var romanceReset = SSCRomancePreferences.GetResetView(pawn);
-            DrawBlock(listing, "SSC_Romance_RomanceSection".Translate(), inner => SSCRomanceUI.DrawPawn(inner, pawn, prepare, openTargets),
+            DrawBlock(listing, WithOwnerlessStage("SSC_Romance_RomanceSection".Translate(), pawn),
+                inner => SSCRomanceUI.DrawPawn(inner, pawn, prepare, openTargets),
                 rect => DrawReset(rect, romanceReset.CanReset, "SSC_BehaviorReset_RomanceTip", romanceReset.Reason, () =>
                 {
                     if (!SSCRomancePreferences.TryReset(pawn, romanceReset.Context, out var reason)) ResetFailed(pawn, reason);
                 }, "RomanceReset", prepare), prepare != null, null,
                 expanded, toggle == null ? null : rect => DrawDisclosure(rect, expanded, "ToggleRomanceRules", toggle, prepare));
         }
+
+        private static string WithOwnerlessStage(string title, Pawn pawn)
+        {
+#if SSC_RW17
+            int stage = Hediff_SSCOwnerlessSlave.GetActiveStage(pawn);
+            if (stage > 0) return title + " " + "SSC_Ownerless_PhaseRules".Translate(stage);
+#endif
+            return title;
+        }
+
         /// <summary>内容只绘制一次并据实际推进高度设置边框，避免测量时重复调用按钮或初始化提交。</summary>
         private static void DrawBlock(Listing_Standard listing, string title, Action<Listing_Standard> content,
             Action<Rect> reset, bool embedded, string titleTip, bool expanded, Action<Rect> disclosure)
@@ -236,26 +247,9 @@ namespace SexSlaveCraft
         internal static void DrawPawn(Listing_Standard listing, Pawn pawn, Func<Rect, object, Action, Action> prepare,
             Action<SSCRomanceCommandContext> openTargets)
         {
+            int ownerlessStage = 0;
 #if SSC_RW17
-            int ownerlessStage = SSCRomancePolicy.GetOwnerlessStage(pawn);
-            if (ownerlessStage > 0)
-            {
-                // 行为表跟随当前阶段刷新，提前结束绘制以免为无主角色生成有主偏好和点名命令控件。
-                listing.Label("SSC_Ownerless_PhaseRules".Translate(ownerlessStage));
-                DrawOwnerlessRule(SSCRomanceSetting.InitiateRomance, SSCRomanceAction.Romance);
-                DrawOwnerlessRule(SSCRomanceSetting.InitiateProposal, SSCRomanceAction.Proposal);
-                DrawOwnerlessRule(SSCRomanceSetting.InitiateBreakup, SSCRomanceAction.Breakup);
-                listing.Label("SSC_Ownerless_RomanceReceptionVanilla".Translate());
-                return;
-
-                void DrawOwnerlessRule(SSCRomanceSetting setting, SSCRomanceAction action)
-                {
-                    string value = SSCRomancePolicy.CanOwnerlessInitiate(ownerlessStage, action)
-                        ? "SSC_Ownerless_Vanilla" : "SSC_Ownerless_Denied";
-                    listing.Label("SSC_Ownerless_RuleSummary".Translate(("SSC_Romance_Setting_" + setting).Translate(),
-                        value.Translate(), "SSC_Restrictions_Source_OwnerlessStage".Translate()));
-                }
-            }
+            ownerlessStage = SSCRomancePolicy.GetOwnerlessStage(pawn);
 #endif
             if (prepare != null)
             {
@@ -275,9 +269,33 @@ namespace SexSlaveCraft
             // 规则和对象许可放进同一列，保持各自的阅读与点击顺序。
             void DrawGroupWithTargets(Listing_Standard target, int index, bool first)
             {
-                DrawGroup(target, pawn, groups[index], first, prepare);
-                DrawTargets(target, pawn, index == 1, prepare);
+                DrawGroup(target, pawn, groups[index], first, prepare, ownerlessStage);
+                DrawTargets(target, pawn, index == 1, prepare, ownerlessStage);
             }
+        }
+
+        /// <summary>共用偏好控件的显示数据。自动值没有保存凭据，灰显行仍显示当前阶段的许可。</summary>
+        internal static SSCRomanceView GetRuleView(Pawn pawn, SSCRomanceSetting setting, int ownerlessStage)
+        {
+#if SSC_RW17
+            if (ownerlessStage > 0)
+            {
+                return new SSCRomanceView
+                {
+                    AutomaticValue = setting switch
+                    {
+                        SSCRomanceSetting.InitiateRomance => SSCRomancePolicy.CanOwnerlessInitiate(ownerlessStage, SSCRomanceAction.Romance),
+                        SSCRomanceSetting.InitiateProposal => SSCRomancePolicy.CanOwnerlessInitiate(ownerlessStage, SSCRomanceAction.Proposal),
+                        SSCRomanceSetting.InitiateBreakup => SSCRomancePolicy.CanOwnerlessInitiate(ownerlessStage, SSCRomanceAction.Breakup),
+                        // 允许接收表示使用原版判断。没有主人对象，也没有任何必定接受的保证。
+                        SSCRomanceSetting.AcceptRomance or SSCRomanceSetting.AcceptProposal or
+                        SSCRomanceSetting.InitiateToSexSlave or SSCRomanceSetting.InitiateToOthers => true,
+                        _ => false
+                    }
+                };
+            }
+#endif
+            return SSCRomancePreferences.GetView(pawn, setting);
         }
         /// <summary>子标题居中并统一下横线的绘制颜色；恢复 GUI 状态，避免影响后续开关及禁用样式。</summary>
         private static void DrawSubtitle(Listing_Standard listing, string label, bool embedded)
@@ -301,7 +319,7 @@ namespace SexSlaveCraft
 
         /// <summary>各语言统一使用单列，一行一个开关；先捕获整组视图，绘制回调不能替后续条目重拍授权。</summary>
         private static void DrawGroup(Listing_Standard listing, Pawn pawn, SSCRomanceSetting[] settings, bool first,
-            Func<Rect, object, Action, Action> prepare)
+            Func<Rect, object, Action, Action> prepare, int ownerlessStage)
         {
             if (!first)
             {
@@ -312,7 +330,7 @@ namespace SexSlaveCraft
             var views = new SSCRomanceView[settings.Length];
             var labels = new string[settings.Length];
             for (int i = 0; i < settings.Length; i++)
-            { views[i] = SSCRomancePreferences.GetView(pawn, settings[i]); labels[i] = ("SSC_Romance_Setting_" + settings[i]).Translate(); }
+            { views[i] = GetRuleView(pawn, settings[i], ownerlessStage); labels[i] = ("SSC_Romance_Setting_" + settings[i]).Translate(); }
             for (int i = 0; i < settings.Length; i++)
             {
                 float width = listing.ColumnWidth;
@@ -323,7 +341,8 @@ namespace SexSlaveCraft
             }
         }
         /// <summary>主动对象与被动接受保证复用多选绘制；先捕获整组原视图，点击不能为旧请求重新取得人格权限。</summary>
-        private static void DrawTargets(Listing_Standard listing, Pawn pawn, bool passive, Func<Rect, object, Action, Action> prepare)
+        private static void DrawTargets(Listing_Standard listing, Pawn pawn, bool passive,
+            Func<Rect, object, Action, Action> prepare, int ownerlessStage)
         {
             // 展示类别共用短标签，实际提交仍分别指向主动许可或被动保证，不能混用保存源。
             var labelsFor = new[] { SSCRomanceSetting.InitiateToMaster, SSCRomanceSetting.InitiateToSexSlave, SSCRomanceSetting.InitiateToOthers };
@@ -334,8 +353,8 @@ namespace SexSlaveCraft
             var labels = new string[3];
             for (int i = 0; i < settings.Length; i++)
             {
-                views[i] = SSCRomancePreferences.GetView(pawn, settings[i]);
-                labels[i] = (views[i].Saved ? "✓ " : "□ ") + ("SSC_Romance_Setting_" + labelsFor[i]).Translate();
+                views[i] = GetRuleView(pawn, settings[i], ownerlessStage);
+                labels[i] = (views[i].DisplayValue ? "✓ " : "□ ") + ("SSC_Romance_Setting_" + labelsFor[i]).Translate();
             }
             const float indent = 12f, padding = 8f, gap = 6f;
             float width = Mathf.Max(1f, listing.ColumnWidth - indent - padding * 2f);
@@ -482,7 +501,7 @@ namespace SexSlaveCraft
         {
             float labelWidth = Mathf.Max(1f, row.width - 34f);
             float labelHeight = row.height - 8f;
-            bool previous = GUI.enabled, value = view.Saved;
+            bool previous = GUI.enabled, value = view.DisplayValue;
             Color color = GUI.color;
             TextAnchor anchor = Text.Anchor;
             try
@@ -499,7 +518,7 @@ namespace SexSlaveCraft
                 if (prepare != null)
                 {
                     // 图标沿用原版纹理。点击图标或文字都通过整行按钮提交原按压。
-                    Widgets.CheckboxDraw(iconX, iconY, view.Saved, !GUI.enabled);
+                    Widgets.CheckboxDraw(iconX, iconY, view.DisplayValue, !GUI.enabled);
                     if (GUI.enabled && Widgets.ButtonInvisible(row)) value = !value;
                 }
                 else
@@ -507,7 +526,7 @@ namespace SexSlaveCraft
                     Widgets.Checkbox(iconX, iconY, ref value, 24f, !GUI.enabled);
                     if (GUI.enabled && Widgets.ButtonInvisible(new Rect(row.x, row.y, labelWidth, labelHeight))) value = !value;
                 }
-                if (GUI.enabled && value != view.Saved) submit?.Invoke();
+                if (GUI.enabled && value != view.DisplayValue) submit?.Invoke();
             }
             finally { GUI.enabled = previous; GUI.color = color; Text.Anchor = anchor; }
             TooltipHandler.TipRegion(row, SettingTip(setting, view));
@@ -533,6 +552,13 @@ namespace SexSlaveCraft
                 setting <= SSCRomanceSetting.AcceptProposal ? "SSC_Romance_PassiveMeaning" : "SSC_Romance_MustAcceptMeaning";
             // 三项被动接受保证共用相同说明格式；仅按各自视图追加资格与阶段信息。
             string tip = key.Translate();
+            if (view.AutomaticValue.HasValue)
+            {
+                tip += "\n\n" + "SSC_Ownerless_StageLocked".Translate();
+                if (setting == SSCRomanceSetting.AcceptRomance || setting == SSCRomanceSetting.AcceptProposal)
+                    tip += "\n" + "SSC_Ownerless_RomanceReceptionVanilla".Translate();
+                return tip;
+            }
             // 阶段不足直接显示具体名称，避免先给泛化原因再重复一条数字阶段提示。
             if (!view.CanChange && view.Reason != SSCRomanceReason.Stage) tip += "\n\n" + SSCRomanceCommandUtility.Explain(view.Reason.ToString());
             if (!view.Unlocked) tip += "\n\n" + "SSC_Romance_RequiredStage".Translate(SSCRomanceResolver.StageName(SSCRomanceResolver.RequiredStage(setting)));

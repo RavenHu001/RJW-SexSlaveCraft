@@ -326,27 +326,17 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>正式无主展示阶段倍率，有主手动设置继续使用保存档位和当前效果。</summary>
+        /// <summary>共用档位控件。正式无主显示对应阶段的锁定档位，有主显示原保存档位。</summary>
         private void AddSensitivitySection(SettingsColumn column, PageEdit edit, SSCOrgasmSensitivityContext context)
         {
-            if (Hediff_SSCOwnerlessSlave.GetActiveStage(edit.Pawn) > 0)
-            {
-                // 展示当前无主 Def 的乘数。最终属性还受身体、其他 Hediff 和 RJW Stat 后处理影响，
-                // 例如中性夹具的四阶 ×4.50 在面板和 RJW 接口均读到 300%。
-                var factors = Hediff_SSCOwnerlessSlave.Find(edit.Pawn)?.CurStage?.statFactors;
-                float multiplier = factors?.Find(x => x.stat?.defName == "Vulnerability")?.value ?? 1f;
-                column.AddLabel("SSC_Sensitivity_Title".Translate());
-                column.AddLabel("SSC_Ownerless_AutoSensitivity".Translate(multiplier.ToString("0.00")), column.Indent);
-                return;
-            }
-            // 降阶后保存档位和实际档位可不同，显示实际值不会回写保存值。
             var state = SSCOrgasmSensitivityUtility.GetState(edit.Pawn);
-            AddBodySetting(column, edit, "<b>" + "SSC_Sensitivity_Title".Translate() + "</b>", state.SavedLevel,
+            AddBodySetting(column, edit, "<b>" + "SSC_Sensitivity_Title".Translate() + "</b>",
+                state.OwnerlessStage > 0 ? state.EffectiveLevel : state.SavedLevel,
                 Enumerable.Range(0, 5), SSCOrgasmSensitivityPresentation.Level,
                 (int level, out string reason) => SSCOrgasmSensitivityUtility.CanSet(context, level, out reason),
                 (int level, out string reason) => SSCOrgasmSensitivityUtility.TrySet(context, level, out reason),
                 optionLabel: SSCOrgasmSensitivityPresentation.OptionLabel);
-            if (state.SavedLevel != state.EffectiveLevel)
+            if (state.OwnerlessStage == 0 && state.SavedLevel != state.EffectiveLevel)
                 column.AddLabel("SSC_Sensitivity_EffectiveLevel".Translate(SSCOrgasmSensitivityPresentation.Level(state.EffectiveLevel)),
                     column.Indent, state.InactiveReason?.Translate().ToString());
         }

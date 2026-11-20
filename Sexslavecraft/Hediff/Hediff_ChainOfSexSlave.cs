@@ -52,6 +52,7 @@ namespace SexSlaveCraft
             SSCRomanceLifecycle.Notify(pawn);
             // 新链只刷新身体指令的实际准入，不在锁链上保存或重置敏感度档位。
             SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
+            SSCOrgasmSensitivityUtility.SyncOwnerless(pawn);
 #endif
             SSCSelfTrainingFeedback.NotifyStatusChanged(pawn);
             ModLog.Message($"[ChainOfSexSlave] Added to {pawn}, linked with {LinkedPawn ?? target}");
@@ -129,6 +130,7 @@ namespace SexSlaveCraft
             SSCCorruptionStages.NotifyContextChanged(pawn);
             SSCRomanceLifecycle.Notify(pawn);
             SSCOrgasmSensitivityUtility.NotifyStateChanged(pawn);
+            SSCOrgasmSensitivityUtility.SyncOwnerless(pawn);
 #endif
             Pawn formerMaster = LinkedPawn;
             Pawn currentMaster = SSCBondUtility.GetBoundMaster(pawn);

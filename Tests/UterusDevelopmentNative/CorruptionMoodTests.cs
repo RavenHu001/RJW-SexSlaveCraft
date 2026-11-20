@@ -20,6 +20,15 @@ internal static partial class Program
             DefDatabase<StatDef>.Add(new StatDef { defName = "MarketValue", defaultBaseValue = 1f });
         var ownerlessDef = DirectXmlToObject.ObjectFromXml<HediffDef>(xml.DocumentElement["HediffDef"], false);
         DefDatabase<HediffDef>.Add(ownerlessDef);
+        var sensitivityDef = SSCOrgasmSensitivityUtility.Definition;
+        if (sensitivityDef == null)
+        {
+            xml.Load(Path.Combine(repo, "1.7/Defs/HediffDefs/SSC_OrgasmSensitivity.xml"));
+            sensitivityDef = DirectXmlToObject.ObjectFromXml<HediffDef>(xml.DocumentElement["HediffDef"], false);
+            DefDatabase<HediffDef>.Add(sensitivityDef);
+        }
+        xml.Load(Path.Combine(repo, "1.7/Defs/ThoughtDefs/SSC_OrgasmSensitivity.xml"));
+        var sharedSensitivityMood = DirectXmlToObject.ObjectFromXml<ThoughtDef>(xml.DocumentElement["ThoughtDef"], false);
         DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
         xml.Load(Path.Combine(repo, "1.7/Defs/ThoughtDefs/SSC_OwnerlessSlave.xml"));
         var ownerlessMood = DirectXmlToObject.ObjectFromXml<ThoughtDef>(xml.DocumentElement["ThoughtDef"], false);
@@ -140,6 +149,7 @@ internal static partial class Program
             Require(record.CurStage.statFactors.NullOrEmpty() && record.CurStage.capMods.NullOrEmpty());
             Require(!ownerlessMood.Worker.CurrentState(pawn).Active && CanRebel());
             Require(!SSCPnaExposureUtility.HasAddictionImmunity(pawn));
+            Require(!pawn.health.hediffSet.HasHediff(sensitivityDef));
 
             record.Severity = .1f;
             Equal(1, record.CurStageIndex);
@@ -149,8 +159,39 @@ internal static partial class Program
             Equal(-5f, ownerlessMood.stages[0].baseMoodEffect);
             Require(!CanRebel() && SSCPnaExposureUtility.HasAddictionImmunity(pawn));
             Require(!SSCPnaExposureUtility.IsRooted(pawn) && !Utils.HasChainHediff(pawn));
+            var automatic = pawn.health.hediffSet.GetFirstHediffOfDef(sensitivityDef);
+            Require(automatic is Hediff_SSCOrgasmSensitivity && !automatic.ShouldRemove);
+            Equal(sensitivityDef.Description, automatic.Description);
+            var stageOne = SSCOrgasmSensitivityUtility.GetState(pawn);
+            Equal(1, stageOne.EffectiveLevel);
+            Equal(0, stageOne.SavedLevel);
+            Equal(2f, stageOne.Multiplier);
+            Near(.3f, stageOne.VulnerabilityOffset);
+            record.Severity = .9f;
+            var stageFour = SSCOrgasmSensitivityUtility.GetState(pawn);
+            Equal(4, stageFour.EffectiveLevel);
+            Equal(16f, pawn.GetStatValue(SSCOrgasmFrequencyUtility.Definition));
+            Equal(3f, stageFour.VulnerabilityOffset);
+            Require(sharedSensitivityMood.Worker.CurrentState(pawn).Active);
+            Equal(automatic, pawn.health.hediffSet.GetFirstHediffOfDef(sensitivityDef));
             pawn.health.RemoveHediff(record);
+            Require(!pawn.health.hediffSet.HasHediff(sensitivityDef));
             Require(!ownerlessMood.Worker.CurrentState(pawn).Active && CanRebel());
+
+            // 原有手动档位在自动期间留在同一个实例中，重新绑定后立即恢复有主模式。
+            var manual = HediffMaker.MakeHediff(sensitivityDef, pawn);
+            manual.Severity = 2f;
+            pawn.health.AddHediff(manual);
+            pawn.health.AddHediff(ownerlessDef).Severity = .9f;
+            Equal(manual, SSCOrgasmSensitivityUtility.Find(pawn));
+            Equal(4, SSCOrgasmSensitivityUtility.GetState(pawn).EffectiveLevel);
+            Equal(2f, manual.Severity);
+            var chain = (Hediff_ChainOfSexSlave)HediffMaker.MakeHediff(SSCDefOf.ChainOfSexSlave, pawn);
+            chain.target = ImprintPawn(PawnIdentity.Master);
+            chain.Severity = .9f;
+            pawn.health.AddHediff(chain);
+            Equal(manual, SSCOrgasmSensitivityUtility.Find(pawn));
+            Equal(2, SSCOrgasmSensitivityUtility.GetState(pawn).EffectiveLevel);
         });
 
         Check("ownerless stage changes drive read-only permissions and natural romance", () =>
@@ -211,7 +252,11 @@ internal static partial class Program
 
             Require(SSCRomancePolicy.Evaluate(pawn, other, SSCRomanceAction.Romance).CanInitiate);
             Require(!SSCRomancePolicy.Evaluate(pawn, other, SSCRomanceAction.Proposal).CanInitiate);
+            var view = SSCRomanceUI.GetRuleView(pawn, SSCRomanceSetting.InitiateRomance, SSCRomancePolicy.GetOwnerlessStage(pawn));
+            Require(view.DisplayValue && !view.CanChange && view.Context == null);
             record.Severity = .9f;
+            view = SSCRomanceUI.GetRuleView(pawn, SSCRomanceSetting.InitiateRomance, SSCRomancePolicy.GetOwnerlessStage(pawn));
+            Require(!view.DisplayValue && !view.CanChange && view.Context == null);
             Require(!SSCRomancePolicy.Evaluate(pawn, other, SSCRomanceAction.Romance).CanInitiate);
             Require(SSCRomancePolicy.Evaluate(pawn, other, SSCRomanceAction.Breakup).CanInitiate);
             Equal(SSCRomanceReception.Vanilla,

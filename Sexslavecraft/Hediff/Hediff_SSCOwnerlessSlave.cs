@@ -71,6 +71,7 @@ namespace SexSlaveCraft
             // 失去或获得阶段都可能改变无主持续心情、恶堕落差和自我调教许可心情，共用原版思想失效通知。
             SSCSelfTrainingFeedback.NotifyStatusChanged(pawn);
             if (Scribe.mode != LoadSaveMode.Inactive) return;
+            SSCOrgasmSensitivityUtility.SyncOwnerless(pawn);
             // 指派和训导官由各自的维护入口按当前身份重算，已有的绑定／人格事务继续负责延迟其内部通知。
             SSCRestrictionGameComponent.Notify(pawn);
             TrainerSpecializationLifecycle.Notify(pawn);

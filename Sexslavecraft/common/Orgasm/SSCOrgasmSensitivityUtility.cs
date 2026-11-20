@@ -10,15 +10,16 @@ namespace SexSlaveCraft
     public readonly struct SSCOrgasmSensitivityState
     {
         public readonly Hediff_SSCOrgasmSensitivity Record;
-        public readonly int SavedLevel, EffectiveLevel, ChainStage, MaximumLevel;
+        public readonly int SavedLevel, EffectiveLevel, ChainStage, OwnerlessStage, MaximumLevel;
         public readonly float Multiplier, VulnerabilityOffset;
         public readonly string InactiveReason;
 
         /// <summary>封装同一次有效性查询，不保存结果，也不把实际档位写回身体选择。</summary>
-        internal SSCOrgasmSensitivityState(Hediff_SSCOrgasmSensitivity record, int saved, int effective, int stage,
+        internal SSCOrgasmSensitivityState(Hediff_SSCOrgasmSensitivity record, int saved, int effective, int stage, int ownerlessStage,
             int maximum, float multiplier, float offset, string reason)
         {
-            Record = record; SavedLevel = saved; EffectiveLevel = effective; ChainStage = stage; MaximumLevel = maximum;
+            Record = record; SavedLevel = saved; EffectiveLevel = effective; ChainStage = stage;
+            OwnerlessStage = ownerlessStage; MaximumLevel = maximum;
             Multiplier = multiplier; VulnerabilityOffset = offset; InactiveReason = reason;
         }
     }
@@ -44,22 +45,33 @@ namespace SexSlaveCraft
         /// <summary>只接受有限的一至四整数；非法输入不能靠取整或原版上限裁剪变成高档。</summary>
         public static bool IsLegalLevel(float value) => float.IsFinite(value) && value >= 1f && value <= 4f && value == (int)value;
 
-        /// <summary>当前健康列表中的首个合法全身记录为唯一 owner；重复记录不会重复提供属性。</summary>
+        /// <summary>优先读取原手动指令。零严重度仅在无主阶段下承载当前自动档位。</summary>
         public static Hediff_SSCOrgasmSensitivity Find(Pawn pawn)
+            => Find(pawn, Hediff_SSCOwnerlessSlave.GetActiveStage(pawn) > 0);
+
+        private static Hediff_SSCOrgasmSensitivity Find(Pawn pawn, bool automatic)
         {
             var records = pawn?.health?.hediffSet?.hediffs;
             if (records == null) return null;
+            Hediff_SSCOrgasmSensitivity automaticOnly = null;
             foreach (var record in records)
+            {
                 if (record is Hediff_SSCOrgasmSensitivity body && record.def?.defName == DefName &&
-                    record.pawn == pawn && record.Part == null && IsLegalLevel(record.Severity)) return body;
-            return null;
+                    record.pawn == pawn && record.Part == null)
+                {
+                    if (IsLegalLevel(record.Severity)) return body;
+                    if (automatic && record.Severity == 0f) automaticOnly ??= body;
+                }
+            }
+            return automaticOnly;
         }
 
-        /// <summary>从实际身份和锁链计算准入；主人死亡或离图不会撤销已保存的微械指令。</summary>
+        /// <summary>有主按保存档位和锁链上限计算，无主直接使用当前阶段。两者消费同一份档位参数。</summary>
         public static SSCOrgasmSensitivityState GetState(Pawn pawn)
         {
             // 保存值只来自唯一合法身体记录；未满足当前准入时仍保留这个值供界面说明。
-            var record = Find(pawn);
+            int ownerlessStage = Hediff_SSCOwnerlessSlave.GetActiveStage(pawn);
+            var record = Find(pawn, ownerlessStage > 0);
             int saved = record == null ? 0 : (int)record.Severity;
             var config = SSCOrgasmSensitivityConfig.Get(Definition);
             var chain = SSCBondUtility.GetChain(pawn);
@@ -73,13 +85,13 @@ namespace SexSlaveCraft
             else if (SSCPersonalityRuntimeUtility.IsMutating(pawn) || SSCMasterProgressionUtility.IsHollow(pawn))
                 reason = "SSC_Sensitivity_PersonalityUnavailable";
             else if (!SSCIdentityUtility.IsSexSlave(pawn)) reason = "SSC_Sensitivity_NotSlave";
-            else if (chain == null || chain.pawn != pawn || !pawn.health.hediffSet.hediffs.Contains(chain) ||
-                chain.LinkedPawn == null || chain.LinkedPawn.Destroyed || chain.LinkedPawn.Discarded || stage < 1)
+            else if (ownerlessStage == 0 && (chain == null || chain.pawn != pawn || !pawn.health.hediffSet.hediffs.Contains(chain) ||
+                chain.LinkedPawn == null || chain.LinkedPawn.Destroyed || chain.LinkedPawn.Discarded || stage < 1))
                 reason = "SSC_Sensitivity_NoChain";
-            int maximum = reason == null ? config.Maximum(stage) : 0;
-            // 降阶只裁减这次实际消费，不回写 Severity，因此重新升阶后能恢复原选择。
-            int effective = Math.Min(saved, maximum);
-            return new SSCOrgasmSensitivityState(record, saved, effective, stage, maximum,
+            int maximum = reason != null ? 0 : ownerlessStage > 0 ? Math.Min(ownerlessStage, 4) : config.Maximum(stage);
+            // 无主采用同阶档位，底下的手动值不改写，重新绑定后仍可恢复。
+            int effective = ownerlessStage > 0 && record != null ? maximum : Math.Min(saved, maximum);
+            return new SSCOrgasmSensitivityState(record, saved, effective, stage, ownerlessStage, maximum,
                 effective > 0 ? config.Multipliers[effective - 1] : 1f,
                 effective > 0 ? config.Offsets[effective - 1] : 0f, reason);
         }
@@ -121,7 +133,7 @@ namespace SexSlaveCraft
             return ReferenceEquals(chain, context.Chain) && ReferenceEquals(chain?.LinkedPawn, context.Master);
         }
 
-        /// <summary>校验目标档位及原凭据；关闭不依赖效果准入和 XML，但仍须当前身体可编辑。</summary>
+        /// <summary>校验目标档位及原凭据。正式无主的档位随阶段变化，所有手动提交均拒绝。</summary>
         public static bool CanSet(SSCOrgasmSensitivityContext context, int level, out string reason)
             => CheckAdmission(context, level, true, out reason);
 
@@ -136,6 +148,7 @@ namespace SexSlaveCraft
                 key = "SSC_Sensitivity_NotEditable";
             else if (SSCPersonalityRuntimeUtility.IsMutating(pawn) || SSCMasterProgressionUtility.IsHollow(pawn))
                 key = "SSC_Sensitivity_PersonalityUnavailable";
+            else if (Hediff_SSCOwnerlessSlave.GetActiveStage(pawn) > 0) key = "SSC_Ownerless_StageLocked";
             else if (level < 0 || level > 4) key = "SSC_Sensitivity_InvalidLevel";
             else if (level != 0)
             {
@@ -214,6 +227,27 @@ namespace SexSlaveCraft
         /// <summary>对外统一反馈原载体已经变化，不静默改写替代实例。</summary>
         private static bool RejectChanged(out string reason)
         { reason = "SSC_BodyManagement_BodyChanged".Translate(); return false; }
+
+        /// <summary>在进度载体变更和读档后协调同一个改写 Hediff。零只表示此前未保存手动档位。</summary>
+        internal static void SyncOwnerless(Pawn pawn)
+        {
+            if (Scribe.mode != LoadSaveMode.Inactive || pawn?.health?.hediffSet == null) return;
+            var health = pawn.health;
+            var def = Definition;
+            if (def == null) return;
+            bool automatic = Hediff_SSCOwnerlessSlave.GetActiveStage(pawn) > 0;
+            var existing = health.hediffSet.GetFirstHediffOfDef(def);
+            if (!automatic && existing == null) return;
+            var record = Find(pawn, automatic);
+            if (automatic && record == null && def.hediffClass == typeof(Hediff_SSCOrgasmSensitivity))
+            {
+                var created = HediffMaker.MakeHediff(def, pawn);
+                created.Severity = 0f;
+                health.AddHediff(created);
+            }
+            else if (!automatic && existing != null && existing.Severity == 0f) Normalize(pawn);
+            NotifyStateChanged(pawn);
+        }
 
         /// <summary>仅在加入、加载或自有写入边界修复；保留首个合法实例及其原选择，不合计或取最大档。</summary>
         public static void Normalize(Pawn pawn)
