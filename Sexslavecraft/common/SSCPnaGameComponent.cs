@@ -17,7 +17,7 @@ namespace SexSlaveCraft
 
         public static void NormalizePawn(Pawn pawn)
         {
-            // 先按有效链确定负荷形态并清除受保护身体的普通依赖，再清理旧依赖值。
+            // 引用恢复后先判定免瘾和有效链，分别清理依赖与协调负荷；随后规范剩余普通依赖。
             SSCPnaExposureUtility.RefreshBodyState(pawn, true);
             SSCPnaExposureUtility.NormalizeAddiction(pawn);
             // 满旧记录不补新依赖；已有合法进度和满足度不重置。

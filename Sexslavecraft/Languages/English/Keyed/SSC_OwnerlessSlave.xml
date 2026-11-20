@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Ownerless_PhaseRules>Current stage: {0} (automatic)</SSC_Ownerless_PhaseRules>
+  <SSC_Ownerless_RuleSummary>{0}: {1} · {2}</SSC_Ownerless_RuleSummary>
+  <SSC_Restrictions_Source_OwnerlessStage>Stage rule</SSC_Restrictions_Source_OwnerlessStage>
+  <SSC_Ownerless_OwnerOnlyBlocked>Owner only (currently unbound)</SSC_Ownerless_OwnerOnlyBlocked>
+  <SSC_Ownerless_AutoSensitivity>Stage vulnerability multiplier ×{0}</SSC_Ownerless_AutoSensitivity>
+  <SSC_Ownerless_RomanceReceptionVanilla>The base game decides how advances and proposals are received.</SSC_Ownerless_RomanceReceptionVanilla>
+  <SSC_Ownerless_Vanilla>Base game rules</SSC_Ownerless_Vanilla>
+  <SSC_Ownerless_Denied>Denied</SSC_Ownerless_Denied>
+</LanguageData>

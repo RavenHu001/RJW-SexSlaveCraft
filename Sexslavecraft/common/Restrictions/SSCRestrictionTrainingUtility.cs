@@ -46,6 +46,10 @@ namespace SexSlaveCraft
         public static Pawn GetForcedTrainer(Pawn pawn)
         {
             if (!(SSCMod.settings?.enableSexSlaveProtectionRules ?? true)) return null;
+#if SSC_RW17
+            // 拒绝接收且锁定为主人的协调只适用于实际绑定。无主名单独立于此刻的接收许可。
+            if (SSCRestrictionResolver.GetOwnerlessStage(pawn) > 0) return null;
+#endif
             SSCRestrictionConfig config = pawn?.TryGetComp<CompSexSlaveTraining>()?.restrictionConfig;
             if (!SSCRestrictionResolver.IsApplicable(pawn) || config?.IsValid() != true) return null;
             SSCRestrictionResolution rule = SSCRestrictionResolver.Resolve(pawn, config.rules, SSCRestrictionRule.ReceiveTraining);

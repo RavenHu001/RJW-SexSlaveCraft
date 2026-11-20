@@ -101,6 +101,24 @@ namespace SexSlaveCraft
             }
             if (!(SSCMod.settings?.enableSexSlaveProtectionRules ?? true))
                 listing.Label("SSC_Restrictions_Paused".Translate());
+#if SSC_RW17
+            int ownerlessStage = SSCRestrictionResolver.GetOwnerlessStage(pawn);
+            if (ownerlessStage > 0)
+            {
+                // 仍走执行侧的解析器，以显示装备、特化和总开关的最终结果。无主没有 OwnerOnly 的匹配对象。
+                listing.Label("SSC_Ownerless_PhaseRules".Translate(ownerlessStage));
+                foreach (var rule in SSCRestrictionRules.All)
+                {
+                    var entry = SSCRestrictionResolver.Resolve(pawn, null, rule);
+                    string value = entry.Valid ? ValueLabel(entry.Value) : "SSC_Restrictions_InvalidValue".Translate().ToString();
+                    if (entry.Valid && entry.Value == SSCRestrictionValue.OwnerOnly)
+                        value = "SSC_Ownerless_OwnerOnlyBlocked".Translate();
+                    listing.Label("SSC_Ownerless_RuleSummary".Translate(("SSC_Restrictions_Option_" + rule).Translate(),
+                        value, SourceLabel(entry)));
+                }
+                return;
+            }
+#endif
             bool applicable = SSCRestrictionResolver.IsApplicable(pawn);
             bool selfApplicable = SSCSelfTrainingEligibility.IsEligible(pawn);
             if (!applicable && !selfApplicable) listing.Label("SSC_Restrictions_NotApplicable".Translate());

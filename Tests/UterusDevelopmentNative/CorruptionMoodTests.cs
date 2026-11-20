@@ -13,8 +13,16 @@ internal static partial class Program
         var thought = DirectXmlToObject.ObjectFromXml<ThoughtDef>(xml.DocumentElement["ThoughtDef"], false);
         var dirty = AccessTools.Field(typeof(SituationalThoughtHandler), "thoughtsDirty");
         xml.Load(Path.Combine(repo, "1.7/Defs/HediffDefs/SSC_OwnerlessSlave.xml"));
+        foreach (string name in new[] { "Consciousness", "Talking", "Manipulation" })
+            if (DefDatabase<PawnCapacityDef>.GetNamedSilentFail(name) == null)
+                DefDatabase<PawnCapacityDef>.Add(new PawnCapacityDef { defName = name });
+        if (DefDatabase<StatDef>.GetNamedSilentFail("MarketValue") == null)
+            DefDatabase<StatDef>.Add(new StatDef { defName = "MarketValue", defaultBaseValue = 1f });
         var ownerlessDef = DirectXmlToObject.ObjectFromXml<HediffDef>(xml.DocumentElement["HediffDef"], false);
         DefDatabase<HediffDef>.Add(ownerlessDef);
+        DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
+        xml.Load(Path.Combine(repo, "1.7/Defs/ThoughtDefs/SSC_OwnerlessSlave.xml"));
+        var ownerlessMood = DirectXmlToObject.ObjectFromXml<ThoughtDef>(xml.DocumentElement["ThoughtDef"], false);
 
         (Pawn pawn, Need_Corruption need) Subject(PawnIdentity identity = PawnIdentity.Unset)
         {
@@ -114,6 +122,103 @@ internal static partial class Program
                 Require(Patch_SexSlaveApparelRestriction.Prefix(outfit, pawn, ref reason, ref result));
             }
             finally { SSCDefOf.EFOutfit = previousDef; }
+        });
+
+        Check("ownerless effects, mood and protection activate together at the first threshold", () =>
+        {
+            var (pawn, _) = Subject(PawnIdentity.Slave);
+            var record = HediffMaker.MakeHediff(ownerlessDef, pawn);
+            record.Severity = MathF.BitDecrement(.1f);
+            pawn.health.AddHediff(record);
+            bool CanRebel()
+            {
+                bool result = true;
+                Patch_SlaveRebellionUtility_CanParticipateInSlaveRebellion.Postfix(pawn, ref result);
+                return result;
+            }
+            Equal(0, record.CurStageIndex);
+            Require(record.CurStage.statFactors.NullOrEmpty() && record.CurStage.capMods.NullOrEmpty());
+            Require(!ownerlessMood.Worker.CurrentState(pawn).Active && CanRebel());
+            Require(!SSCPnaExposureUtility.HasAddictionImmunity(pawn));
+
+            record.Severity = .1f;
+            Equal(1, record.CurStageIndex);
+            Equal(1.25f, record.CurStage.statFactors.Single(x => x.stat.defName == "MarketValue").value);
+            Equal(-.05f, record.CurStage.capMods.Single(x => x.capacity.defName == "Consciousness").offset);
+            Equal(0, ownerlessMood.Worker.CurrentState(pawn).StageIndex);
+            Equal(-5f, ownerlessMood.stages[0].baseMoodEffect);
+            Require(!CanRebel() && SSCPnaExposureUtility.HasAddictionImmunity(pawn));
+            Require(!SSCPnaExposureUtility.IsRooted(pawn) && !Utils.HasChainHediff(pawn));
+            pawn.health.RemoveHediff(record);
+            Require(!ownerlessMood.Worker.CurrentState(pawn).Active && CanRebel());
+        });
+
+        Check("ownerless stage changes drive read-only permissions and natural romance", () =>
+        {
+            var (pawn, _) = Subject(PawnIdentity.Slave);
+            var other = ImprintPawn();
+            var record = pawn.health.AddHediff(ownerlessDef);
+            var comp = pawn.TryGetComp<CompSexSlaveTraining>();
+            bool Allowed(SSCInteractionKind kind, Pawn actor, Pawn target)
+                => SSCRestrictionPolicy.Evaluate(new SSCRestrictionRequest(actor, target, kind, true)).Allowed;
+            Require(comp.restrictionConfig == null && Allowed(SSCInteractionKind.SelfTraining, pawn, pawn));
+            var saved = new SSCRestrictionConfig();
+            comp.restrictionConfig = saved;
+            Require(Allowed(SSCInteractionKind.Masturbation, pawn, pawn));
+
+            record.Severity = .5f;
+            Require(!Allowed(SSCInteractionKind.Masturbation, pawn, pawn));
+            Require(Allowed(SSCInteractionKind.SelfTraining, pawn, pawn));
+            Require(!Allowed(SSCInteractionKind.Consensual, pawn, other));
+            Require(Allowed(SSCInteractionKind.Consensual, other, pawn));
+            Equal(SSCRestrictionSource.OwnerlessStage,
+                SSCRestrictionResolver.Resolve(pawn, null, SSCRestrictionRule.ReceiveTraining).Source);
+            Require(!SSCRestrictionEditor.TrySet(pawn, SSCRestrictionRule.Masturbation, SSCRestrictionValue.Allow));
+            Equal(1, SSCRestrictionLifecycle.ApplyDefaults(new[] { pawn }, new SSCRestrictionRules()).Skipped);
+            Equal(saved, comp.restrictionConfig);
+
+            var profile = new SSCRestrictionProfileDef
+            {
+                defName = "SSC_TestOwnerlessOverride", specialization = SexSlaveSpecializationType.Bus,
+                forced = new SSCRestrictionOverrides { masturbation = SSCRestrictionValue.Allow }
+            };
+            DefDatabase<SSCRestrictionProfileDef>.Add(profile);
+            try
+            {
+                comp.specializationType = SexSlaveSpecializationType.Bus;
+                Require(Allowed(SSCInteractionKind.Masturbation, pawn, pawn));
+                Equal(SSCRestrictionSource.Specialization,
+                    SSCRestrictionResolver.Resolve(pawn, null, SSCRestrictionRule.Masturbation).Source);
+                var equipment = Bare<ThingDef>();
+                equipment.modExtensions = new List<DefModExtension>
+                {
+                    new SSCRestrictionEquipmentExtension
+                    {
+                        forced = new SSCRestrictionOverrides { masturbation = SSCRestrictionValue.Deny }
+                    }
+                };
+                pawn.apparel = new Pawn_ApparelTracker(pawn);
+                pawn.apparel.WornApparel.Add(new Apparel { def = equipment });
+                Require(!Allowed(SSCInteractionKind.Masturbation, pawn, pawn));
+                Equal(SSCRestrictionSource.Equipment,
+                    SSCRestrictionResolver.Resolve(pawn, null, SSCRestrictionRule.Masturbation).Source);
+            }
+            finally
+            {
+                AccessTools.Method(typeof(DefDatabase<SSCRestrictionProfileDef>), "Remove")
+                    .Invoke(null, new object[] { profile });
+            }
+
+            Require(SSCRomancePolicy.Evaluate(pawn, other, SSCRomanceAction.Romance).CanInitiate);
+            Require(!SSCRomancePolicy.Evaluate(pawn, other, SSCRomanceAction.Proposal).CanInitiate);
+            record.Severity = .9f;
+            Require(!SSCRomancePolicy.Evaluate(pawn, other, SSCRomanceAction.Romance).CanInitiate);
+            Require(SSCRomancePolicy.Evaluate(pawn, other, SSCRomanceAction.Breakup).CanInitiate);
+            Equal(SSCRomanceReception.Vanilla,
+                SSCRomancePolicy.Evaluate(other, pawn, SSCRomanceAction.Proposal).Reception);
+            // 资格查询也会遇到尚无健康组件的角色。该状态沿原版判定。
+            other.health = null;
+            Require(SSCRomancePolicy.Evaluate(other, pawn, SSCRomanceAction.Romance).CanInitiate);
         });
 
         Check("corruption display and native thought use the same exact four boundaries", () =>

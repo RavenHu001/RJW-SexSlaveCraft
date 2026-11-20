@@ -76,6 +76,18 @@ namespace SexSlaveCraft
         public static Hediff GetAddiction(Pawn pawn)
             => pawn?.health?.hediffSet?.hediffs.FirstOrDefault(h => IsAddictionDef(h?.def));
 
+        /// <summary>主人、实际有链身体、正式无主一阶以上共用依赖与需求保护。</summary>
+        /// <remarks>
+        /// 无主阶段仍允许身体承载普通负荷。负荷形态、武器吸收与锁链阶段维持继续按各自的实际绑定条件判断。
+        /// </remarks>
+        internal static bool HasAddictionImmunity(Pawn pawn)
+        {
+#if SSC_RW17
+            if (Hediff_SSCOwnerlessSlave.GetActiveStage(pawn) > 0) return true;
+#endif
+            return SSCIdentityUtility.IsMaster(pawn) || IsRooted(pawn);
+        }
+
         public static Need_Chemical GetNeed(Pawn pawn)
             => SSCDefOf.SSC_PnaNeed == null ? null : pawn?.needs?.TryGetNeed(SSCDefOf.SSC_PnaNeed) as Need_Chemical;
 
@@ -184,9 +196,10 @@ namespace SexSlaveCraft
             result.Rooted = IsRootedLoadDef(record.def);
             Hediff createdAddiction = null;
 
-            // 5. 只有普通身体的满值正输入可以新建依赖；已有实例不重复创建，服药增加由原版 CompDrug 处理。
+            // 5. 只有未免瘾身体的满值正输入可以新建依赖。普通负荷满值的无主身体仍免瘾。
+            // 已有实例不重复创建，服药增加由原版 CompDrug 处理。
             // 原版依赖需要需求管理器，但不要求一定具备合法的 PNA 需求条。
-            if (!result.Rooted)
+            if (!HasAddictionImmunity(pawn))
             {
                 Need_Chemical previousNeed = GetNeed(pawn);
                 if (result.IsFull && pawn.needs != null && GetAddiction(pawn) == null && SSCDefOf.SSC_PnaAddiction != null)
@@ -199,7 +212,7 @@ namespace SexSlaveCraft
                     if (!Continue()) { result.Accepted = false; return result; }
                     RefreshBodyState(pawn);
                     if (!Continue()) { result.Accepted = false; return result; }
-                    if (!IsValidTarget(pawn) || SSCIdentityUtility.IsMaster(pawn) || IsRooted(pawn) || GetBodyRecord(pawn) != record ||
+                    if (!IsValidTarget(pawn) || HasAddictionImmunity(pawn) || GetBodyRecord(pawn) != record ||
                         record.Severity < SSCPnaMath.MaximumSeverity)
                     {
                         if (pawn.health?.hediffSet?.hediffs.Contains(addiction) == true) pawn.health.RemoveHediff(addiction);
@@ -226,7 +239,7 @@ namespace SexSlaveCraft
                     source == SSCPnaExposureSource.ProducerSex ? .10f :
                     source == SSCPnaExposureSource.MasterInfestation ? (need?.MaxLevel ?? 0f) :
                     source == SSCPnaExposureSource.Weapon ? result.AddedLoad * 2f : 0f;
-                if (IsValidTarget(pawn) && !SSCIdentityUtility.IsMaster(pawn) && !IsRooted(pawn) && need != null && refill > 0f)
+                if (IsValidTarget(pawn) && !HasAddictionImmunity(pawn) && need != null && refill > 0f)
                     need.CurLevel = System.Math.Min(need.MaxLevel, need.CurLevel + refill);
 
                 // 产出者性交与枪械有效输入均对已有成瘾基础 +0.01，末期再额外 +0.2。
@@ -237,7 +250,7 @@ namespace SexSlaveCraft
                 if (!Continue()) { result.Accepted = false; return result; }
                 if (source != SSCPnaExposureSource.Debug && source != SSCPnaExposureSource.Blast &&
                     source != SSCPnaExposureSource.MistEmitter && existingAddiction != null &&
-                    GetAddiction(pawn) == existingAddiction && IsValidTarget(pawn) && !SSCIdentityUtility.IsMaster(pawn) && !IsRooted(pawn) &&
+                    GetAddiction(pawn) == existingAddiction && IsValidTarget(pawn) && !HasAddictionImmunity(pawn) &&
                     GetBodyRecord(pawn) == record)
                 {
                     float addictionIncrease = source == SSCPnaExposureSource.ProducerSex || source == SSCPnaExposureSource.Weapon
@@ -265,7 +278,7 @@ namespace SexSlaveCraft
             result.FinalLoad = SSCPnaMath.GetLoad(record.Severity);
             result.IsFull = record.Severity >= SSCPnaMath.MaximumSeverity;
             result.Rooted = IsRooted(pawn);
-            result.AddictionCreated &= !result.Rooted && GetAddiction(pawn) != null;
+            result.AddictionCreated &= !HasAddictionImmunity(pawn) && GetAddiction(pawn) != null;
             // 返回实际最终状态，只有仍有效的首次依赖向玩家发送一次通知。
             if (result.AddictionCreated && PawnUtility.ShouldSendNotificationAbout(pawn))
                 Messages.Message("SSC_Pna_NewDependence".Translate(pawn.LabelShort), pawn, MessageTypeDefOf.NegativeHealthEvent, true);
@@ -301,14 +314,14 @@ namespace SexSlaveCraft
         private static float NormalizeDependency(float value)
             => SSCPnaMath.IsFinite(value) ? System.Math.Max(0f, System.Math.Min(1f, value)) : 0f;
 
-        /// <summary>主人清药优先于锁链分流；其他身体双向转换保留原实例、严重度及半批时间。</summary>
+        /// <summary>先清理主人身上的药效或免瘾身体的依赖，再按有效链协调普通与扎根负荷。</summary>
         public static void RefreshBodyState(Pawn pawn, bool forceRefresh = false)
         {
             // 同一身体的健康通知可能同步回到此方法；重入调用由外层协调处理。
             if (Scribe.mode != LoadSaveMode.Inactive || pawn?.health?.hediffSet == null || !protecting.Add(pawn)) return;
             try
             {
-                // 健康通知可能再次改链；有限重评估避免简单回调使最终形态错配或无限递归。
+                // 健康通知可能改身份、绑定或无主阶段。有限重评估保证外层能处理重入期间的新状态。
                 for (int attempt = 0; attempt < 3; attempt++)
                 {
                     // 废弃旧枪械强化：读档、直接协调及健康入口都在这里清理，不折算成负荷。
@@ -344,8 +357,8 @@ namespace SexSlaveCraft
                             pawn.health.hediffSet.hediffs.Any(h => IsDrugEffectDef(h?.def))) continue;
                         return;
                     }
-                    bool rooted = IsRooted(pawn);
-                    if (rooted)
+                    bool immune = HasAddictionImmunity(pawn);
+                    if (immune)
                     {
                         // 无依赖或单份依赖不建临时列表；多份时在移除前按原顺序收集其余实例。
                         // 清理触发同步健康回调，因此不能边枚举健康列表边删除。
@@ -372,7 +385,7 @@ namespace SexSlaveCraft
                         else if (forceRefresh) pawn.needs?.AddOrRemoveNeedsAsAppropriate();
                     }
                     // 移除成瘾或刷新需求可同步改变身份；无负荷的身体也必须进入主人清药分支。
-                    if (SSCIdentityUtility.IsMaster(pawn)) continue;
+                    if (SSCIdentityUtility.IsMaster(pawn) || immune != HasAddictionImmunity(pawn)) continue;
                     // 一次遍历选择最大合法负荷，同值保留首实例；单份稳态不分配临时集合。
                     // 发现第二份才按原顺序建立清理快照，不能按候选更换顺序删除。
                     Hediff keep = null;
@@ -398,18 +411,21 @@ namespace SexSlaveCraft
                     }
                     if (keep == null) return;
                     if (records != null)
+                    {
                         foreach (Hediff duplicate in records)
                             if (duplicate != keep) pawn.health.RemoveHediff(duplicate);
-                    if (SSCIdentityUtility.IsMaster(pawn)) continue;
+                        if (SSCIdentityUtility.IsMaster(pawn) || immune != HasAddictionImmunity(pawn)) continue;
+                    }
                     // 删除回调可能修改保留实例；归一化必须读取回调后的当前值。
                     float severity = SSCPnaMath.NormalizeSeverity(keep.Severity);
                     if (severity <= SSCPnaMath.RemovalSeverity)
                     {
                         pawn.health.RemoveHediff(keep);
-                        if (SSCIdentityUtility.IsMaster(pawn)) continue;
+                        // 移除最后一份负荷也能触发阶段回调，且此后不再有负荷组件代为刷新。
+                        if (SSCIdentityUtility.IsMaster(pawn) || immune != HasAddictionImmunity(pawn)) continue;
                         return;
                     }
-                    rooted = IsRooted(pawn);
+                    bool rooted = IsRooted(pawn);
                     HediffDef desired = rooted ? SSCDefOf.SSC_PnaRootedLoad : SSCDefOf.SSC_PnaLoad;
                     if (desired == null || !pawn.health.hediffSet.hediffs.Contains(keep)) return;
                     bool changed = keep.def != desired || keep.Severity != severity || records != null;
@@ -417,7 +433,8 @@ namespace SexSlaveCraft
                     keep.def = desired;
                     keep.Severity = severity;
                     if (changed || forceRefresh) pawn.health.Notify_HediffChanged(keep);
-                    if (!SSCIdentityUtility.IsMaster(pawn) && rooted == IsRooted(pawn)) return;
+                    if (!SSCIdentityUtility.IsMaster(pawn) && rooted == IsRooted(pawn) &&
+                        immune == HasAddictionImmunity(pawn)) return;
                 }
             }
             // 正常返回、提前结束及异常都释放调用标记，避免后续输入永远被挡住。

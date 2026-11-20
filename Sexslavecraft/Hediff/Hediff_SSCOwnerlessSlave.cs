@@ -1,4 +1,5 @@
 // AI 辅助生成
+using RimWorld;
 using Verse;
 
 namespace SexSlaveCraft
@@ -20,32 +21,71 @@ namespace SexSlaveCraft
             return def == null ? null : pawn?.health?.hediffSet?.GetFirstHediffOfDef(def) as Hediff_SSCOwnerlessSlave;
         }
 
-        /// <summary>沿用原版严重度写入和裁剪，已在体内的记录变化后使落差心情重算。</summary>
+        /// <summary>返回向行为、心情和共享保护提供效果的无主阶段，零表示这些效果未启用。</summary>
+        /// <remarks>
+        /// 先检查 SSC 身份，再用第一批的统一进度入口选载体。交接期间锁链和无主记录可能同时存在，
+        /// 此时以锁链为准，未被选中的无主记录保留其严重度。持有零阶记录仍会锁定身份。
+        /// </remarks>
+        internal static int GetActiveStage(Pawn pawn)
+            => SSCIdentityUtility.IsSexSlave(pawn) &&
+                TrainingOutcomeUtility.GetSexSlaveProgress(pawn) is Hediff_SSCOwnerlessSlave record
+                ? TrainingOutcomeUtility.GetSexSlaveProgressStage(record).Stage : 0;
+
+        /// <summary>原版能力与 Stat 系统直接读取此处。非当前载体返回 Def 中没有任何修正的中性阶段。</summary>
+        public override HediffStage CurStage
+            => SSCIdentityUtility.IsSexSlave(pawn) && ReferenceEquals(TrainingOutcomeUtility.GetSexSlaveProgress(pawn), this)
+                ? base.CurStage : def?.stages?.Count > 0 ? def.stages[0] : null;
+
+        /// <summary>沿用原版裁剪和健康缓存刷新，跨原版阶段索引时另行同步 SSC 规则和共享保护。</summary>
         public override float Severity
         {
             get => base.Severity;
             set
             {
-                float previous = base.Severity;
+                int previous = CurStageIndex;
                 base.Severity = value;
-                // 创建或读取记录时可能先写严重度。加入健康列表后的首次刷新由 PostAdd 负责。
-                if (previous != base.Severity && ReferenceEquals(Find(pawn), this))
-                    SSCCorruptionStages.NotifyContextChanged(pawn);
+                // 严重度在同一阶内变化只影响进度。判断在原版回调完成后进行，以最终仍在体内的记录为准。
+                // 创建时可以先写严重度，附着的首次同步交给 PostAdd，读取已有存档由各模块的读档入口处理。
+                int current = CurStageIndex;
+                if (previous != current && ReferenceEquals(Find(pawn), this))
+                    NotifyStageChanged(protectionChanged: previous == 0 || current == 0);
             }
         }
 
         public override void PostAdd(DamageInfo? dinfo)
         {
             base.PostAdd(dinfo);
-            // 恶堕率可以完全相同。当前阶允许的恶堕区间已变，所以仍需重算落差心情。
-            SSCCorruptionStages.NotifyContextChanged(pawn);
+            // 添加载体即可能改变恶堕允许区间及持续心情，即使恶堕率和初始严重度没有再写入。
+            NotifyStageChanged(protectionChanged: CurStageIndex > 0);
         }
 
         public override void PostRemoved()
         {
             base.PostRemoved();
-            // 移除后按当前剩余载体重新判定，包含回到零阶的情况。
-            SSCCorruptionStages.NotifyContextChanged(pawn);
+            // 原版已将本记录从健康列表移出。各消费者读取剩余载体，本记录阶段用于判断是否要重算免瘾。
+            NotifyStageChanged(protectionChanged: CurStageIndex > 0);
+        }
+
+        private void NotifyStageChanged(bool protectionChanged)
+        {
+            // 失去或获得阶段都可能改变无主持续心情、恶堕落差和自我调教许可心情，共用原版思想失效通知。
+            SSCSelfTrainingFeedback.NotifyStatusChanged(pawn);
+            if (Scribe.mode != LoadSaveMode.Inactive) return;
+            // 指派和训导官由各自的维护入口按当前身份重算，已有的绑定／人格事务继续负责延迟其内部通知。
+            SSCRestrictionGameComponent.Notify(pawn);
+            TrainerSpecializationLifecycle.Notify(pawn);
+            // 免瘾边界只有零阶与正式阶段之间。跨正阶段不改变 PNA 负荷，也无须额外扫描 PNA。
+            if (protectionChanged) SSCPnaExposureUtility.RefreshBodyState(pawn, forceRefresh: true);
+        }
+    }
+
+    /// <summary>ThoughtDef 只存一至四阶，因此玩法阶段 1 对应思想索引 0。</summary>
+    public sealed class ThoughtWorker_SSCOwnerlessSlave : ThoughtWorker
+    {
+        protected override ThoughtState CurrentStateInternal(Pawn p)
+        {
+            int stage = Hediff_SSCOwnerlessSlave.GetActiveStage(p);
+            return stage > 0 && stage <= def.stages.Count ? ThoughtState.ActiveAtStage(stage - 1) : ThoughtState.Inactive;
         }
     }
 }

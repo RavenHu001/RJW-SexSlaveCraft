@@ -16,7 +16,7 @@ namespace SexSlaveCraft
         }
     }
 
-    // 拦住直接 AddHediff 的旁路：主人拒绝受药状态，其他负荷继续按有效链分流。
+    // 直接 AddHediff 也经过免瘾判定。主人拒绝受药状态，其余身体仍按有效链选择负荷形态。
     [HarmonyPatch(typeof(Pawn_HealthTracker), nameof(Pawn_HealthTracker.AddHediff),
         new[] { typeof(Hediff), typeof(BodyPartRecord), typeof(DamageInfo?), typeof(DamageWorker.DamageResult) })]
     internal static class SSCPnaHealthAdditionPatch
@@ -29,7 +29,7 @@ namespace SexSlaveCraft
             // 先协调当前身体状态，再判断依赖保护；直接添加不承担满值成瘾判定。
             SSCPnaExposureUtility.RefreshBodyState(hediff.pawn);
             if (SSCPnaExposureUtility.IsLegacyCombatBuffDef(hediff.def) || SSCIdentityUtility.IsMaster(hediff.pawn)) return false;
-            if (SSCPnaExposureUtility.IsAddictionDef(hediff.def)) return !SSCPnaExposureUtility.IsRooted(hediff.pawn);
+            if (SSCPnaExposureUtility.IsAddictionDef(hediff.def)) return !SSCPnaExposureUtility.HasAddictionImmunity(hediff.pawn);
             // 废弃 Buff 对所有身体拒绝；非主人抗性快照仍沿用原机制，不新增补丁入口。
             if (!SSCPnaExposureUtility.IsBodyLoadDef(hediff.def)) return true;
             // 来件合并前结算旧载体的半批有效时间，并选择当前应使用的负荷 Def。
@@ -80,11 +80,12 @@ namespace SexSlaveCraft
     {
         private static bool Prefix(CompDrug __instance, Pawn ingester)
         {
-            // 其他化学物不受影响；主人和有链身体都不能从原版组件旁路加深成瘾或补需求。
+            // 只处理 PNA。免瘾身体跳过原版组件的成瘾和需求补充，独立摄入结算仍负责有效负荷。
+            // 刷新可能同步触发身份、绑定或阶段变化，使用回调后的免瘾结果决定是否放行。
             if (!SSCPnaExposureUtility.IsAddictionDef(__instance.Props.chemical?.addictionHediff)) return true;
-            if (SSCIdentityUtility.IsMaster(ingester) || SSCPnaExposureUtility.IsRooted(ingester))
+            if (SSCPnaExposureUtility.HasAddictionImmunity(ingester))
                 SSCPnaExposureUtility.RefreshBodyState(ingester);
-            if (SSCIdentityUtility.IsMaster(ingester) || SSCPnaExposureUtility.IsRooted(ingester)) return false;
+            if (SSCPnaExposureUtility.HasAddictionImmunity(ingester)) return false;
             // 已有依赖放行原版严重度增加及化学需求补充，不再保护已有恢复进度。
             // 第三方未适配来源仍走旧入口，不据此宣称完成所有 PNA 来源替换。
             return SSCPnaExposureUtility.GetAddiction(ingester) != null ||

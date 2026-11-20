@@ -23,6 +23,17 @@ internal static partial class Program
     private static bool breakdownRollSucceeds;
     private static int breakdownRolls;
     private static bool tickDuringImprintLetter;
+
+    private sealed class PnaLoadRemovedCallback : Hediff
+    {
+        public Action AfterRemove;
+
+        public override void PostRemoved()
+        {
+            base.PostRemoved();
+            AfterRemove?.Invoke();
+        }
+    }
     private static Pawn skipBreakdownEffectFor;
     private static Action beforeBreakdownCooldownAdd;
     private static Pawn interruptBeforeBreakdownStart;
@@ -656,6 +667,113 @@ internal static partial class Program
                     }
                 }
                 finally { SkillDefOf.Social = previousSocial; }
+            });
+
+            Case("ownerless stage factors flow through native stats and the installed RJW getter", () =>
+            {
+                var (pawn, need) = BreakdownPawn(PawnIdentity.Slave);
+                var record = pawn.health.AddHediff(DefDatabase<HediffDef>.GetNamed(Hediff_SSCOwnerlessSlave.DefName));
+                record.Severity = .5f;
+                Near(3f, rjw.xxx.get_vulnerability(pawn));
+                Require(SSCSlaveBreakdown.IsEligiblePawn(pawn));
+
+                record.Severity = .9f;
+                var stat = rjw.RJWStatDefOf.Vulnerability;
+                Near(4.5f, stat.Worker.GetValue(StatRequest.For(pawn), applyPostProcess: false));
+                var panel = pawn.GetStatValue(stat);
+                Near(3f, panel);
+                Near(panel, rjw.xxx.get_vulnerability(pawn));
+                Require(!SSCSlaveBreakdown.IsEligiblePawn(pawn));
+
+                record.Severity = .5f;
+                need.SetCorruption(1f);
+                runtime.GameComponentTick();
+                Require(pawn.MentalState is MentalState_SSCSlaveBreakdown);
+                Require(stat.Worker.GetValue(StatRequest.For(pawn), applyPostProcess: false) > 3f);
+                Near(3f, rjw.xxx.get_vulnerability(pawn));
+            });
+
+            Case("ownerless PNA immunity clears dependency while preserving ordinary full load", () =>
+            {
+                var (pawn, _) = BreakdownPawn(PawnIdentity.Slave);
+                var previousLoad = SSCDefOf.SSC_PnaLoad;
+                var previousAddiction = SSCDefOf.SSC_PnaAddiction;
+                try
+                {
+                    SSCDefOf.SSC_PnaLoad = new HediffDef
+                    {
+                        defName = SSCPnaExposureUtility.LoadDefName, hediffClass = typeof(Hediff),
+                        maxSeverity = SSCPnaMath.MaximumSeverity
+                    };
+                    SSCDefOf.SSC_PnaAddiction = ImprintBoundaryDef(SSCPnaExposureUtility.AddictionDefName, typeof(Hediff));
+                    pawn.health.AddHediff(SSCDefOf.SSC_PnaAddiction);
+                    Require(SSCPnaExposureUtility.GetAddiction(pawn) != null);
+                    pawn.health.AddHediff(DefDatabase<HediffDef>.GetNamed(Hediff_SSCOwnerlessSlave.DefName));
+                    Require(SSCPnaExposureUtility.GetAddiction(pawn) == null);
+                    var result = SSCPnaExposureUtility.ApplyExposure(pawn, 2f, SSCPnaExposureSource.Debug);
+                    Require(result.Accepted && result.IsFull && !result.Rooted && !result.AddictionCreated,
+                        $"accepted={result.Accepted}, full={result.IsFull}, rooted={result.Rooted}, addiction={result.AddictionCreated}");
+                    Equal(SSCDefOf.SSC_PnaLoad, SSCPnaExposureUtility.GetBodyRecord(pawn).def);
+                    Require(SSCPnaExposureUtility.GetAddiction(pawn) == null);
+
+                    // 清掉低于有效阈值的负荷时，健康回调可能将零阶推过免瘾阈值。
+                    // 回调中的 PNA 刷新是重入，由外层完成清理，此时已经没有负荷可供下一个周期刷新。
+                    var (callbackPawn, _) = BreakdownPawn(PawnIdentity.Slave);
+                    var ownerless = HediffMaker.MakeHediff(
+                        DefDatabase<HediffDef>.GetNamed(Hediff_SSCOwnerlessSlave.DefName), callbackPawn);
+                    ownerless.Severity = MathF.BitDecrement(.1f);
+                    callbackPawn.health.AddHediff(ownerless);
+                    callbackPawn.health.AddHediff(SSCDefOf.SSC_PnaAddiction);
+                    var load = new PnaLoadRemovedCallback
+                    {
+                        def = SSCDefOf.SSC_PnaLoad,
+                        pawn = callbackPawn,
+                        Severity = SSCPnaMath.RemovalSeverity,
+                        AfterRemove = () => ownerless.Severity = .1f
+                    };
+                    // 布置已衰减的负荷，避免添加补丁在调用外层刷新前先清掉它。
+                    callbackPawn.health.hediffSet.hediffs.Add(load);
+                    SSCPnaExposureUtility.RefreshBodyState(callbackPawn);
+                    Require(SSCPnaExposureUtility.GetBodyRecord(callbackPawn) == null);
+                    Require(SSCPnaExposureUtility.HasAddictionImmunity(callbackPawn));
+                    Require(SSCPnaExposureUtility.GetAddiction(callbackPawn) == null,
+                        "PNA refresh must complete immunity cleanup after the load removal callback.");
+                }
+                finally
+                {
+                    SSCDefOf.SSC_PnaLoad = previousLoad;
+                    SSCDefOf.SSC_PnaAddiction = previousAddiction;
+                }
+            });
+
+            Case("ownerless targets can appoint a trainer officer and loss of binding disables the officer's record", () =>
+            {
+                var (master, _) = BreakdownPawn(PawnIdentity.Master);
+                var (officer, _) = BreakdownPawn(PawnIdentity.Slave);
+                Require(SSCBondUtility.Bind(master, officer));
+                SSCBondUtility.GetChain(officer).Severity = .5f;
+                officer.health.AddHediff(SSCDefOf.SSC_Hediff_TrainerOfficer_Final);
+                Require(SSCIdentityUtility.SetTrainerEnabled(officer, true));
+
+                var (target, _) = BreakdownPawn(PawnIdentity.Slave);
+                var def = DefDatabase<HediffDef>.GetNamed(Hediff_SSCOwnerlessSlave.DefName);
+                target.health.AddHediff(def);
+                var comp = target.TryGetComp<CompSexSlaveTraining>();
+                var saved = new SSCRestrictionConfig();
+                comp.restrictionConfig = saved;
+                Require(SSCRestrictionTrainerAssignment.CanAdd(target, officer, out bool opensNonOwnerTraining));
+                Require(!opensNonOwnerTraining);
+                Require(SSCRestrictionTrainerAssignment.TryAdd(target, officer, () => true));
+                var request = SSCRestrictionTrainingUtility.CreateRequest(officer, target, false);
+                Require(SSCRestrictionTrainingUtility.Evaluate(request, true).Allowed);
+                Equal(saved, comp.restrictionConfig);
+
+                officer.health.AddHediff(def).Severity = .5f;
+                Require(SSCBondUtility.Unbind(officer));
+                Require(!SSCIdentityUtility.IsTrainer(officer));
+                Require(!TrainerSpecializationUtility.CanSelectTrainerSpecialization(officer, out _));
+                Require(officer.health.hediffSet.HasHediff(SSCDefOf.SSC_Hediff_TrainerOfficer_FinalDisabled));
+                Require(!SSCRestrictionTrainingUtility.Evaluate(request, true).Allowed);
             });
 
             Case("one actual full crossing differentiates first and sends exactly one letter for each outcome", () =>

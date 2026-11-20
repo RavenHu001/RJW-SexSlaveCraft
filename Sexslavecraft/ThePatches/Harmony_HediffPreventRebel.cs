@@ -21,8 +21,7 @@ namespace SexSlaveCraft
     {
         public static void Postfix(Pawn pawn, ref bool __result)
         {
-            // 修正点1：加上 "Utils." 前缀
-            if (!__result || !Utils.HasChainHediff(pawn))
+            if (!__result || !Utils.HasRebellionProtection(pawn))
                 return;
 
             __result = false;
@@ -37,8 +36,7 @@ namespace SexSlaveCraft
     {
         public static void Postfix(Pawn pawn, ref bool __result)
         {
-            // 修正点1：加上 "Utils." 前缀
-            if (!__result || !Utils.HasChainHediff(pawn))
+            if (!__result || !Utils.HasRebellionProtection(pawn))
                 return;
 
             __result = false;
@@ -58,8 +56,7 @@ namespace SexSlaveCraft
                 return true;
             }
 
-            // 修正点1：加上 "Utils." 前缀
-            if (!Utils.HasChainHediff(___pawn))
+            if (!Utils.HasRebellionProtection(___pawn))
             {
                 return true;
             }
@@ -90,7 +87,7 @@ namespace SexSlaveCraft
         public static bool Prefix(Need_Suppression __instance)
         {
             Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
-            if (!Utils.HasChainHediff(pawn))
+            if (!Utils.HasRebellionProtection(pawn))
             {
                 return true;
             }
@@ -104,6 +101,16 @@ namespace SexSlaveCraft
     // =============================================================
     public static class Utils
     {
+        /// <summary>现有四处反叛相关补丁共用的保护资格。有链沿用原判定，无主从有效一阶开始。</summary>
+        /// <remarks>HasChainHediff 仍只检查锁链，供绑定、印记和其他需要辨认载体的调用者使用。</remarks>
+        internal static bool HasRebellionProtection(Pawn pawn)
+        {
+#if SSC_RW17
+            if (Hediff_SSCOwnerlessSlave.GetActiveStage(pawn) > 0) return true;
+#endif
+            return HasChainHediff(pawn);
+        }
+
         public static bool HasChainHediff(Pawn pawn)
         {
             if (pawn == null || pawn.health == null || pawn.health.hediffSet == null)

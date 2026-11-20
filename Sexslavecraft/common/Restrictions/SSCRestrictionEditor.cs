@@ -23,7 +23,7 @@ namespace SexSlaveCraft
         {
             error = null;
             CompSexSlaveTraining comp = pawn?.TryGetComp<CompSexSlaveTraining>();
-            if (comp == null || (!SSCRestrictionResolver.IsApplicable(pawn) && !SSCSelfTrainingEligibility.IsEligible(pawn)) ||
+            if (comp == null || !SSCRestrictionResolver.CanEditPersonalRules(pawn) ||
                 comp.restrictionConfig != null ||
                 comp.legacyRestrictionInput != null || comp.restrictionRestoreDepth > 0) return false;
             if (!SSCRestrictionConfigurationBuilder.TryCreateInitial(pawn, SSCMod.settings?.restrictionDefaults,
@@ -64,8 +64,11 @@ namespace SexSlaveCraft
             bool applicable = rule == SSCRestrictionRule.SelfTraining
                 ? SSCSelfTrainingEligibility.IsEligible(pawn) : SSCRestrictionResolver.IsApplicable(pawn);
             if (comp == null || comp.restrictionRestoreDepth > 0 || !applicable ||
+                SSCRestrictionResolver.GetOwnerlessStage(pawn) > 0 ||
                 !IsValid(config) || !SSCRestrictionRules.IsValid(rule, value) ||
                 (currentView != null && !currentView(comp, config))) return false;
+            // UI 的强制来源查询可以调用外部资格读法。写入前复查角色是否已进入无主只读状态。
+            if (SSCRestrictionResolver.GetOwnerlessStage(pawn) > 0) return false;
             config.rules.Set(rule, value);
             SSCRestrictionLifecycle.CoordinateTrainer(pawn);
             return true;

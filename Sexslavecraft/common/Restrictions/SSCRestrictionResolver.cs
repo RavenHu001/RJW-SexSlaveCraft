@@ -3,7 +3,7 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    public enum SSCRestrictionSource { Saved, Specialization, Equipment, SystemDisabled, DefaultTemplate, SpecializationDefault }
+    public enum SSCRestrictionSource { Saved, Specialization, Equipment, SystemDisabled, DefaultTemplate, SpecializationDefault, OwnerlessStage }
 
     public sealed class SSCRestrictionResolution
     {
@@ -18,15 +18,29 @@ namespace SexSlaveCraft
     /// <summary>只读解析条目来源，不协调关系或创建角色配置；每次调用重新读取当前状态，不跨次缓存。</summary>
     public static class SSCRestrictionResolver
     {
-        /// <summary>以真实锁链中的主人引用作为当前生效门槛；仅设置性奴身份或指定调教员不会启用限制。</summary>
+        /// <summary>实际绑定和正式无主阶段都应用限制。指派只决定谁可以调教。</summary>
         /// <remarks>
         /// 旧档可能尚未补齐 SSC 身份，因此只要已有真实绑定仍须生效。主人死亡不等于解绑，不能借此释放保护。
         /// 未来若加入科技授予机制，应在这个集中入口扩展；界面、许可和生命周期不能各自推断生效条件。
         /// </remarks>
         public static bool IsApplicable(Pawn pawn)
         {
-            return SSCBondUtility.GetBoundMaster(pawn) != null;
+            return SSCBondUtility.GetBoundMaster(pawn) != null || GetOwnerlessStage(pawn) > 0;
         }
+
+        internal static int GetOwnerlessStage(Pawn pawn)
+        {
+#if SSC_RW17
+            return Hediff_SSCOwnerlessSlave.GetActiveStage(pawn);
+#else
+            return 0;
+#endif
+        }
+
+        /// <summary>正式无主可以适用规则，但个人配置暂停编辑，保留原选择供之后实际绑定时使用。</summary>
+        internal static bool CanEditPersonalRules(Pawn pawn)
+            => GetOwnerlessStage(pawn) == 0 &&
+                (IsApplicable(pawn) || SSCSelfTrainingEligibility.IsEligible(pawn));
 
         /// <summary>检查当前特化及保留的有效状态是否匹配定义，只读取角色而不修正其状态。</summary>
         public static bool HasProfile(Pawn pawn, SSCRestrictionProfileDef profile)
@@ -35,11 +49,12 @@ namespace SexSlaveCraft
             return context.Matches(profile);
         }
 
-        /// <summary>按装备、特化、保存值的优先级解析；任何层无效时保留该层错误来源并立即返回。</summary>
-        /// <remarks>全局停用先于配置校验；启用时整份保存规则必须有效。强制值不写回角色。</remarks>
+        /// <summary>先解析保存值或无主阶段，再应用特化和装备，返回当前值及来源。</summary>
+        /// <remarks>全局停用先于配置校验。有主配置整体校验，无主派生值独立于保留的个人配置。</remarks>
         public static SSCRestrictionResolution Resolve(Pawn pawn, SSCRestrictionRules saved, SSCRestrictionRule rule)
         {
-            SSCRestrictionResolution result = FromSaved(saved, rule);
+            int stage = GetOwnerlessStage(pawn);
+            SSCRestrictionResolution result = stage > 0 ? FromOwnerlessStage(stage, rule) : FromSaved(saved, rule);
             if (SSCMod.settings != null && !SSCMod.settings.enableSexSlaveProtectionRules)
             {
                 result.Value = SSCRestrictionValue.Allow;
@@ -47,7 +62,7 @@ namespace SexSlaveCraft
                 result.Valid = true;
                 return result;
             }
-            if (saved != null && saved.TryGetInvalidRule(out SSCRestrictionRule invalidRule))
+            if (stage == 0 && saved != null && saved.TryGetInvalidRule(out SSCRestrictionRule invalidRule))
                 return FromSaved(saved, invalidRule);
             if (!result.Valid) return result;
 
@@ -78,6 +93,24 @@ namespace SexSlaveCraft
                 layer.ApplyTo(result, SSCRestrictionSource.Equipment);
             }
             return result;
+        }
+
+        private static SSCRestrictionResolution FromOwnerlessStage(int stage, SSCRestrictionRule rule)
+        {
+            // 当前只收紧三种主动行为。启用自我调教和三项接收条目，任务准入仍检查实际参与者。
+            // SavedValue 保持未指定，因为阶段值和覆盖项都不会成为个人保存值。
+            bool allowed = rule switch
+            {
+                SSCRestrictionRule.Masturbation or SSCRestrictionRule.ConsensualInitiation => stage < 3,
+                SSCRestrictionRule.ForcedInitiation => false,
+                _ => SSCRestrictionRules.IsKnown(rule)
+            };
+            return new SSCRestrictionResolution
+            {
+                Rule = rule, SavedValue = SSCRestrictionValue.Unspecified,
+                Value = allowed ? SSCRestrictionValue.Allow : SSCRestrictionValue.Deny,
+                Source = SSCRestrictionSource.OwnerlessStage, Valid = SSCRestrictionRules.IsKnown(rule)
+            };
         }
 
         /// <summary>生成单项保存值与合法性结果；未知条目或缺少规则返回无效，不在查询中抛出参数异常。</summary>

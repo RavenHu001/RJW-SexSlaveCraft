@@ -55,7 +55,7 @@ namespace SexSlaveCraft
             if (request == null) return Result(false, SSCRestrictionReason.IncompleteContext);
             Pawn actor = request.Initiator;
             Pawn target = request.Receiver;
-            // 自我调教的身份与锁链是行为资格，即使总限制关闭也不能绕过。
+            // 自我调教先查身份及对应进度载体。总开关只跳过行为规则，角色仍须具备自我调教资格。
             if (request.Kind == SSCInteractionKind.SelfTraining)
             {
                 if (!request.DirectionKnown || actor == null || (target != null && target != actor))
@@ -142,12 +142,13 @@ namespace SexSlaveCraft
                 : active ?? Result(true, SSCRestrictionReason.Allowed);
         }
 
-        /// <summary>校验角色整份保存配置并解析单项许可，返回拒绝原因及规则来源；OwnerOnly 的关系判断由双边检查完成。</summary>
-        /// <remarks>仅开发预览可临时使用默认配置；正式查询遇到未初始化配置时拒绝，始终不写入角色。</remarks>
+        /// <summary>解析单项许可及规则来源。仅限主人的关系判断由双边检查完成。</summary>
+        /// <remarks>有主使用完整的保存配置，缺失时仅开发预览可用临时默认。正式无主从阶段直接派生，无须初始化个人配置。</remarks>
         private static SSCRestrictionDecision Check(Pawn subject, SSCRestrictionRule rule, SSCRestrictionRequest request)
         {
             SSCRestrictionConfig config = subject.TryGetComp<CompSexSlaveTraining>()?.restrictionConfig;
-            if (config == null && request.PreviewDefaults)
+            bool automatic = SSCRestrictionResolver.GetOwnerlessStage(subject) > 0;
+            if (!automatic && config == null && request.PreviewDefaults)
             {
                 SSCRestrictionResolution error;
                 if (!SSCRestrictionConfigurationBuilder.TryCreateInitial(subject, SSCMod.settings?.restrictionDefaults, out config, out error))
@@ -157,10 +158,10 @@ namespace SexSlaveCraft
                     return invalid;
                 }
             }
-            if (config == null) return Result(false, SSCRestrictionReason.ConfigurationMissing, subject);
-            if (!config.IsValid())
+            if (!automatic && config == null) return Result(false, SSCRestrictionReason.ConfigurationMissing, subject);
+            if (!automatic && !config.IsValid())
                 return Result(false, SSCRestrictionReason.ConfigurationInvalid, subject);
-            SSCRestrictionResolution entry = SSCRestrictionResolver.Resolve(subject, config.rules, rule);
+            SSCRestrictionResolution entry = SSCRestrictionResolver.Resolve(subject, config?.rules, rule);
             bool allowed = entry.Valid && entry.Value != SSCRestrictionValue.Deny;
             var result = Result(allowed, !entry.Valid ? SSCRestrictionReason.ConfigurationInvalid :
                 allowed ? SSCRestrictionReason.Allowed : SSCRestrictionReason.RuleDenied, subject);

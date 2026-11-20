@@ -35,7 +35,8 @@ namespace SexSlaveCraft
         internal static bool IsEligiblePawn(Pawn pawn)
         {
             if (!IsEligibleSubject(pawn)) return false;
-            if (!Utils.HasChainHediff(pawn)) return true;
+            // 两类最高阶都退出候选。零阶和无主一至三阶仍使用同一发作准入及触发节奏。
+            if (!Utils.HasChainHediff(pawn)) return Hediff_SSCOwnerlessSlave.GetActiveStage(pawn) < 4;
             var chain = SSCBondUtility.GetChain(pawn);
             return chain != null && MatchesBinding(pawn, chain, chain.LinkedPawn) &&
                 TrainingOutcomeUtility.GetSexSlaveProgressStage(chain).Next.HasValue;

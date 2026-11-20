@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Ownerless_PhaseRules>Текущая стадия: {0} (автоматически)</SSC_Ownerless_PhaseRules>
+  <SSC_Ownerless_RuleSummary>{0}: {1} · {2}</SSC_Ownerless_RuleSummary>
+  <SSC_Restrictions_Source_OwnerlessStage>Правило стадии</SSC_Restrictions_Source_OwnerlessStage>
+  <SSC_Ownerless_OwnerOnlyBlocked>Только хозяин (сейчас его нет)</SSC_Ownerless_OwnerOnlyBlocked>
+  <SSC_Ownerless_AutoSensitivity>Множитель уязвимости стадии: ×{0}</SSC_Ownerless_AutoSensitivity>
+  <SSC_Ownerless_RomanceReceptionVanilla>Реакция на ухаживания и предложения определяется базовой игрой.</SSC_Ownerless_RomanceReceptionVanilla>
+  <SSC_Ownerless_Vanilla>Правила базовой игры</SSC_Ownerless_Vanilla>
+  <SSC_Ownerless_Denied>Запрещено</SSC_Ownerless_Denied>
+</LanguageData>

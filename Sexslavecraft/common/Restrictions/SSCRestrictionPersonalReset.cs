@@ -89,7 +89,7 @@ namespace SexSlaveCraft
                 Faction.OfPlayer != null && pawn.Faction == Faction.OfPlayer && Scribe.mode == LoadSaveMode.Inactive &&
                 !SSCPersonalityRuntimeUtility.IsMutating(pawn) && !SSCMasterProgressionUtility.IsHollow(pawn) &&
                 comp.restrictionRestoreDepth == 0 && comp.legacyRestrictionInput == null && IsValid(comp.restrictionConfig) &&
-                (SSCRestrictionResolver.IsApplicable(pawn) || SSCSelfTrainingEligibility.IsEligible(pawn));
+                SSCRestrictionResolver.CanEditPersonalRules(pawn);
         }
 
         /// <summary>引用与完整原始值同时匹配；七项规则、关闭时对象偏好及模板原地修改均使旧请求失效。</summary>

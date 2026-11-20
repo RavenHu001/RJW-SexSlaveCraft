@@ -236,6 +236,27 @@ namespace SexSlaveCraft
         internal static void DrawPawn(Listing_Standard listing, Pawn pawn, Func<Rect, object, Action, Action> prepare,
             Action<SSCRomanceCommandContext> openTargets)
         {
+#if SSC_RW17
+            int ownerlessStage = SSCRomancePolicy.GetOwnerlessStage(pawn);
+            if (ownerlessStage > 0)
+            {
+                // 行为表跟随当前阶段刷新，提前结束绘制以免为无主角色生成有主偏好和点名命令控件。
+                listing.Label("SSC_Ownerless_PhaseRules".Translate(ownerlessStage));
+                DrawOwnerlessRule(SSCRomanceSetting.InitiateRomance, SSCRomanceAction.Romance);
+                DrawOwnerlessRule(SSCRomanceSetting.InitiateProposal, SSCRomanceAction.Proposal);
+                DrawOwnerlessRule(SSCRomanceSetting.InitiateBreakup, SSCRomanceAction.Breakup);
+                listing.Label("SSC_Ownerless_RomanceReceptionVanilla".Translate());
+                return;
+
+                void DrawOwnerlessRule(SSCRomanceSetting setting, SSCRomanceAction action)
+                {
+                    string value = SSCRomancePolicy.CanOwnerlessInitiate(ownerlessStage, action)
+                        ? "SSC_Ownerless_Vanilla" : "SSC_Ownerless_Denied";
+                    listing.Label("SSC_Ownerless_RuleSummary".Translate(("SSC_Romance_Setting_" + setting).Translate(),
+                        value.Translate(), "SSC_Restrictions_Source_OwnerlessStage".Translate()));
+                }
+            }
+#endif
             if (prepare != null)
             {
                 // 对象按钮紧跟各自的规则组，只有命令区域使用整个面板宽度。

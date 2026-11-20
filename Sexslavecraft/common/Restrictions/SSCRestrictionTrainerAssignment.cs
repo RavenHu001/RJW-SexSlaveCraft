@@ -2,7 +2,7 @@ using Verse;
 
 namespace SexSlaveCraft
 {
-    /// <summary>把明确指派与调教授权作为同一次修改；普通互动规则、绑定主人及工作资格不由本类改变。</summary>
+    /// <summary>提交指派及必要的有主调教授权。正式无主只提交名单，调教工作单独读取最终许可。</summary>
     internal static class SSCRestrictionTrainerAssignment
     {
         /// <summary>只读预检指派是否能完成；候选列表允许用授权后的副本检查强制来源，绝不提前修改个人选择。</summary>
@@ -74,9 +74,11 @@ namespace SexSlaveCraft
         {
             replacement = null;
             var comp = target?.TryGetComp<CompSexSlaveTraining>();
+            // 候选的调教员身份与工作资格由调用方验证。正式无主可以从中选择主人或合格训导官。
             return comp != null && CompSexSlaveTraining.IsRetainableTrainer(target, trainer) &&
                 !comp.HasAssignedTrainer(trainer) &&
-                (SSCBondUtility.GetBoundMaster(target) != null || SSCIdentityUtility.IsMaster(trainer)) &&
+                (SSCBondUtility.GetBoundMaster(target) != null || SSCIdentityUtility.IsMaster(trainer) ||
+                    SSCRestrictionResolver.GetOwnerlessStage(target) > 0) &&
                 TryPrepare(target, trainer, out replacement);
         }
 
@@ -96,6 +98,8 @@ namespace SexSlaveCraft
             if (comp == null || comp.restrictionRestoreDepth > 0) return false;
             // 新增指派不能给未设置 SSC 性奴身份的对象授予调教资格；清理旧指派沿用原规则。
             if (trainer != null && !SSCIdentityUtility.IsSexSlave(target)) return false;
+            // 无主指派不改保存偏好。即使装备否决了接收许可，也可先指派，实际任务在启动时复查。
+            if (SSCRestrictionResolver.GetOwnerlessStage(target) > 0) return true;
             if (!SSCRestrictionResolver.IsApplicable(target)) return true;
 
             Pawn owner = SSCBondUtility.GetBoundMaster(target);

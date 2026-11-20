@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThoughtDef>
+    <defName>SSC_OwnerlessSlave_Mood</defName>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCOwnerlessSlave</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <!-- 索引 0 到 3 对应正式一至四阶。数值取有主同阶持续心情的一半并向正无穷取整。 -->
+    <stages>
+      <li><label>无主 · 茫然</label><description>现在的身份让我有些无所适从。</description><baseMoodEffect>-5</baseMoodEffect></li>
+      <li><label>无主 · 不安</label><description>我正在习惯现在的生活，偶尔还是会感到不安。</description><baseMoodEffect>-2</baseMoodEffect></li>
+      <li><label>无主 · 坦然</label><description>我已经渐渐适应了这份身份。</description><baseMoodEffect>2</baseMoodEffect></li>
+      <li><label>无主 · 满足</label><description>即使没有主人，我也能安心接受现在的自己。</description><baseMoodEffect>6</baseMoodEffect></li>
+    </stages>
+  </ThoughtDef>
+</Defs>

@@ -59,7 +59,7 @@ namespace SexSlaveCraft
             else
             {
                 // 进度数字、阶段名和刻度都从同一实例取值，无主角色也能显示完整进度条。
-                var stages = record.def.stages;
+                var stages = GetOverviewStages(record, asPercent: true);
                 int total = stages?.Count ?? 0;
                 int reached = Mathf.Clamp(TrainingOutcomeUtility.GetSexSlaveProgressStage(record).Stage, 0, total);
                 string stage = reached > 0 ? stages[reached - 1]?.label : null;
@@ -523,7 +523,8 @@ namespace SexSlaveCraft
             Hediff record = identity == PawnIdentity.Master ? SSCMasterProgressionUtility.GetRecord(pawn)
                 : TrainingOutcomeUtility.GetSexSlaveProgress(pawn);
 
-            int total = record?.def.stages?.Count ?? 0;
+            var stages = GetOverviewStages(record, asPercent: identity == PawnIdentity.Slave);
+            int total = stages?.Count ?? 0;
             // 主人成长索引从零开始，性奴化进度使用已达到的阶段数。
             int reached = total == 0 || !float.IsFinite(record.Severity) ? 0 : identity == PawnIdentity.Master
                 ? Mathf.Clamp(record.CurStageIndex + 1, 0, total)
@@ -542,7 +543,7 @@ namespace SexSlaveCraft
                         i < reached ? accent : DividerColor);
             }
 
-            return reached > 0 ? record.def.stages[reached - 1]?.label : null;
+            return reached > 0 ? stages[reached - 1]?.label : null;
         }
 
         /// <summary>一像素描边，未定型印记用虚线表达状态。</summary>
@@ -577,7 +578,16 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>主人经验与锁链进度共用比例刻度，突出当前阶段并保留下一级门槛。</summary>
+        // 无主 Def 的中性零阶供原版健康计算使用。百分比轨道和头像的编号使用正阈值，
+        // 使阶段数、阶段名和下一档的刻度索引一致。非百分比的主人成长使用原有索引。
+        private static List<HediffStage> GetOverviewStages(Hediff record, bool asPercent)
+        {
+            var stages = record?.def.stages;
+            return asPercent && stages?.Count > 0 && stages[0].minSeverity <= 0f
+                ? stages.Where(stage => stage?.minSeverity > 0f).ToList() : stages;
+        }
+
+        /// <summary>主人经验与性奴化进度共用比例刻度，突出当前阶段并保留下一级门槛。</summary>
         private static void AddOverviewProgressScale(SettingsColumn column, Hediff record, float value, int nextStage,
             bool asPercent = false, string nextTip = null, string trackTip = null)
         {
@@ -600,7 +610,7 @@ namespace SexSlaveCraft
             float lineHeight = Text.LineHeight;
 
             // 第一处刻度朝下，后续交替朝上和朝下。长译名只在同侧追加一行。
-            var stages = record.def.stages;
+            var stages = GetOverviewStages(record, asPercent);
             // 已达到的阶段数同时是下一阶段的零基索引；最高阶段仍按实际值填充。
             Color accent = StageAccent(asPercent ? PawnIdentity.Slave : PawnIdentity.Master, nextStage, stages?.Count ?? 0);
             Color currentLabelColor = asPercent ? SlaveStageText(accent) : accent;
