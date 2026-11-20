@@ -147,7 +147,14 @@ namespace SexSlaveCraft
         }
 
         public static Hediff_ChainOfSexSlave AddToPawn(Pawn SexSlave, Pawn Master)
+            => AddToPawnAtSeverity(SexSlave, Master, null, out _);
+
+        /// <summary>新链挂载前写好主人和精确进度，让 PostAdd 及其订阅方直接看到最终阶段。</summary>
+        /// <remarks>输出引用在进入健康回调前赋值。即使回调抛出异常，绑定事务仍能定位本次创建的实例。</remarks>
+        internal static Hediff_ChainOfSexSlave AddToPawnAtSeverity(Pawn SexSlave, Pawn Master, float? initialSeverity,
+            out Hediff_ChainOfSexSlave hediff)
         {
+            hediff = null;
             if (SexSlave == null || Master == null)
             {
                 ModLog.Message("[ChainOfSexSlave] AddToPawn failed: null host or target.");
@@ -156,11 +163,12 @@ namespace SexSlaveCraft
 
             HediffDef def = SSCDefOf.ChainOfSexSlave;
             if (def == null) return null;
-            var hediff = SexSlave.health.hediffSet.GetFirstHediffOfDef(def) as Hediff_ChainOfSexSlave;
+            hediff = SexSlave.health.hediffSet.GetFirstHediffOfDef(def) as Hediff_ChainOfSexSlave;
 
             if (hediff == null)
             {
                 hediff = (Hediff_ChainOfSexSlave)HediffMaker.MakeHediff(def, SexSlave);
+                if (initialSeverity.HasValue) hediff.Severity = initialSeverity.Value;
                 // EN: The target field is the real master link used by every ChainOfSexSlave check in SSC.
                 // CN: 这里的 target 字段就是 SSC 所有 ChainOfSexSlave 判定真正使用的主人引用。
                 hediff.target = Master;

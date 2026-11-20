@@ -18,18 +18,6 @@ namespace SexSlaveCraft
         /// <summary>日常驱动传入本次唯一评分，旧评分的随机项也只采样一次。</summary>
         /// <remarks>1.7 的日常路径发放普通收益。绑定和性奴化进度由各自的仪式或爆发结算负责。</remarks>
         public static void ExecuteOutcome(Pawn master, Pawn sexSlave, float score)
-            => ExecuteOutcomeCore(master, sexSlave, score, score);
-
-#if SSC_RW17
-        internal const float BreakdownScoreBonus = 50f;
-
-        /// <summary>本场采用传入加分，常规模式以基础分写历史。</summary>
-        internal static void ExecuteBreakdownOutcome(Pawn trainer, Pawn subject, float baseScore,
-            float scoreBonus = BreakdownScoreBonus)
-            => ExecuteOutcomeCore(trainer, subject, baseScore + scoreBonus, baseScore);
-#endif
-
-        private static void ExecuteOutcomeCore(Pawn master, Pawn sexSlave, float score, float historyScore)
         {
             if (sexSlave == null || master == null) return;
 
@@ -71,7 +59,7 @@ namespace SexSlaveCraft
             CompSexSlaveTraining comp = sexSlave.TryGetComp<CompSexSlaveTraining>();
             if (comp != null)
             {
-                comp.lastTrainingScore = historyScore;
+                comp.lastTrainingScore = score;
             }
         }
 

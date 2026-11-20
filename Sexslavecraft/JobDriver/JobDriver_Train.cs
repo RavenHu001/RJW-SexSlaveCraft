@@ -421,7 +421,8 @@ namespace SexSlaveCraft
                         try { occupancy.ExitCallback(); }
                         finally
                         {
-                            // 原版精神恢复可同步中断任务。先退出占用回调，再进行恢复。
+                            // 原版精神恢复可同步中断任务。正式绑定也会触发健康及行为规则通知。
+                            // 先退出日常占用回调，再由同一个发作结算阶段、归属和结果信。
                             episode?.FinishSuccessfulTraining();
                         }
                     }
@@ -574,18 +575,10 @@ namespace SexSlaveCraft
             float score = ConditioningUtility.GetScore(pawn, target);
             if (!ValidateTargetIdentityOrAbort(context, target)) return;
 #if SSC_RW17
-            if (episode != null)
-            {
-                // RJW 收尾与评分都可能经过外部回调。收益入账前仍须持有原批准和原实际主人。
-                if (!episode.CanSettleApprovedTraining(this)) return;
-                // 有链特批沿用普通评分。无链特批的加分同时用于实际收益和后续经验，历史分照旧采用基础分。
-                float bonus = episode.BoundEpisode ? 0f : ConditioningUtility.BreakdownScoreBonus;
-                ConditioningUtility.ExecuteBreakdownOutcome(pawn, target, score, bonus);
-                score += bonus;
-            }
-            else
+            // 收益入账前仍须持有原批准。发作与日常共用本次基础分，后续经验及转奴也复用该值。
+            if (episode != null && !episode.CanSettleApprovedTraining(this)) return;
 #endif
-                ConditioningUtility.ExecuteOutcome(pawn, target, score);
+            ConditioningUtility.ExecuteOutcome(pawn, target, score);
             if (!ValidateTargetIdentityOrAbort(context, target)) return;
             if (props != null)
             {
@@ -617,9 +610,7 @@ namespace SexSlaveCraft
                 compToggle.Notify_TrainingCompleted();
             }
 #if SSC_RW17
-            // 场景先按原日常出口写入日期和冷却，再把该次结算确认为精神状态的成功。
-            if (episode != null && (compToggle == null || !ValidateTargetIdentityOrAbort(context, target) ||
-                !episode.ClaimTrainingSuccess(this))) return;
+            if (episode != null && !ValidateTargetIdentityOrAbort(context, target)) return;
 #endif
 
             // 整次认领已在进入结算前保存；受训者只领取当前方向的一份基础经验，
@@ -638,6 +629,10 @@ namespace SexSlaveCraft
             SSCMasterProgressionUtility.TryAddExperience(pawn, SSCMasterProgressionUtility.DailyTrainingExperience);
             // 跨阶段会通知健康并可能触发外部回调；旧任务不可继续操作替换后的任务或目标。
             if (!ValidateTargetIdentityOrAbort(context, target)) return;
+#if SSC_RW17
+            // 所有普通收益及最后一次原任务检查结束后才认领。归属交接留到占用回调退出之后。
+            if (episode != null && (compToggle == null || !episode.ClaimTrainingSuccess(this, score))) return;
+#endif
 
             string finalSexType = props != null ? props.sexType.ToString() : "null";
             SSCLog.Important($"[SSC_TRAIN] Daily training completed: trainer={pawn.LabelShort}, slave={target.LabelShort}, sexType={finalSexType}, score={score:F2}, cooldownStarted={(compToggle != null)}");

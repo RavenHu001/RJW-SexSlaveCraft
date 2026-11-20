@@ -54,8 +54,8 @@ namespace SexSlaveCraft
         }
     }
 
-    // AddToPawn 也可能只更新既有链的主人引用，因此单独在该入口完成后刷新。
-    [HarmonyPatch(typeof(Hediff_ChainOfSexSlave), nameof(Hediff_ChainOfSexSlave.AddToPawn))]
+    // 普通挂链和等进度挂链共用此入口。仅更新既有链的主人时也要刷新 PNA，健康添加事件不会覆盖这种改动。
+    [HarmonyPatch(typeof(Hediff_ChainOfSexSlave), nameof(Hediff_ChainOfSexSlave.AddToPawnAtSeverity))]
     internal static class SSCPnaChainAdditionPatch
     {
         private static void Postfix(Hediff_ChainOfSexSlave __result)

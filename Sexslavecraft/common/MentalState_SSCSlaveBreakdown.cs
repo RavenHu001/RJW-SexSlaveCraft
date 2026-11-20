@@ -22,6 +22,11 @@ namespace SexSlaveCraft
         private bool boundEpisode;
         private Hediff_ChainOfSexSlave boundChain;
         private Pawn boundOwner;
+        // 无链场次同样持有入场进度的实际实例。单独保存是否曾有记录，读档时能区分无记录和原记录已丢失。
+        private Hediff_SSCOwnerlessSlave startingOwnerless;
+        private bool hadOwnerlessRecord;
+        // 用于开场信、请求选项及额外成长资格。实际结算仍从该实例读取当前严重度。
+        private int startingOwnerlessStage;
         // 起始阶段只限制额外成长。原链在发作期间由仪式升阶，可照常结算本场普通调教。
         private int startingChainStage;
         // 只有从 Unset 写入 Slave 时才认领回退权。已有 Slave 或同场印记分化属于原身份。
@@ -54,6 +59,9 @@ namespace SexSlaveCraft
             boundEpisode = boundChain != null;
             boundOwner = boundChain?.LinkedPawn;
             startingChainStage = TrainingOutcomeUtility.GetSexSlaveProgressStage(boundChain).Stage;
+            startingOwnerless = boundEpisode ? null : Hediff_SSCOwnerlessSlave.Find(pawn);
+            hadOwnerlessRecord = startingOwnerless != null;
+            startingOwnerlessStage = TrainingOutcomeUtility.GetSexSlaveProgressStage(startingOwnerless).Stage;
             long deadline = (long)SSCSlaveBreakdown.Now + SSCSlaveBreakdown.DurationTicks;
             if (!TryInitialize(deadline))
             {
@@ -69,7 +77,9 @@ namespace SexSlaveCraft
         }
 
         // 原版即使在通知回调中已经清除状态，也会向先前构造的对象取信件正文。
-        public override TaggedString GetBeginLetterText() => initialized ? base.GetBeginLetterText() : default;
+        public override TaggedString GetBeginLetterText()
+            => !initialized ? default : boundEpisode || startingOwnerlessStage > 0
+                ? "SSC_BreakdownBegin_Existing".Translate(pawn.LabelShort) : base.GetBeginLetterText();
 
         public override void ExposeData()
         {
@@ -87,6 +97,14 @@ namespace SexSlaveCraft
             }
             else Scribe_References.Look(ref boundChain, "sscBreakdownBoundChain");
             Scribe_References.Look(ref boundOwner, "sscBreakdownBoundOwner");
+            Scribe_Values.Look(ref hadOwnerlessRecord, "sscBreakdownHadOwnerlessRecord", false);
+            Scribe_Values.Look(ref startingOwnerlessStage, "sscBreakdownStartingOwnerlessStage", 0);
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                var attachedOwnerless = Hediff_SSCOwnerlessSlave.Find(pawn) == startingOwnerless ? startingOwnerless : null;
+                Scribe_References.Look(ref attachedOwnerless, "sscBreakdownStartingOwnerless");
+            }
+            else Scribe_References.Look(ref startingOwnerless, "sscBreakdownStartingOwnerless");
             Scribe_Values.Look(ref temporaryIdentity, "sscSlaveBreakdownTemporaryIdentity", false);
             Scribe_Values.Look(ref personalityInvalidated, "sscSlaveBreakdownPersonalityInvalidated", false);
             // 健康列表由原版单独深存，状态只恢复本场的实例引用。外部移除后立即存档时，
@@ -155,14 +173,16 @@ namespace SexSlaveCraft
             SSCPersonalityRuntimeUtility.IsCurrent(pawn, personalityToken) && training != null &&
             pawn.TryGetComp<CompSexSlaveTraining>() == training && pawn.health == health;
 
-        /// <summary>本场入场分支，用于选择评分、成功心情和信件。</summary>
+        /// <summary>是否以有主身份入场。训练权限、心情与信件以入场分支为依据。</summary>
         internal bool BoundEpisode => boundEpisode;
 
         /// <summary>原绑定仍有效时返回当时的实际主人。主人临时忙碌或离图仍保有原绑定。</summary>
         internal Pawn BoundOwner => boundEpisode && HasCurrentBinding() ? boundOwner : null;
 
         private bool HasCurrentBinding() => (!boundEpisode || boundChain != null) &&
-            SSCSlaveBreakdown.MatchesBinding(pawn, boundChain, boundOwner);
+            SSCSlaveBreakdown.MatchesBinding(pawn, boundChain, boundOwner) &&
+            (boundEpisode || (hadOwnerlessRecord == (startingOwnerless != null) &&
+                Hediff_SSCOwnerlessSlave.Find(pawn) == startingOwnerless));
 
         // 已开场只复查角色与原绑定。若外部动作推进了同一条锁链，调教仍可完成，
         // 阶段变化由成功结算单独判断，以免把当前发作或本场自己的升阶误判成失效。
@@ -272,7 +292,8 @@ namespace SexSlaveCraft
             {
                 try
                 {
-                    // 成功发布需要原调教员和原批准的数据，先计算锁链进展并发放结果，再清除请求字段。
+                    // 原版清除精神状态后，仍须持有原调教员和原批准来提交阶段或归属。
+                    // 先提交并发布结果，再清除请求字段，避免撤销路径提前抹去本场决定。
                     // 无论健康、记忆或信件回调结果如何，都释放本场行为并移除本场效果。
                     try { PublishEpisodeOutcome(); }
                     finally

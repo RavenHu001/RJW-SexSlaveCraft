@@ -76,15 +76,20 @@ namespace SexSlaveCraft
                    !TemporarilyBlocked(pawn) && !BlockedByVanilla(pawn);
         }
 
-        /// <summary>在衰减前用实际恶堕掷骰。启动可中断原版任务，之后只允许原需求与人格继续刷新。</summary>
+        // 定期检查和警报共用精神状态 Def 的 Worker。印记事务或有效跨值待办仍持有本轮处理权时，
+        // 定期入口让出启动机会。查询仅观察资格，既不获取这份处理权，也不消费随机序列。
+        private static bool CanStartFromInterval(Pawn pawn, Need_Corruption need, SSCSlaveBreakdownGameComponent runtime)
+            => need?.CurLevel >= TriggerLevel && !runtime.HasFullRequest(pawn) &&
+               !SSCFullCorruptionImprint.IsSettling(pawn, need) && StateDef?.Worker.StateCanOccur(pawn) == true;
+
+        /// <summary>衰减前检查实际恶堕，满值直接启动。启动回调之后只允许原需求与人格继续刷新。</summary>
         internal static bool RefreshBeforeDecay(Pawn pawn, Need_Corruption need)
         {
-            // 95% 包含在随机区间内。满值由实际跨越触发，满值待办及印记结算优先处理。
-            if (!(need.CurLevel >= TriggerLevel && need.CurLevel < need.MaxLevel)) return true;
             var runtime = SSCSlaveBreakdownGameComponent.Current;
-            if (runtime == null || runtime.HasFullRequest(pawn) || SSCFullCorruptionImprint.IsSettling(pawn, need) ||
-                StateDef?.Worker.StateCanOccur(pawn) != true ||
-                !Rand.MTBEventOccurs(1.5f, GenDate.TicksPerDay, NeedIntervalTicks)) return true;
+            if (runtime == null || !CanStartFromInterval(pawn, need, runtime)) return true;
+            // 满值等待冷却到期即可再次参与检查，即便从上次发作至今没有产生新的满值跨越。
+            // 保留首跨待办专用的记录位，因此从定期入口启动时使用 TryStart 的默认来源。
+            if (need.CurLevel < need.MaxLevel && !Rand.MTBEventOccurs(1.5f, GenDate.TicksPerDay, NeedIntervalTicks)) return true;
 
             object token = SSCPersonalityRuntimeUtility.Capture(pawn);
             runtime.TryStart(pawn);
@@ -104,7 +109,7 @@ namespace SexSlaveCraft
                 comp.SlaveBreakdownFullTriggerUsed = false;
         }
 
-        /// <summary>只读查询两条恶堕入口。查看警报不会登记满值待办，也不会消耗随机判定。</summary>
+        /// <summary>只读查询有效满值待办和定期启动资格。</summary>
         internal static bool IsAtRisk(Pawn pawn)
         {
             Need_Corruption need = GetNeed(pawn);
@@ -112,11 +117,10 @@ namespace SexSlaveCraft
                 return false;
             var runtime = SSCSlaveBreakdownGameComponent.Current;
             if (runtime == null) return false;
-            // 短期满值待办可在印记重试、睡眠或其他精神状态结束后继续，等待期间仍算有风险。
+            // 队列里的满值跨越可在印记重试、睡眠或其他精神状态结束后续跑，因此等待期间仍显示风险。
+            // 其余角色按定期入口的资格显示，包括一直保持在满值且刚结束冷却的角色。
             if (runtime.HasFullRequest(pawn)) return true;
-            // 没有待办时只看实际随机资格。持续满值和低心情都不会产生这条警报。
-            return need.CurLevel < need.MaxLevel && !SSCFullCorruptionImprint.IsSettling(pawn, need) &&
-                   StateDef?.Worker.StateCanOccur(pawn) == true;
+            return CanStartFromInterval(pawn, need, runtime);
         }
     }
 

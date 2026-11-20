@@ -15,8 +15,8 @@
   <SSC_Setting_EnableDebugGizmos_Desc>僅在開發者模式下額外顯示 SSC 自己的除錯 gizmo。預設關閉。</SSC_Setting_EnableDebugGizmos_Desc>
   <SSC_Setting_EnableFullGelTint>啟用完全凝膠化外觀</SSC_Setting_EnableFullGelTint>
   <SSC_Setting_EnableFullGelTint_Desc>開啟後，完全凝膠化角色的身體和頭部皮膚使用凝膠外觀。選取角色，透過「凝膠外觀」指令設定個人顏色和不透明度；眼睛、五官與頭髮保持原外觀。</SSC_Setting_EnableFullGelTint_Desc>
-  <SSC_Setting_EnableRitualEnslavement>允許繫結儀式轉化為奴隸</SSC_Setting_EnableRitualEnslavement>
-  <SSC_Setting_EnableRitualEnslavement_Desc>開啟後，滿足惡墮、評分與意志條件的繫結儀式可將目標轉化為原版奴隸。關閉只會禁用轉奴判定，不影響儀式的其他收益。</SSC_Setting_EnableRitualEnslavement_Desc>
+  <SSC_Setting_EnableRitualEnslavement>允許調教結算轉為奴隸</SSC_Setting_EnableRitualEnslavement>
+  <SSC_Setting_EnableRitualEnslavement_Desc>開啟後，繫結儀式或符合條件的奴性爆發結算可以嘗試將目標轉為原版奴隸。</SSC_Setting_EnableRitualEnslavement_Desc>
   <SSC_Setting_EnableRimTalkSexDialogue>為 SSC 性行為觸發 RimTalk 對話</SSC_Setting_EnableRimTalkSexDialogue>
   <SSC_Setting_EnableRimTalkSexDialogue_Desc>安裝並啟用 RimTalk 後，SSC 日常調教、繫結儀式階段、人格排洩或公交車交易性行為會在場景開始且當前倍速允許時，為參與者加入 AI 對話請求。關閉後可避免這些額外的 AI 呼叫。</SSC_Setting_EnableRimTalkSexDialogue_Desc>
   <SSC_Setting_RimTalkMaxSpeed>RimTalk 調教對話最高傳送倍速：{0}</SSC_Setting_RimTalkMaxSpeed>

@@ -8,7 +8,18 @@
   <SSC_BreakdownSuccess_Label>奴欲平息</SSC_BreakdownSuccess_Label>
   <SSC_BreakdownSuccess_Text>{1} 的调教平息了 {0} 的奴欲，也把 {0} 的理智彻底淹没在快感里，等 {0} 回过神来，自己已经先一步成了性奴。</SSC_BreakdownSuccess_Text>
   <SSC_BreakdownSuccess_BoundText>{1} 的调教平息了 {0} 的奴欲，也把 {0} 的理智彻底淹没在快感里，等 {0} 回过神来，自己已经陷得更深，再难回头。</SSC_BreakdownSuccess_BoundText>
-  <SSC_BreakdownSuccess_StageAdvanced>锁链阶段从 {0} 阶升至 {1} 阶。</SSC_BreakdownSuccess_StageAdvanced>
-  <SSC_BreakdownSuccess_ProgressAdvanced>当前为 {0} 阶，锁链严重度从 {1} 提高到 {2}。</SSC_BreakdownSuccess_ProgressAdvanced>
-  <SSC_BreakdownSuccess_StageUnchanged>本场没有推进锁链进度。</SSC_BreakdownSuccess_StageUnchanged>
+  <SSC_BreakdownSuccess_StageAdvanced>性奴化阶段从 {0} 阶升至 {1} 阶。</SSC_BreakdownSuccess_StageAdvanced>
+  <SSC_BreakdownSuccess_ProgressAdvanced>当前为 {0} 阶，性奴化进度从 {1} 提高到 {2}。</SSC_BreakdownSuccess_ProgressAdvanced>
+  <SSC_BreakdownSuccess_StageUnchanged>本场没有推进性奴化进度。</SSC_BreakdownSuccess_StageUnchanged>
+  <SSC_BreakdownBegin_Existing>{0} 的奴性再次爆发。</SSC_BreakdownBegin_Existing>
+  <!-- Development placeholders for approval choices. Replace before release. -->
+  <SSC_BreakdownRequest_Dev_FormOwnerless>[开发] 成为无主性奴</SSC_BreakdownRequest_Dev_FormOwnerless>
+  <SSC_BreakdownRequest_Dev_FormBound>[开发] 成为有主性奴</SSC_BreakdownRequest_Dev_FormBound>
+  <SSC_BreakdownRequest_Dev_BindOwnerless>[开发] 按原进度绑定</SSC_BreakdownRequest_Dev_BindOwnerless>
+  <SSC_BreakdownRequest_Dev_AdvanceOwnerless>[开发] 继续无主调教</SSC_BreakdownRequest_Dev_AdvanceOwnerless>
+  <SSC_BreakdownRequest_Dev_AdvanceBound>[开发] 继续有主调教</SSC_BreakdownRequest_Dev_AdvanceBound>
+  <SSC_BreakdownSuccess_CurrentProgress>当前为 {0} 阶，性奴化进度为 {1}。</SSC_BreakdownSuccess_CurrentProgress>
+  <SSC_BreakdownSuccess_NewOwner>本场绑定的主人为 {0}。</SSC_BreakdownSuccess_NewOwner>
+  <SSC_BreakdownSuccess_Enslaved>目标已成为原版奴隶。</SSC_BreakdownSuccess_Enslaved>
+  <SSC_BreakdownSuccess_EnslaveFailed>本场原版转奴未成功。</SSC_BreakdownSuccess_EnslaveFailed>
 </LanguageData>

@@ -124,7 +124,8 @@ namespace SexSlaveCraft
         private bool IsRegistered(FullRequest request)
             => fullRequests.TryGetValue(request.Pawn, out FullRequest current) && current == request;
 
-        /// <summary>供需求随机判定或有效满值待办使用。满值来源仅在启动成功后登记为已用。</summary>
+        /// <summary>统一启动入口，供定期检查和有效满值待办调用。</summary>
+        /// <param name="fromFull">只在消费满值跨越待办时为 true。定期检查即使当前数值已满也沿用默认值。</param>
         internal bool TryStart(Pawn pawn, bool fromFull = false)
             => StartState(pawn, fromFull, forced: false);
 

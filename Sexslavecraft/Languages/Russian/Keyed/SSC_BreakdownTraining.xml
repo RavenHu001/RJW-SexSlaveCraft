@@ -8,7 +8,18 @@
   <SSC_BreakdownSuccess_Label>Жажда подчинения утихла</SSC_BreakdownSuccess_Label>
   <SSC_BreakdownSuccess_Text>Дрессировка с {1} уняла жажду подчинения у {0} и утопила рассудок {0} в наслаждении. Когда {0} удалось опомниться, сексуальное рабство уже стало реальностью.</SSC_BreakdownSuccess_Text>
   <SSC_BreakdownSuccess_BoundText>Дрессировка с {1} уняла жажду подчинения у {0} и утопила рассудок {0} в наслаждении. Когда {0} удалось опомниться, подчинение зашло так далеко, что повернуть назад было трудно.</SSC_BreakdownSuccess_BoundText>
-  <SSC_BreakdownSuccess_StageAdvanced>Цепь перешла со стадии {0} на стадию {1}.</SSC_BreakdownSuccess_StageAdvanced>
-  <SSC_BreakdownSuccess_ProgressAdvanced>Стадия цепи: {0}. Выраженность выросла с {1} до {2}.</SSC_BreakdownSuccess_ProgressAdvanced>
-  <SSC_BreakdownSuccess_StageUnchanged>Эта тренировка не продвинула развитие цепи.</SSC_BreakdownSuccess_StageUnchanged>
+  <SSC_BreakdownSuccess_StageAdvanced>Стадия подчинения повысилась с {0} до {1}.</SSC_BreakdownSuccess_StageAdvanced>
+  <SSC_BreakdownSuccess_ProgressAdvanced>На стадии {0} прогресс вырос с {1} до {2}.</SSC_BreakdownSuccess_ProgressAdvanced>
+  <SSC_BreakdownSuccess_StageUnchanged>Дрессировка не продвинула подчинение.</SSC_BreakdownSuccess_StageUnchanged>
+  <SSC_BreakdownBegin_Existing>{0} снова переживает приступ покорности.</SSC_BreakdownBegin_Existing>
+  <!-- Development placeholders for approval choices. Replace before release. -->
+  <SSC_BreakdownRequest_Dev_FormOwnerless>[DEV] Получить статус без хозяина</SSC_BreakdownRequest_Dev_FormOwnerless>
+  <SSC_BreakdownRequest_Dev_FormBound>[DEV] Получить статус с хозяином</SSC_BreakdownRequest_Dev_FormBound>
+  <SSC_BreakdownRequest_Dev_BindOwnerless>[DEV] Привязать с сохранением прогресса</SSC_BreakdownRequest_Dev_BindOwnerless>
+  <SSC_BreakdownRequest_Dev_AdvanceOwnerless>[DEV] Продолжить дрессировку без хозяина</SSC_BreakdownRequest_Dev_AdvanceOwnerless>
+  <SSC_BreakdownRequest_Dev_AdvanceBound>[DEV] Продолжить дрессировку с хозяином</SSC_BreakdownRequest_Dev_AdvanceBound>
+  <SSC_BreakdownSuccess_CurrentProgress>Текущая стадия {0}, прогресс {1}.</SSC_BreakdownSuccess_CurrentProgress>
+  <SSC_BreakdownSuccess_NewOwner>Хозяин после привязки — {0}.</SSC_BreakdownSuccess_NewOwner>
+  <SSC_BreakdownSuccess_Enslaved>Цель стала рабом по правилам базовой игры.</SSC_BreakdownSuccess_Enslaved>
+  <SSC_BreakdownSuccess_EnslaveFailed>Попытка порабощения не удалась.</SSC_BreakdownSuccess_EnslaveFailed>
 </LanguageData>
