@@ -11,7 +11,6 @@
   <SSC_BreakdownSuccess_StageAdvanced>Стадия подчинения повысилась с {0} до {1}.</SSC_BreakdownSuccess_StageAdvanced>
   <SSC_BreakdownSuccess_ProgressAdvanced>На стадии {0} прогресс вырос с {1} до {2}.</SSC_BreakdownSuccess_ProgressAdvanced>
   <SSC_BreakdownSuccess_StageUnchanged>Дрессировка не продвинула подчинение.</SSC_BreakdownSuccess_StageUnchanged>
-  <SSC_BreakdownBegin_Existing>{0} снова переживает приступ покорности.</SSC_BreakdownBegin_Existing>
   <!-- Development placeholders for approval choices. Replace before release. -->
   <SSC_BreakdownRequest_Dev_FormOwnerless>[DEV] Получить статус без хозяина</SSC_BreakdownRequest_Dev_FormOwnerless>
   <SSC_BreakdownRequest_Dev_FormBound>[DEV] Получить статус с хозяином</SSC_BreakdownRequest_Dev_FormBound>

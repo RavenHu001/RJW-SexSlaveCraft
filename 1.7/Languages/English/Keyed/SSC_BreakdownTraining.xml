@@ -11,7 +11,6 @@
   <SSC_BreakdownSuccess_StageAdvanced>Sex-slave progression advanced from stage {0} to {1}.</SSC_BreakdownSuccess_StageAdvanced>
   <SSC_BreakdownSuccess_ProgressAdvanced>At stage {0}, progression increased from {1} to {2}.</SSC_BreakdownSuccess_ProgressAdvanced>
   <SSC_BreakdownSuccess_StageUnchanged>This session did not advance progression.</SSC_BreakdownSuccess_StageUnchanged>
-  <SSC_BreakdownBegin_Existing>{0} is undergoing another submission breakdown.</SSC_BreakdownBegin_Existing>
   <!-- Development placeholders for approval choices. Replace before release. -->
   <SSC_BreakdownRequest_Dev_FormOwnerless>[DEV] Form as an ownerless sex slave</SSC_BreakdownRequest_Dev_FormOwnerless>
   <SSC_BreakdownRequest_Dev_FormBound>[DEV] Form as a bound sex slave</SSC_BreakdownRequest_Dev_FormBound>

@@ -25,7 +25,7 @@ namespace SexSlaveCraft
         // 无链场次同样持有入场进度的实际实例。单独保存是否曾有记录，读档时能区分无记录和原记录已丢失。
         private Hediff_SSCOwnerlessSlave startingOwnerless;
         private bool hadOwnerlessRecord;
-        // 用于开场信、请求选项及额外成长资格。实际结算仍从该实例读取当前严重度。
+        // 用于请求选项和额外成长资格。实际结算仍从该实例读取当前严重度。
         private int startingOwnerlessStage;
         // 起始阶段只限制额外成长。原链在发作期间由仪式升阶，可照常结算本场普通调教。
         private int startingChainStage;
@@ -76,10 +76,8 @@ namespace SexSlaveCraft
             base.PostStart(reason);
         }
 
-        // 原版即使在通知回调中已经清除状态，也会向先前构造的对象取信件正文。
-        public override TaggedString GetBeginLetterText()
-            => !initialized ? default : boundEpisode || startingOwnerlessStage > 0
-                ? "SSC_BreakdownBegin_Existing".Translate(pawn.LabelShort) : base.GetBeginLetterText();
+        // 原版可能在 SSC 初始化失败后仍取正文。通过初始化的发作统一使用 Def 原有开场信。
+        public override TaggedString GetBeginLetterText() => initialized ? base.GetBeginLetterText() : default;
 
         public override void ExposeData()
         {

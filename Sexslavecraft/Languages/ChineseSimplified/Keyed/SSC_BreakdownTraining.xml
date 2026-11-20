@@ -11,7 +11,6 @@
   <SSC_BreakdownSuccess_StageAdvanced>性奴化阶段从 {0} 阶升至 {1} 阶。</SSC_BreakdownSuccess_StageAdvanced>
   <SSC_BreakdownSuccess_ProgressAdvanced>当前为 {0} 阶，性奴化进度从 {1} 提高到 {2}。</SSC_BreakdownSuccess_ProgressAdvanced>
   <SSC_BreakdownSuccess_StageUnchanged>本场没有推进性奴化进度。</SSC_BreakdownSuccess_StageUnchanged>
-  <SSC_BreakdownBegin_Existing>{0} 的奴性再次爆发。</SSC_BreakdownBegin_Existing>
   <!-- Development placeholders for approval choices. Replace before release. -->
   <SSC_BreakdownRequest_Dev_FormOwnerless>[开发] 成为无主性奴</SSC_BreakdownRequest_Dev_FormOwnerless>
   <SSC_BreakdownRequest_Dev_FormBound>[开发] 成为有主性奴</SSC_BreakdownRequest_Dev_FormBound>
