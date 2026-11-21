@@ -16,7 +16,10 @@ internal static partial class Program
     {
         var def = DefDatabase<HediffDef>.GetNamed(Hediff_SSCOwnerlessSlave.DefName);
         var mainGel = SSCDefOf.SSC_PersonalitySlime;
-        var editedGel = SSCDefOf.SSC_PersonalitySlime_Edited;
+        var initialGel = SSCDefOf.SSC_PS_P;
+        var advancedGel = SSCDefOf.SSC_PS_U;
+        var editedAdvancedGel = SSCDefOf.SSC_PS_U_Edited;
+        var perfectGel = SSCDefOf.SSC_PS_P_U;
         var hollowTrait = SSCDefOf.SSC_Trait_PE;
         var world = Current.Game.World;
         var harmony = new Harmony("ssc.tests.ownerless-personality");
@@ -26,7 +29,10 @@ internal static partial class Program
             Current.Game.World = Bare<World>();
             Current.Game.World.factionManager = new FactionManager();
             SSCDefOf.SSC_PersonalitySlime = OwnerlessGelDef("SSC_PersonalitySlime");
-            SSCDefOf.SSC_PersonalitySlime_Edited = OwnerlessGelDef("SSC_PersonalitySlime_Edited");
+            SSCDefOf.SSC_PS_P = OwnerlessGelDef("SSC_PersonalitySlime_PLUS");
+            SSCDefOf.SSC_PS_U = OwnerlessGelDef("SSC_PersonalitySlime_ULTRA");
+            SSCDefOf.SSC_PS_U_Edited = OwnerlessGelDef("SSC_PersonalitySlime_ULTRA_Edited");
+            SSCDefOf.SSC_PS_P_U = OwnerlessGelDef("SSC_PersonalitySlime_PLUS_ULTRA");
             SSCDefOf.SSC_Trait_PE ??= new TraitDef { defName = "SSC_Trait_PE", degreeDatas = new() { new TraitDegreeData { degree = 0, label = "hollow" } } };
             harmony.Patch(AccessTools.PropertyGetter(typeof(Thing), nameof(Thing.Map)),
                 prefix: new HarmonyMethod(typeof(Program), nameof(OwnerlessGelMap)));
@@ -43,11 +49,16 @@ internal static partial class Program
             {
                 const float severity = .8123457f;
                 var source = ImprintPawn(PawnIdentity.Slave);
-                source.health.AddHediff(def).Severity = severity;
+                var progress = source.health.AddHediff(def);
+                Require(PersonalityGelUtility.GetPersonalityGelDefForPawn(source) == SSCDefOf.SSC_PersonalitySlime);
+                progress.Severity = .3f;
+                Require(PersonalityGelUtility.GetPersonalityGelDefForPawn(source) == SSCDefOf.SSC_PS_P);
+                progress.Severity = severity;
                 ownerlessExtractionSource = source;
                 ownerlessGel = null;
                 ExcretionUtility.DoExcretion(source);
-                Require(ownerlessGel != null && !ownerlessGel.Destroyed);
+                // 81.23457% 仍是三阶无主，使用已有高级凝胶及其加工版。
+                Require(ownerlessGel?.def == SSCDefOf.SSC_PS_U && !ownerlessGel.Destroyed);
                 Require(Hediff_SSCOwnerlessSlave.Find(source) == null && !SSCIdentityUtility.IsIdentityLocked(source));
                 Require(source.health.hediffSet.HasHediff(SSCDefOf.SSC_PersonalityExcreted_Done));
                 Require(SSCOrgasmSensitivityUtility.Find(source) == null);
@@ -58,7 +69,7 @@ internal static partial class Program
                 ownerlessGel = null;
                 var recipe = new Recipe_PSTagWorker { recipe = new RecipeDef_PSTag() };
                 recipe.Notify_IterationCompleted(source, new List<Thing> { loaded });
-                Require(loaded.Destroyed && ownerlessGel?.def == SSCDefOf.SSC_PersonalitySlime_Edited);
+                Require(loaded.Destroyed && ownerlessGel?.def == SSCDefOf.SSC_PS_U_Edited);
                 Equal(severity, ownerlessGel.TryGetComp<CompPersonalityStore>().ownerlessProgress);
 
                 var host = ImprintPawn(PawnIdentity.Slave);
@@ -101,7 +112,7 @@ internal static partial class Program
 
                 duringOwnerlessPlacement = null;
                 complete.Invoke(driver, null);
-                Require(ownerlessGel != null && !ownerlessGel.Destroyed && Hediff_SSCOwnerlessSlave.Find(source) == null);
+                Require(ownerlessGel?.def == SSCDefOf.SSC_PS_P_U && !ownerlessGel.Destroyed && Hediff_SSCOwnerlessSlave.Find(source) == null);
                 Equal(latest, ownerlessGel.TryGetComp<CompPersonalityStore>().ownerlessProgress);
             });
 
@@ -136,7 +147,10 @@ internal static partial class Program
             duringOwnerlessPlacement = null;
             afterOwnerlessImplantAdd = null;
             SSCDefOf.SSC_PersonalitySlime = mainGel;
-            SSCDefOf.SSC_PersonalitySlime_Edited = editedGel;
+            SSCDefOf.SSC_PS_P = initialGel;
+            SSCDefOf.SSC_PS_U = advancedGel;
+            SSCDefOf.SSC_PS_U_Edited = editedAdvancedGel;
+            SSCDefOf.SSC_PS_P_U = perfectGel;
             SSCDefOf.SSC_Trait_PE = hollowTrait;
             Current.Game.World = world;
         }
