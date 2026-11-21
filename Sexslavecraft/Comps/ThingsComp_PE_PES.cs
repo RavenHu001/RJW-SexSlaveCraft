@@ -89,6 +89,8 @@ namespace SexSlaveCraft
         // -1 表示无记录或旧凝胶缺字段，0 是保留身份锁的零阶记录。
         internal const float NoOwnerlessProgress = -1f;
         internal float ownerlessProgress = NoOwnerlessProgress;
+        // 独立期限与精确进度一起随人格流转。保存和加工复制绝对 tick，过期在植入时解释。
+        internal long bondReleaseExpiresAt = -1L;
         public int fertilityCareTicks;
         internal double foxResearchPointRemainder;
         // 生育技能仅迁移绝对冷却截止tick；不迁移身体预设或孕次。
@@ -154,6 +156,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
             // float 走原版 Scribe 的往返精度，植入时再核对范围及身份。读档不补建进度。
             Scribe_Values.Look(ref ownerlessProgress, "sscOwnerlessProgress", NoOwnerlessProgress);
+            Scribe_Values.Look(ref bondReleaseExpiresAt, "sscBondReleaseExpiresAt", -1L);
             Scribe_Values.Look(ref fertilityCareTicks, "fertilityCareTicks", 0);
             Scribe_Values.Look(ref foxResearchPointRemainder, "foxResearchPointRemainder", 0d);
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
@@ -274,6 +277,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
             // 加工只复制标量，产物随后替换专精标签时不影响来源严重度。
             ownerlessProgress = other.ownerlessProgress;
+            bondReleaseExpiresAt = other.bondReleaseExpiresAt;
             this.fertilityCareTicks = Math.Clamp(other.fertilityCareTicks, 0, 2499);
             foxResearchPointRemainder = CompSexSlaveTraining.NormalizeFoxResearchPointRemainder(other.foxResearchPointRemainder);
             this.fertilityConceptionCooldownEndTick = other.fertilityConceptionCooldownEndTick;
@@ -430,6 +434,7 @@ namespace SexSlaveCraft
             // 重复采集时覆盖上次的进度和绑定。锁链优先，体内交接时残留的无主记录不会进入快照。
             chainHediffData = null;
             ownerlessProgress = Hediff_SSCOwnerlessSlave.GetPersonalityProgress(p)?.Severity ?? NoOwnerlessProgress;
+            bondReleaseExpiresAt = Hediff_SSCBondReleaseAftereffect.ActiveDeadline(p);
 #endif
             var chainHediff = p.health.hediffSet.hediffs.FirstOrDefault(x => x.def.defName == "Hediff_ChainOfSexSlave");
             if (chainHediff is HediffWithTarget hTarget)
@@ -546,7 +551,7 @@ namespace SexSlaveCraft
                 // 身体开发、凝胶库存和药效属于身体。无主记录由独立字段承接，配方标签不能提供第二份进度。
                 if (SSCBodyDevelopmentUtility.IsBodyStateDef(recipe.hediffToAdd) || SSCCorruptionGelProductionUtility.IsBodyStateDef(recipe.hediffToAdd) ||
                     SSCCorruptionGelEffectUtility.IsEffectDef(recipe.hediffToAdd) ||
-                    recipe.hediffToAdd?.defName == Hediff_SSCOwnerlessSlave.DefName) continue;
+                    recipe.hediffToAdd?.defName is Hediff_SSCOwnerlessSlave.DefName or Hediff_SSCBondReleaseAftereffect.DefName) continue;
 #endif
                 if (recipe.hediffToAdd != null && !SSCPnaExposureUtility.IsBodyStateDef(recipe.hediffToAdd) &&
                     !SSCAbilityToggleUtility.IsMarkerDef(recipe.hediffToAdd))

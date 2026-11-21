@@ -643,6 +643,39 @@ internal static partial class Program
                 Equal(1, breakdownLetters.Count(item => item.Pawn == loaded && item.Type == "success"));
             });
 
+            Case("release cooldown blocks breakdown binding and both ritual paths until the exact tick", () =>
+            {
+                var (master, _) = BreakdownPawn(PawnIdentity.Master);
+                var (pawn, need) = BreakdownPawn(PawnIdentity.Slave);
+                var (zero, zeroNeed) = BreakdownPawn(PawnIdentity.Slave);
+                foreach (var (subject, severity) in new[] { (pawn, .4f), (zero, .03f) })
+                {
+                    Require(SSCBondUtility.Bind(master, subject));
+                    SSCBondUtility.GetChain(subject).Severity = severity;
+                    Require(SSCBondUtility.TryReleaseToOwnerless(new SSCBondUtility.ReleaseContext(subject)));
+                    subject.TryGetComp<CompSexSlaveTraining>().ReplaceAssignedTrainers(new[] { master });
+                }
+                zeroNeed.RestoreCorruption(.8f, .8f);
+                SetBreakdownTick(120999);
+                reachableBreakdownTrainer = master;
+                var state = StartWanderingBreakdown(pawn, need);
+                var letter = InstallBreakdownRequest(state, pawn, master, requestDef);
+                Require(!state.CanApprove(letter, TrainingDecision.BindOwnerless));
+                Require(state.CanApprove(letter, TrainingDecision.AdvanceOwnerless));
+                foreach (var subject in new[] { pawn, zero })
+                {
+                    var request = SSCRestrictionTrainingUtility.CreateRequest(master, subject, true);
+                    Equal(SSCTrainingFailure.BindingCooldown, SSCRestrictionTrainingUtility.Evaluate(request, false).Failure);
+                    Require(CorruptionProgressionUtility.ProcessCorruptionProgression(master, subject, true, 75f) == null);
+                    Require(SSCBondUtility.GetChain(subject) == null);
+                }
+                SetBreakdownTick(121000);
+                Require(state.CanApprove(letter, TrainingDecision.BindOwnerless));
+                Require(SSCRestrictionTrainingUtility.Evaluate(SSCRestrictionTrainingUtility.CreateRequest(master, pawn, true), false).Allowed);
+                Require(CorruptionProgressionUtility.ProcessCorruptionProgression(master, zero, true, 75f) != null);
+                Require(SSCBondUtility.IsBoundTo(zero, master) && Hediff_SSCOwnerlessSlave.Find(zero) == null);
+            });
+
             Case("binding rollback keeps the original ownerless record when a chain callback advances it or throws", () =>
             {
                 const string callbackError = "Injected chain attachment callback failure";

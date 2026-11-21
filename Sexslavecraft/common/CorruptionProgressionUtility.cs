@@ -95,7 +95,7 @@ namespace SexSlaveCraft
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
             // 委派主持可能有仪式权限，但已有其他主人时 BindForRitual 会拒绝写入。
             // null 返回给仪式后，后续转奴和限阶结算按原链及当前许可继续校验。
-            if (!SSCBondUtility.BindForRitual(master, sexSlave, progress.CanWriteBinding, out var boundChain) ||
+            if (!progress.TryBindForRitual(out var boundChain) ||
                 !progress.CanContinueAfterBinding(boundChain)) return null;
 #else
             if (!SSCBondUtility.Bind(master, sexSlave)) return null;
@@ -218,6 +218,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
             private readonly Pawn_HealthTracker targetHealth;
             private readonly Hediff_SSCOwnerlessSlave ownerless;
+            private readonly Hediff_SSCOwnerlessSlave zeroOwnerless;
             private readonly bool bindOwnerless;
             internal bool HasOwnerlessProgress => ownerless != null;
 #endif
@@ -247,6 +248,7 @@ namespace SexSlaveCraft
                     startingStage = incomingStage;
                     return;
                 }
+                zeroOwnerless = incoming;
 #endif
                 startingStage = TrainingOutcomeUtility.GetSexSlaveProgressStage(chain).Stage;
             }
@@ -268,8 +270,11 @@ namespace SexSlaveCraft
             private bool MatchesStartingStage(Hediff_ChainOfSexSlave expected, Pawn expectedOwner) =>
                 MatchesChain(expected, expectedOwner) &&
 #if SSC_RW17
+                // 零阶首次建链保留原严重度规则，同样检查当前再绑定冷却。
+                (chain != null || Hediff_SSCBondReleaseAftereffect.ActiveDeadline(target) < 0) &&
                 // 零阶分支准备建链时也必须保留原类型，避免覆盖质量或收益回调中刚形成的无主进度。
                 (chain != null || ownerless != null ||
+                    (expected != null || Hediff_SSCOwnerlessSlave.Find(target) == zeroOwnerless) &&
                     TrainingOutcomeUtility.GetSexSlaveProgressStage(Hediff_SSCOwnerlessSlave.Find(target)).Stage == 0) &&
 #endif
                 (chain == null || (expected == chain && TrainingOutcomeUtility.GetSexSlaveProgressStage(expected).Stage == startingStage));
@@ -294,6 +299,21 @@ namespace SexSlaveCraft
             // 身份刷新可能改变未写链时的恶堕，仍须达到 10% 建链门槛。写入成功后改查实际提交的链。
             internal bool CanWriteBinding(Hediff_ChainOfSexSlave written) =>
                 written == null ? CanAdvance() && need.CurLevel >= 0.1f : CanUseChain(written, host);
+
+            internal bool TryBindForRitual(out Hediff_ChainOfSexSlave written)
+            {
+#if SSC_RW17
+                // 旧零阶锁链解绑留下的无主记录也要完成载体交接。保留原首次建链的起始值。
+                if (zeroOwnerless != null)
+                    return SSCBondUtility.BindNewWithProgress(host, target, zeroOwnerless, SSCDefOf.ChainOfSexSlave?.initialSeverity ?? .2f,
+                        () => CanContinueSettlement() && target.needs?.TryGetNeed<Need_Corruption>() == need &&
+                            (!SSCBondUtility.IsBoundTo(target, host) || Hediff_SSCOwnerlessSlave.Find(target) != zeroOwnerless ||
+                                SSCRestrictionTrainingUtility.Evaluate(SSCRestrictionTrainingUtility.CreateRequest(host, target, true),
+                                    requireAssignment: true).Allowed),
+                        out written, () => CanWriteBinding(null));
+#endif
+                return SSCBondUtility.BindForRitual(host, target, CanWriteBinding, out written);
+            }
 
             // 委派主持未建绑，继续检查原主的链。首次建链则检查这场实际写入的链。
             internal bool CanContinueAfterBinding(Hediff_ChainOfSexSlave written)

@@ -265,7 +265,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
                 // 快照和放置会进入外部回调，后续清理只接受原健康载体与原无主记录。
                 var originalHealth = victim.health;
-                var originalProgress = Hediff_SSCOwnerlessSlave.GetPersonalityProgress(victim);
+                var originalProgress = TrainingOutcomeUtility.GetSexSlaveProgress(victim);
 #endif
                 // 生成、快照与清源共用人格作用域；缺存储组件先退出，成功生成后才清开关偏好。
 
@@ -286,7 +286,7 @@ namespace SexSlaveCraft
                     return;
                 }
                 if (!ExcretionUtility.TryContinueStoredExtraction(victim, product, mutation, originalComp) ||
-                    !ExcretionUtility.TryTransferOwnerlessProgress(victim, product, originalHealth, originalProgress, detach: false)) return;
+                    !ExcretionUtility.TryTransferBondProgress(victim, product, originalHealth, originalProgress, detach: false)) return;
 #else
                 if (product.TryGetComp<CompPersonalityStore>() == null || !mutation.IsCurrent ||
                     victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
@@ -304,7 +304,7 @@ namespace SexSlaveCraft
                 if (!ExcretionUtility.TryContinueStoredExtraction(victim, product, mutation, originalComp)) return;
                 PetSpecializationUtility.DetachRabbitAndFoxAfterExtraction(victim);
                 if (!ExcretionUtility.TryContinueStoredExtraction(victim, product, mutation, originalComp) ||
-                    !ExcretionUtility.TryTransferOwnerlessProgress(victim, product, originalHealth, originalProgress, detach: true)) return;
+                    !ExcretionUtility.TryTransferBondProgress(victim, product, originalHealth, originalProgress, detach: true)) return;
 #endif
                 // EN: Step 2: strip the victim into a hollow pawn and swap the personality-excretion state hediff.
                 // CN: 步骤 2：把受害者剥离成空壳 Pawn，并切换人格排泄状态 Hediff。

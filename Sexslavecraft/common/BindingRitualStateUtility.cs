@@ -78,6 +78,25 @@ namespace SexSlaveCraft
         }
 
 #if SSC_RW17
+        /// <summary>删链前捕获原仪式，后续健康回调可能撤走或替换 Lord。</summary>
+        internal static Lord CaptureTargetRitual(Pawn target)
+        {
+            Lord recorded = target?.TryGetComp<CompSexSlaveTraining>()?.bindingRitualLord;
+            if (IsManagedTargetRitual(target, recorded)) return recorded;
+            Lord current = target?.GetLord();
+            return IsManagedTargetRitual(target, current) ? current : null;
+        }
+
+        private static bool IsManagedTargetRitual(Pawn target, Lord lord)
+            => lord?.LordJob is LordJob_Ritual ritual && IsBindingRitual(ritual) &&
+                lord.Map?.lordManager?.lords.Contains(lord) == true && ritual.PawnWithRole("slave") == target;
+
+        internal static void CancelForReleasedBinding(Pawn target, Lord lord)
+        {
+            // 主人刚死亡时原场次也可能尚在管理列表，只撤销仍归这次解绑的场次。
+            if (IsManagedTargetRitual(target, lord)) ((LordJob_Ritual)lord.LordJob).Cancel();
+        }
+
         internal static bool HasActiveTargetRitual(Pawn target)
         {
             Lord lord = target?.TryGetComp<CompSexSlaveTraining>()?.bindingRitualLord;

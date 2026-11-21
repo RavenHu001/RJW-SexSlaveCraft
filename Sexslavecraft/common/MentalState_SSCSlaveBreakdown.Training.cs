@@ -132,13 +132,14 @@ namespace SexSlaveCraft
             yield return startingOwnerlessStage > 0 ? TrainingDecision.AdvanceOwnerless : TrainingDecision.FormOwnerless;
         }
 
-        private static bool IsBindingDecision(TrainingDecision decision)
+        internal static bool IsBindingDecision(TrainingDecision decision)
             => decision is TrainingDecision.FormBound or TrainingDecision.BindOwnerless;
 
         // 每个阶段都重新核对当初选定的结果。零阶已成形时撤销首次选项，达到四阶时撤销发作中的绑定选项。
         // 同一记录已被外部推进的成长任务仍可完成普通收益，额外进度由最终结算核对起始阶段。
         private bool CanUseDecision(TrainingDecision decision)
         {
+            // 再绑定冷却沿用统一建绑准入，只限制有主成形和等进度绑定。保持无主仍可照常批准及结算。
             if (boundEpisode) return decision == TrainingDecision.AdvanceBound;
             int stage = Hediff_SSCOwnerlessSlave.GetActiveStage(pawn);
             return decision switch
@@ -522,7 +523,13 @@ namespace SexSlaveCraft
                     // 开发环境占位，定稿前替换资源文案。实际授权只保存枚举。
                     var accept = new DiaOption(("SSC_BreakdownRequest_Dev_" + decision).Translate()) { resolveTree = true,
                         action = () => MentalState_SSCSlaveBreakdown.CurrentFor(Subject)?.Decide(this, decision) };
-                    if (!state.CanApprove(this, decision)) accept.Disable("SSC_BreakdownRequest_Unavailable".Translate());
+                    if (!state.CanApprove(this, decision))
+                    {
+                        long deadline = Hediff_SSCBondReleaseAftereffect.ActiveDeadline(Subject);
+                        accept.Disable(MentalState_SSCSlaveBreakdown.IsBindingDecision(decision) && deadline >= 0
+                            ? "SSC_BondRelease_BindingCooldown".Translate(Hediff_SSCBondReleaseAftereffect.FormatRemaining(deadline))
+                            : "SSC_BreakdownRequest_Unavailable".Translate());
+                    }
                     yield return accept;
                 }
                 yield return new DiaOption("RejectLetter".Translate()) { resolveTree = true,

@@ -29,6 +29,14 @@ namespace SexSlaveCraft
             if (legacySettings == null) legacySettings = SSCRestrictionLegacySettings.Capture(SSCMod.settings);
             List<Pawn> pawns = AllPawns();
             SSCTrainerIdentityMigration.Migrate(pawns);
+#if SSC_RW17
+            // 补齐普通快照可能遗漏的容器遗体和飞船货物。先收集再变更健康与关系，
+            // 从从属侧转换后才恢复原存档任务，缺少主人反向索引也能保留进度。
+            var loadedBodies = new HashSet<Pawn>(pawns);
+            using (var world = SSCBondOverviewWorld.Rent())
+                world.CollectCandidates(null, pawn => { if (pawn != null) loadedBodies.Add(pawn); });
+            foreach (Pawn pawn in loadedBodies) SSCBondUtility.ReleaseUnavailableOwner(pawn);
+#endif
             Ready = true;
             foreach (Pawn pawn in pawns)
             {
@@ -43,12 +51,8 @@ namespace SexSlaveCraft
 #endif
             }
 #if SSC_RW17
-            // 身份与峰值都已反序列化。容器中的尸体和远处飞船货物可能不在普通快照中，
-            // 复用持有者遍历补齐。先收集再写特性，避免原版特性通知在枚举中改变集合。
-            var traitPawns = new HashSet<Pawn>(pawns);
-            using (var world = SSCBondOverviewWorld.Rent())
-                world.CollectCandidates(null, pawn => { if (pawn != null) traitPawns.Add(pawn); });
-            foreach (Pawn pawn in traitPawns)
+            // 有主转无主后，统一按最终载体恢复特性及敏感度。
+            foreach (Pawn pawn in loadedBodies)
             {
                 SSCIdentityUtility.SyncSexSlaveTraitFromHighestCorruption(pawn);
                 SSCOrgasmSensitivityUtility.SyncOwnerless(pawn);

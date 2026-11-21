@@ -210,7 +210,7 @@ namespace SexSlaveCraft
         private static float OwnerSectionHeight(SSCBondOverviewSnapshot snapshot, float width)
         {
             float innerWidth = Mathf.Max(1f, width - 2f * SectionPadding);
-            float body = snapshot.Master == null ? Text.CalcHeight(MissingMasterLabel(snapshot), innerWidth) : OwnerPortraitSize + 30f;
+            float body = snapshot.Master == null ? Text.CalcHeight(MissingMasterLabel(snapshot), innerWidth) : OwnerPortraitSize + 64f;
             return 2f * SectionPadding + HeadingHeight(SSCBondOverviewText.T("Master"), innerWidth) + body;
         }
 
@@ -227,8 +227,50 @@ namespace SexSlaveCraft
 
             // 纵排时仍保持主人头像靠左，避免随整个分区宽度扩张。
             var card = new Rect(body.x, body.y, Mathf.Min(body.width, OwnerColumnWidth - 2f * SectionPadding), OwnerPortraitSize + 30f);
-            return DrawRelationCard(card, master.Pawn, SummaryRelation.Master, OwnerPortraitSize,
-                view.Display.Row(master).Tooltip, view.Display.Row(master).Name, snapshot: view.Snapshot, entry: master) ? master.Pawn : null;
+            bool clicked = DrawRelationCard(card, master.Pawn, SummaryRelation.Master, OwnerPortraitSize,
+                view.Display.Row(master).Tooltip, view.Display.Row(master).Name, snapshot: view.Snapshot, entry: master);
+            var edit = new PageEdit(source, comp, currentPage, contextRevision);
+            if (CanReleaseFromRelations(edit) && SSCBondUtility.GetBoundMaster(source) == master.Pawn)
+            {
+                var button = new Rect(card.x, card.yMax + 4f, card.width, 28f);
+                Action open = null;
+                // 按下时捕获所见绑定。弹窗确认只消费这份上下文，后来的换主或换人格无法继承旧点击。
+                if (Event.current.type == EventType.MouseDown && Mouse.IsOver(button))
+                {
+                    var release = new SSCBondUtility.ReleaseContext(edit.Pawn);
+                    if (release.BindingCurrent) open = () => OpenReleaseConfirmation(edit, release);
+                }
+                var request = PreparePageAction(edit, button, ("BondRelease", master.Pawn), () => open?.Invoke());
+                if (Widgets.ButtonText(button, "SSC_BondRelease_Action".Translate())) request?.Invoke();
+            }
+            return clicked ? master.Pawn : null;
+        }
+
+        private bool CanReleaseFromRelations(PageEdit edit) => PageEditIsCurrent(edit) &&
+            edit.OriginPage == Page.Relations && edit.Identity == PawnIdentity.Slave &&
+            (edit.Pawn.Faction == Faction.OfPlayer || edit.Pawn.IsPrisonerOfColony || edit.Pawn.IsSlaveOfColony) &&
+            !SSCMasterProgressionUtility.IsHollow(edit.Pawn);
+
+        private void OpenReleaseConfirmation(PageEdit edit, SSCBondUtility.ReleaseContext release)
+        {
+            if (!CanReleaseFromRelations(edit) || !release.BindingCurrent) return;
+            float originalSeverity = release.Chain.Severity;
+            int stage = TrainingOutcomeUtility.GetSexSlaveProgressStage(release.Chain).Stage;
+            var rules = stage > 0 ? "SSC_BondRelease_StageRules".Translate(stage) : "SSC_BondRelease_ZeroRules".Translate();
+            Dialog_MessageBox confirmation = null;
+            confirmation = Dialog_MessageBox.CreateConfirmation("SSC_BondRelease_Confirm".Translate(
+                release.Master.LabelShort, stage, originalSeverity.ToStringPercent(), rules), () =>
+            {
+                if (!EditPopupIsCurrent(confirmation, edit) || !CanReleaseFromRelations(edit)) return;
+                // 仍是同一条链时也可能有进度变化，重新打开可预览本次将实际保留的进度。
+                if (release.Chain.Severity != originalSeverity || !SSCBondUtility.TryReleaseToOwnerless(release))
+                {
+                    Messages.Message("SSC_BondRelease_Rejected".Translate(), edit.Pawn, MessageTypeDefOf.RejectInput, false);
+                    return;
+                }
+                RefreshAfterEdit();
+            });
+            ShowEditPopup(confirmation);
         }
 
         /// <summary>标题悬浮显示存活数与总数，头像按快照中的可见行绘制。</summary>

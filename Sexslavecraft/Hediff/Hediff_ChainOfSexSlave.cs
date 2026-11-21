@@ -65,6 +65,14 @@ namespace SexSlaveCraft
             // 健康组件回调可能已替换这条锁链，旧实例不能继续整理新绑定或重建缰绳。
             if (pawn?.health?.hediffSet == null || !pawn.health.hediffSet.hediffs.Contains(this)) return;
             Pawn currentMaster = LinkedPawn;
+#if SSC_RW17
+            // 死亡通常由死亡钩子处理。健康更新同时承接确认销毁或丢弃的主人，以及缺少缰绳的残留关系。
+            if (SSCBondUtility.OwnerPermanentlyUnavailable(currentMaster))
+            {
+                SSCBondUtility.ReleaseUnavailableOwner(pawn);
+                return;
+            }
+#endif
             if (observedMaster == currentMaster) return;
             Pawn previousMaster = observedMaster;
             observedMaster = currentMaster;
@@ -97,6 +105,13 @@ namespace SexSlaveCraft
         {
             get
             {
+#if SSC_RW17
+                // 原版在健康 Tick 后查询是否移除。归属可核对时保留到转换成功，
+                // 阶段进度仍从锁链读取，单纯查询不会开始解绑或更改健康列表。
+                if (SSCBondUtility.OwnerPermanentlyUnavailable(LinkedPawn) &&
+                    !SSCMasterProgressionUtility.IsHollow(pawn) &&
+                    (SSCIdentityUtility.IsSexSlave(pawn) || SSCIdentityUtility.CanRecoverLegacySlaveForRelease(pawn, LinkedPawn))) return false;
+#endif
                 bool remove = false;
                 if (target == null || target.Destroyed)
                 {

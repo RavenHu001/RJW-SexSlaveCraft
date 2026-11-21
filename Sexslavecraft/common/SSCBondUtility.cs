@@ -1,5 +1,6 @@
 using RimWorld;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Verse;
 
@@ -79,12 +80,22 @@ namespace SexSlaveCraft
             => BindCore(master, sexSlave, true, false, out _);
 
 #if SSC_RW17
+        internal static bool CanRestorePersonalityMaster(Pawn master, Pawn subject)
+            => master != null && master != subject && !OwnerPermanentlyUnavailable(master) &&
+                SSCIdentityUtility.IsMaster(master) && !SSCMasterProgressionUtility.IsHollow(master);
+
+        internal static bool RestorePersonalityBindingAtSeverity(Pawn master, Pawn subject, float severity,
+            Func<bool> isCurrent, out Hediff_ChainOfSexSlave written)
+            => BindCore(master, subject, false, false, out written,
+                _ => isCurrent() && CanRestorePersonalityMaster(master, subject), severity);
+
         /// <summary>爆发的批准、派发和仪式准入共用新绑定资格；最终写链前再查一次。</summary>
         /// <remarks>解绑冷却接入时在此处补准入条件，让所有调用方读到同一规则。</remarks>
         internal static bool CanBindNewWithProgress(Pawn master, Pawn subject) =>
             master != null && subject != null && master != subject && !master.Dead && !master.Destroyed && !master.Discarded &&
             !subject.Dead && !subject.Destroyed && !subject.Discarded && subject.health?.hediffSet != null &&
-            SSCIdentityUtility.IsMaster(master) && !Utils.HasChainHediff(subject);
+            SSCIdentityUtility.IsMaster(master) && !Utils.HasChainHediff(subject) &&
+            Hediff_SSCBondReleaseAftereffect.ActiveDeadline(subject) < 0;
 
         /// <summary>用已核验的严重度建立两端关系，确认本次写入后移出来源记录。</summary>
         /// <param name="source">当前体内的无主记录。初次成形时可为空，也可能是零阶记录。</param>
@@ -110,7 +121,7 @@ namespace SexSlaveCraft
             bool OwnsWrite(Hediff_ChainOfSexSlave candidate) => candidate != null && subject.health == health &&
                 GetChain(subject) == candidate && candidate.LinkedPawn == master;
             // 通知可以更新任一方。捕获的健康列表、组件和人格都仍有效时，交接才属于原请求。
-            bool CanFinalize() => isCurrent() && subject.health == health &&
+            bool CanFinalize() => isCurrent() && Hediff_SSCBondReleaseAftereffect.ActiveDeadline(subject) < 0 && subject.health == health &&
                 master.TryGetComp<CompSexSlaveTraining>() == masterComp &&
                 subject.TryGetComp<CompSexSlaveTraining>() == subjectComp &&
                 SSCPersonalityRuntimeUtility.IsCurrent(master, masterToken) &&
@@ -228,7 +239,147 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>解除性奴锁链及对应缰绳引用；按调用参数清理原主人的指派，保留其他指定者。</summary>
+#if SSC_RW17
+        private static readonly HashSet<Hediff_ChainOfSexSlave> releasing = new();
+
+        /// <summary>将确认对应本次请求的实际绑定移交给无主载体。</summary>
+        internal sealed class ReleaseContext
+        {
+            internal readonly Pawn Subject, Master;
+            internal readonly Hediff_ChainOfSexSlave Chain;
+            internal readonly Pawn_HealthTracker Health;
+            private readonly CompSexSlaveTraining comp;
+            private readonly object personality;
+
+            internal ReleaseContext(Pawn subject)
+            {
+                Subject = subject;
+                Health = subject?.health;
+                Chain = GetChain(subject);
+                Master = Chain?.LinkedPawn;
+                comp = subject?.TryGetComp<CompSexSlaveTraining>();
+                personality = SSCPersonalityRuntimeUtility.Capture(subject);
+            }
+
+            // 身体和人格凭据独立核对。同一 Pawn 和 Comp 上也可能换入另一人格。
+            private bool SameCarrier => Health?.hediffSet != null && Subject.health == Health &&
+                !Subject.Destroyed && !Subject.Discarded && !SSCPersonalityRuntimeUtility.IsMutating(Subject) &&
+                Subject.TryGetComp<CompSexSlaveTraining>() == comp &&
+                SSCPersonalityRuntimeUtility.IsCurrent(Subject, personality);
+
+            internal bool HasOriginalChain => Chain != null && Master != null && SameCarrier &&
+                GetChain(Subject) == Chain && Chain.LinkedPawn == Master;
+
+            internal bool IsSlavePersonality => SSCIdentityUtility.IsSexSlave(Subject) && !SSCMasterProgressionUtility.IsHollow(Subject);
+            internal bool CarrierCurrent => SameCarrier && IsSlavePersonality;
+            internal bool BindingCurrent => HasOriginalChain && IsSlavePersonality;
+        }
+
+        internal static bool OwnerPermanentlyUnavailable(Pawn master)
+            => master != null && (master.Dead || master.Destroyed || master.Discarded);
+
+        internal static void ReleaseUnavailableOwner(Pawn subject)
+        {
+            if (OwnerPermanentlyUnavailable(GetBoundMaster(subject))) TryReleaseUnavailableOwner(new ReleaseContext(subject));
+        }
+
+        /// <summary>死亡、旧档及锁链健康更新共用。仅在原锁链仍归该主人时处理。</summary>
+        internal static bool TryReleaseUnavailableOwner(ReleaseContext context)
+        {
+            if (Scribe.mode != LoadSaveMode.Inactive || context?.HasOriginalChain != true ||
+                !OwnerPermanentlyUnavailable(context.Master)) return false;
+            Pawn subject = context.Subject;
+            if (SSCMasterProgressionUtility.IsHollow(subject))
+            {
+                // 旧空壳可能还挂有来源的链。凝胶持有进度，空壳只做关系清理。
+                Unbind(subject);
+                return false;
+            }
+            if (!SSCIdentityUtility.IsSexSlave(subject))
+                SSCIdentityUtility.TryRecoverLegacySlaveForRelease(subject, context.Master);
+            return TryReleaseToOwnerless(context);
+        }
+
+        /// <summary>以原锁链的严重度完成进度交接，成功一次启动同一份解绑后效。</summary>
+        internal static bool TryReleaseToOwnerless(ReleaseContext context)
+        {
+            if (Scribe.mode != LoadSaveMode.Inactive || context?.BindingCurrent != true) return false;
+            Pawn subject = context.Subject;
+            var health = context.Health;
+            var chain = context.Chain;
+            int now = Hediff_SSCBondReleaseAftereffect.Now;
+            float severity = chain.Severity;
+            var progressDef = DefDatabase<HediffDef>.GetNamedSilentFail(Hediff_SSCOwnerlessSlave.DefName);
+            var aftereffectDef = Hediff_SSCBondReleaseAftereffect.Definition;
+            if (now < 0 || progressDef?.hediffClass != typeof(Hediff_SSCOwnerlessSlave) ||
+                aftereffectDef?.hediffClass != typeof(Hediff_SSCBondReleaseAftereffect) ||
+                !float.IsFinite(severity) || severity < 0 || severity > progressDef.maxSeverity ||
+                Hediff_SSCOwnerlessSlave.Find(subject) != null || !releasing.Add(chain)) return false;
+
+            Hediff_SSCOwnerlessSlave progress = null;
+            Hediff_SSCBondReleaseAftereffect effect = null;
+            bool committed = false;
+            bool OriginalProgressCurrent() => context.BindingCurrent && chain.Severity == severity;
+            bool StagedWritesCurrent() => Hediff_SSCOwnerlessSlave.Find(subject) == progress &&
+                progress.Severity == severity && health.hediffSet.hediffs.Contains(effect);
+
+            using var specialization = TrainerSpecializationLifecycle.BeginMutation(subject);
+            try
+            {
+                var priorEffect = Hediff_SSCBondReleaseAftereffect.Find(subject);
+                if (priorEffect != null)
+                {
+                    if (Hediff_SSCBondReleaseAftereffect.ActiveDeadline(subject) >= 0) return false;
+                    health.RemoveHediff(priorEffect);
+                    if (!OriginalProgressCurrent()) return false;
+                }
+
+                // 挂载新载体期间仍以原锁链为有效进度。两个附着回调都可能撤销本次提交。
+                progress = (Hediff_SSCOwnerlessSlave)HediffMaker.MakeHediff(progressDef, subject);
+                progress.Severity = severity;
+                health.AddHediff(progress);
+                if (!OriginalProgressCurrent() || Hediff_SSCOwnerlessSlave.Find(subject) != progress ||
+                    progress.Severity != severity) return false;
+
+                effect = (Hediff_SSCBondReleaseAftereffect)HediffMaker.MakeHediff(aftereffectDef, subject);
+                health.AddHediff(effect);
+                if (!OriginalProgressCurrent() || !StagedWritesCurrent()) return false;
+                effect.Activate(Hediff_SSCBondReleaseAftereffect.NewDeadline(Hediff_SSCBondReleaseAftereffect.Now));
+                if (!OriginalProgressCurrent() || !StagedWritesCurrent()) return false;
+
+                // 原版先从健康列表删链，再派发 PostRemoved。此时新记录和后效已生效。
+                // 同一人格的离体回调可以推进已交接的进度。成功判定只核对原链是否离体和最终归属，
+                // 避免把回调中的后续推进当成写入失败，并删除唯一剩余的进度记录。
+                var oldRitual = BindingRitualStateUtility.CaptureTargetRitual(subject);
+                try { health.RemoveHediff(chain); }
+                finally
+                {
+                    committed = context.CarrierCurrent && GetChain(subject) == null &&
+                        !health.hediffSet.hediffs.Contains(chain);
+                    if (committed)
+                    {
+                        ClearUnboundRelations(subject, context.Master, clearAssignedTrainer: true);
+                        SSCPnaMaintenanceUtility.CancelForChain(subject, chain);
+                        BindingRitualStateUtility.CancelForReleasedBinding(subject, oldRitual);
+                        SSCRestrictionGameComponent.Notify(subject);
+                    }
+                }
+                return committed;
+            }
+            finally
+            {
+                releasing.Remove(chain);
+                // 此处仅清理本次放进原健康列表的两个对象，保留回调已建立的新绑定和它的记录。
+                if (!committed && subject.health == health)
+                {
+                    if (effect != null && health.hediffSet.hediffs.Contains(effect)) health.RemoveHediff(effect);
+                    if (progress != null && health.hediffSet.hediffs.Contains(progress)) health.RemoveHediff(progress);
+                }
+            }
+        }
+#endif
+
+        /// <summary>清理锁链及对应关系。人格清源等技术入口沿用此操作。</summary>
         public static bool Unbind(Pawn sexSlave, bool clearAssignedTrainer = true)
         {
             using (TrainerSpecializationLifecycle.BeginMutation(sexSlave))
@@ -253,37 +404,41 @@ namespace SexSlaveCraft
                     changed = true;
                 }
 
-                if (clearAssignedTrainer)
-                {
-                    CompSexSlaveTraining comp = sexSlave?.TryGetComp<CompSexSlaveTraining>();
-#if SSC_RW17 || SSC_TRAINER_WORK_TEST
-                    if (master == null) comp?.ClearAssignedTrainers();
-                    else comp?.RemoveAssignedTrainer(master);
-#else
-                    if (comp != null && (master == null || comp.selectedTrainer == master))
-                    {
-                        // 这是解绑事务的关系清理，不是玩家重新指派；人格恢复期间也必须清除原主，
-                        // 不能被限制编辑的恢复锁挡住。上面的条件继续保留明确指定的第三方。
-                        comp.selectedTrainer = null;
-                    }
-#endif
-                }
-
-                // 即使锁链原先已缺失，也清除旧档残留的社交奖励；原生接口同时处理另一端。
-                SSCBondRelationUtility.RemoveInvalidRelations(sexSlave);
-#if SSC_RW17
-                if (master != null)
-                {
-                    // 解绑后，原主人的手动例外消失，保留的第三方也要重新满足首次建绑资格。
-                    SSCDailyTrainingOccupancy.RemoveUnauthorizedQueuedJobs(sexSlave, master);
-                    var remaining = sexSlave.TryGetComp<CompSexSlaveTraining>()?.CopyAssignedTrainers();
-                    if (remaining != null)
-                        foreach (Pawn trainer in remaining)
-                            if (trainer != master) SSCDailyTrainingOccupancy.RemoveUnauthorizedQueuedJobs(sexSlave, trainer);
-                }
-#endif
+                ClearUnboundRelations(sexSlave, master, clearAssignedTrainer);
                 return changed;
             }
+        }
+
+        private static void ClearUnboundRelations(Pawn sexSlave, Pawn master, bool clearAssignedTrainer)
+        {
+            if (clearAssignedTrainer)
+            {
+                CompSexSlaveTraining comp = sexSlave?.TryGetComp<CompSexSlaveTraining>();
+#if SSC_RW17 || SSC_TRAINER_WORK_TEST
+                if (master == null) comp?.ClearAssignedTrainers();
+                else comp?.RemoveAssignedTrainer(master);
+#else
+                if (comp != null && (master == null || comp.selectedTrainer == master))
+                {
+                    // 人格恢复期间也要清除原主。明确指派的第三方继续由当前资格决定。
+                    comp.selectedTrainer = null;
+                }
+#endif
+            }
+
+            // 即使锁链原先已缺失，也清除旧档残留的社交奖励。原生接口同时处理另一端。
+            SSCBondRelationUtility.RemoveInvalidRelations(sexSlave);
+#if SSC_RW17
+            if (master != null)
+            {
+                // 解绑后的日常许可改读实际指派及无主阶段。原主和保留的第三方都需复核排队任务。
+                SSCDailyTrainingOccupancy.RemoveUnauthorizedQueuedJobs(sexSlave, master);
+                var remaining = sexSlave.TryGetComp<CompSexSlaveTraining>()?.CopyAssignedTrainers();
+                if (remaining != null)
+                    foreach (Pawn trainer in remaining)
+                        if (trainer != master) SSCDailyTrainingOccupancy.RemoveUnauthorizedQueuedJobs(sexSlave, trainer);
+            }
+#endif
         }
 
         /// <summary>遍历缰绳目标快照逐个解绑，返回实际解除数量，避免修改正在枚举的集合。</summary>
@@ -306,6 +461,9 @@ namespace SexSlaveCraft
         {
             Pawn master = GetBoundMaster(sexSlave);
             if (master == null) return;
+#if SSC_RW17
+            if (OwnerPermanentlyUnavailable(master)) return;
+#endif
 
             Hediff_BridleOfSexSlave bridle = GetBridle(master);
             if (bridle == null || !bridle.targets.Contains(sexSlave))

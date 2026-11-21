@@ -41,6 +41,9 @@ namespace SexSlaveCraft
             => SSCIdentityUtility.IsSexSlave(pawn) && ReferenceEquals(TrainingOutcomeUtility.GetSexSlaveProgress(pawn), this)
                 ? base.CurStage : def?.stages?.Count > 0 ? def.stages[0] : null;
 
+        // 解绑可移交旧锁链的零进度。零阶仍持有身份锁，由显式交接或人格清源负责移除。
+        public override bool ShouldRemove => false;
+
         /// <summary>沿用原版裁剪和健康缓存刷新，跨原版阶段索引时另行同步 SSC 规则和共享保护。</summary>
         public override float Severity
         {

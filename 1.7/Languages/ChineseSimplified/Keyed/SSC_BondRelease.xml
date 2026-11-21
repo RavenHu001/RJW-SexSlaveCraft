@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- 第五批开发占位文案，仅供实机识别。正式版另行定稿。 -->
+  <SSC_BondRelease_Action>[开发] 解除绑定</SSC_BondRelease_Action>
+  <SSC_BondRelease_Confirm>[开发] 确认解除与 {0} 的绑定？会保留 {1} 阶、{2} 的进度。{3}\n解绑后两日内无法重新绑定，全局工作速度 ×0.75，持续心情 −8。</SSC_BondRelease_Confirm>
+  <SSC_BondRelease_StageRules>解除后启用无主第 {0} 阶的行为和浪漫规则，敏感度按阶段自动调节。</SSC_BondRelease_StageRules>
+  <SSC_BondRelease_ZeroRules>解除后保留零阶进度，正式阶段规则在进入一阶后生效。</SSC_BondRelease_ZeroRules>
+  <SSC_BondRelease_Rejected>[开发] 当前的绑定或进度已变动。请重新确认。</SSC_BondRelease_Rejected>
+  <SSC_BondRelease_DeathNotice>[开发] {0} 已死亡。以下从属者转为无主：{1}。</SSC_BondRelease_DeathNotice>
+  <SSC_BondRelease_BindingCooldown>[开发] 解绑后仍需等待 {0} 才能重新绑定。</SSC_BondRelease_BindingCooldown>
+</LanguageData>

@@ -121,6 +121,7 @@ internal static partial class Program
         ImprintPersonalityTests();
         SexSlaveTraitIdentityTests(repo, harmony);
         CorruptionMoodTests(repo);
+        BondReleaseTests(repo);
         OwnerlessPersonalityTests();
         FullCorruptionImprintTests(repo);
     }

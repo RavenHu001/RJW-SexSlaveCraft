@@ -375,6 +375,19 @@ namespace SexSlaveCraft
         }
 
 #if SSC_RW17
+        /// <summary>失去主人时，允许旧档从仍可核对的锁链补回缺失的受训身份。</summary>
+        internal static bool CanRecoverLegacySlaveForRelease(Pawn pawn, Pawn owner)
+        {
+            var comp = pawn?.TryGetComp<CompSexSlaveTraining>();
+            return comp?.pawnIdentity == PawnIdentity.Unset && comp.restrictionRestoreDepth == 0 &&
+                owner != pawn && SSCBondUtility.OwnerPermanentlyUnavailable(owner) &&
+                SSCBondUtility.GetBoundMaster(pawn) == owner && SSCBondUtility.GetBridle(pawn)?.ValidTargets.Any() != true &&
+                SSCImprintUtility.AllowsIdentity(pawn, PawnIdentity.Slave);
+        }
+
+        internal static bool TryRecoverLegacySlaveForRelease(Pawn pawn, Pawn owner)
+            => CanRecoverLegacySlaveForRelease(pawn, owner) && RestoreSlaveIdentity(pawn, pawn.TryGetComp<CompSexSlaveTraining>());
+
         /// <summary>原版复制只复制健康状态和需求。用继承的定型印记补齐新副本的正式身份。</summary>
         internal static bool TryRestoreCopiedSlaveIdentity(Pawn source, Pawn copy)
         {
