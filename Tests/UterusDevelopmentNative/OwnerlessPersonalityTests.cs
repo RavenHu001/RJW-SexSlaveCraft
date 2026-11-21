@@ -79,6 +79,7 @@ internal static partial class Program
                 Require(ExcretionUtility.InheritEverything(host, processed.TryGetComp<CompPersonalityStore>()));
                 Require(processed.Destroyed && !host.health.hediffSet.hediffs.Contains(old));
                 Require(SSCBondUtility.GetChain(host) == null && SSCIdentityUtility.IsIdentityLocked(host));
+                Require(Hediff_SSCBondReleaseAftereffect.Find(host) == null);
                 Equal(3, Hediff_SSCOwnerlessSlave.GetActiveStage(host));
                 Equal(severity, Hediff_SSCOwnerlessSlave.Find(host).Severity);
                 Equal(3, SSCOrgasmSensitivityUtility.GetState(host).EffectiveLevel);
@@ -139,72 +140,65 @@ internal static partial class Program
                 Equal(severity, Hediff_SSCOwnerlessSlave.Find(host).Severity);
             });
 
-            Check("bond-release countdown survives gel extraction, Scribe, processing and implantation without restarting", () =>
+            Check("gel transfer pauses the remaining bond-release ticks through Scribe and processing", () =>
             {
                 const float severity = .8123457f;
-                int oldTick = Hediff_SSCBondReleaseAftereffect.Now;
+                const int remaining = 15837;
+                var master = ImprintPawn(PawnIdentity.Master);
+                var source = ImprintPawn(PawnIdentity.Slave);
+                Require(SSCBondUtility.Bind(master, source));
+                SSCBondUtility.GetChain(source).Severity = severity;
+                Require(SSCBondUtility.TryReleaseToOwnerless(new SSCBondUtility.ReleaseContext(source)));
+                Hediff_SSCBondReleaseAftereffect.Active(source).GetComp<HediffComp_Disappears>().ticksToDisappear = remaining;
+                ownerlessExtractionSource = source;
+                ExcretionUtility.DoExcretion(source);
+                Require(!ownerlessGel.Destroyed && Hediff_SSCBondReleaseAftereffect.Find(source) == null);
+                int oldTick = Find.TickManager.TicksGame;
                 try
                 {
-                    SetBreakdownTick(1000);
-                    var master = ImprintPawn(PawnIdentity.Master);
-                    var source = ImprintPawn(PawnIdentity.Slave);
-                    Require(SSCBondUtility.Bind(master, source));
-                    SSCBondUtility.GetChain(source).Severity = severity;
-                    Require(SSCBondUtility.TryReleaseToOwnerless(new SSCBondUtility.ReleaseContext(source)));
-                    SetBreakdownTick(48000);
-                    ownerlessExtractionSource = source;
-                    ExcretionUtility.DoExcretion(source);
-                    Require(!ownerlessGel.Destroyed && Hediff_SSCBondReleaseAftereffect.Find(source) == null);
+                    SetBreakdownTick(oldTick + 3 * GenDate.TicksPerDay);
                     var stored = RoundTripOwnerlessGel(ownerlessGel, "bond-release-extracted");
-                    Equal(121000L, stored.TryGetComp<CompPersonalityStore>().bondReleaseExpiresAt);
                     var recipe = new Recipe_PSTagWorker { recipe = new RecipeDef_PSTag() };
                     recipe.Notify_IterationCompleted(source, new List<Thing> { stored });
+                    Require(stored.Destroyed && ownerlessGel?.def == SSCDefOf.SSC_PS_U_Edited);
                     var processed = RoundTripOwnerlessGel(ownerlessGel, "bond-release-processed");
-                    var expiredCopy = RoundTripOwnerlessGel(ownerlessGel, "bond-release-expired");
                     var host = ImprintPawn();
-                    SetBreakdownTick(80000);
                     Require(ExcretionUtility.InheritEverything(host, processed.TryGetComp<CompPersonalityStore>()));
-                    Equal(121000L, Hediff_SSCBondReleaseAftereffect.ActiveDeadline(host));
                     Equal(severity, Hediff_SSCOwnerlessSlave.Find(host).Severity);
-                    SetBreakdownTick(121000);
-                    Require(ExcretionUtility.InheritEverything(host, expiredCopy.TryGetComp<CompPersonalityStore>()));
-                    Require(Hediff_SSCBondReleaseAftereffect.Find(host) == null);
-                    Equal(severity, Hediff_SSCOwnerlessSlave.Find(host).Severity);
+                    var timer = Hediff_SSCBondReleaseAftereffect.Active(host).GetComp<HediffComp_Disappears>();
+                    Equal(remaining, timer.ticksToDisappear);
+                    Require(!SSCBondUtility.CanBindNewWithProgress(master, host));
+                    host.health.HealthTick();
+                    Equal(remaining - 1, timer.ticksToDisappear);
                 }
                 finally { SetBreakdownTick(oldTick); }
             });
 
             Check("implantation decides saved ownership using the current master and leaves no second bond on the hollow source", () =>
             {
-                int oldTick = Hediff_SSCBondReleaseAftereffect.Now;
-                try
-                {
-                    SetBreakdownTick(23000);
-                    var master = ImprintPawn(PawnIdentity.Master);
-                    var source = ImprintPawn(PawnIdentity.Slave);
-                    Require(SSCBondUtility.Bind(master, source));
-                    SSCBondUtility.GetChain(source).Severity = .8123457f;
-                    ownerlessExtractionSource = source;
-                    ExcretionUtility.DoExcretion(source);
-                    var original = ownerlessGel.TryGetComp<CompPersonalityStore>();
-                    Require(original.chainHediffData.masterPawn == master && SSCBondUtility.GetChain(source) == null);
-                    Require(Hediff_SSCOwnerlessSlave.Find(source) == null && Hediff_SSCBondReleaseAftereffect.Find(source) == null);
-                    var recovered = ThingMaker.MakeThing(SSCDefOf.SSC_PS_U);
-                    var recoveredData = recovered.TryGetComp<CompPersonalityStore>();
-                    recoveredData.CopyFrom(original);
-                    master.health.SetDead();
-                    var unboundHost = ImprintPawn();
-                    Require(ExcretionUtility.InheritEverything(unboundHost, original));
-                    Equal(.8123457f, Hediff_SSCOwnerlessSlave.Find(unboundHost).Severity);
-                    Equal(143000L, Hediff_SSCBondReleaseAftereffect.ActiveDeadline(unboundHost));
-                    AccessTools.Field(typeof(Pawn_HealthTracker), "healthState").SetValue(master.health, PawnHealthState.Mobile);
-                    var boundHost = ImprintPawn();
-                    Require(ExcretionUtility.InheritEverything(boundHost, recoveredData));
-                    Require(SSCBondUtility.IsBoundTo(boundHost, master));
-                    Equal(.8123457f, SSCBondUtility.GetChain(boundHost).Severity);
-                    Require(Hediff_SSCOwnerlessSlave.Find(boundHost) == null && Hediff_SSCBondReleaseAftereffect.Find(boundHost) == null);
-                }
-                finally { SetBreakdownTick(oldTick); }
+                var master = ImprintPawn(PawnIdentity.Master);
+                var source = ImprintPawn(PawnIdentity.Slave);
+                Require(SSCBondUtility.Bind(master, source));
+                SSCBondUtility.GetChain(source).Severity = .8123457f;
+                ownerlessExtractionSource = source;
+                ExcretionUtility.DoExcretion(source);
+                var original = ownerlessGel.TryGetComp<CompPersonalityStore>();
+                Require(original.chainHediffData.masterPawn == master && SSCBondUtility.GetChain(source) == null);
+                Require(Hediff_SSCOwnerlessSlave.Find(source) == null && Hediff_SSCBondReleaseAftereffect.Find(source) == null);
+                var recovered = ThingMaker.MakeThing(SSCDefOf.SSC_PS_U);
+                var recoveredData = recovered.TryGetComp<CompPersonalityStore>();
+                recoveredData.CopyFrom(original);
+                master.health.SetDead();
+                var unboundHost = ImprintPawn();
+                Require(ExcretionUtility.InheritEverything(unboundHost, original));
+                Equal(.8123457f, Hediff_SSCOwnerlessSlave.Find(unboundHost).Severity);
+                Equal(120000, Hediff_SSCBondReleaseAftereffect.Active(unboundHost).GetComp<HediffComp_Disappears>().ticksToDisappear);
+                AccessTools.Field(typeof(Pawn_HealthTracker), "healthState").SetValue(master.health, PawnHealthState.Mobile);
+                var boundHost = ImprintPawn();
+                Require(ExcretionUtility.InheritEverything(boundHost, recoveredData));
+                Require(SSCBondUtility.IsBoundTo(boundHost, master));
+                Equal(.8123457f, SSCBondUtility.GetChain(boundHost).Severity);
+                Require(Hediff_SSCOwnerlessSlave.Find(boundHost) == null && Hediff_SSCBondReleaseAftereffect.Find(boundHost) == null);
             });
         }
         finally

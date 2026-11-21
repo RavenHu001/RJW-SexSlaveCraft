@@ -19,7 +19,7 @@ namespace SexSlaveCraft
             public CompSexSlaveTraining SlaveComp;
             public int TrainerRevision;
             public Pawn Owner;
-            public long BindingCooldown;
+            public bool BindingCooldown;
 #endif
         }
         private sealed class Operation
@@ -256,8 +256,8 @@ namespace SexSlaveCraft
             var slaveComp = slave?.TryGetComp<CompSexSlaveTraining>();
             int trainerRevision = slaveComp?.TrainerAssignmentRevision ?? 0;
             Pawn owner = SSCBondUtility.GetBoundMaster(slave);
-            // 同一次选角回调可推进时间或添加后效，双人校验缓存必须对应当前冷却状态。
-            long bindingCooldown = Hediff_SSCBondReleaseAftereffect.ActiveDeadline(slave);
+            // 选角缓存随冷却准入状态失效，无需记录倒计时数值。
+            bool bindingCooldown = Hediff_SSCBondReleaseAftereffect.Active(slave) != null;
 #endif
             // UI 交换会经过暂时只有一个角色的中间状态；已验证的最终组合覆盖该操作内的子集。
             if (operation?.Assignments == assignments)

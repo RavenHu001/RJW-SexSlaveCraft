@@ -271,7 +271,7 @@ namespace SexSlaveCraft
                 MatchesChain(expected, expectedOwner) &&
 #if SSC_RW17
                 // 零阶首次建链保留原严重度规则，同样检查当前再绑定冷却。
-                (chain != null || Hediff_SSCBondReleaseAftereffect.ActiveDeadline(target) < 0) &&
+                (chain != null || Hediff_SSCBondReleaseAftereffect.Active(target) == null) &&
                 // 零阶分支准备建链时也必须保留原类型，避免覆盖质量或收益回调中刚形成的无主进度。
                 (chain != null || ownerless != null ||
                     (expected != null || Hediff_SSCOwnerlessSlave.Find(target) == zeroOwnerless) &&

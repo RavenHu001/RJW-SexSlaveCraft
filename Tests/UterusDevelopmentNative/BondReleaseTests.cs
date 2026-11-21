@@ -1,4 +1,5 @@
 using System.Xml;
+using System.Xml.Linq;
 using HarmonyLib;
 using RimWorld;
 using SexSlaveCraft;
@@ -19,9 +20,9 @@ internal static partial class Program
             DefDatabase<StatDef>.Add(new StatDef { defName = "WorkSpeedGlobal", defaultBaseValue = 1f });
         var aftereffectDef = DirectXmlToObject.ObjectFromXml<HediffDef>(xml.DocumentElement["HediffDef"], false);
         DefDatabase<HediffDef>.Add(aftereffectDef);
-        DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
         xml.Load(Path.Combine(repo, "1.7/Defs/ThoughtDefs/SSC_BondReleaseAftereffect.xml"));
         var mood = DirectXmlToObject.ObjectFromXml<ThoughtDef>(xml.DocumentElement["ThoughtDef"], false);
+        DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
 
         (Pawn Master, Pawn Subject, Pawn Other, Hediff_ChainOfSexSlave Chain) Bound(float severity)
         {
@@ -37,46 +38,43 @@ internal static partial class Program
 
         Check("bond release transfers exact third-stage and zero-stage progress and starts one two-day aftereffect", () =>
         {
-            int oldTick = Hediff_SSCBondReleaseAftereffect.Now;
-            try
+            foreach (var (severity, stage) in new[] { (.8076543f, 3), (0f, 0) })
             {
-                foreach (var (severity, stage) in new[] { (.8076543f, 3), (0f, 0) })
-                {
-                    SetBreakdownTick(1000);
-                    var (master, subject, other, _) = Bound(severity);
-                    var need = AddFullImprintNeed(subject);
-                    need.RestoreCorruption(.86f, .94f);
-                    var request = new SSCBondUtility.ReleaseContext(subject);
-                    Require(SSCBondUtility.TryReleaseToOwnerless(request));
-                    var record = Hediff_SSCOwnerlessSlave.Find(subject);
-                    var effect = Hediff_SSCBondReleaseAftereffect.Find(subject);
-                    Equal(severity, record.Severity);
-                    Equal(stage, Hediff_SSCOwnerlessSlave.GetActiveStage(subject));
-                    Require(!record.ShouldRemove && SSCIdentityUtility.IsSexSlave(subject) && SSCIdentityUtility.IsIdentityLocked(subject));
-                    Require(SSCBondUtility.GetChain(subject) == null && SSCBondUtility.GetBridle(master) == null);
-                    Require(subject.TryGetComp<CompSexSlaveTraining>().CopyAssignedTrainers().SequenceEqual(new[] { other }));
-                    Equal(.86f, need.CurLevel);
-                    Equal(.94f, need.HighestCorruptionLevel);
-                    Equal(121000L, effect.ExpiresAt);
-                    SetBreakdownTick(1100);
-                    Require(!SSCBondUtility.TryReleaseToOwnerless(request));
-                    Require(!SSCBondUtility.TryReleaseToOwnerless(new SSCBondUtility.ReleaseContext(subject)));
-                    Equal(1, subject.health.hediffSet.hediffs.OfType<Hediff_SSCBondReleaseAftereffect>().Count());
-                    Equal(121000L, Hediff_SSCBondReleaseAftereffect.ActiveDeadline(subject));
+                var (master, subject, other, _) = Bound(severity);
+                var need = AddFullImprintNeed(subject);
+                need.RestoreCorruption(.86f, .94f);
+                var request = new SSCBondUtility.ReleaseContext(subject);
+                Require(SSCBondUtility.TryReleaseToOwnerless(request));
+                var record = Hediff_SSCOwnerlessSlave.Find(subject);
+                var effect = Hediff_SSCBondReleaseAftereffect.Find(subject);
+                var timer = effect.GetComp<HediffComp_Disappears>();
+                Equal(severity, record.Severity);
+                Equal(stage, Hediff_SSCOwnerlessSlave.GetActiveStage(subject));
+                Require(!record.ShouldRemove && SSCIdentityUtility.IsSexSlave(subject) && SSCIdentityUtility.IsIdentityLocked(subject));
+                Require(SSCBondUtility.GetChain(subject) == null && SSCBondUtility.GetBridle(master) == null);
+                Require(subject.TryGetComp<CompSexSlaveTraining>().CopyAssignedTrainers().SequenceEqual(new[] { other }));
+                Equal(.86f, need.CurLevel);
+                Equal(.94f, need.HighestCorruptionLevel);
+                Equal(120000, timer.ticksToDisappear);
+                timer.ticksToDisappear = 1;
+                Require(!SSCBondUtility.TryReleaseToOwnerless(request));
+                Require(!SSCBondUtility.TryReleaseToOwnerless(new SSCBondUtility.ReleaseContext(subject)));
+                Equal(1, subject.health.hediffSet.hediffs.OfType<Hediff_SSCBondReleaseAftereffect>().Count());
+                Equal(1, timer.ticksToDisappear);
+                Require(!SSCBondUtility.CanBindNewWithProgress(other, subject));
 
-                    subject.needs.mood = new Need_Mood(subject);
-                    var thoughts = new List<Thought>();
-                    SetBreakdownTick(120999);
-                    subject.needs.mood.thoughts.situational.AppendMoodThoughts(mood, thoughts);
-                    Equal(-8f, thoughts.Single().MoodOffset());
-                    Equal(.75f, effect.CurStage.statFactors.Single().value);
-                    Require(!effect.ShouldRemove);
-                    SetBreakdownTick(121000);
-                    Require(effect.ShouldRemove && effect.CurStage == null);
-                    Equal(-1L, Hediff_SSCBondReleaseAftereffect.ActiveDeadline(subject));
-                }
+                subject.needs.mood = new Need_Mood(subject);
+                var thoughts = new List<Thought>();
+                subject.needs.mood.thoughts.situational.AppendMoodThoughts(mood, thoughts);
+                Equal(-8f, thoughts.Single().MoodOffset());
+                Equal(.75f, effect.CurStage.statFactors.Single().value);
+                subject.health.HealthTick();
+                Require(Hediff_SSCBondReleaseAftereffect.Find(subject) == null);
+                Require(SSCBondUtility.CanBindNewWithProgress(other, subject));
+                thoughts.Clear();
+                subject.needs.mood.thoughts.situational.AppendMoodThoughts(mood, thoughts);
+                Require(thoughts.Count == 0);
             }
-            finally { SetBreakdownTick(oldTick); }
         });
 
         Check("bond release abandons its staged record when the original binding changes in a health callback", () =>
@@ -106,10 +104,9 @@ internal static partial class Program
             }
         });
 
-        Check("bond release keeps the new record and original deadline when a post-removal callback advances it", () =>
+        Check("bond release keeps the new record and aftereffect when a post-removal callback advances progress", () =>
         {
             var (_, subject, _, chain) = Bound(.8076543f);
-            long deadline = Hediff_SSCBondReleaseAftereffect.NewDeadline(Hediff_SSCBondReleaseAftereffect.Now);
             var patch = new Harmony("ssc.tests.bond-release.committed-progress");
             patch.Patch(AccessTools.Method(typeof(Hediff_ChainOfSexSlave), nameof(Hediff_ChainOfSexSlave.PostRemoved)),
                 postfix: new HarmonyMethod(typeof(Program), nameof(ReleaseChainRemoved)));
@@ -126,7 +123,7 @@ internal static partial class Program
                 Require(SSCBondUtility.TryReleaseToOwnerless(new SSCBondUtility.ReleaseContext(subject)));
                 Require(SSCBondUtility.GetChain(subject) == null);
                 Equal(.9f, Hediff_SSCOwnerlessSlave.Find(subject).Severity);
-                Equal(deadline, Hediff_SSCBondReleaseAftereffect.ActiveDeadline(subject));
+                Equal(120000, Hediff_SSCBondReleaseAftereffect.Active(subject).GetComp<HediffComp_Disappears>().ticksToDisappear);
             }
             finally
             {
@@ -137,7 +134,7 @@ internal static partial class Program
 
         Check("owner death consumes only the original bridle targets and legacy migration works without the bridle", () =>
         {
-            int oldTick = Hediff_SSCBondReleaseAftereffect.Now;
+            int oldTick = Find.TickManager.TicksGame;
             try
             {
                 SetBreakdownTick(4500);
@@ -157,7 +154,7 @@ internal static partial class Program
                 Equal(.8076543f, Hediff_SSCOwnerlessSlave.Find(subject).Severity);
                 Equal(.2f, Hediff_SSCOwnerlessSlave.Find(second).Severity);
                 Require(SSCIdentityUtility.IsSexSlave(second));
-                Equal(124500L, Hediff_SSCBondReleaseAftereffect.ActiveDeadline(subject));
+                Equal(120000, Hediff_SSCBondReleaseAftereffect.Active(subject).GetComp<HediffComp_Disappears>().ticksToDisappear);
                 Require(SSCBondUtility.IsBoundTo(changed, other));
 
                 AccessTools.Field(typeof(Pawn_HealthTracker), "healthState").SetValue(master.health, PawnHealthState.Mobile);
@@ -175,11 +172,24 @@ internal static partial class Program
                 Require(SSCIdentityUtility.IsSexSlave(before));
                 Equal(.9678912f, Hediff_SSCOwnerlessSlave.Find(before).Severity);
                 var after = ImprintPawn(PawnIdentity.Slave);
+                Hediff_SSCBondReleaseAftereffect.Find(before).GetComp<HediffComp_Disappears>().ticksToDisappear = 119500;
+                string path = Save(before);
                 SetBreakdownTick(5000);
-                Load(Save(before), after);
+                Load(path, after);
                 SSCBondUtility.ReleaseUnavailableOwner(after);
-                Equal(124500L, Hediff_SSCBondReleaseAftereffect.ActiveDeadline(after));
+                Equal(119500, Hediff_SSCBondReleaseAftereffect.Active(after).GetComp<HediffComp_Disappears>().ticksToDisappear);
                 Equal(.9678912f, Hediff_SSCOwnerlessSlave.Find(after).Severity);
+
+                // 用原开发版字段替换原版组件字段，验证原主人死亡前后的两种旧档都能加载。
+                Edit(path, doc =>
+                {
+                    var entry = doc.Descendants("li")
+                        .Single(node => (string)node.Attribute("Class") == typeof(Hediff_SSCBondReleaseAftereffect).FullName);
+                    entry.Elements().Where(e => e.Name.LocalName is "ticksToDisappear" or "disappearsAfterTicks" or "seed").Remove();
+                    entry.Add(new XElement("sscBondReleaseExpiresAt", 124500));
+                });
+                var oldAfter = Load(path, ImprintPawn(PawnIdentity.Slave));
+                Equal(119500, Hediff_SSCBondReleaseAftereffect.Active(oldAfter).GetComp<HediffComp_Disappears>().ticksToDisappear);
             }
             finally { SetBreakdownTick(oldTick); }
         });

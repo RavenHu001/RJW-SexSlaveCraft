@@ -643,7 +643,7 @@ internal static partial class Program
                 Equal(1, breakdownLetters.Count(item => item.Pawn == loaded && item.Type == "success"));
             });
 
-            Case("release cooldown blocks breakdown binding and both ritual paths until the exact tick", () =>
+            Case("release cooldown blocks breakdown binding and both ritual paths until the aftereffect expires", () =>
             {
                 var (master, _) = BreakdownPawn(PawnIdentity.Master);
                 var (pawn, need) = BreakdownPawn(PawnIdentity.Slave);
@@ -653,10 +653,10 @@ internal static partial class Program
                     Require(SSCBondUtility.Bind(master, subject));
                     SSCBondUtility.GetChain(subject).Severity = severity;
                     Require(SSCBondUtility.TryReleaseToOwnerless(new SSCBondUtility.ReleaseContext(subject)));
+                    Hediff_SSCBondReleaseAftereffect.Find(subject).GetComp<HediffComp_Disappears>().ticksToDisappear = 1;
                     subject.TryGetComp<CompSexSlaveTraining>().ReplaceAssignedTrainers(new[] { master });
                 }
                 zeroNeed.RestoreCorruption(.8f, .8f);
-                SetBreakdownTick(120999);
                 reachableBreakdownTrainer = master;
                 var state = StartWanderingBreakdown(pawn, need);
                 var letter = InstallBreakdownRequest(state, pawn, master, requestDef);
@@ -669,7 +669,8 @@ internal static partial class Program
                     Require(CorruptionProgressionUtility.ProcessCorruptionProgression(master, subject, true, 75f) == null);
                     Require(SSCBondUtility.GetChain(subject) == null);
                 }
-                SetBreakdownTick(121000);
+                pawn.health.HealthTick();
+                zero.health.HealthTick();
                 Require(state.CanApprove(letter, TrainingDecision.BindOwnerless));
                 Require(SSCRestrictionTrainingUtility.Evaluate(SSCRestrictionTrainingUtility.CreateRequest(master, pawn, true), false).Allowed);
                 Require(CorruptionProgressionUtility.ProcessCorruptionProgression(master, zero, true, 75f) != null);

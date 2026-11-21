@@ -131,10 +131,8 @@ namespace SexSlaveCraft
             {
                 // 零阶沿用原首次建链算法，但由旧锁链解绑得到的零阶仍须完成冷却。
                 // 训导官的成长仪式使用 RitualTraining，因此不受再次建绑期限约束。
-                long deadline = Hediff_SSCBondReleaseAftereffect.ActiveDeadline(target);
-                if (deadline >= 0)
-                    return new SSCTrainingAdmission(decision, SSCTrainingFailure.BindingCooldown,
-                        Hediff_SSCBondReleaseAftereffect.FormatRemaining(deadline));
+                if (Hediff_SSCBondReleaseAftereffect.Active(target) is { } cooldown)
+                    return new SSCTrainingAdmission(decision, SSCTrainingFailure.BindingCooldown, cooldown.LabelInBrackets);
                 // 正式无主的绑定和爆发共用新绑定资格。零阶仪式仍保留原首次建链的其他检查。
                 if (SSCRestrictionResolver.GetOwnerlessStage(target) > 0 && !SSCBondUtility.CanBindNewWithProgress(actor, target))
                     return new SSCTrainingAdmission(decision, SSCTrainingFailure.TargetInvalid);

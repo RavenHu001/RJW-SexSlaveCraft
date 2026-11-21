@@ -525,9 +525,9 @@ namespace SexSlaveCraft
                         action = () => MentalState_SSCSlaveBreakdown.CurrentFor(Subject)?.Decide(this, decision) };
                     if (!state.CanApprove(this, decision))
                     {
-                        long deadline = Hediff_SSCBondReleaseAftereffect.ActiveDeadline(Subject);
-                        accept.Disable(MentalState_SSCSlaveBreakdown.IsBindingDecision(decision) && deadline >= 0
-                            ? "SSC_BondRelease_BindingCooldown".Translate(Hediff_SSCBondReleaseAftereffect.FormatRemaining(deadline))
+                        var cooldown = Hediff_SSCBondReleaseAftereffect.Active(Subject);
+                        accept.Disable(MentalState_SSCSlaveBreakdown.IsBindingDecision(decision) && cooldown != null
+                            ? "SSC_BondRelease_BindingCooldown".Translate(cooldown.LabelInBrackets)
                             : "SSC_BreakdownRequest_Unavailable".Translate());
                     }
                     yield return accept;

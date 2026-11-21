@@ -3,7 +3,8 @@
   <!-- 第五批开发占位文案，仅供实机识别。正式版另行定稿。 -->
   <ThoughtDef>
     <defName>SSC_BondReleaseAftereffect_Mood</defName>
-    <workerClass>SexSlaveCraft.ThoughtWorker_SSCBondReleaseAftereffect</workerClass>
+    <workerClass>ThoughtWorker_Hediff</workerClass>
+    <hediff>SSC_Hediff_BondReleaseAftereffect</hediff>
     <validWhileDespawned>true</validWhileDespawned>
     <stages>
       <li>

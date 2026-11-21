@@ -95,7 +95,7 @@ namespace SexSlaveCraft
             master != null && subject != null && master != subject && !master.Dead && !master.Destroyed && !master.Discarded &&
             !subject.Dead && !subject.Destroyed && !subject.Discarded && subject.health?.hediffSet != null &&
             SSCIdentityUtility.IsMaster(master) && !Utils.HasChainHediff(subject) &&
-            Hediff_SSCBondReleaseAftereffect.ActiveDeadline(subject) < 0;
+            Hediff_SSCBondReleaseAftereffect.Active(subject) == null;
 
         /// <summary>用已核验的严重度建立两端关系，确认本次写入后移出来源记录。</summary>
         /// <param name="source">当前体内的无主记录。初次成形时可为空，也可能是零阶记录。</param>
@@ -121,7 +121,7 @@ namespace SexSlaveCraft
             bool OwnsWrite(Hediff_ChainOfSexSlave candidate) => candidate != null && subject.health == health &&
                 GetChain(subject) == candidate && candidate.LinkedPawn == master;
             // 通知可以更新任一方。捕获的健康列表、组件和人格都仍有效时，交接才属于原请求。
-            bool CanFinalize() => isCurrent() && Hediff_SSCBondReleaseAftereffect.ActiveDeadline(subject) < 0 && subject.health == health &&
+            bool CanFinalize() => isCurrent() && Hediff_SSCBondReleaseAftereffect.Active(subject) == null && subject.health == health &&
                 master.TryGetComp<CompSexSlaveTraining>() == masterComp &&
                 subject.TryGetComp<CompSexSlaveTraining>() == subjectComp &&
                 SSCPersonalityRuntimeUtility.IsCurrent(master, masterToken) &&
@@ -307,11 +307,10 @@ namespace SexSlaveCraft
             Pawn subject = context.Subject;
             var health = context.Health;
             var chain = context.Chain;
-            int now = Hediff_SSCBondReleaseAftereffect.Now;
             float severity = chain.Severity;
             var progressDef = DefDatabase<HediffDef>.GetNamedSilentFail(Hediff_SSCOwnerlessSlave.DefName);
             var aftereffectDef = Hediff_SSCBondReleaseAftereffect.Definition;
-            if (now < 0 || progressDef?.hediffClass != typeof(Hediff_SSCOwnerlessSlave) ||
+            if (progressDef?.hediffClass != typeof(Hediff_SSCOwnerlessSlave) ||
                 aftereffectDef?.hediffClass != typeof(Hediff_SSCBondReleaseAftereffect) ||
                 !float.IsFinite(severity) || severity < 0 || severity > progressDef.maxSeverity ||
                 Hediff_SSCOwnerlessSlave.Find(subject) != null || !releasing.Add(chain)) return false;
@@ -320,8 +319,6 @@ namespace SexSlaveCraft
             Hediff_SSCBondReleaseAftereffect effect = null;
             bool committed = false;
             bool OriginalProgressCurrent() => context.BindingCurrent && chain.Severity == severity;
-            bool StagedWritesCurrent() => Hediff_SSCOwnerlessSlave.Find(subject) == progress &&
-                progress.Severity == severity && health.hediffSet.hediffs.Contains(effect);
 
             using var specialization = TrainerSpecializationLifecycle.BeginMutation(subject);
             try
@@ -329,7 +326,7 @@ namespace SexSlaveCraft
                 var priorEffect = Hediff_SSCBondReleaseAftereffect.Find(subject);
                 if (priorEffect != null)
                 {
-                    if (Hediff_SSCBondReleaseAftereffect.ActiveDeadline(subject) >= 0) return false;
+                    if (!priorEffect.ShouldRemove) return false;
                     health.RemoveHediff(priorEffect);
                     if (!OriginalProgressCurrent()) return false;
                 }
@@ -343,9 +340,8 @@ namespace SexSlaveCraft
 
                 effect = (Hediff_SSCBondReleaseAftereffect)HediffMaker.MakeHediff(aftereffectDef, subject);
                 health.AddHediff(effect);
-                if (!OriginalProgressCurrent() || !StagedWritesCurrent()) return false;
-                effect.Activate(Hediff_SSCBondReleaseAftereffect.NewDeadline(Hediff_SSCBondReleaseAftereffect.Now));
-                if (!OriginalProgressCurrent() || !StagedWritesCurrent()) return false;
+                if (!OriginalProgressCurrent() || Hediff_SSCOwnerlessSlave.Find(subject) != progress ||
+                    progress.Severity != severity || Hediff_SSCBondReleaseAftereffect.Active(subject) != effect) return false;
 
                 // 原版先从健康列表删链，再派发 PostRemoved。此时新记录和后效已生效。
                 // 同一人格的离体回调可以推进已交接的进度。成功判定只核对原链是否离体和最终归属，

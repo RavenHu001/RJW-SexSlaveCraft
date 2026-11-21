@@ -134,7 +134,7 @@ namespace SexSlaveCraft
             return false;
         }
 
-        /// <summary>放置后复查凝胶进度与期限，清源时从原身体移出已由凝胶承接的记录。</summary>
+        /// <summary>放置后复查凝胶进度。清源时交接进度和解绑后效的剩余时间。</summary>
         internal static bool TryTransferBondProgress(Pawn pawn, Thing product, Pawn_HealthTracker originalHealth,
             Hediff originalProgress, bool detach)
         {
@@ -145,7 +145,6 @@ namespace SexSlaveCraft
             // 同阶成长、同实例换主或替换健康载体都会使已放置的快照失效。
             if (pawn.health != originalHealth || TrainingOutcomeUtility.GetSexSlaveProgress(pawn) != originalProgress ||
                 store == null || store.ownerlessProgress != ((originalProgress as Hediff_SSCOwnerlessSlave)?.Severity ?? CompPersonalityStore.NoOwnerlessProgress) ||
-                store.bondReleaseExpiresAt != Hediff_SSCBondReleaseAftereffect.ActiveDeadline(pawn) ||
                 (chain == null ? savedChain != null : savedChain == null || savedChain.masterPawn != chain.LinkedPawn || savedChain.severity != chain.Severity))
             {
                 product.Destroy(DestroyMode.Vanish);
@@ -154,7 +153,10 @@ namespace SexSlaveCraft
             if (detach)
             {
                 // 清除空壳侧旧关系属于转移人格，标准解绑清理不生成无主进度或新的后效。
-                // 按核验过的实例移出后效。移除进度或锁链时的健康回调还可能挂载其他记录。
+                // 两个提取入口都在确认清源时冻结原版倒计时，仅移除本次捕获的实例。
+                store.bondReleaseRemainingTicks = originalProgress is Hediff_SSCOwnerlessSlave && effect is { ShouldRemove: false }
+                    ? effect.GetComp<HediffComp_Disappears>()?.ticksToDisappear ?? 0
+                    : 0;
                 if (chain != null) SSCBondUtility.Unbind(pawn);
                 else if (originalProgress != null) originalHealth.RemoveHediff(originalProgress);
                 if (effect != null && pawn.health == originalHealth && originalHealth.hediffSet.hediffs.Contains(effect))
@@ -263,13 +265,13 @@ namespace SexSlaveCraft
             if (!SSCImprintUtility.CanRestore(consumer, data))
             { Log.Error("[SSC] Personality insertion has an invalid imprint snapshot."); return false; }
             float ownerlessProgress = data.ownerlessProgress;
-            long releaseDeadline = data.bondReleaseExpiresAt;
             // 已保存的链快照仍可承载进度，即使主人引用在读档时已经丢失。
             // 归属在植入时按主人现况决定，载体和严重度预检则早于清空宿主。
             bool hasSavedChain = data.chainHediffData != null;
             Pawn savedMaster = data.chainHediffData?.masterPawn;
             float savedSeverity = data.chainHediffData?.severity ?? 0f;
             bool hasSavedOwnerless = ownerlessProgress != CompPersonalityStore.NoOwnerlessProgress;
+            int savedBondReleaseTicks = hasSavedOwnerless ? data.bondReleaseRemainingTicks : 0;
             HediffDef ownerlessDef = null;
             if (hasSavedOwnerless || hasSavedChain)
             {
@@ -284,9 +286,8 @@ namespace SexSlaveCraft
                 { Log.Error("[SSC] Personality insertion has an invalid ownerless progress snapshot."); return false; }
             }
             var aftereffectDef = Hediff_SSCBondReleaseAftereffect.Definition;
-            if ((hasSavedChain || releaseDeadline >= 0) &&
-                (aftereffectDef?.hediffClass != typeof(Hediff_SSCBondReleaseAftereffect) ||
-                    releaseDeadline >= 0 && !hasSavedOwnerless))
+            if ((hasSavedChain || savedBondReleaseTicks > 0) &&
+                aftereffectDef?.hediffClass != typeof(Hediff_SSCBondReleaseAftereffect))
                 return false;
             // 快照先复制并校验，缺配置表示来源默认；不能把宿主旧选择混入来源。
             SSCRomanceConfig romanceSnapshot = data.romanceConfig?.Copy();
@@ -630,18 +631,16 @@ namespace SexSlaveCraft
                     // 此处只清理失效关系，不把凝胶里的旧社会历史解释为一次新的仪式奖励。
                     SSCBondRelationUtility.RemoveInvalidRelations(consumer);
 #if SSC_RW17
-                    // 已有后效按原截止 tick 恢复，凝胶停留和加工期间仍计入游戏时间。
-                    // 此次植入才发生的归属转换在成功消耗凝胶前启动两日后效。
-                    int now = Hediff_SSCBondReleaseAftereffect.Now;
-                    if (lostSavedMaster || releaseDeadline >= 0 && now < releaseDeadline)
+                    // 凝胶内已有后效从保存值续计。此时才发生的原主人失效沿用原版组件的两日初值。
+                    if (lostSavedMaster || savedBondReleaseTicks > 0)
                     {
-                        if (now < 0 || !OwnerlessProgressRestored()) return false;
+                        if (!OwnerlessProgressRestored()) return false;
                         restoredAftereffect = (Hediff_SSCBondReleaseAftereffect)HediffMaker.MakeHediff(aftereffectDef, consumer);
-                        long deadline = lostSavedMaster ? Hediff_SSCBondReleaseAftereffect.NewDeadline(now) : releaseDeadline;
-                        restoredAftereffect.Activate(deadline);
+                        if (restoredAftereffect.GetComp<HediffComp_Disappears>() is not { } timer) return false;
+                        if (!lostSavedMaster)
+                            timer.ticksToDisappear = Math.Min(savedBondReleaseTicks, timer.ticksToDisappear);
                         originalHealth.AddHediff(restoredAftereffect);
-                        if (Hediff_SSCBondReleaseAftereffect.Find(consumer) != restoredAftereffect ||
-                            restoredAftereffect.ExpiresAt != deadline) return false;
+                        if (Hediff_SSCBondReleaseAftereffect.Active(consumer) != restoredAftereffect) return false;
                     }
                     // 健康与关系回调也可能改动记录，消耗凝胶前再核对本次写入的进度载体和归属。
                     if (restoredOwnerless != null && !OwnerlessProgressRestored()) return false;

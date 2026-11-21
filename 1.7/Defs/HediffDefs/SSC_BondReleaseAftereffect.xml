@@ -11,6 +11,12 @@
     <everCurableByItem>false</everCurableByItem>
     <duplicationAllowed>false</duplicationAllowed>
     <initialSeverity>1</initialSeverity>
+    <comps>
+      <li Class="HediffCompProperties_Disappears">
+        <disappearsAfterTicks>120000</disappearsAfterTicks>
+        <showRemainingTime>true</showRemainingTime>
+      </li>
+    </comps>
     <stages>
       <li><statFactors><WorkSpeedGlobal>0.75</WorkSpeedGlobal></statFactors></li>
     </stages>
