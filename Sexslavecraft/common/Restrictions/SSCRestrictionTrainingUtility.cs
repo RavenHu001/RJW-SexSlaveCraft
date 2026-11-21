@@ -56,17 +56,19 @@ namespace SexSlaveCraft
             return rule.Valid && rule.Value == SSCRestrictionValue.Deny ? SSCBondUtility.GetBoundMaster(pawn) : null;
         }
 
-        /// <summary>按任务用途选择准入规则。1.7 日常使用调教许可，未绑定的仪式使用建绑准备。</summary>
+        /// <summary>按任务用途选择准入规则，供选角、开场和训练任务共用。</summary>
         /// <remarks>
         /// 日常有无锁链都走 DailyTraining，由统一校验判断身份、许可和指派。
-        /// 建绑准备另有主人身份要求，正式无主目标的仪式分支在后续接入。
+        /// 主人为无链目标准备新绑定。训导官主持正式无主目标时，继续读取接收调教的实际生效条目。
+        /// 当前用途只决定后续检查，任职和指派均由 Evaluate 核验。零阶无链目标保留原先的建绑准入。
         /// </remarks>
         public static SSCRestrictionRequest CreateRequest(Pawn actor, Pawn target, bool ritual)
         {
 #if SSC_RW17
             SSCInteractionKind kind = !ritual ? SSCInteractionKind.DailyTraining
-                : SSCBondUtility.GetBoundMaster(target) == null ? SSCInteractionKind.BindingPreparation
-                : SSCInteractionKind.RitualTraining;
+                : SSCBondUtility.GetBoundMaster(target) != null ||
+                    (!SSCIdentityUtility.IsMaster(actor) && SSCRestrictionResolver.GetOwnerlessStage(target) > 0)
+                    ? SSCInteractionKind.RitualTraining : SSCInteractionKind.BindingPreparation;
 #else
             SSCInteractionKind kind = SSCBondUtility.GetBoundMaster(target) == null
                 ? SSCInteractionKind.BindingPreparation
@@ -121,6 +123,12 @@ namespace SexSlaveCraft
             // 首次准备只能由指定且可建立所有权的主人完成；停用行为限制也不能授予新主人身份。
             if (request.Kind == SSCInteractionKind.BindingPreparation && !SSCIdentityUtility.IsMaster(actor))
                 return new SSCTrainingAdmission(decision, SSCTrainingFailure.BindingMasterRequired);
+#if SSC_RW17
+            // 正式无主的绑定和爆发共用新绑定资格；旧零阶仪式仍由原首次建链检查处理。
+            if (request.Kind == SSCInteractionKind.BindingPreparation && SSCRestrictionResolver.GetOwnerlessStage(target) > 0 &&
+                !SSCBondUtility.CanBindNewWithProgress(actor, target))
+                return new SSCTrainingAdmission(decision, SSCTrainingFailure.TargetInvalid);
+#endif
             // 自动日常任务始终检查指派。手动发起时只有当前实际主人享有既有的指派豁免。
             if ((requireAssignment || decision.Reason != SSCRestrictionReason.BoundOwner) &&
 #if SSC_RW17 || SSC_TRAINER_WORK_TEST

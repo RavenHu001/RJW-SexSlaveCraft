@@ -79,7 +79,7 @@ namespace SexSlaveCraft
             => BindCore(master, sexSlave, true, false, out _);
 
 #if SSC_RW17
-        /// <summary>爆发的批准、派发和最终写入共用新绑定资格。现有锁链保留原归属。</summary>
+        /// <summary>爆发的批准、派发和仪式准入共用新绑定资格；最终写链前再查一次。</summary>
         /// <remarks>解绑冷却接入时在此处补准入条件，让所有调用方读到同一规则。</remarks>
         internal static bool CanBindNewWithProgress(Pawn master, Pawn subject) =>
             master != null && subject != null && master != subject && !master.Dead && !master.Destroyed && !master.Discarded &&
@@ -90,8 +90,9 @@ namespace SexSlaveCraft
         /// <param name="source">当前体内的无主记录。初次成形时可为空，也可能是零阶记录。</param>
         /// <param name="severity">正式无主沿用来源的原始严重度。初次成形由调用方提供起始严重度。</param>
         /// <param name="isCurrent">每次写入前后复查本场结算资格。归属和来源由本服务复核，回调可在新链挂载后继续验证同一场。</param>
+        /// <param name="canPrepare">可选的写链前复查。仪式用它核对仍适用的建绑许可和实际恶堕门槛。</param>
         internal static bool BindNewWithProgress(Pawn master, Pawn subject, Hediff_SSCOwnerlessSlave source,
-            float severity, Func<bool> isCurrent, out Hediff_ChainOfSexSlave chain)
+            float severity, Func<bool> isCurrent, out Hediff_ChainOfSexSlave chain, Func<bool> canPrepare = null)
         {
             chain = null;
             float? sourceSeverity = source?.Severity;
@@ -116,7 +117,7 @@ namespace SexSlaveCraft
                 SSCPersonalityRuntimeUtility.IsCurrent(subject, subjectToken) && SSCIdentityUtility.IsMaster(master) &&
                 !master.Dead && !master.Destroyed && !master.Discarded && !subject.Dead && !subject.Destroyed && !subject.Discarded;
             // 写入前检查没有锁链，写入后检查本次实例。两段都要求来源进度保持在提交时捕获的值。
-            bool CanWrite(Hediff_ChainOfSexSlave candidate) => CanFinalize() &&
+            bool CanWrite(Hediff_ChainOfSexSlave candidate) => (candidate != null || canPrepare?.Invoke() != false) && CanFinalize() &&
                 Hediff_SSCOwnerlessSlave.Find(subject) == source && source?.Severity == sourceSeverity &&
                 (candidate == null ? CanBindNewWithProgress(master, subject)
                     : OwnsWrite(candidate) && candidate.Severity == severity);
@@ -191,6 +192,9 @@ namespace SexSlaveCraft
                 // 只有本次写入的锁链仍在且归主持所有，才为它补缰绳。
                 if (isCurrent != null && (chain == null || GetChain(sexSlave) != chain || chain.LinkedPawn != master))
                     return false;
+                // 等进度交接的锁链仍是暂存状态。挂链或补缰绳回调可撤销原请求，尽早停止以免关系协调重新写回指派。
+                // 返回失败时由 BindNewWithProgress 撤回本次锁链，源记录尚在原处。
+                if (initialSeverity.HasValue && isCurrent?.Invoke(chain) == false) return false;
 #else
                 Hediff_ChainOfSexSlave chain = Hediff_ChainOfSexSlave.AddToPawn(sexSlave, master);
 #endif
@@ -203,6 +207,7 @@ namespace SexSlaveCraft
                     bridle.PruneInvalidTargets();
                     return false;
                 }
+                if (initialSeverity.HasValue && isCurrent?.Invoke(chain) == false) return false;
 #endif
 
                 // 完成锁链与缰绳写入后清理旧主人关系；换绑不能把原仪式奖励转赠给新主人。

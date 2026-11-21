@@ -5,7 +5,7 @@ using RimWorld;
 using Verse;
 using Verse.Sound;
 
-// 仪式建立绑定、尝试原版转奴，并按本场起始阶段推进锁链。旧版保留日常建链。
+// 仪式建立绑定、尝试原版转奴，并按本场起始阶段推进性奴化。旧版保留日常建链。
 namespace SexSlaveCraft
 {
     public static class CorruptionProgressionUtility
@@ -25,6 +25,10 @@ namespace SexSlaveCraft
 #endif
             Need_Corruption need = sexSlave.needs.TryGetNeed<Need_Corruption>();
             if (need == null) return null;
+#if SSC_RW17
+            // 无主目标已经有进度。由本场确定的分支处理交接或成长，失效也不会回落到零阶建链。
+            if (progress.HasOwnerlessProgress) return progress.ApplyOwnerless(score);
+#endif
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
             if (isRitual && !progress.CanAdvance()) return null;
 #endif
@@ -178,8 +182,8 @@ namespace SexSlaveCraft
         }
 
 #if SSC_RW17 || SSC_RITUAL_STAGE_TEST
-        /// <summary>用本场额度推进已有锁链，受实际恶堕和下一阶起点限制。</summary>
-        /// <remarks>纯数值计算。仪式和发作分别核对自己的参与者与原锁链，再决定是否写入及发反馈。</remarks>
+        /// <summary>用本场额度推进已有性奴化进度，受实际恶堕和下一阶起点限制。</summary>
+        /// <remarks>纯数值计算。仪式和发作分别核对参与者及原进度载体，再决定是否写入及发反馈。</remarks>
         internal static float CalculateChainProgress(float severity, float corruption, float? nextStage)
         {
             // 恶堕达到 30% 才能推进。50% 起提高单场额度。已有锁链进度高于任一限制时保留原进度。
@@ -191,10 +195,13 @@ namespace SexSlaveCraft
         }
 
         /// <summary>
-        /// 保存一场已认领仪式的锁链与参与者上下文。完整结算在质量、记忆和恶堕收益回调前捕获；
-        /// 直接调用的公共入口在入口捕获。锁链主人和当场主持可分别为不同角色。
+        /// 保存一场已认领仪式的进度载体与参与者上下文。完整结算在质量、记忆和恶堕收益回调前捕获；
+        /// 直接调用的公共入口在入口捕获。已有绑定的实际主人和本场主持可以是不同的角色。
         /// </summary>
-        /// <remarks>冻结的是原需求与锁链的引用、实际主人和起始阶段。恶堕及同阶严重度允许变化，写入前读取最新值。</remarks>
+        /// <remarks>
+        /// 原需求、进度实例和分支随场次固定。常规成长核对起始阶段，恶堕和同阶严重度取写入前的实际值。
+        /// 无主转有主移交原实例持有的最新严重度，从挂链开始由绑定服务核对精确值。
+        /// </remarks>
         internal sealed class RitualChainProgress
         {
             private readonly Pawn host;
@@ -208,6 +215,12 @@ namespace SexSlaveCraft
             private readonly Hediff_ChainOfSexSlave chain;
             private readonly Pawn owner;
             private readonly int startingStage;
+#if SSC_RW17
+            private readonly Pawn_HealthTracker targetHealth;
+            private readonly Hediff_SSCOwnerlessSlave ownerless;
+            private readonly bool bindOwnerless;
+            internal bool HasOwnerlessProgress => ownerless != null;
+#endif
 
             internal RitualChainProgress(Pawn host, Pawn target, Func<bool> canContinue)
             {
@@ -219,10 +232,22 @@ namespace SexSlaveCraft
                 hostToken = SSCPersonalityRuntimeUtility.Capture(host);
                 targetToken = SSCPersonalityRuntimeUtility.Capture(target);
                 need = target?.needs?.TryGetNeed<Need_Corruption>();
-                // 现行仪式验证实际锁链实例和主人，锁链进度写入也只针对这条链。
-                // 正式无主目标需要专门的仪式分支来交接进度，沿用首次建链会取默认 20%。
+                // 捕获原链或正式无主记录。任一载体被替换时，本场都不能借新载体领取进度。
                 chain = SSCBondUtility.GetChain(target);
                 owner = chain?.LinkedPawn;
+#if SSC_RW17
+                targetHealth = target?.health;
+                var incoming = chain == null ? Hediff_SSCOwnerlessSlave.GetPersonalityProgress(target) : null;
+                int incomingStage = TrainingOutcomeUtility.GetSexSlaveProgressStage(incoming).Stage;
+                if (incomingStage > 0)
+                {
+                    ownerless = incoming;
+                    // 主人和训导官使用同一场仪式。主持身份在收益之前确定，回调变更身份会使原分支失效。
+                    bindOwnerless = SSCIdentityUtility.IsMaster(host);
+                    startingStage = incomingStage;
+                    return;
+                }
+#endif
                 startingStage = TrainingOutcomeUtility.GetSexSlaveProgressStage(chain).Stage;
             }
 
@@ -242,6 +267,11 @@ namespace SexSlaveCraft
 
             private bool MatchesStartingStage(Hediff_ChainOfSexSlave expected, Pawn expectedOwner) =>
                 MatchesChain(expected, expectedOwner) &&
+#if SSC_RW17
+                // 零阶分支准备建链时也必须保留原类型，避免覆盖质量或收益回调中刚形成的无主进度。
+                (chain != null || ownerless != null ||
+                    TrainingOutcomeUtility.GetSexSlaveProgressStage(Hediff_SSCOwnerlessSlave.Find(target)).Stage == 0) &&
+#endif
                 (chain == null || (expected == chain && TrainingOutcomeUtility.GetSexSlaveProgressStage(expected).Stage == startingStage));
 
             private bool CanUseChain(Hediff_ChainOfSexSlave expected, Pawn expectedOwner)
@@ -249,7 +279,11 @@ namespace SexSlaveCraft
                 if (!CanContinueSettlement() || !MatchesStartingStage(expected, expectedOwner)) return false;
                 // 正式仪式沿用调教准入。原主人可手动主持，委派主持须满足指派和当前许可。
                 // 许可查询返回后再次核对原载体，避免把旧请求落到该查询期间刚换入的对象。
-                if (canContinue != null &&
+                if ((canContinue != null
+#if SSC_RW17
+                    || HasOwnerlessProgress
+#endif
+                    ) &&
                     !SSCRestrictionTrainingUtility.Evaluate(SSCRestrictionTrainingUtility.CreateRequest(host, target, true), false).Allowed)
                     return false;
                 return MatchesStartingStage(expected, expectedOwner);
@@ -262,8 +296,96 @@ namespace SexSlaveCraft
                 written == null ? CanAdvance() && need.CurLevel >= 0.1f : CanUseChain(written, host);
 
             // 委派主持未建绑，继续检查原主的链。首次建链则检查这场实际写入的链。
-            internal bool CanContinueAfterBinding(Hediff_ChainOfSexSlave written) =>
-                written == null ? CanAdvance() : CanUseChain(written, host);
+            internal bool CanContinueAfterBinding(Hediff_ChainOfSexSlave written)
+            {
+#if SSC_RW17
+                if (HasOwnerlessProgress)
+                    return bindOwnerless ? CanUseTransferredChain(written) : CanUseOwnerless();
+#endif
+                return written == null ? CanAdvance() : CanUseChain(written, host);
+            }
+
+#if SSC_RW17
+            // 无主主持按调教员称呼。主人主持只有实际绑定后才在明细中称为目标的主人。
+            internal string DescribeParticipants() => HasOwnerlessProgress && (!bindOwnerless || !SSCBondUtility.IsBoundTo(target, host))
+                ? "SSC_Ritual_OwnerlessTrainerHeader".Translate(host.LabelShort, target.LabelShort).ToString()
+                : Strings.Ritual_MasterSlaveHeader(host.LabelShort, target.LabelShort);
+
+            // 挂链时归属变化是本场预期。先复核两端对象和仪式，再分别校验源记录、待写入或已提交的链。
+            private bool OwnerlessParticipantsCurrent() => MatchesParticipants() && target.health == targetHealth &&
+                need != null && target.needs?.TryGetNeed<Need_Corruption>() == need && SSCIdentityUtility.IsSexSlave(target) &&
+                SSCIdentityUtility.IsMaster(host) == bindOwnerless;
+
+            private bool MatchesOwnerless() => OwnerlessParticipantsCurrent() &&
+                Hediff_SSCOwnerlessSlave.GetPersonalityProgress(target) == ownerless &&
+                (bindOwnerless ? TrainingOutcomeUtility.GetSexSlaveProgressStage(ownerless).Stage > 0
+                    : TrainingOutcomeUtility.GetSexSlaveProgressStage(ownerless).Stage == startingStage);
+
+            // 查行为许可可能触发装备等兼容查询。查询后重新核对原需求、载体和主持分支。
+            private bool CanUseOwnerless() => CanContinueSettlement() && MatchesOwnerless() &&
+                SSCRestrictionTrainingUtility.Evaluate(SSCRestrictionTrainingUtility.CreateRequest(host, target, true), false).Allowed &&
+                MatchesOwnerless();
+
+            private bool CanPrepareOwnerlessBinding() => CanUseOwnerless() && need.CurLevel >= .1f;
+
+            private bool OwnerlessBindingContextCurrent()
+            {
+                if (!CanContinueSettlement() || !OwnerlessParticipantsCurrent()) return false;
+                // 源记录仍在且临时锁链已经挂上时，默认仪式准入会给主持实际主人的指派豁免。
+                // 在源记录移交前仍按原训练资格和名单核对。移交后只需核对场次、参与者和新绑定。
+                if (!SSCBondUtility.IsBoundTo(target, host) || Hediff_SSCOwnerlessSlave.Find(target) != ownerless) return true;
+                var request = SSCRestrictionTrainingUtility.CreateRequest(host, target, true);
+                return SSCRestrictionTrainingUtility.Evaluate(request, requireAssignment: true).Allowed && OwnerlessParticipantsCurrent();
+            }
+
+            private bool CanUseTransferredChain(Hediff_ChainOfSexSlave written) => written != null &&
+                CanUseChain(written, host) && OwnerlessParticipantsCurrent() && Hediff_SSCOwnerlessSlave.Find(target) == null &&
+                SSCBondUtility.GetBridle(host)?.targets.Contains(target) == true;
+
+            internal string ApplyOwnerless(float score)
+            {
+                if (!CanUseOwnerless()) return null;
+                var changes = new List<string>();
+                if (bindOwnerless)
+                {
+                    if (need.CurLevel < .1f) return null;
+                    // 直接移交实际严重度。进度显示和可选的原版转奴都要等双向关系与载体交接完成。
+                    float severity = ownerless.Severity;
+                    if (!SSCBondUtility.BindNewWithProgress(host, target, ownerless, severity,
+                        OwnerlessBindingContextCurrent, out var written, CanPrepareOwnerlessBinding) ||
+                        !CanUseTransferredChain(written)) return null;
+
+                    changes.Add(Strings.Bond_BridleAdded(host.LabelShort, target.LabelShort));
+                    changes.Add(Strings.Bond_ChainAdded(target.LabelShort, host.LabelShort));
+                    changes.Add("SSC_BreakdownSuccess_CurrentProgress".Translate(
+                        TrainingOutcomeUtility.GetSexSlaveProgressStage(written).Stage, written.Severity.ToStringPercent()));
+                    ProcessRitualEnslavement(host, target, score, changes, need.CurLevel, this, written);
+                    return string.Join("\n", changes);
+                }
+
+                // 训导官沿用现有委派仪式的原版转奴判定。调用可能改变参与者或归属，先重查许可和起始阶段，
+                // 再用普通收益入账后的实际恶堕和单场额度推进原无主实例。
+                ProcessRitualEnslavement(host, target, score, changes, need.CurLevel, this, null);
+                if (!CanUseOwnerless()) return changes.Count == 0 ? null : string.Join("\n", changes);
+                float before = ownerless.Severity;
+                var stage = TrainingOutcomeUtility.GetSexSlaveProgressStage(ownerless);
+                float next = CalculateChainProgress(before, need.CurLevel, stage.Next);
+                if (next > before) ownerless.Severity = next;
+
+                // 本场升阶本身是预期结果。健康通知返回后按实际进度发反馈，并复核实例及主持资格。
+                if (!CanContinueSettlement() || !OwnerlessParticipantsCurrent() ||
+                    Hediff_SSCOwnerlessSlave.GetPersonalityProgress(target) != ownerless || !SSCIdentityUtility.IsTrainer(host))
+                    return changes.Count == 0 ? null : string.Join("\n", changes);
+                int reached = TrainingOutcomeUtility.GetSexSlaveProgressStage(ownerless).Stage;
+                if (reached > startingStage)
+                    changes.Add("SSC_BreakdownSuccess_StageAdvanced".Translate(startingStage, reached));
+                else if (ownerless.Severity > before)
+                    changes.Add("SSC_BreakdownSuccess_ProgressAdvanced".Translate(reached, before.ToStringPercent(), ownerless.Severity.ToStringPercent()));
+                else
+                    changes.Add("SSC_BreakdownSuccess_StageUnchanged".Translate());
+                return string.Join("\n", changes);
+            }
+#endif
 
             internal void Apply(List<string> changes)
             {

@@ -99,7 +99,8 @@ namespace SexSlaveCraft
             // 绑定可优先消化满值分化待办，未建链时由本场结算退出统一处理。
             using var imprintSettlement = SSCFullCorruptionImprint.BeginRitual(sexSlave);
 #endif
-            // 两种评分沿用各自的收益和记忆，整个结算共用仪式入口捕获的参与者和原锁链。
+            // 两种评分沿用各自的收益和记忆。它们用同一捕获结果结算已绑定进度、无主交接或成长，
+            // 让恶堕收益先入账，再用统一的进度规则生成仪式信明细。
             if (SSCMod.settings?.useOldScoring ?? false)
             {
                 return ExecuteRitualOutcome_Legacy(master, sexSlave, quality, ritualOutcomeMemory
@@ -155,7 +156,11 @@ namespace SexSlaveCraft
 
             StringBuilder sb = new StringBuilder();
             sb.AppendLine();
+#if SSC_RW17
+            sb.AppendLine(progress.DescribeParticipants());
+#else
             sb.AppendLine(Strings.Ritual_MasterSlaveHeader(master.LabelShort, sexSlave.LabelShort));
+#endif
             sb.AppendLine(Strings.Ritual_ScoreLevel(finalScore.ToString("F1"), finalLevel));
             sb.AppendLine(Strings.Ritual_CorruptionGain(corruptionGain.ToString("P1")));
             sb.AppendLine(Strings.Ritual_FullBodyTraining(sexSlave.LabelShort));
@@ -223,7 +228,11 @@ namespace SexSlaveCraft
 
             StringBuilder sb = new StringBuilder();
             sb.AppendLine();
+#if SSC_RW17
+            sb.AppendLine(progress.DescribeParticipants());
+#else
             sb.AppendLine(Strings.Ritual_MasterSlaveHeader(master.LabelShort, sexSlave.LabelShort));
+#endif
             sb.AppendLine(Strings.Ritual_ScoreLevel(finalScore.ToString("F1"), finalLevel));
             sb.AppendLine(Strings.Ritual_CorruptionGain(corruptionGain.ToString("P1")));
             sb.AppendLine(Strings.Ritual_FullBodyTraining(sexSlave.LabelShort));

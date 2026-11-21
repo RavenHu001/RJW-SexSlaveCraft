@@ -282,6 +282,149 @@ internal static partial class Program
             bool CanApprove(MentalState_SSCSlaveBreakdown state, ChoiceLetter_SSCBreakdownTraining letter)
                 => state.CanApprove(letter, state.TrainingChoices().First());
 
+            Pawn RitualOfficer()
+            {
+                var (master, _) = BreakdownPawn(PawnIdentity.Master);
+                var (officer, _) = BreakdownPawn(PawnIdentity.Slave);
+                Require(SSCBondUtility.Bind(master, officer));
+                SSCBondUtility.GetChain(officer).Severity = .5f;
+                officer.health.AddHediff(SSCDefOf.SSC_Hediff_TrainerOfficer_Final);
+                Require(SSCIdentityUtility.SetTrainerEnabled(officer, true));
+                return officer;
+            }
+
+            (Pawn Pawn, Need_Corruption Need, Hediff Progress) RitualSubject(Pawn host, float severity, float corruption)
+            {
+                var (pawn, need) = BreakdownPawn(PawnIdentity.Slave);
+                Hediff progress = pawn.health.AddHediff(DefDatabase<HediffDef>.GetNamed(Hediff_SSCOwnerlessSlave.DefName));
+                progress.Severity = severity;
+                pawn.TryGetComp<CompSexSlaveTraining>().ReplaceAssignedTrainers(new[] { host });
+                need.RestoreCorruption(corruption, corruption);
+                return (pawn, need, progress);
+            }
+
+            Case("master ritual transfers the exact ownerless severity in both scoring paths including stage four", () =>
+            {
+                var (master, _) = BreakdownPawn(PawnIdentity.Master);
+                foreach (var (severity, stage, corruption, oldScore) in new[] { (.8f, 3, .72f, false), (.9476543f, 4, .94f, true) })
+                {
+                    SSCMod.settings.useOldScoring = oldScore;
+                    var (pawn, need, source) = RitualSubject(master, severity, corruption);
+                    string details = ConditioningUtility.ExecuteRitualOutcome(master, pawn, .25f);
+                    var chain = SSCBondUtility.GetChain(pawn);
+                    Require(chain?.LinkedPawn == master && SSCBondUtility.GetBridle(master).ValidTargets.Contains(pawn));
+                    Require(!pawn.health.hediffSet.hediffs.Contains(source) && Hediff_SSCOwnerlessSlave.Find(pawn) == null);
+                    Equal(severity, chain.Severity);
+                    Require(need.CurLevel > corruption);
+                    Require(details.Contains("SSC_BreakdownSuccess_CurrentProgress".Translate(stage, severity.ToStringPercent()).ToString()));
+                }
+            });
+
+            Case("trainer officer ritual uses actual corruption after gains and reports ownerless progress without binding", () =>
+            {
+                var officer = RitualOfficer();
+                var (pawn, need, source) = RitualSubject(officer, .4f, .44f);
+                string details = ConditioningUtility.ExecuteRitualOutcome(officer, pawn, 1f);
+                Near(.6f, need.CurLevel);
+                Equal(.5f, source.Severity);
+                Require(TrainingOutcomeUtility.GetSexSlaveProgress(pawn) == source && SSCBondUtility.GetBridle(officer) == null);
+                Equal(3, SSCOrgasmSensitivityUtility.GetState(pawn).EffectiveLevel);
+                Require(details.Contains("SSC_Ritual_OwnerlessTrainerHeader".Translate(officer.LabelShort, pawn.LabelShort).ToString()));
+                Require(details.Contains("SSC_BreakdownSuccess_StageAdvanced".Translate(2, 3).ToString()));
+
+                var (sameStage, _, sameSource) = RitualSubject(officer, .52f, .64f);
+                details = ConditioningUtility.ExecuteRitualOutcome(officer, sameStage, .25f);
+                Near(.68f, sameSource.Severity);
+                Require(details.Contains("SSC_BreakdownSuccess_ProgressAdvanced".Translate(3, .52f.ToStringPercent(), sameSource.Severity.ToStringPercent()).ToString()));
+
+                var (stalled, _, stalledSource) = RitualSubject(officer, .8f, .63f);
+                details = ConditioningUtility.ExecuteRitualOutcome(officer, stalled, .25f);
+                Equal(.8f, stalledSource.Severity);
+                Require(details.Contains("SSC_BreakdownSuccess_StageUnchanged".Translate().ToString()));
+            });
+
+            Case("ritual rejects ownerless writes after record replacement, external promotion or revocation", () =>
+            {
+                var officer = RitualOfficer();
+                var (pawn, _, source) = RitualSubject(officer, .4f, .7f);
+                var result = new CorruptionProgressionUtility.RitualChainProgress(officer, pawn, () => true);
+                source.Severity = .5f;
+                Require(CorruptionProgressionUtility.ProcessCorruptionProgression(officer, pawn, true, 75f, result) == null);
+                Equal(.5f, source.Severity);
+
+                result = new CorruptionProgressionUtility.RitualChainProgress(officer, pawn, () => true);
+                pawn.health.RemoveHediff(source);
+                var replacement = pawn.health.AddHediff(source.def);
+                replacement.Severity = .5f;
+                Require(CorruptionProgressionUtility.ProcessCorruptionProgression(officer, pawn, true, 75f, result) == null);
+                Equal(.5f, replacement.Severity);
+
+                result = new CorruptionProgressionUtility.RitualChainProgress(officer, pawn, () => true);
+                Require(SSCIdentityUtility.SetTrainerEnabled(officer, false));
+                Require(CorruptionProgressionUtility.ProcessCorruptionProgression(officer, pawn, true, 75f, result) == null);
+                Equal(.5f, replacement.Severity);
+                Require(SSCBondUtility.GetChain(pawn) == null);
+            });
+
+            Case("master ritual rolls back when the provisional chain callback revokes the original assignment", () =>
+            {
+                var (master, _) = BreakdownPawn(PawnIdentity.Master);
+                var (pawn, _, source) = RitualSubject(master, .8f, .96f);
+                var training = pawn.TryGetComp<CompSexSlaveTraining>();
+                var hook = new Harmony("ssc.tests.ownerless-ritual.binding-assignment");
+                try
+                {
+                    hook.Patch(AccessTools.Method(typeof(Hediff_ChainOfSexSlave), nameof(Hediff_ChainOfSexSlave.PostAdd)),
+                        postfix: new HarmonyMethod(typeof(Program), nameof(NotifyBreakdownChainAdded)));
+                    onBreakdownChainAdded = written =>
+                    {
+                        if (written.pawn != pawn) return;
+                        // The provisional chain already grants owner permission, but the source has not been handed over.
+                        Require(SSCBondUtility.IsBoundTo(pawn, master) && Hediff_SSCOwnerlessSlave.Find(pawn) == source);
+                        training.RemoveAssignedTrainer(master);
+                    };
+                    var result = new CorruptionProgressionUtility.RitualChainProgress(master, pawn, () => true);
+                    Require(CorruptionProgressionUtility.ProcessCorruptionProgression(master, pawn, true, 75f, result) == null);
+                    Require(!TrainerAssignmentUtility.IsAssignedTrainer(training, master));
+                    Require(SSCBondUtility.GetChain(pawn) == null && SSCBondUtility.GetBridle(master)?.targets.Contains(pawn) != true);
+                    Require(Hediff_SSCOwnerlessSlave.Find(pawn) == source);
+                    Equal(.8f, source.Severity);
+                }
+                finally
+                {
+                    onBreakdownChainAdded = null;
+                    hook.UnpatchAll(hook.Id);
+                }
+            });
+
+            Case("ownerless ritual reuses the enslavement switch without changing the chosen SSC result", () =>
+            {
+                var hook = new Harmony("ssc.tests.ownerless-ritual.enslavement");
+                try
+                {
+                    hook.Patch(AccessTools.Method(typeof(Rand), nameof(Rand.Chance), new[] { typeof(float) }),
+                        prefix: new HarmonyMethod(typeof(Program), nameof(AllowBreakdownEnslavementRoll)));
+                    hook.Patch(AccessTools.Method(typeof(GenGuest), nameof(GenGuest.TryEnslavePrisoner)),
+                        prefix: new HarmonyMethod(typeof(Program), nameof(RejectVanillaBreakdownEnslavement)));
+                    breakdownEnslavementAttempts = 0;
+                    var (master, _) = BreakdownPawn(PawnIdentity.Master);
+                    var officer = RitualOfficer();
+                    foreach (bool enable in new[] { false, true })
+                    {
+                        SSCMod.settings.enableRitualEnslavement = enable;
+                        var (binding, _, _) = RitualSubject(master, .8f, .96f);
+                        var (growth, _, source) = RitualSubject(officer, .4f, .6f);
+                        CorruptionProgressionUtility.ProcessCorruptionProgression(master, binding, true, 75f);
+                        CorruptionProgressionUtility.ProcessCorruptionProgression(officer, growth, true, 75f);
+                        Equal(enable ? 2 : 0, breakdownEnslavementAttempts);
+                        Equal(.8f, SSCBondUtility.GetChain(binding).Severity);
+                        Equal(.5f, source.Severity);
+                        Require(!binding.IsSlave && !growth.IsSlave && SSCBondUtility.GetChain(growth) == null);
+                    }
+                }
+                finally { hook.UnpatchAll(hook.Id); }
+            });
+
             Case("breakdown request and native letter reconnect after Scribe; approval consumes exactly that request", () =>
             {
                 var (pawn, need) = BreakdownPawn();
