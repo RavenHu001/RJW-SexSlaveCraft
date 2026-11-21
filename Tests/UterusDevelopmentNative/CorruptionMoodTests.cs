@@ -32,6 +32,7 @@ internal static partial class Program
         DirectXmlCrossRefLoader.ResolveAllWantedCrossReferences(FailMode.LogErrors);
         xml.Load(Path.Combine(repo, "1.7/Defs/ThoughtDefs/SSC_OwnerlessSlave.xml"));
         var ownerlessMood = DirectXmlToObject.ObjectFromXml<ThoughtDef>(xml.DocumentElement["ThoughtDef"], false);
+        DefDatabase<ThoughtDef>.Add(ownerlessMood);
 
         (Pawn pawn, Need_Corruption need) Subject(PawnIdentity identity = PawnIdentity.Unset)
         {
@@ -45,6 +46,48 @@ internal static partial class Program
             pawn.needs.AllNeeds.Add(pawn.needs.mood);
             return (pawn, need);
         }
+
+        Check("ownerless long-term mood appears through the native thought list and switches with the active carrier", () =>
+        {
+            var previous = ThoughtUtility.situationalNonSocialThoughtDefs;
+            var previousSocial = ThoughtUtility.situationalSocialThoughtDefs;
+            try
+            {
+                ThoughtUtility.Reset();
+                var (pawn, _) = Subject(PawnIdentity.Slave);
+                var record = pawn.health.AddHediff(ownerlessDef);
+                var handler = pawn.needs.mood.thoughts.situational;
+
+                Thought ReadMood()
+                {
+                    var thoughts = new List<Thought>();
+                    handler.AppendMoodThoughts(thoughts);
+                    return thoughts.SingleOrDefault(t => t.def == ownerlessMood);
+                }
+
+                foreach (var (severity, stage, mood) in new[] { (.1f, 0, -5f), (.3f, 1, -2f), (.5f, 2, 2f), (.9f, 3, 6f) })
+                {
+                    record.Severity = severity;
+                    var thought = ReadMood();
+                    Require(thought != null, $"missing ownerless mood at stage {stage + 1}");
+                    Equal(stage, thought.CurStageIndex);
+                    Equal(mood, thought.MoodOffset());
+                }
+
+                var master = ImprintPawn(PawnIdentity.Master);
+                Require(SSCBondUtility.Bind(master, pawn));
+                Require(ReadMood() == null);
+                Require(SSCBondUtility.Unbind(pawn));
+                Equal(6f, ReadMood().MoodOffset());
+                record.Severity = .09f;
+                Require(ReadMood() == null);
+            }
+            finally
+            {
+                ThoughtUtility.situationalNonSocialThoughtDefs = previous;
+                ThoughtUtility.situationalSocialThoughtDefs = previousSocial;
+            }
+        });
 
         Thought AssertMood(Pawn pawn, float? expected, int? textStage = null)
         {

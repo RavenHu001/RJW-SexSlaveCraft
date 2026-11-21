@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_OwnerlessSlave_Mood.stages.0.label>無主 · 茫然</SSC_OwnerlessSlave_Mood.stages.0.label>
+  <!-- Development placeholder copy. Replace for release. -->
+  <SSC_OwnerlessSlave_Mood.stages.0.label>[開發] 無主性奴一階 · 茫然</SSC_OwnerlessSlave_Mood.stages.0.label>
   <SSC_OwnerlessSlave_Mood.stages.0.description>現在的身分讓我有些無所適從。</SSC_OwnerlessSlave_Mood.stages.0.description>
-  <SSC_OwnerlessSlave_Mood.stages.1.label>無主 · 不安</SSC_OwnerlessSlave_Mood.stages.1.label>
+  <SSC_OwnerlessSlave_Mood.stages.1.label>[開發] 無主性奴二階 · 不安</SSC_OwnerlessSlave_Mood.stages.1.label>
   <SSC_OwnerlessSlave_Mood.stages.1.description>我正在習慣現在的生活，偶爾還是會感到不安。</SSC_OwnerlessSlave_Mood.stages.1.description>
-  <SSC_OwnerlessSlave_Mood.stages.2.label>無主 · 坦然</SSC_OwnerlessSlave_Mood.stages.2.label>
+  <SSC_OwnerlessSlave_Mood.stages.2.label>[開發] 無主性奴三階 · 坦然</SSC_OwnerlessSlave_Mood.stages.2.label>
   <SSC_OwnerlessSlave_Mood.stages.2.description>我已經漸漸適應了這份身分。</SSC_OwnerlessSlave_Mood.stages.2.description>
-  <SSC_OwnerlessSlave_Mood.stages.3.label>無主 · 滿足</SSC_OwnerlessSlave_Mood.stages.3.label>
+  <SSC_OwnerlessSlave_Mood.stages.3.label>[開發] 無主性奴四階 · 滿足</SSC_OwnerlessSlave_Mood.stages.3.label>
   <SSC_OwnerlessSlave_Mood.stages.3.description>即使沒有主人，我也能安心接受現在的自己。</SSC_OwnerlessSlave_Mood.stages.3.description>
 </LanguageData>
