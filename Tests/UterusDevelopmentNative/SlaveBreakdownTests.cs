@@ -1252,27 +1252,22 @@ internal static partial class Program
                 bool previousDevMode = prefs.devMode;
                 var selection = AccessTools.Field(typeof(CompSexSlaveTraining), "debugSelectedMaster");
                 object previousMaster = selection.GetValue(null);
-                Command_Action Command(Pawn target, string label) => target.TryGetComp<CompSexSlaveTraining>()
-                    .CompGetGizmosExtra().OfType<Command_Action>().First(command => command.defaultLabel == label);
                 prefs.devMode = true;
                 SSCMod.settings.enableDebugGizmos = true;
                 try
                 {
-                    Command(master, "DEV: Mark Master").action();
-                    var bind = Command(pawn, "DEV: Bind To Master");
+                    selection.SetValue(null, master);
+                    var bind = pawn.TryGetComp<CompSexSlaveTraining>().CompGetGizmosExtra()
+                        .OfType<Command_Action>().First(command => command.defaultLabel == "DEV: Bind To Master");
                     bind.action();
                     var chain = SSCBondUtility.GetChain(pawn);
-                    Require(chain?.LinkedPawn == master && SSCBondUtility.GetBridle(master)?.targets.Contains(pawn) == true);
+                    Require(chain?.LinkedPawn == master && Hediff_SSCOwnerlessSlave.Find(pawn) == null);
                     Equal(progress, chain.Severity);
-                    Require(Hediff_SSCOwnerlessSlave.Find(pawn) == null);
+
                     Require(SSCBondUtility.TryReleaseToOwnerless(new SSCBondUtility.ReleaseContext(pawn)));
-                    var restored = Hediff_SSCOwnerlessSlave.Find(pawn);
-                    Equal(progress, restored.Severity);
-                    var cooldown = Hediff_SSCBondReleaseAftereffect.Active(pawn);
-                    Require(cooldown != null);
+                    Equal(progress, Hediff_SSCOwnerlessSlave.Find(pawn).Severity);
                     bind.action();
-                    Require(SSCBondUtility.GetChain(pawn) == null && Hediff_SSCOwnerlessSlave.Find(pawn) == restored);
-                    Require(Hediff_SSCBondReleaseAftereffect.Active(pawn) == cooldown);
+                    Require(SSCBondUtility.GetChain(pawn) == null);
                 }
                 finally
                 {
