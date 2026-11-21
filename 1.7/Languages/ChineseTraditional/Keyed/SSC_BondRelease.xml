@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <!-- 第五批开发占位文案，仅供实机识别。正式版另行定稿。 -->
-  <SSC_BondRelease_Action>[開發] 解除綁定</SSC_BondRelease_Action>
+  <SSC_BondRelease_Action>解除綁定</SSC_BondRelease_Action>
   <SSC_BondRelease_Confirm>[開發] 確認解除與 {0} 的綁定？會保留 {1} 階、{2} 的進度。{3}\n解綁後兩日內無法重新綁定，全域工作速度 ×0.75，持續心情 −8。</SSC_BondRelease_Confirm>
   <SSC_BondRelease_StageRules>解除後啟用無主第 {0} 階的行為和浪漫規則，敏感度按階段自動調節。</SSC_BondRelease_StageRules>
   <SSC_BondRelease_ZeroRules>解除後保留零階進度，正式階段規則在進入一階後生效。</SSC_BondRelease_ZeroRules>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <!-- 第五批开发占位文案，仅供实机识别。正式版另行定稿。 -->
-  <SSC_BondRelease_Action>[DEV] Разорвать связь</SSC_BondRelease_Action>
+  <SSC_BondRelease_Action>Разорвать связь</SSC_BondRelease_Action>
   <SSC_BondRelease_Confirm>[DEV] Разорвать связь с {0}? Стадия {1} и прогресс {2} сохранятся. {3}\nВ течение двух дней новая связь недоступна, общая скорость работы ×0.75, настроение −8.</SSC_BondRelease_Confirm>
   <SSC_BondRelease_StageRules>Начнут действовать правила поведения и романтики для стадии {0} без хозяина. Чувствительность регулируется автоматически по стадии.</SSC_BondRelease_StageRules>
   <SSC_BondRelease_ZeroRules>Прогресс нулевой стадии сохранится. Эффекты стадий действуют с первой стадии.</SSC_BondRelease_ZeroRules>

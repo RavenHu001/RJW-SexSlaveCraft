@@ -210,7 +210,7 @@ namespace SexSlaveCraft
         private static float OwnerSectionHeight(SSCBondOverviewSnapshot snapshot, float width)
         {
             float innerWidth = Mathf.Max(1f, width - 2f * SectionPadding);
-            float body = snapshot.Master == null ? Text.CalcHeight(MissingMasterLabel(snapshot), innerWidth) : OwnerPortraitSize + 64f;
+            float body = snapshot.Master == null ? Text.CalcHeight(MissingMasterLabel(snapshot), innerWidth) : OwnerPortraitSize + 70f;
             return 2f * SectionPadding + HeadingHeight(SSCBondOverviewText.T("Master"), innerWidth) + body;
         }
 
@@ -232,7 +232,7 @@ namespace SexSlaveCraft
             var edit = new PageEdit(source, comp, currentPage, contextRevision);
             if (CanReleaseFromRelations(edit) && SSCBondUtility.GetBoundMaster(source) == master.Pawn)
             {
-                var button = new Rect(card.x, card.yMax + 4f, card.width, 28f);
+                var button = new Rect(card.x, card.yMax + 6f, card.width, 32f);
                 Action open = null;
                 // 按下时捕获所见绑定。弹窗确认只消费这份上下文，后来的换主或换人格无法继承旧点击。
                 if (Event.current.type == EventType.MouseDown && Mouse.IsOver(button))
@@ -241,7 +241,7 @@ namespace SexSlaveCraft
                     if (release.BindingCurrent) open = () => OpenReleaseConfirmation(edit, release);
                 }
                 var request = PreparePageAction(edit, button, ("BondRelease", master.Pawn), () => open?.Invoke());
-                if (Widgets.ButtonText(button, "SSC_BondRelease_Action".Translate())) request?.Invoke();
+                if (DrawReleaseButton(button, "SSC_BondRelease_Action".Translate(), emphasized: false)) request?.Invoke();
             }
             return clicked ? master.Pawn : null;
         }
@@ -257,8 +257,8 @@ namespace SexSlaveCraft
             float originalSeverity = release.Chain.Severity;
             int stage = TrainingOutcomeUtility.GetSexSlaveProgressStage(release.Chain).Stage;
             var rules = stage > 0 ? "SSC_BondRelease_StageRules".Translate(stage) : "SSC_BondRelease_ZeroRules".Translate();
-            Dialog_MessageBox confirmation = null;
-            confirmation = Dialog_MessageBox.CreateConfirmation("SSC_BondRelease_Confirm".Translate(
+            BondReleaseConfirmation confirmation = null;
+            confirmation = new BondReleaseConfirmation("SSC_BondRelease_Confirm".Translate(
                 release.Master.LabelShort, stage, originalSeverity.ToStringPercent(), rules), () =>
             {
                 if (!EditPopupIsCurrent(confirmation, edit) || !CanReleaseFromRelations(edit)) return;
@@ -271,6 +271,85 @@ namespace SexSlaveCraft
                 RefreshAfterEdit();
             });
             ShowEditPopup(confirmation);
+        }
+
+        private static bool DrawReleaseButton(Rect rect, string label, bool emphasized)
+        {
+            bool hovered = GUI.enabled && Mouse.IsOver(rect);
+            Color border = hovered || emphasized ? CopperColor : Color.Lerp(DividerColor, CopperColor, .6f);
+            Color fill = hovered ? Color.Lerp(SelectedColor, CopperColor, .15f) : emphasized ? SelectedColor : ControlColor;
+            Widgets.DrawBoxSolid(rect, border);
+            Widgets.DrawBoxSolid(rect.ContractedBy(1f), fill);
+            var previousAnchor = Text.Anchor;
+            using (new TextTint(PrimaryText))
+            {
+                Text.Anchor = TextAnchor.MiddleCenter;
+                Widgets.Label(rect.ContractedBy(4f), label);
+                Text.Anchor = previousAnchor;
+            }
+            return GUI.enabled && Widgets.ButtonInvisible(rect);
+        }
+
+        private sealed class BondReleaseConfirmation : Window
+        {
+            private readonly string message;
+            private readonly Action confirm;
+            private Vector2 scrollPosition;
+
+            internal BondReleaseConfirmation(string message, Action confirm)
+            {
+                this.message = message;
+                this.confirm = confirm;
+                absorbInputAroundWindow = true;
+                closeOnAccept = false;
+                closeOnCancel = true;
+            }
+
+            public override Vector2 InitialSize => new Vector2(Mathf.Min(490f, UI.screenWidth - 32f),
+                Mathf.Min(300f, UI.screenHeight - 32f));
+
+            public override void DoWindowContents(Rect inRect)
+            {
+                using var scope = new SSCBondOverviewWidgets.GuiScope(true);
+                using var tint = new TextTint(PrimaryText);
+                const float padding = 12f;
+                const float buttonHeight = 34f;
+                var heading = new Rect(inRect.x, inRect.y, inRect.width, 42f);
+                var messagePanel = new Rect(inRect.x, heading.yMax + 6f, inRect.width,
+                    Mathf.Max(1f, inRect.height - heading.height - buttonHeight - 14f));
+                var footer = new Rect(inRect.x, inRect.yMax - buttonHeight, inRect.width, buttonHeight);
+                string title = "SSC_BondRelease_Action".Translate();
+
+                Widgets.DrawBoxSolid(inRect, WindowColor);
+                Widgets.DrawBoxSolid(heading, HeaderColor);
+                Widgets.DrawBoxSolid(new Rect(heading.x, heading.y, 2f, heading.height), CopperColor);
+                Text.Font = GameFont.Medium;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                Widgets.Label(new Rect(heading.x + padding, heading.y, heading.width - 2f * padding, heading.height), title);
+
+                Widgets.DrawBoxSolid(messagePanel, SettingsPanelColor);
+                Text.Font = GameFont.Small;
+                Text.Anchor = TextAnchor.UpperLeft;
+                Text.WordWrap = true;
+                var viewport = messagePanel.ContractedBy(padding);
+                float height = Text.CalcHeight(message, viewport.width);
+                bool overflow = height > viewport.height;
+                float width = viewport.width - (overflow ? 16f : 0f);
+                if (overflow) height = Text.CalcHeight(message, width);
+                Widgets.BeginScrollView(viewport, ref scrollPosition, new Rect(0f, 0f, width, height));
+                Widgets.Label(new Rect(0f, 0f, width, height), message);
+                Widgets.EndScrollView();
+
+                float half = (footer.width - 8f) / 2f;
+                if (DrawReleaseButton(new Rect(footer.x, footer.y, half, buttonHeight), "Cancel".Translate(), emphasized: false))
+                    Close();
+                if (DrawReleaseButton(new Rect(footer.xMax - half, footer.y, half, buttonHeight), title, emphasized: true))
+                {
+                    // 提交要核对弹窗仍在窗口栈内。提交成功后的刷新可能已关闭它。
+                    confirm();
+                    if (Find.WindowStack.IsOpen(this)) Close();
+                }
+            }
         }
 
         /// <summary>标题悬浮显示存活数与总数，头像按快照中的可见行绘制。</summary>
