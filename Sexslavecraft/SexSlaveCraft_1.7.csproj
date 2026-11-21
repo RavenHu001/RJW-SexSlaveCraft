@@ -78,6 +78,7 @@
     <Compile Include="JobGiver/JobGiver_SSCSlaveBreakdown.cs" />
     <Compile Include="Hediff/Hediff_SSCSlaveBreakdown.cs" />
     <Compile Include="Hediff/Hediff_SSCOwnerlessSlave.cs" />
+    <Compile Include="common/StatPart_SSCSexSlaveMarketValue.cs" />
     <Compile Include="Hediff/Hediff_SSCBondReleaseAftereffect.cs" />
     <Compile Include="ThePatches/Harmony_BondOwnerDeath.cs" />
     <Compile Include="Comps/Comp_Train.SlaveBreakdown.cs" />

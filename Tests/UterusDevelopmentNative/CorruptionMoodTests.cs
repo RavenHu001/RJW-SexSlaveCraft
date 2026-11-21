@@ -196,7 +196,6 @@ internal static partial class Program
 
             record.Severity = .1f;
             Equal(1, record.CurStageIndex);
-            Equal(1.25f, record.CurStage.statFactors.Single(x => x.stat.defName == "MarketValue").value);
             Equal(-.05f, record.CurStage.capMods.Single(x => x.capacity.defName == "Consciousness").offset);
             Equal(0, ownerlessMood.Worker.CurrentState(pawn).StageIndex);
             Equal(-5f, ownerlessMood.stages[0].baseMoodEffect);

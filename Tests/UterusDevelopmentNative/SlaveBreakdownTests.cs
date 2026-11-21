@@ -1236,6 +1236,51 @@ internal static partial class Program
                 Equal(1, solo.Calls);
             });
 
+            Case("the dev bind gizmo transfers precise ownerless progress and honors the release cooldown", () =>
+            {
+                var master = ImprintPawn(PawnIdentity.Master);
+                var pawn = ImprintPawn(PawnIdentity.Slave);
+                var faction = AccessTools.Field(typeof(Thing), "factionInt");
+                faction.SetValue(master, breakdownFaction);
+                faction.SetValue(pawn, breakdownFaction);
+                master.Name = new NameSingle("Debug Master");
+                pawn.Name = new NameSingle("Debug Subject");
+                var source = pawn.health.AddHediff(DefDatabase<HediffDef>.GetNamed(Hediff_SSCOwnerlessSlave.DefName));
+                const float progress = .8123457f;
+                source.Severity = progress;
+                var prefs = (PrefsData)AccessTools.Field(typeof(Prefs), "data").GetValue(null);
+                bool previousDevMode = prefs.devMode;
+                var selection = AccessTools.Field(typeof(CompSexSlaveTraining), "debugSelectedMaster");
+                object previousMaster = selection.GetValue(null);
+                Command_Action Command(Pawn target, string label) => target.TryGetComp<CompSexSlaveTraining>()
+                    .CompGetGizmosExtra().OfType<Command_Action>().First(command => command.defaultLabel == label);
+                prefs.devMode = true;
+                SSCMod.settings.enableDebugGizmos = true;
+                try
+                {
+                    Command(master, "DEV: Mark Master").action();
+                    var bind = Command(pawn, "DEV: Bind To Master");
+                    bind.action();
+                    var chain = SSCBondUtility.GetChain(pawn);
+                    Require(chain?.LinkedPawn == master && SSCBondUtility.GetBridle(master)?.targets.Contains(pawn) == true);
+                    Equal(progress, chain.Severity);
+                    Require(Hediff_SSCOwnerlessSlave.Find(pawn) == null);
+                    Require(SSCBondUtility.TryReleaseToOwnerless(new SSCBondUtility.ReleaseContext(pawn)));
+                    var restored = Hediff_SSCOwnerlessSlave.Find(pawn);
+                    Equal(progress, restored.Severity);
+                    var cooldown = Hediff_SSCBondReleaseAftereffect.Active(pawn);
+                    Require(cooldown != null);
+                    bind.action();
+                    Require(SSCBondUtility.GetChain(pawn) == null && Hediff_SSCOwnerlessSlave.Find(pawn) == restored);
+                    Require(Hediff_SSCBondReleaseAftereffect.Active(pawn) == cooldown);
+                }
+                finally
+                {
+                    prefs.devMode = previousDevMode;
+                    selection.SetValue(null, previousMaster);
+                }
+            });
+
             Case("debug start enters the real opening without changing corruption and keeps public activity scoped", () =>
             {
                 var (pawn, need) = BreakdownPawn();
