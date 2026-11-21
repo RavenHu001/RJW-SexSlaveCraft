@@ -21,6 +21,11 @@ namespace SexSlaveCraft
             return def == null ? null : pawn?.health?.hediffSet?.GetFirstHediffOfDef(def) as Hediff_SSCOwnerlessSlave;
         }
 
+        /// <summary>供人格提取和植入使用的无主进度。有效锁链优先，零阶记录也保留身份锁。</summary>
+        internal static Hediff_SSCOwnerlessSlave GetPersonalityProgress(Pawn pawn)
+            => SSCIdentityUtility.IsSexSlave(pawn)
+                ? TrainingOutcomeUtility.GetSexSlaveProgress(pawn) as Hediff_SSCOwnerlessSlave : null;
+
         /// <summary>返回向行为、心情和共享保护提供效果的无主阶段，零表示这些效果未启用。</summary>
         /// <remarks>
         /// 先检查 SSC 身份，再用第一批的统一进度入口选载体。交接期间锁链和无主记录可能同时存在，

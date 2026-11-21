@@ -29,6 +29,10 @@ namespace SexSlaveCraft
             using (mutation)
             {
                 CompSexSlaveTraining originalComp = victim.TryGetComp<CompSexSlaveTraining>();
+#if SSC_RW17
+                var originalHealth = victim.health;
+                var originalProgress = Hediff_SSCOwnerlessSlave.GetPersonalityProgress(victim);
+#endif
                 // 步骤 1：读取锁链严重度，决定本次产出哪一档人格凝胶。
                 ThingDef targetSlimeDef = PersonalityGelUtility.GetPersonalityGelDefForPawn(victim);
                 // 步骤 2：生成人格凝胶物品，并把受害者的人格载荷写入其中。
@@ -43,11 +47,11 @@ namespace SexSlaveCraft
                 if (comp != null)
                 {
                     comp.StorePawnData(victim);
-                    if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
 #if SSC_RW17
                     // 快照读取会进入外部回调。受方新近受孕或进入精神状态时，撤回本次凝胶。
-                    if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, slime)) return;
+                    if (!TryContinueStoredExtraction(victim, slime, mutation, originalComp)) return;
 #else
+                    if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
                     PetCatAbilityUtility.DetachAfterExtraction(victim);
                     PetDogAbilityUtility.DetachAfterExtraction(victim);
                     CombatantSpecializationGelUtility.DetachAfterExtraction(victim);
@@ -66,17 +70,16 @@ namespace SexSlaveCraft
 #endif
 #if SSC_RW17
                 // 放置也可能触发外部回调替换训练组件；已生成的快照不能授权清理后来接管身体的载体。
-                if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
-                if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, slime)) return;
+                if (!TryContinueStoredExtraction(victim, slime, mutation, originalComp) ||
+                    !TryTransferOwnerlessProgress(victim, slime, originalHealth, originalProgress, detach: false)) return;
                 // 1.7只有成功放置并通过末端准入后才清源特化；1.6保留原时序。
                 PetCatAbilityUtility.DetachAfterExtraction(victim);
                 PetDogAbilityUtility.DetachAfterExtraction(victim);
                 CombatantSpecializationGelUtility.DetachAfterExtraction(victim);
-                if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
-                if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, slime)) return;
+                if (!TryContinueStoredExtraction(victim, slime, mutation, originalComp)) return;
                 PetSpecializationUtility.DetachRabbitAndFoxAfterExtraction(victim);
-                if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
-                if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, slime)) return;
+                if (!TryContinueStoredExtraction(victim, slime, mutation, originalComp) ||
+                    !TryTransferOwnerlessProgress(victim, slime, originalHealth, originalProgress, detach: true)) return;
 #endif
                 // 资格与成长已进入成功生成的凝胶，再清原身体并写当前成长版本。
                 // 空壳即使保留主人身份，也不能在以后读档时补回转走的记录。
@@ -118,6 +121,38 @@ namespace SexSlaveCraft
             }
         }
 
+#if SSC_RW17
+        /// <summary>两条提取入口在回调后共用人格归属和原有准入。失败时撤回本次产物。</summary>
+        /// <remarks>同一身体可原地换人格，既要核对作用域凭据，也要核对采集时的训练组件。</remarks>
+        internal static bool TryContinueStoredExtraction(Pawn pawn, Thing product,
+            SSCPersonalityRuntimeUtility.MutationScope mutation, CompSexSlaveTraining originalComp)
+        {
+            if (product.Destroyed) return false;
+            if (mutation.IsCurrent && pawn.TryGetComp<CompSexSlaveTraining>() == originalComp)
+                return SSCPersonalityExcretionAdmission.TryContinueExtraction(pawn, product);
+            product.Destroy(DestroyMode.Vanish);
+            return false;
+        }
+
+        /// <summary>放置后复查进度快照，进入空壳清理前再确认并将原无主进度交给凝胶。</summary>
+        /// <param name="detach">放置后传 false，只确认原记录仍对应凝胶快照。清理原人格前传 true，移出已由凝胶承接的记录。</param>
+        internal static bool TryTransferOwnerlessProgress(Pawn pawn, Thing product, Pawn_HealthTracker originalHealth,
+            Hediff_SSCOwnerlessSlave originalProgress, bool detach)
+        {
+            var store = product.TryGetComp<CompPersonalityStore>();
+            // 同阶成长也会使旧快照失效，故同时校验健康载体、具体 Hediff 及原始严重度。
+            // 标准 RemoveHediff 通知会解除这份记录的身份锁和自动敏感度。
+            if (pawn.health != originalHealth || Hediff_SSCOwnerlessSlave.GetPersonalityProgress(pawn) != originalProgress ||
+                store == null || store.ownerlessProgress != (originalProgress?.Severity ?? CompPersonalityStore.NoOwnerlessProgress))
+            {
+                product.Destroy(DestroyMode.Vanish);
+                return false;
+            }
+            if (detach && originalProgress != null) originalHealth.RemoveHediff(originalProgress);
+            return true;
+        }
+#endif
+
         /// <summary>在植入前清理接收身体残留的恶堕、性奴身份、锁链及专精状态。</summary>
         public static void CleanConsumerData(Pawn consumer)
         {
@@ -136,6 +171,11 @@ namespace SexSlaveCraft
             SSCRomancePreferences.Clear(consumer);
             // 这是移出旧人格，必须早于后续普通身份清理；不为原人格开放解除永久锁的身份操作。
             SSCImprintUtility.Clear(consumer);
+            // 无主记录本身锁定身份。先移出旧人格的载体，后面才能写入来源身份。
+            var health = consumer.health;
+            if (health?.hediffSet != null)
+                foreach (var progress in health.hediffSet.hediffs.OfType<Hediff_SSCOwnerlessSlave>().ToArray())
+                    health.RemoveHediff(progress);
 #endif
             // 清宿主时同时封住旧档补建，且必须早于下面的普通身份清理；
             // 后续若来源没有成长，空记录就是植入的最终结果。
@@ -210,6 +250,19 @@ namespace SexSlaveCraft
             // 多印记、损坏严重度或定型方向与保存身份矛盾时，必须在清空宿主前拒绝。
             if (!SSCImprintUtility.CanRestore(consumer, data))
             { Log.Error("[SSC] Personality insertion has an invalid imprint snapshot."); return false; }
+            float ownerlessProgress = data.ownerlessProgress;
+            HediffDef ownerlessDef = null;
+            if (ownerlessProgress != CompPersonalityStore.NoOwnerlessProgress)
+            {
+                // 先验证来源载荷，宿主的旧进度与锁定状态到实际植入时才会清除。
+                ownerlessDef = DefDatabase<HediffDef>.GetNamedSilentFail(Hediff_SSCOwnerlessSlave.DefName);
+                // 旧凝胶缺字段视为无记录。损坏的数值、错误方向或两种载体同存都在清除宿主前拒绝。
+                if (ownerlessDef?.hediffClass != typeof(Hediff_SSCOwnerlessSlave) ||
+                    !float.IsFinite(ownerlessProgress) || ownerlessProgress < 0f || ownerlessProgress > ownerlessDef.maxSeverity ||
+                    data.sscIdentity != PawnIdentity.Slave || data.chainHediffData != null ||
+                    consumer.health?.hediffSet == null || consumer.TryGetComp<CompSexSlaveTraining>() == null)
+                { Log.Error("[SSC] Personality insertion has an invalid ownerless progress snapshot."); return false; }
+            }
             // 快照先复制并校验，缺配置表示来源默认；不能把宿主旧选择混入来源。
             SSCRomanceConfig romanceSnapshot = data.romanceConfig?.Copy();
             if (!SSCRomancePreferences.CanRestore(consumer, romanceSnapshot) ||
@@ -255,7 +308,16 @@ namespace SexSlaveCraft
             if (!SSCPersonalityRuntimeUtility.TryBeginMutation(consumer, out var mutation)) return false;
 #if SSC_RW17
             object restoredToken = SSCPersonalityRuntimeUtility.Capture(consumer);
+            var originalHealth = consumer.health;
             Hediff restoredImprint;
+            Hediff originalHollow = null;
+            Hediff_SSCOwnerlessSlave restoredOwnerless = null;
+            bool ownerlessCommitted = false;
+            bool SameRecipient() => mutation.IsCurrent && consumer.health == originalHealth &&
+                consumer.TryGetComp<CompSexSlaveTraining>() == originalComp;
+            bool OwnerlessProgressRestored() => SameRecipient() &&
+                Hediff_SSCOwnerlessSlave.GetPersonalityProgress(consumer) == restoredOwnerless &&
+                restoredOwnerless.Severity == ownerlessProgress;
 #endif
             using (mutation)
             {
@@ -267,6 +329,9 @@ namespace SexSlaveCraft
                         Hediff doneHediff = consumer.health?.hediffSet?.GetFirstHediffOfDef(SSCDefOf.SSC_PersonalityExcreted_Done);
                         if (doneHediff != null)
                         {
+#if SSC_RW17
+                            if (ownerlessDef != null) originalHollow = doneHediff;
+#endif
                             consumer.health.RemoveHediff(doneHediff);
                         }
                     }
@@ -349,6 +414,20 @@ namespace SexSlaveCraft
                         Log.Error("[SSC] Personality insertion could not restore the saved Master progression.");
                         return false;
                     }
+#if SSC_RW17
+                    if (ownerlessDef != null)
+                    {
+                        if (!SameRecipient() ||
+                            !SSCIdentityUtility.IsSexSlave(consumer) || TrainingOutcomeUtility.GetSexSlaveProgress(consumer) != null)
+                            return false;
+                        // 先写精确严重度，再挂载实例。标准 PostAdd 由此直接读取源阶段，并刷新身份锁、行为及自动敏感度。
+                        // 先保留待提交的实例引用，挂载回调中断时仍能按该实例撤回本次写入。
+                        restoredOwnerless = (Hediff_SSCOwnerlessSlave)HediffMaker.MakeHediff(ownerlessDef, consumer);
+                        restoredOwnerless.Severity = ownerlessProgress;
+                        originalHealth.AddHediff(restoredOwnerless);
+                        if (!OwnerlessProgressRestored()) return false;
+                    }
+#endif
                     // 步骤 6：重建来源已有锁链，让系统继续知道实际主人；1.7专用入口禁止重放首次分化。
                     if (data.chainHediffData?.masterPawn != null && consumer.health != null &&
 #if SSC_RW17
@@ -405,8 +484,9 @@ namespace SexSlaveCraft
                             // 拒绝历史／外部凝胶中的身体开发、库存与药效，不补建或覆盖宿主自己的状态。
                             if (SSCBodyDevelopmentUtility.IsBodyStateDef(hediffDef) || SSCCorruptionGelProductionUtility.IsBodyStateDef(hediffDef) ||
                                 SSCCorruptionGelEffectUtility.IsEffectDef(hediffDef)) continue;
-                            // 印记已在身份恢复后精确还原，不再按普通标签添加或与宿主严重度取最大值。
-                            if (SSCImprintUtility.IsImprintDef(hediffDef) || FertilitySpecializationUtility.IsTag(hediffDef)) continue;
+                            // 印记和无主进度各有精确恢复入口。扩展配方的普通标签仍走下方的严重度合并规则。
+                            if (SSCImprintUtility.IsImprintDef(hediffDef) || FertilitySpecializationUtility.IsTag(hediffDef) ||
+                                hediffDef?.defName == Hediff_SSCOwnerlessSlave.DefName) continue;
 #endif
                             // 全部 PNA 身体状态留在宿主，历史／外部凝胶中的同类标签也不恢复。
                             // 宿主原有记录及 Need_PNA 值由身体保留，不参与下方最大值合并。
@@ -515,20 +595,43 @@ namespace SexSlaveCraft
                     // 健康、专精及能力恢复可能触发后续回调，成功出口再按最终锁链核对一次。
                     // 此处只清理失效关系，不把凝胶里的旧社会历史解释为一次新的仪式奖励。
                     SSCBondRelationUtility.RemoveInvalidRelations(consumer);
+#if SSC_RW17
+                    // 后续人格、健康与关系通知也可能改动记录。消耗凝胶前最后一次核对原始严重度与归属。
+                    if (restoredOwnerless != null && !OwnerlessProgressRestored()) return false;
+#else
                     Messages.Message(Strings.Message_PersonalityFusionComplete(consumer.LabelShort, data.nickName), consumer, MessageTypeDefOf.NeutralEvent);
+#endif
 
                     if (data.parent != null && !data.parent.Destroyed)
                     {
                         data.parent.Destroy(DestroyMode.Vanish);
                     }
+#if SSC_RW17
+                    ownerlessCommitted = true;
+#endif
                 }
                 catch (Exception ex)
                 {
                     Log.Error($"[SSC] InheritEverything failed for {consumer?.LabelShort ?? "null"}: {ex}");
                     return false;
                 }
+#if SSC_RW17
+                finally
+                {
+                    // 拒绝或异常只撤回本次挂入的无主进度。凝胶还在时归还原空壳标记，让同一身体可重试。
+                    // 仍需持有接收人格、组件及健康载体，避免清理后来接管身体的记录。
+                    if (ownerlessDef != null && !ownerlessCommitted && data.parent?.Destroyed != true && SameRecipient())
+                    {
+                        if (restoredOwnerless != null && originalHealth.hediffSet.hediffs.Contains(restoredOwnerless))
+                            originalHealth.RemoveHediff(restoredOwnerless);
+                        if (originalHollow != null && SameRecipient() && !SSCMasterProgressionUtility.IsHollow(consumer))
+                            originalHealth.AddHediff(originalHollow);
+                    }
+                }
+#endif
             }
 #if SSC_RW17
+            Messages.Message(Strings.Message_PersonalityFusionComplete(consumer.LabelShort, data.nickName), consumer, MessageTypeDefOf.NeutralEvent);
             if (SSCPersonalityRuntimeUtility.IsCurrent(consumer, restoredToken) && consumer.TryGetComp<CompSexSlaveTraining>() == originalComp)
             {
                 // 人格替换作用域释放后先检查最终恶堕。来源是初始印记时由满值流程通知。

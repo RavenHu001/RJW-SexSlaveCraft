@@ -262,23 +262,34 @@ namespace SexSlaveCraft
             if (!SSCPersonalityRuntimeUtility.TryBeginMutation(victim, out var mutation)) return;
             using (mutation)
             {
+#if SSC_RW17
+                // 快照和放置会进入外部回调，后续清理只接受原健康载体与原无主记录。
+                var originalHealth = victim.health;
+                var originalProgress = Hediff_SSCOwnerlessSlave.GetPersonalityProgress(victim);
+#endif
                 // 生成、快照与清源共用人格作用域；缺存储组件先退出，成功生成后才清开关偏好。
 
                 // EN: Step 1: create the personality gel and store the victim's personality payload inside it.
                 // CN: 步骤 1：生成人格凝胶，并把受害者的人格载荷写进去。
                 Thing product = CreateStoredPersonalityProduct(victim);
-                if (product.TryGetComp<CompPersonalityStore>() == null || !mutation.IsCurrent ||
-                    victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
 #if SSC_RW17
+                if (product.TryGetComp<CompPersonalityStore>() == null)
+                {
+                    product.Destroy(DestroyMode.Vanish);
+                    return;
+                }
                 // 快照和放置都可能触发新的临时阻塞。源人格尚未清理时撤回产物，保留准备。
-                if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, product)) return;
+                if (!ExcretionUtility.TryContinueStoredExtraction(victim, product, mutation, originalComp)) return;
                 if (GenSpawn.Spawn(product, victim.Position, victim.Map) == null)
                 {
                     if (!product.Destroyed) product.Destroy(DestroyMode.Vanish);
                     return;
                 }
-                if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
-                if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, product)) return;
+                if (!ExcretionUtility.TryContinueStoredExtraction(victim, product, mutation, originalComp) ||
+                    !ExcretionUtility.TryTransferOwnerlessProgress(victim, product, originalHealth, originalProgress, detach: false)) return;
+#else
+                if (product.TryGetComp<CompPersonalityStore>() == null || !mutation.IsCurrent ||
+                    victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
 #endif
                 if (product.TryGetComp<CompPersonalityStore>() != null)
                 {
@@ -289,12 +300,11 @@ namespace SexSlaveCraft
                 }
 
 #if SSC_RW17
-                // 清源特化回调之后、剥离人格之前再核对；不能让新受孕或换人格者进入空壳状态。
-                if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
-                if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, product)) return;
+                // 特化清理也会回调。换空壳前最后核对资格和无主快照，成功才把该记录移交产物。
+                if (!ExcretionUtility.TryContinueStoredExtraction(victim, product, mutation, originalComp)) return;
                 PetSpecializationUtility.DetachRabbitAndFoxAfterExtraction(victim);
-                if (!mutation.IsCurrent || victim.TryGetComp<CompSexSlaveTraining>() != originalComp) return;
-                if (!SSCPersonalityExcretionAdmission.TryContinueExtraction(victim, product)) return;
+                if (!ExcretionUtility.TryContinueStoredExtraction(victim, product, mutation, originalComp) ||
+                    !ExcretionUtility.TryTransferOwnerlessProgress(victim, product, originalHealth, originalProgress, detach: true)) return;
 #endif
                 // EN: Step 2: strip the victim into a hollow pawn and swap the personality-excretion state hediff.
                 // CN: 步骤 2：把受害者剥离成空壳 Pawn，并切换人格排泄状态 Hediff。
