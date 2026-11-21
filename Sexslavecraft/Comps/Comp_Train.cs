@@ -205,7 +205,7 @@ namespace SexSlaveCraft
             if (!(parent is Pawn pawn)) return;
 
 #if SSC_RW17
-            // 读档初始化通常已迁移，死亡时产生的记录等角色复活后再挂到健康列表。
+            // 为尚未迁移的旧档组件字段保留重试入口。
             MigrateSlaveBreakdownCooldown();
 #endif
             // 旧终极狗保存的普通 Hediff 没有授予组件；按真实成果维护技能，保留已有实例及冷却。
@@ -416,10 +416,10 @@ namespace SexSlaveCraft
 #if SSC_RW17
             if (SSCSlaveBreakdown.IsEligiblePawn(pawn))
             {
-                long remaining = SlaveBreakdownCooldownUntil - SSCSlaveBreakdown.Now;
+                int remaining = SlaveBreakdownCooldownRemainingTicks;
                 string description = "SSC_SlaveBreakdown_DebugStartDesc".Translate();
                 if (remaining > 0)
-                    description += "\n\n" + "SSC_SlaveBreakdown_DebugCooldown".Translate(((int)remaining).ToStringTicksToPeriod());
+                    description += "\n\n" + "SSC_SlaveBreakdown_DebugCooldown".Translate(remaining.ToStringTicksToPeriod());
                 yield return new Command_Action
                 {
                     defaultLabel = "SSC_SlaveBreakdown_DebugStart".Translate(),

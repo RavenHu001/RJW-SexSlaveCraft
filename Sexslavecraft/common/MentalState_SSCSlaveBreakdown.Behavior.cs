@@ -33,7 +33,7 @@ namespace SexSlaveCraft
         {
             get
             {
-                if (!initialized || Scribe.mode != LoadSaveMode.Inactive || SSCSlaveBreakdown.Now >= Deadline) return false;
+                if (!initialized || Scribe.mode != LoadSaveMode.Inactive || RemainingTicks <= 0) return false;
                 CaptureCarrier();
                 return HasEffect() && CanInitializeOrContinue() && SSCIdentityUtility.IsSexSlave(pawn);
             }

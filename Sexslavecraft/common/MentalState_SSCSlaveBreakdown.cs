@@ -13,10 +13,11 @@ namespace SexSlaveCraft
     /// </summary>
     public sealed partial class MentalState_SSCSlaveBreakdown : MentalState
     {
-        private long nextBrokenAt;
+        private int brokenHoursApplied;
+        private long legacyNextBrokenAt;
         private Hediff_SSCSlaveBreakdown effect;
         // 即使效果被外部移除，也保留原实例到退出结算结束。准入要再检查实例是否仍挂在当前身体上。
-        private long Deadline => effect?.ExpiresAt ?? -1L;
+        private int RemainingTicks => effect?.Timer?.ticksToDisappear ?? 0;
         private bool initialized;
         // 记录入场分支。原链日后移除、换主或无法在读档中恢复时，仍需按有链发作退出。
         private bool boundEpisode;
@@ -62,8 +63,7 @@ namespace SexSlaveCraft
             startingOwnerless = boundEpisode ? null : Hediff_SSCOwnerlessSlave.Find(pawn);
             hadOwnerlessRecord = startingOwnerless != null;
             startingOwnerlessStage = TrainingOutcomeUtility.GetSexSlaveProgressStage(startingOwnerless).Stage;
-            long deadline = (long)SSCSlaveBreakdown.Now + SSCSlaveBreakdown.DurationTicks;
-            if (!TryInitialize(deadline))
+            if (!TryInitialize())
             {
                 EndCurrentState();
                 return;
@@ -82,7 +82,9 @@ namespace SexSlaveCraft
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref nextBrokenAt, "sscSlaveBreakdownNextBrokenAt", 0L);
+            Scribe_Values.Look(ref brokenHoursApplied, "sscBreakdownBrokenHoursApplied", 0);
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+                Scribe_Values.Look(ref legacyNextBrokenAt, "sscSlaveBreakdownNextBrokenAt", 0L);
             Scribe_Values.Look(ref initialized, "sscSlaveBreakdownInitialized", false);
             Scribe_Values.Look(ref boundEpisode, "sscBreakdownBoundEpisode", false);
             Scribe_Values.Look(ref startingChainStage, "sscBreakdownStartingChainStage", 0);
@@ -106,7 +108,7 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref temporaryIdentity, "sscSlaveBreakdownTemporaryIdentity", false);
             Scribe_Values.Look(ref personalityInvalidated, "sscSlaveBreakdownPersonalityInvalidated", false);
             // 健康列表由原版单独深存，状态只恢复本场的实例引用。外部移除后立即存档时，
-            // 写空引用避免读档寻找已经离体的对象。当前会话仍持有原实例，退出可读取它的截止点。
+            // 写空引用避免读档寻找已经离体的对象。当前会话保留原实例以结算已经过的整小时。
             if (Scribe.mode == LoadSaveMode.Saving)
             {
                 Hediff_SSCSlaveBreakdown attachedEffect = HasEffect() ? effect : null;
@@ -116,15 +118,31 @@ namespace SexSlaveCraft
             ExposeBehavior();
             ExposeInvitations();
             ExposeTrainingRequest();
+            if (Scribe.mode == LoadSaveMode.PostLoadInit) RestoreLegacyTimer();
+        }
+
+        private void RestoreLegacyTimer()
+        {
+            if (effect?.Timer is not { } timer || effect.LegacyExpiresAt < 0 || SSCSlaveBreakdown.Now < 0) return;
+            // 一次性换算旧绝对时限和已结算整小时，之后只保存原版剩余时长和结算次数。
+            trainingExtended = legacyOriginalDeadline >= 0;
+            int duration = timer.Props.disappearsAfterTicks.max + (trainingExtended ? GenDate.TicksPerHour : 0);
+            long start = effect.LegacyExpiresAt - duration;
+            timer.disappearsAfterTicks = duration;
+            timer.ticksToDisappear = (int)Math.Clamp(effect.LegacyExpiresAt - SSCSlaveBreakdown.Now, 0L, duration);
+            if (legacyNextBrokenAt > 0)
+                brokenHoursApplied = (int)Math.Clamp((legacyNextBrokenAt - start) / GenDate.TicksPerHour - 1,
+                    0L, duration / GenDate.TicksPerHour);
+            effect.LegacyExpiresAt = -1;
         }
 
         public override void MentalStateTick(int delta)
         {
             CaptureCarrier();
             int now = SSCSlaveBreakdown.Now;
-            // 到期先走退出结算，避免调教刷新把已用完的延长期误判为任务失效并退回原截止点。
+            // 先处理到期，避免调教刷新撤回已经用完的延长时段。
             if (!initialized || !CanInitializeOrContinue() ||
-                !SSCIdentityUtility.IsSexSlave(pawn) || !HasEffect() || now >= Deadline)
+                !SSCIdentityUtility.IsSexSlave(pawn) || !HasEffect() || RemainingTicks <= 0)
             {
                 EndCurrentState();
                 return;
@@ -133,16 +151,16 @@ namespace SexSlaveCraft
             // 先清理未能恢复的邀约，再处理批准，避免失效的邀请仍占着发起者或调教员。
             TickInvitation();
             if (pawn.MentalState != this) return;
-            // 已开场的调教可延长 Hediff，撤销时恢复原截止点并于本轮复查。
+            // 已开场的调教可延长原版计时，撤销时减回延长量并于本轮复查。
             TickTrainingRequest(now, delta);
             if (pawn.MentalState != this) return;
-            if (!HasEffect() || now >= Deadline)
+            if (!HasEffect() || RemainingTicks <= 0)
             {
                 EndCurrentState();
                 return;
             }
 
-            AdvanceBroken(now);
+            AdvanceBroken();
             // 添加或修改 FeelingBroken 会进入健康回调，其中可能清除或替换状态。
             if (pawn.MentalState != this) return;
             // 预约未成功安装的任务可能没有结束回调，按实际当前任务编号清理候选。
@@ -208,7 +226,7 @@ namespace SexSlaveCraft
                 ? PawnIdentity.Unset : current;
         }
 
-        private bool TryInitialize(long deadline)
+        private bool TryInitialize()
         {
             CaptureCarrier();
             try
@@ -221,11 +239,10 @@ namespace SexSlaveCraft
                 if (!CanInitializeOrContinue() || !SSCIdentityUtility.IsSexSlave(pawn)) return false;
 
                 effect = (Hediff_SSCSlaveBreakdown)HediffMaker.MakeHediff(def, pawn);
-                effect.ExpiresAt = deadline;
+                if (RemainingTicks <= 0) return false;
                 // 先保存实例引用，再交给原版健康系统。添加过程可因状态或健康回调重入而中止。
                 health.AddHediff(effect);
                 if (!CanInitializeOrContinue() || !SSCIdentityUtility.IsSexSlave(pawn) || !HasEffect()) return false;
-                nextBrokenAt = (long)SSCSlaveBreakdown.Now + GenDate.TicksPerHour;
                 // AddHediff 已刷新健康缓存，属性读取会查询 CurStage。确认启动后即可生效。
                 initialized = true;
                 return true;
@@ -237,15 +254,18 @@ namespace SexSlaveCraft
             }
         }
 
-        private void AdvanceBroken(long through)
+        private void AdvanceBroken()
         {
-            if (!initialized || nextBrokenAt <= 0 || nextBrokenAt > through || !SameCarrier() || pawn.Dead || pawn.Destroyed) return;
+            if (!initialized || effect?.Timer is not { } timer || !SameCarrier() || pawn.Dead || pawn.Destroyed) return;
+            int elapsed = (int)Math.Clamp((long)timer.disappearsAfterTicks - timer.ticksToDisappear, 0L, timer.disappearsAfterTicks);
+            int completedHours = elapsed / GenDate.TicksPerHour;
+            if (brokenHoursApplied >= completedHours) return;
             HediffDef broken = DefDatabase<HediffDef>.GetNamedSilentFail("FeelingBroken");
             // 先推进存档游标，再用原版健康接口追加。可重入的健康回调只能结算之后的整小时。
             // RJW 原有严重度上限、恢复与其它来源的增量继续生效。
-            while (nextBrokenAt <= through && SameCarrier() && !pawn.Dead && !pawn.Destroyed)
+            while (brokenHoursApplied < completedHours && SameCarrier() && !pawn.Dead && !pawn.Destroyed)
             {
-                nextBrokenAt += GenDate.TicksPerHour;
+                brokenHoursApplied++;
                 if (broken != null) HealthUtility.AdjustSeverity(pawn, broken, 0.03f);
             }
         }
@@ -267,10 +287,9 @@ namespace SexSlaveCraft
             // 只有确认开始过的发作才结算。完成出口先写入成功，原版恢复不会把成功改成中断。
             if (episodeResult == EpisodeResult.None && initialized) episodeResult = EpisodeResult.Failure;
             // 只有已确认启动的发作才开始冷却。之后移除 Hediff 仍按本场中断结算。
-            int now = SSCSlaveBreakdown.Now;
-            if (initialized && now >= 0 &&
+            if (initialized && SSCSlaveBreakdown.Now >= 0 &&
                 pawn.TryGetComp<CompSexSlaveTraining>() is CompSexSlaveTraining comp)
-                comp.RecordSlaveBreakdownCooldown((long)now + SSCSlaveBreakdown.CooldownTicks);
+                comp.RecordSlaveBreakdownCooldown();
         }
 
         /// <summary>清除后结算一次。身体效果按实例移除，身份回退另行核对当前人格和永久锁。</summary>
@@ -283,8 +302,8 @@ namespace SexSlaveCraft
             try
             {
                 BeginEnding();
-                // 到期补齐最后一个整小时。提前移除后仍可从原实例读取截止点，以中断刷新为上限。
-                AdvanceBroken(Math.Min(SSCSlaveBreakdown.Now, Deadline));
+                // 到期或中断时按原实例补齐已过的整小时，即使原版健康更新已经移除了该实例。
+                AdvanceBroken();
             }
             finally
             {

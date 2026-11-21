@@ -498,13 +498,13 @@ internal static partial class Program
                 SetBreakdownTick(13500);
                 Require(state.OwnsTrainingJob(trainer, job));
                 var effect = pawn.health.hediffSet.hediffs.OfType<Hediff_SSCSlaveBreakdown>().Single();
-                Equal(16000L, effect.ExpiresAt);
+                Equal(2500, effect.Timer.ticksToDisappear);
                 Require(!state.ClaimTrainingSuccess(driver, 5f));
                 state.MarkApprovedTrainingStarted(driver);
-                Equal(18500L, effect.ExpiresAt);
+                Equal(5000, effect.Timer.ticksToDisappear);
                 Equal(5000.ToStringTicksToPeriod(shortForm: true, canUseDecimalsShortForm: true), effect.LabelInBrackets);
                 state.MarkApprovedTrainingStarted(driver);
-                Equal(18500L, effect.ExpiresAt);
+                Equal(5000, effect.Timer.ticksToDisappear);
                 var wrongJob = JobMaker.MakeJob(trainingDef, pawn);
                 Require(!state.OwnsTrainingJob(trainer, wrongJob));
                 Require(state.ClaimTrainingSuccess(driver, 5f) && !state.ClaimTrainingSuccess(driver, 5f));
@@ -828,6 +828,20 @@ internal static partial class Program
                     state.MarkApprovedTrainingStarted((JobDriver_Training)trainer.jobs.curDriver);
                     SetBreakdownTick(14500);
                     string path = SaveBreakdown(new SlaveBreakdownSaveFixture(pawn, SSCMod.settings));
+                    if (interruptedAt == 16001)
+                    {
+                        // 原期限后中断的这一支从旧版延时记录恢复。
+                        Edit(path, document =>
+                        {
+                            var record = document.Descendants("li").Single(e => (string)e.Element("def") == breakdownEffect.defName);
+                            record.Elements().Where(e => e.Name.LocalName is "ticksToDisappear" or "disappearsAfterTicks" or "seed").Remove();
+                            record.SetElementValue("sscBreakdownEffectExpiresAt", extendedDeadline);
+                            var extended = document.Descendants("sscBreakdownTrainingExtended").Single();
+                            extended.Parent.SetElementValue("sscBreakdownOriginalDeadline", regularDeadline);
+                            extended.Parent.SetElementValue("sscSlaveBreakdownNextBrokenAt", 3500);
+                            extended.Remove();
+                        });
+                    }
 
                     var (loadedPawn, _) = BreakdownPawn();
                     LoadBreakdown(path, loadedPawn, trainer);
@@ -835,18 +849,18 @@ internal static partial class Program
                     var effect = (Hediff_SSCSlaveBreakdown)loadedPawn.health.hediffSet.GetFirstHediffOfDef(breakdownEffect);
                     // The isolated fixture restores the pawn and state. Reattach the trainer's original job as vanilla would.
                     job.targetA = loadedPawn;
-                    Equal((long)extendedDeadline, effect.ExpiresAt);
+                    Equal(4000, effect.Timer.ticksToDisappear);
                     Equal(4000.ToStringTicksToPeriod(shortForm: true, canUseDecimalsShortForm: true), effect.LabelInBrackets);
                     restored.MentalStateTick(1);
                     Require(restored.OwnsTrainingJob(trainer, job) && loadedPawn.MentalState == restored);
-                    Equal((long)extendedDeadline, effect.ExpiresAt);
+                    Equal(4000, effect.Timer.ticksToDisappear);
 
                     if (interruptedAt is int interruptionTick)
                     {
                         SetBreakdownTick(interruptionTick);
                         trainer.jobs.EndCurrentJob(JobCondition.InterruptForced, startNewJob: false);
                         restored.MentalStateTick(1);
-                        Equal((long)regularDeadline, effect.ExpiresAt);
+                        Equal(regularDeadline - interruptionTick, effect.Timer.ticksToDisappear);
                         if (interruptionTick < regularDeadline)
                         {
                             Require(loadedPawn.MentalState == restored && !restored.HasApprovedTraining);
@@ -1228,7 +1242,9 @@ internal static partial class Program
                 var (partner, _) = BreakdownPawn();
                 var (bystander, _) = BreakdownPawn();
                 var comp = pawn.TryGetComp<CompSexSlaveTraining>();
-                comp.RecordSlaveBreakdownCooldown(5000);
+                comp.RecordSlaveBreakdownCooldown();
+                ((Hediff_SSCSlaveBreakdownCooldown)pawn.health.hediffSet.GetFirstHediffOfDef(cooldownDef))
+                    .Timer.ticksToDisappear = 4000;
                 need.SetCorruption(.42f);
                 SSCMod.settings.EnableSlaveBreakdown = false;
                 SSCMod.settings.enableDebugGizmos = true;
@@ -1772,7 +1788,7 @@ internal static partial class Program
                 Require(pawn.MentalState == null && !pawn.health.hediffSet.HasHediff(breakdownEffect));
                 Require(breakdownFailureLetters.SequenceEqual(new[] { pawn }));
                 Equal(PawnIdentity.Unset, SSCIdentityUtility.GetIdentity(pawn));
-                Equal(65999L, pawn.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownUntil);
+                Equal(60000, pawn.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownRemainingTicks);
                 Near(.03f, pawn.health.hediffSet.GetFirstHediffOfDef(feelingBroken).Severity);
 
                 var (loaded, _) = BreakdownPawn();
@@ -1782,7 +1798,7 @@ internal static partial class Program
                 Require(loaded.MentalState == null && !loaded.health.hediffSet.HasHediff(breakdownEffect));
                 Require(breakdownFailureLetters.SequenceEqual(new[] { pawn, loaded }));
                 Equal(PawnIdentity.Unset, SSCIdentityUtility.GetIdentity(loaded));
-                Equal(65999L, loaded.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownUntil);
+                Equal(60000, loaded.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownRemainingTicks);
                 Near(.03f, loaded.health.hediffSet.GetFirstHediffOfDef(feelingBroken).Severity);
             });
 
@@ -1816,7 +1832,7 @@ internal static partial class Program
                 Require(pawn.MentalState == null && !pawn.health.hediffSet.HasHediff(breakdownEffect));
                 Equal(PawnIdentity.Unset, SSCIdentityUtility.GetIdentity(pawn));
                 var comp = pawn.TryGetComp<CompSexSlaveTraining>();
-                Equal(0L, comp.SlaveBreakdownCooldownUntil);
+                Equal(0, comp.SlaveBreakdownCooldownRemainingTicks);
                 Require(!comp.SlaveBreakdownFullTriggerUsed && breakdownLetters.Count == 0);
                 skipBreakdownEffectFor = null;
                 need.SetCorruption(.99f);
@@ -1837,7 +1853,7 @@ internal static partial class Program
                 Require(!pawn.health.hediffSet.HasHediff(breakdownEffect));
                 Equal(PawnIdentity.Unset, SSCIdentityUtility.GetIdentity(pawn));
                 var comp = pawn.TryGetComp<CompSexSlaveTraining>();
-                Equal(0L, comp.SlaveBreakdownCooldownUntil);
+                Equal(0, comp.SlaveBreakdownCooldownRemainingTicks);
                 Require(!comp.SlaveBreakdownFullTriggerUsed && breakdownLetters.Count == 0);
             });
 
@@ -1858,7 +1874,7 @@ internal static partial class Program
                 Equal(PawnIdentity.Unset, SSCIdentityUtility.GetIdentity(pawn));
                 Require(!pawn.health.hediffSet.HasHediff(breakdownEffect));
                 Near(.03f, pawn.health.hediffSet.GetFirstHediffOfDef(feelingBroken).Severity);
-                Equal(63500L, pawn.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownUntil);
+                Equal(60000, pawn.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownRemainingTicks);
             });
 
             Case("silent replacement settles the old episode and preserves the slave role present at entry", () =>
@@ -1881,7 +1897,7 @@ internal static partial class Program
                 Require(reentered && breakdownFailureLetters.SequenceEqual(new[] { pawn }));
                 Equal(external, handler.CurStateDef);
                 Equal(PawnIdentity.Slave, SSCIdentityUtility.GetIdentity(pawn));
-                Equal(63500L, pawn.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownUntil);
+                Equal(60000, pawn.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownRemainingTicks);
                 Require(!pawn.health.hediffSet.HasHediff(breakdownEffect));
                 Require(!SSCIdentityUtility.IsManualIdentityChangeBlocked(pawn));
                 Near(.03f, pawn.health.hediffSet.GetFirstHediffOfDef(feelingBroken).Severity);
@@ -2041,11 +2057,11 @@ internal static partial class Program
                 pawn.mindState.mentalStateHandler.Reset();
                 var comp = pawn.TryGetComp<CompSexSlaveTraining>();
                 Require(comp.SlaveBreakdownFullTriggerUsed);
-                long deadline = comp.SlaveBreakdownCooldownUntil;
-                SetBreakdownTick((int)deadline - 1);
+                int deadline = GenTicks.TicksGame + comp.SlaveBreakdownCooldownRemainingTicks;
+                SetBreakdownTick(deadline - 1);
                 need.NeedInterval();
                 Require(pawn.MentalState == null && !SSCSlaveBreakdown.IsAtRisk(pawn));
-                SetBreakdownTick((int)deadline);
+                SetBreakdownTick(deadline);
                 progress.Severity = .9f;
                 Require(!SSCSlaveBreakdown.IsAtRisk(pawn));
                 need.NeedInterval();
@@ -2070,8 +2086,7 @@ internal static partial class Program
                 Require(pawn.MentalState is MentalState_SSCSlaveBreakdown);
                 SetBreakdownTick(2000);
                 pawn.mindState.mentalStateHandler.Reset();
-                long until = pawn.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownUntil;
-                Equal(62000L, until);
+                Equal(60000, pawn.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownRemainingTicks);
                 need.SetCorruption(.93f);
                 Mark(pawn, SSCImprintUtility.InitialDefName);
                 need.SetCorruption(1f);
@@ -2125,7 +2140,7 @@ internal static partial class Program
                 SetBreakdownTick(16000);
                 pawn.mindState.mentalStateHandler.MentalStateHandlerTickInterval(1);
                 Require(pawn.MentalState == null);
-                Equal(76000L, pawn.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownUntil);
+                Equal(60000, pawn.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownRemainingTicks);
             });
 
             Case("switch revokes a full crossing captured before the need write completes", () =>
@@ -2185,7 +2200,7 @@ internal static partial class Program
                 pawn.mindState.mentalStateHandler.MentalStateHandlerTickInterval(1);
                 Near(.15f, pawn.health.hediffSet.GetFirstHediffOfDef(feelingBroken).Severity);
                 string path = SaveBreakdown(new SlaveBreakdownSaveFixture(pawn, SSCMod.settings));
-                Equal("16000", XDocument.Load(path).Descendants("sscBreakdownEffectExpiresAt").Single().Value);
+                Equal("2500", XDocument.Load(path).Descendants("ticksToDisappear").Single().Value);
                 var (loadedPawn, loadedNeed) = BreakdownPawn();
                 loadedNeed.RestoreCorruption(1f, 1f);
                 var restored = LoadBreakdown(path, loadedPawn);
@@ -2198,17 +2213,36 @@ internal static partial class Program
                 // A paused re-save before the first state refresh still writes the attached Hediff reference.
                 var resaved = XDocument.Load(SaveBreakdown(restored));
                 Require(resaved.Descendants("sscSlaveBreakdownEffect").Single().Value != "null");
-                Equal("16000", resaved.Descendants("sscBreakdownEffectExpiresAt").Single().Value);
+                Equal("2500", resaved.Descendants("ticksToDisappear").Single().Value);
+
+                // 开发版已保存的运行场次使用绝对期限和下次整小时的 tick。
+                Edit(path, document =>
+                {
+                    var record = document.Descendants("li").Single(e => (string)e.Element("def") == breakdownEffect.defName);
+                    record.Elements().Where(e => e.Name.LocalName is "ticksToDisappear" or "disappearsAfterTicks" or "seed").Remove();
+                    record.SetElementValue("sscBreakdownEffectExpiresAt", 16000);
+                    var hours = document.Descendants("sscBreakdownBrokenHoursApplied").Single();
+                    hours.Parent.SetElementValue("sscSlaveBreakdownNextBrokenAt", 16000);
+                    hours.Remove();
+                });
+                var (legacyRunning, _) = BreakdownPawn();
+                var migrated = LoadBreakdown(path, legacyRunning);
+                var migratedSave = XDocument.Load(SaveBreakdown(migrated));
+                Equal("2500", migratedSave.Descendants("ticksToDisappear").Single().Value);
+                Equal("5", migratedSave.Descendants("sscBreakdownBrokenHoursApplied").Single().Value);
+
                 SetBreakdownTick(15999);
                 var loadedEffect = (Hediff_SSCSlaveBreakdown)loadedPawn.health.hediffSet.GetFirstHediffOfDef(breakdownEffect);
                 var loadedState = (MentalState_SSCSlaveBreakdown)loadedPawn.MentalState;
-                Equal(16000L, loadedEffect.ExpiresAt);
-                Equal(60.ToStringSecondsFromTicks("F0"), loadedEffect.LabelInBrackets);
+                Equal(1, loadedEffect.Timer.ticksToDisappear);
+                Equal(loadedEffect.Timer.CompLabelInBracketsExtra, loadedEffect.LabelInBrackets);
                 Require(loadedEffect.Label.EndsWith($" ({loadedEffect.LabelInBrackets})"));
                 Require(loadedState.CanIssueBehavior);
-                SetBreakdownTick(16000);
-                // Health may run first at the deadline. The state keeps the clock long enough to settle the sixth pulse.
-                Require(!loadedEffect.ShouldRemove && loadedEffect.LabelInBrackets.NullOrEmpty());
+                SetBreakdownTick(16000, advanceHealth: false);
+                Require(loadedState.CanIssueBehavior);
+                // 原版健康先移除到期 Hediff，精神状态仍要从原实例结算第六个整小时。
+                loadedPawn.health.HealthTick();
+                Require(loadedEffect.ShouldRemove && !loadedPawn.health.hediffSet.HasHediff(breakdownEffect));
                 Require(!loadedState.CanIssueBehavior);
                 Near(1f, loadedPawn.GetStatValue(rjw.RJWStatDefOf.SexFrequency));
                 beforeBreakdownCooldownAdd = () =>
@@ -2229,7 +2263,7 @@ internal static partial class Program
                 var (after, afterNeed) = BreakdownPawn();
                 SSCMod.settings = LoadBreakdown(path, after).Settings;
                 Require(!SSCMod.settings.EnableSlaveBreakdown);
-                Equal(76000L, after.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownUntil);
+                Equal(60000, after.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownRemainingTicks);
                 var cooldown = after.health.hediffSet.GetFirstHediffOfDef(cooldownDef);
                 Require(cooldown is Hediff_SSCSlaveBreakdownCooldown && !cooldown.Visible);
                 Require(!cooldownDef.duplicationAllowed && !(bool)AccessTools.Method(typeof(RabbitCloneUtility),
@@ -2247,13 +2281,27 @@ internal static partial class Program
                 Equal(0, breakdownRolls);
                 Require(!SSCSlaveBreakdown.IsAtRisk(after));
                 Require(after.MentalState == null);
-                SetBreakdownTick(76000);
-                Require(cooldown.ShouldRemove);
+                SetBreakdownTick(76000, advanceHealth: false);
+                Require(!cooldown.ShouldRemove && !SSCSlaveBreakdown.IsAtRisk(after));
+                after.health.HealthTick();
+                Require(cooldown.ShouldRemove && !after.health.hediffSet.HasHediff(cooldownDef));
                 runtime.GameComponentTick();
                 Require(after.MentalState == null && SSCSlaveBreakdown.IsAtRisk(after));
                 afterNeed.NeedInterval();
                 Equal(1, breakdownRolls);
                 Require(after.MentalState is MentalState_SSCSlaveBreakdown);
+
+                // 旧隐藏 Hediff 与更早的训练组件字段都换算成原版剩余时间。
+                Edit(path, document =>
+                {
+                    var record = document.Descendants("li").Single(e => (string)e.Element("def") == cooldownDef.defName);
+                    record.Elements().Where(e => e.Name.LocalName is "ticksToDisappear" or "disappearsAfterTicks" or "seed").Remove();
+                    record.SetElementValue("sscBreakdownCooldownExpiresAt", 76000);
+                });
+                SetBreakdownTick(75999);
+                var (legacyMarker, _) = BreakdownPawn();
+                LoadBreakdown(path, legacyMarker);
+                Equal(1, legacyMarker.TryGetComp<CompSexSlaveTraining>().SlaveBreakdownCooldownRemainingTicks);
 
                 Edit(path, document =>
                 {
@@ -2262,15 +2310,14 @@ internal static partial class Program
                     fixture.SetElementValue("sscSlaveBreakdownCooldownUntil", 76000);
                     fixture.Elements().Where(e => e.Name.LocalName is "enableSlaveBreakdown" or "sscSlaveBreakdownFullTriggerUsed").Remove();
                 });
-                SetBreakdownTick(75999);
                 var (legacy, _) = BreakdownPawn();
                 Require(new SSCSettings().EnableSlaveBreakdown && LoadBreakdown(path, legacy).Settings.EnableSlaveBreakdown);
                 var legacyComp = legacy.TryGetComp<CompSexSlaveTraining>();
-                Equal(76000L, legacyComp.SlaveBreakdownCooldownUntil);
+                Equal(1, legacyComp.SlaveBreakdownCooldownRemainingTicks);
                 Require(!legacy.health.hediffSet.HasHediff(cooldownDef));
                 legacyComp.MigrateSlaveBreakdownCooldown();
                 Require(legacy.health.hediffSet.HasHediff(cooldownDef));
-                Equal(76000L, legacyComp.SlaveBreakdownCooldownUntil);
+                Equal(1, legacyComp.SlaveBreakdownCooldownRemainingTicks);
                 Require(!legacyComp.SlaveBreakdownFullTriggerUsed);
             });
         }
@@ -2325,8 +2372,27 @@ internal static partial class Program
         return breaker;
     }
 
-    private static void SetBreakdownTick(int tick)
-        => AccessTools.Field(typeof(TickManager), "ticksGameInt").SetValue(Current.Game.tickManager, tick);
+    private static void SetBreakdownTick(int tick, bool advanceHealth = true)
+    {
+        int elapsed = tick - GenTicks.TicksGame;
+        // 隔离宿主批量跳过地图时间。只运行这两个原版组件的健康 tick，边界用例另走完整健康更新。
+        if (advanceHealth && elapsed > 0)
+        {
+            foreach (Pawn pawn in breakdownPawns.Where(pawn => !pawn.Dead))
+            foreach (Hediff hediff in pawn.health.hediffSet.hediffs)
+            {
+                var timer = hediff switch
+                {
+                    Hediff_SSCSlaveBreakdown effect => effect.Timer,
+                    Hediff_SSCSlaveBreakdownCooldown cooldown => cooldown.Timer,
+                    _ => null
+                };
+                int steps = Math.Min(elapsed, timer?.ticksToDisappear ?? 0);
+                for (int i = 0; i < steps; i++) hediff.PostTick();
+            }
+        }
+        AccessTools.Field(typeof(TickManager), "ticksGameInt").SetValue(Current.Game.tickManager, tick);
+    }
 
     private static bool ControlBreakdownRoll(float mtb, float mtbUnit, float ticksSinceLastCheck, ref bool __result)
     {

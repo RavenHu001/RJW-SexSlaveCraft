@@ -14,7 +14,6 @@ namespace SexSlaveCraft
         internal const float RearmBelowLevel = 0.94f;
         internal const int NeedIntervalTicks = 150;
         internal const int DurationTicks = 6 * GenDate.TicksPerHour;
-        internal const int CooldownTicks = GenDate.TicksPerDay;
 
         internal static MentalStateDef StateDef => DefDatabase<MentalStateDef>.GetNamedSilentFail(DefName);
         internal static bool Enabled => SSCMod.settings?.EnableSlaveBreakdown == true;
@@ -58,7 +57,7 @@ namespace SexSlaveCraft
                pawn.mindState?.mentalStateHandler is MentalStateHandler handler &&
                handler.CurState is not MentalState_SSCSlaveBreakdown &&
                pawn.TryGetComp<CompSexSlaveTraining>() is CompSexSlaveTraining comp &&
-               Now >= comp.SlaveBreakdownCooldownUntil;
+               comp.SlaveBreakdownCooldownRemainingTicks <= 0;
 
         // 这些状态只推迟有效的满值待办。随机入口下次需求刷新时重新判断。
         internal static bool TemporarilyBlocked(Pawn pawn) => pawn.Downed || !pawn.Awake() || pawn.InMentalState;

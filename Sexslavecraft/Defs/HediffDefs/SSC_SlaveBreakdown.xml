@@ -9,6 +9,13 @@
     <maxSeverity>1</maxSeverity>
     <!-- 原版副本不继承单次发作的身体效果。SSC 兔克隆的手动复制也显式排除此定义。 -->
     <duplicationAllowed>false</duplicationAllowed>
+    <comps>
+      <li Class="HediffCompProperties_Disappears">
+        <disappearsAfterTicks>15000</disappearsAfterTicks>
+        <showRemainingTime>true</showRemainingTime>
+        <canUseDecimalsShortForm>true</canUseDecimalsShortForm>
+      </li>
+    </comps>
     <stages>
       <li>
         <statFactors>
@@ -29,6 +36,11 @@
     <label>submission breakdown cooldown</label>
     <isBad>false</isBad>
     <duplicationAllowed>false</duplicationAllowed>
+    <comps>
+      <li Class="HediffCompProperties_Disappears">
+        <disappearsAfterTicks>60000</disappearsAfterTicks>
+      </li>
+    </comps>
     <stages>
       <li><becomeVisible>false</becomeVisible></li>
     </stages>

@@ -29,8 +29,9 @@ namespace SexSlaveCraft
         private int requestId = -1;
         private int trainingJobId = -1;
         private long nextRequestAt;
-        // 延时只给已经开场的这份批准。原期限用于决定窗口和撤销恢复，运行期限始终由 Hediff 提供。
-        private long originalDeadline = -1;
+        // 只记录本场批准是否加过一小时。实际的倒计时由原版组件独立保存。
+        private bool trainingExtended;
+        private long legacyOriginalDeadline = -1;
         private bool trainingStarted;
         private bool outcomeIssued;
 
@@ -38,7 +39,7 @@ namespace SexSlaveCraft
         /// <summary>JobDef 划定特批路径。实际权限还需向当前发作核对受方、调教员和任务编号。</summary>
         internal static bool IsBreakdownTraining(Job job) => job?.def?.defName == TrainingDefName;
 
-        private long RequestDeadline => originalDeadline >= 0 ? originalDeadline : Deadline;
+        private int RequestRemainingTicks => RemainingTicks - (trainingExtended ? GenDate.TicksPerHour : 0);
         private bool TrainerIdentityCurrent => requestTrainer != null &&
             SSCPersonalityRuntimeUtility.IsCurrent(requestTrainer, trainerPersonality) &&
             !SSCPersonalityRuntimeUtility.IsMutating(requestTrainer);
@@ -55,7 +56,9 @@ namespace SexSlaveCraft
             Scribe_Values.Look(ref requestId, "sscBreakdownRequestId", -1);
             Scribe_Values.Look(ref trainingJobId, "sscBreakdownTrainingJobId", -1);
             Scribe_Values.Look(ref nextRequestAt, "sscBreakdownNextRequestAt", 0L);
-            Scribe_Values.Look(ref originalDeadline, "sscBreakdownOriginalDeadline", -1L);
+            Scribe_Values.Look(ref trainingExtended, "sscBreakdownTrainingExtended", false);
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+                Scribe_Values.Look(ref legacyOriginalDeadline, "sscBreakdownOriginalDeadline", -1L);
             Scribe_Values.Look(ref trainingStarted, "sscBreakdownTrainingStarted", false);
             Scribe_Values.Look(ref outcomeIssued, "sscBreakdownOutcomeIssued", false);
             // 交叉引用解析后才能取得当前进程的人格凭据。首次使用时仍须核对原信件或原任务，
@@ -71,7 +74,7 @@ namespace SexSlaveCraft
 
         // 延长的时间只给已经开场的任务，拒绝在原到期时间后批准或生成另一封请求。
         private bool CanRequestTraining => openingPhase == OpeningPhase.Wander &&
-            episodeResult == EpisodeResult.None && CanIssueBehavior && SSCSlaveBreakdown.Now < RequestDeadline;
+            episodeResult == EpisodeResult.None && CanIssueBehavior && RequestRemainingTicks > 0;
 
         // 从玩家决定起让出候选槽。等待选择的信件本身不占用发作小人或调教员。
         internal bool HasApprovedTraining => requestPhase is RequestPhase.Approved or RequestPhase.Dispatched;
@@ -198,7 +201,7 @@ namespace SexSlaveCraft
                 if (!OwnsTrainingJob(requestTrainer, requestTrainer?.CurJob) ||
                     requestTrainer.jobs.curDriver is not JobDriver_Training)
                     CancelTrainingRequest();
-                else ExtendStartedTraining(now);
+                else ExtendStartedTraining();
                 return;
             }
 
@@ -248,7 +251,7 @@ namespace SexSlaveCraft
                 def, new LookTargets(pawn, trainer));
             letter.Subject = pawn;
             letter.Trainer = trainer;
-            letter.disappearAtTick = (int)RequestDeadline;
+            letter.disappearAtTick = now + RequestRemainingTicks;
             // 先登记所属，再交信堆。收信侧的日志、UI 或兼容补丁可以同步查看当前申请。
             requestTrainer = trainer;
             trainerPersonality = SSCPersonalityRuntimeUtility.Capture(trainer);
@@ -298,17 +301,18 @@ namespace SexSlaveCraft
         {
             if (!OwnsTrainingJob(driver.pawn, driver.job)) return;
             trainingStarted = true;
-            ExtendStartedTraining(SSCSlaveBreakdown.Now);
+            ExtendStartedTraining();
         }
 
-        private void ExtendStartedTraining(int now)
+        private void ExtendStartedTraining()
         {
-            long deadline = Deadline;
-            if (!trainingStarted || originalDeadline >= 0 || now >= deadline ||
-                deadline - now > GenDate.TicksPerHour || !HasEffect()) return;
-            // 保留原决定期限。延长只用于完成已开场的任务，中断后恢复原到期点。
-            originalDeadline = deadline;
-            effect.ExpiresAt = deadline + GenDate.TicksPerHour;
+            if (!trainingStarted || trainingExtended || !HasEffect() ||
+                RemainingTicks is <= 0 or > GenDate.TicksPerHour) return;
+            // 总时长和剩余时间同时增加，已经过的整小时保持不变。
+            trainingExtended = true;
+            var timer = effect.Timer;
+            timer.disappearsAfterTicks += GenDate.TicksPerHour;
+            timer.ticksToDisappear += GenDate.TicksPerHour;
         }
 
         /// <summary>真实开场且当前仍是原获批任务，才可进入完成 Toil。</summary>
@@ -341,11 +345,15 @@ namespace SexSlaveCraft
             if (!ending)
             {
                 nextRequestAt = (long)SSCSlaveBreakdown.Now + RequestInterval;
-                if (originalDeadline >= 0)
+                if (trainingExtended)
                 {
-                    // 在原版任务清理的回调之前恢复截止点。状态刷新会在本轮重新检查是否已经到期。
-                    if (HasEffect()) effect.ExpiresAt = originalDeadline;
-                    originalDeadline = -1;
+                    // 先收回额外时长再清理任务，允许本轮按原时长立即结束。
+                    if (HasEffect() && effect.Timer is { } timer)
+                    {
+                        timer.disappearsAfterTicks -= GenDate.TicksPerHour;
+                        timer.ticksToDisappear -= GenDate.TicksPerHour;
+                    }
+                    trainingExtended = false;
                 }
             }
             trainingStarted = false;
