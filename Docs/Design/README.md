@@ -1,8 +1,8 @@
 # 当前规划索引
 
-**当前公开基线为 SSC 2.5.1。** 本页汇总仍待设计、实现或合入的需求。
+**当前公开基线为 SSC 2.5.3。** 本页汇总仍待设计、实现或合入的需求。
 
-**2.5.3 开发归属已登记。** 第 6 项、第 6.1 项及相关修复见[完成索引](../Development/Completed/README.md#ssc-253-completed)与[版本验证](../Releases/2.5.3/2.5.3版本验证.md)。第 7、19 项及文化／凝胶的初版归属见[2.5.2 记录](../Releases/2.5.2/2.5.2开发归并核对.md)。
+**2.5.3 已发布范围。** 第 6 项、第 6.1 项及相关修复见[完成索引](../Development/Completed/README.md#ssc-253-completed)与[正式发布归档](../Releases/2.5.3/2.5.3版本验证.md#ssc-253-release)。2.5.2 的实现随本包交付。
 
 [文档总索引](../README.md) · [总体规划](未来内容开发规划.md) · [待验收](../Development/Verification/README.md#当前专项) · [已交付设计](Archive/README.md)
 

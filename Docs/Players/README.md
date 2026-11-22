@@ -2,7 +2,7 @@
 
 **2.5.3 玩家入口。** 无主性奴、解绑及相关修复见[双语说明](../Releases/2.5.3/2.5.3发布说明.md)。[下载 2.5.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.3)
 
-**2.5.2 开发预览。** 恶堕成长、奴性爆发和文化结算见[双语版本说明](../Releases/2.5.2/2.5.2发布说明.md)。
+**2.5.2 开发里程碑。** 恶堕成长、奴性爆发与文化结算已随 2.5.3 安装包交付，原范围见[开发说明](../Releases/2.5.2/2.5.2发布说明.md)。
 
 **2.5.1 玩家入口。** PNA 雾气系列、关系命令栏和兼容改动见[双语版本说明](../Releases/2.5.1/2.5.1发布说明.md)。[下载 2.5.1 正式版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.1)
 

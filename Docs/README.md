@@ -2,15 +2,15 @@
 
 [项目首页](../README.md) · [玩家阅读入口](Players/README.md) · [当前规划](Design/README.md) · [开发资料](Development/README.md)
 
-## 当前开发版本
-
-**2.5.3 开发版（2026-11-21 登记）。** 正式无主性奴、绑定与解绑、凝胶后效和相关修复已合入。[版本说明](Releases/2.5.3/2.5.3发布说明.md) · [归并核对](Releases/2.5.3/2.5.3开发归并核对.md) · [完成索引](Development/Completed/README.md#ssc-253-completed) · [验证与发布准备](Releases/2.5.3/2.5.3版本验证.md)
-
 ## 当前正式版本
+
+**2.5.3 于 2026-11-21 正式发布。** 完整门禁通过 52 套、6007/6007 项。 [下载 2.5.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.3) · [版本说明](Releases/2.5.3/2.5.3发布说明.md) · [发布归档](Releases/2.5.3/2.5.3版本验证.md#ssc-253-release) · [完成索引](Development/Completed/README.md#ssc-253-completed)
+
+## 上一正式版本
 
 **2.5.1 于 2026-11-15 正式发布。** 完整门禁通过 52 套、6350/6350 项。 [下载 2.5.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.1) · [版本说明](Releases/2.5.1/2.5.1发布说明.md) · [发布归档](Releases/2.5.1/2.5.1版本验证.md#ssc-251-release) · [完成索引](Development/Completed/README.md#ssc-251-completed)
 
-## 上一正式版本
+## 更早正式版本
 
 **2.5.0 于 2026-11-12 正式发布。** 完整门禁通过 52 套、6544/6544 项。 [下载 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0) · [发布归档](Releases/2.5.0/2.5.0版本验证.md#ssc-250-release) · [完成索引](Development/Completed/README.md#ssc-250-completed)
 

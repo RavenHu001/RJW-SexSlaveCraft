@@ -1,5 +1,7 @@
 # 开发维护入口
 
+**2.5.3 于 2026-11-21 正式发布。** 完整门禁通过 52 套、6007/6007 项。 [下载 2.5.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.3) · [正式发布归档](../Releases/2.5.3/2.5.3版本验证.md#ssc-253-release)
+
 **2.5.1 于 2026-11-15 正式发布。** 完整门禁通过 52 套、6350/6350 项。 [下载 2.5.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.1) · [正式发布归档](../Releases/2.5.1/2.5.1版本验证.md#ssc-251-release)
 
 **2.5.0 于 2026-11-12 正式发布。** 完整门禁通过 52 套、6544/6544 项。 [下载 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0) · [正式发布归档](../Releases/2.5.0/2.5.0版本验证.md#ssc-250-release)
@@ -16,7 +18,7 @@
 
 [文档总索引](../README.md) · [开发资料](../Development/README.md) · [发布索引](../Releases/README.md)
 
-当前公开下载为 2.5.1，1.6 使用 SSC 2.4.1。[构建、门禁与附件](../Releases/2.5.1/2.5.1版本验证.md#ssc-251-release)
+当前公开下载为 2.5.3，1.6 使用 SSC 2.4.1。[构建、门禁与附件](../Releases/2.5.3/2.5.3版本验证.md#ssc-253-release)
 
 2.4.2 已交付的身体视觉采用原生 Shader，维护者确认深紫色与 0.85 不透明度效果可保留；本次不改动产物，见[验收记录](../Development/Completed/1.7全身凝胶化身体视觉调整与验收.md)。
 
