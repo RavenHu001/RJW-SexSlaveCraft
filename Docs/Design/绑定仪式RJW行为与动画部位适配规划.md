@@ -1,8 +1,8 @@
 # 绑定仪式的 RJW 行为与动画部位适配规划
 
-**状态：2026-11-22，1.7 场景推进已获实机确认，恢复原有身体开发结算后待复测。** 对应[总体规划第 23.1 项](未来内容开发规划.md#ssc-training-anatomy-compatibility)。首批适用于 RimWorld 1.7 双人绑定仪式。
+**状态：2026-11-22，RimWorld 1.7 女女绑定仪式实机验收通过。** 首批适用于 RimWorld 1.7 双人绑定仪式。 [总体规划第 23.1 项](未来内容开发规划.md#ssc-training-anatomy-compatibility) · [女女实机验收](#ssc-binding-anatomy-female-acceptance)
 
-本机 RimWorld 1.7.5014、RJW 6.2.2 的女女组合实测完成了现有六阶段。第 3 阶段启动动画，其余五个阶段未找到匹配动画。第 6 阶段保留 `Sex_Vaginal` 进入 RJW 流程，RJW Menstruation 按交互类型处理体液，日志记录了 33 条 `0 fluid` 警告。这是现行实现的排查依据。 [阶段映射及空接触路径](../../Sexslavecraft/common/RitualTrainingUtility.cs)
+优化前的固定动作版本在 RimWorld 1.7.5014、RJW 6.2.2 上完成了女女六阶段。第 3 阶段启动动画，其余五个阶段未找到匹配动画。第 6 阶段保留 `Sex_Vaginal` 进入 RJW 流程，RJW Menstruation 按交互类型处理体液，当时记录了 33 条 `0 fluid` 警告。 [阶段映射及空接触路径](../../Sexslavecraft/common/RitualTrainingUtility.cs)
 
 加入动作筛选后的女女存档交互记录依次是 `Sex_Fingering`、`Sex_Footjob`、`Sex_Cunnilingus`、`Sex_Breastjob`，以及连续两次 `Sex_MutualMasturbation`。后两段的通用部位标签产生了肛部和阴部候选，解析结果缺少接触，定义也未指定对应部位。筛选按下述规则排除这类候选。
 
@@ -57,4 +57,21 @@
 
 RimWorld **1.7.5014 rev1195**、RJW **6.2.2** 隔离构建通过，生产候选和原生测试宿主均为零警告、零错误。`UterusDevelopmentNative` **768／768**，含肛部和阴部阶段排除仅有通用标签的空接触候选，保留有接触或明确指定部位的动作。六阶段空接触保底回归执行实际 `SexTick` 并观测 `ProcessSex` 入口，验证整场只结算一次，发起六类普通部位发放，并按原资格写入实际部位与子宫进度。旧档回归经原生 Scribe 恢复后检查 RJW 时钟和原交互 Def。宿主隔离地图切换、图形及第三方结算副作用。
 
-恢复结算时的相关回归通过 `RitualLifecycle` **226／226**、`RitualProgression` **38／38** 和 `TrainingExperience` **71／71**。修正筛选后的完整游戏内重跑待验收。
+恢复结算时的相关回归通过 `RitualLifecycle` **226／226**、`RitualProgression` **38／38** 和 `TrainingExperience` **71／71**。
+
+<a id="ssc-binding-anatomy-female-acceptance"></a>
+
+## 女女实机验收
+
+2026-11-22，维护者确认女女绑定仪式验收通过。受测环境为 RimWorld **1.7.5014 rev1195**、RJW **6.2.2**，SSC 分支提交 `f95f339b`。同一女女组合运行两次，存档中的 RJW 交互记录顺序一致。下表的部位和动画记录来自最后一场的 `Player.log`（01:55:45–01:56:14），动作 Def 已与存档交互记录交叉核对。
+
+| 阶段 | 实际执行的 RJW 动作 | 选择方式及部位 | 动画框架 |
+| --- | --- | --- | --- |
+| 1 手部 | `Sex_Fingering` | 自动选中，性奴的手与调教员的阴部参与。 | 已启动 |
+| 2 足部 | `Sex_Footjob` | 使用原固定保底，RJW 场景正常启动并完成。 | 无启动记录 |
+| 3 口部 | `Sex_Cunnilingus` | 自动选中，性奴的舌与调教员的阴部参与。 | 无启动记录 |
+| 4 胸部 | `Sex_Breastjob` | 使用原固定保底，RJW 场景正常启动并完成。 | 无启动记录 |
+| 5 肛部 | `Sex_Reverse_Rimming` | 自动选中，调教员的舌配合性奴的肛部。 | 无启动记录 |
+| 6 阴部 | `Sex_Scissoring` | 自动选中，双方阴部参与。 | 已启动 |
+
+第 5、6 阶段的目标部位均由动作定义明确指定，并出现在对应角色的解析结果中。`contacts=[]` 表示 RJW 未生成插入配对。最后一场逐阶段记录了 `Start ritual scene` 和完成状态，最终达到 `6/6` 并记录 `Binding Ritual finished`。
