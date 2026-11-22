@@ -143,6 +143,24 @@ internal static partial class Program
             Equal(scene.Target, pair.Item2.Owner); Equal(scene.Organ, ((RJWLewdablePart)pair.Item2).SexPart.AsHediff);
             Require(restored.Sexprops.isRevese); Equal(17, restored.ticks_left);
         });
+        Check("ritual Scribe resumes legacy empty fallback on the RJW clock", () =>
+        {
+            var f = new GrowthRitual();
+            var original = InstallDriver<JobDriver_RitualTraining>(f.Scene);
+            AccessTools.Field(typeof(JobDriver_RitualTraining), "ritualLord").SetValue(original, f.Lord);
+            AccessTools.Field(typeof(JobDriver_RitualTraining), "phaseSceneStarted").SetValue(original, true);
+            SSCRitualInteraction.ClearContact(original.Sexprops);
+            original.ticks_left = 17;
+            original.sex_ticks = 1000;
+            var restored = RestoreDriver<JobDriver_RitualTraining>(original);
+            RoundTripGrowth(original, restored, f.Scene, doc =>
+                doc.Descendants("scene").Single().Add(new XElement("sscRitualEmptyPhaseTicks", 17)), f.Comp);
+            var sceneToil = ((IEnumerable<Toil>)Hidden(typeof(JobDriver_RitualTraining), restored, "MakeNewToils")).Last();
+            Require(!TickRitualToil(restored, sceneToil));
+            Equal(16, restored.ticks_left); Equal(999, restored.sex_ticks);
+            Equal(original.Sexprops.dictionaryKey, restored.Sexprops.dictionaryKey);
+            Require(restored.Sexprops._resolved != null && !SSCRitualInteraction.HasContact(restored.Sexprops._resolved));
+        });
     }
 
     /// <summary>只提供实际 RJW 类的程序集定位，不替换保存数据或序列化行为。</summary>

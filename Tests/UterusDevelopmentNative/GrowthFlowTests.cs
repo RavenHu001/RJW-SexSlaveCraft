@@ -20,6 +20,8 @@ internal static partial class Program
     private static readonly Dictionary<LordJob_Ritual, GrowthRitual> growthRituals = new();
     private static readonly HashSet<Pawn> dailyGrowthPawns = new();
     private static Map dailyGrowthMap;
+    private static JobDriver_RitualTraining tickingRitual;
+    private static bool ritualToilReady;
 
     /// <summary>在同一个真实生产程序集宿主中执行场景、成长及存档测试。</summary>
     private static void GrowthFlowTests(string repo, Harmony harmony)
@@ -55,6 +57,7 @@ internal static partial class Program
         harmony.Patch(AccessTools.PropertyGetter(typeof(CompSexSlaveTraining), "CurrentLocalDay"), prefix: new HarmonyMethod(typeof(Program), nameof(LocalDayBoundary)));
         Patch(typeof(JobDriver_Sex), "setup_ticks", nameof(Skip));
         Patch(typeof(JobDriver_SexBaseInitiator), "End", nameof(Skip));
+        Patch(typeof(JobDriver), nameof(JobDriver.ReadyForNextToil), nameof(RitualReadyBoundary));
         Patch(growthType.Assembly.GetType("SexSlaveCraft.UapRitualCompatibilityUtility"), "ReleasePositionLocks", nameof(Skip));
         Patch(typeof(OnaholeCompatibilityUtility), "TryUnregisterOnaholePartner", nameof(Skip));
         Patch(typeof(BindingRitualStateUtility), "IsBindingRitual", nameof(BindingRitualBoundary));
@@ -137,6 +140,21 @@ internal static partial class Program
     { ritualOutcomes++; __result = ""; growthAfterRitual?.Invoke(); return false; }
     /// <summary>隔离地图所在地日期，日常训练完成及冷却写入继续使用生产实现。</summary>
     private static bool LocalDayBoundary(ref int __result) { __result = 0; return false; }
+
+    private static bool RitualReadyBoundary(JobDriver __instance)
+    {
+        if (__instance != tickingRitual) return true;
+        ritualToilReady = true;
+        return false;
+    }
+
+    private static bool TickRitualToil(JobDriver_RitualTraining driver, Toil scene)
+    {
+        tickingRitual = driver;
+        ritualToilReady = false;
+        try { scene.tickAction(); return ritualToilReady; }
+        finally { tickingRitual = null; }
+    }
 
     /// <summary>为真实原生 Job 安装双向引用；任务与 loadID 的判断仍由生产守卫完成。</summary>
     private static T InstallDriver<T>(GrowthScene scene) where T : JobDriver_SexBaseInitiator, new()
@@ -382,9 +400,6 @@ internal static partial class Program
             {
                 driver.Sexprops = new SexProps(Scene.Source, Scene.Target) { dictionaryKey = Scene.Props.dictionaryKey };
                 SSCRitualInteraction.ClearContact(driver.Sexprops);
-                AccessTools.Field(typeof(JobDriver_RitualTraining), "emptyPhaseTicks").SetValue(driver, 2);
-                Require(!(bool)Hidden(typeof(JobDriver_RitualTraining), driver, "TickEmptyPhase"));
-                Require((bool)Hidden(typeof(JobDriver_RitualTraining), driver, "TickEmptyPhase"));
             }
             else
             {
@@ -392,8 +407,18 @@ internal static partial class Program
                     SSCRitualInteractionParts.Capture(driver.Sexprops._resolved));
             }
             AccessTools.Field(typeof(JobDriver_RitualTraining), "phaseSceneStarted").SetValue(driver, true);
-            AccessTools.Field(typeof(JobDriver_RitualTraining), "phaseRanToCompletion").SetValue(driver, completed);
             MarkStarted(driver);
+            if (empty)
+            {
+                var sceneToil = ((IEnumerable<Toil>)Hidden(typeof(JobDriver_RitualTraining), driver, "MakeNewToils")).Last();
+                driver.ticks_left = 2;
+                driver.sex_ticks = 1000;
+                Require(!TickRitualToil(driver, sceneToil));
+                Equal(1, driver.ticks_left);
+                Require(TickRitualToil(driver, sceneToil));
+                Equal(998, driver.sex_ticks);
+            }
+            else AccessTools.Field(typeof(JobDriver_RitualTraining), "phaseRanToCompletion").SetValue(driver, completed);
             var contextType = typeof(TrainingJobUtility).GetNestedType("JobContext", BindingFlags.NonPublic);
             object context = Activator.CreateInstance(contextType, BindingFlags.Instance | BindingFlags.NonPublic, null, new object[] { driver }, null);
             Hidden(typeof(JobDriver_RitualTraining), driver, "OnPhaseComplete", context);
@@ -445,11 +470,11 @@ internal static partial class Program
             f.Worker.Apply(1, new(), f.Job); Near(.02875f, Progress(f.Scene.Target)); Equal(1, ritualOutcomes);
             Near(genitalExperience, f.Scene.Target.health.hediffSet.hediffs.Single(h => h.def.defName == "SSC_Exp_Genitals").Severity);
         });
-        Check("six empty ritual fallback stages finish without contact effects or body rewards", () =>
+        Check("six empty ritual fallback stages tick and process RJW without body rewards", () =>
         {
             ResetGrowthFlow(); var f = new GrowthRitual();
             for (int i = 0; i < BindingRitualStateUtility.PhaseCount; i++) f.Phase(empty: true);
-            Equal(6, f.Comp.ritualPhase); Equal(1, f.Memos); Equal(1, ritualOutcomes); Equal(0, sexProcessCalls);
+            Equal(6, f.Comp.ritualPhase); Equal(1, f.Memos); Equal(1, ritualOutcomes); Equal(6, sexProcessCalls);
             Near(.01f, Progress(f.Scene.Target));
             Require(!f.Scene.Target.health.hediffSet.hediffs.Any(h => h.def.defName.StartsWith("SSC_Exp_")));
         });

@@ -20,7 +20,6 @@ namespace SexSlaveCraft
         private Lord ritualLord;
 #if SSC_RW17
         private SSCRitualInteractionParts selectedParts;
-        private int emptyPhaseTicks = -1;
         private bool restorePhaseOnTick;
         private SSCOrdinarySexPartsSnapshot restoredPhaseEvidence;
 #endif
@@ -47,9 +46,7 @@ namespace SexSlaveCraft
             Scribe_References.Look(ref ritualLord, "sscRitualLord");
 #if SSC_RW17
             Scribe_Deep.Look(ref selectedParts, "sscRitualSelectedParts");
-            Scribe_Values.Look(ref emptyPhaseTicks, "sscRitualEmptyPhaseTicks", -1);
-            if (Scribe.mode == LoadSaveMode.PostLoadInit && phaseSceneStarted && !phaseFinishHandled)
-                restorePhaseOnTick = true;
+            if (Scribe.mode == LoadSaveMode.PostLoadInit) restorePhaseOnTick = !phaseFinishHandled;
 #endif
             SSCRestrictionJobGuard.RestoreRitualScene(this, phaseSceneStarted);
         }
@@ -85,6 +82,19 @@ namespace SexSlaveCraft
         /// <summary>外部回调返回后只继续原阶段及原目标；同一 Job 对象被复用也不能借用新目标。</summary>
         private bool IsCurrentPhase(TrainingJobUtility.JobContext context)
             => context.IsCurrent && context.Target.Thing == Slave;
+
+        private bool TryStartPhaseReceiver(TrainingJobUtility.JobContext context, Pawn slave, IntVec3 spot)
+        {
+            // 接收启动允许重入；新阶段或其他工作接管后，不再运行旧阶段的中止清理。
+            bool started = TrainingJobUtility.TryStartBindingRitualReceiver(pawn, slave, job, SSCDefOf.SSC_TrainingReceiver, spot);
+            if (!IsCurrentPhase(context) || !HasActiveRitual()) return false;
+            if (!started)
+            {
+                TrainingJobUtility.NotifyTrainingAborted(slave);
+                if (IsCurrentPhase(context)) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+            }
+            return started;
+        }
 
 #if !SSC_RW17
         /// <summary>根据从零开始的阶段索引设置当前场景动作；不推进仪式阶段计数。</summary>
@@ -189,28 +199,12 @@ namespace SexSlaveCraft
                 if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
                 Sexprops = chosenProps;
                 selectedParts = parts;
-                if (selectedParts == null)
-                {
-                    SSCRitualInteraction.ClearContact(Sexprops);
-                    // 常驻设备有自己的 RJW 推进，空接触保底使用仪式等待职责。
-                    if (OnaholeCompatibilityUtility.IsPawnOnOnahole(slave)) return;
-                }
+                if (selectedParts == null) SSCRitualInteraction.ClearContact(Sexprops);
 #endif
 
                 SSCLog.Verbose($"[SSC_RITUAL] Prepare phase: master={pawn.LabelShort}, slave={slave.LabelShort}, ritualPhase={phase}, ritualSpot={spot}");
 
-                // 接收启动允许重入；新阶段或其他工作接管后，不再运行旧阶段的中止清理。
-                bool started = TrainingJobUtility.TryStartBindingRitualReceiver(pawn, slave, job, SSCDefOf.SSC_TrainingReceiver, spot);
-                if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
-                if (!started
-#if SSC_RW17
-                    && selectedParts != null
-#endif
-                    )
-                {
-                    TrainingJobUtility.NotifyTrainingAborted(slave);
-                    if (IsCurrentPhase(context)) pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
-                }
+                TryStartPhaseReceiver(context, slave, spot);
             };
             yield return prepare;
 
@@ -242,15 +236,6 @@ namespace SexSlaveCraft
                 }
                 if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
 
-#if SSC_RW17
-                if (selectedParts == null)
-                {
-                    emptyPhaseTicks = Math.Max(1, ticks_left);
-                    // 原生动画可以自行匹配固定交互。缺接收任务时继续以仪式时钟推进。
-                    if (!(slave.jobs?.curDriver is JobDriver_TrainingReceiver receiver) || receiver.Partner != pawn)
-                        return;
-                }
-#endif
                 // 家具同步结束后先判定归属，再决定是否撤销本次准备状态。
                 bool synchronized = OnaholeCompatibilityUtility.TrySynchronizeOnaholeSexProps(slave, Sexprops);
                 if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
@@ -272,6 +257,9 @@ namespace SexSlaveCraft
                 Start();
                 if (!IsCurrentPhase(context)) return;
                 phaseSceneStarted = true;
+#if SSC_RW17
+                restorePhaseOnTick = false;
+#endif
                 if (!HasActiveRitual()) return;
 
 #if !SSC_RW17
@@ -319,17 +307,20 @@ namespace SexSlaveCraft
 #if SSC_RW17
                 if (restorePhaseOnTick)
                 {
-                    RestorePhase(slave);
+                    bool restored = RestorePhase(slave);
                     if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
-                }
-                if (emptyPhaseTicks >= 0)
-                {
-                    if (TickEmptyPhase())
+                    if (!restored)
                     {
-                        phaseRanToCompletion = true;
-                        ReadyForNextToil();
+                        pawn.jobs.EndCurrentJob(JobCondition.Incompletable);
+                        return;
                     }
-                    return;
+                    // 旧版空接触计时可能在未启动 RJW 场景时存档。以原动作和剩余时间开始场景。
+                    if (!phaseSceneStarted)
+                    {
+                        if (!TryStartPhaseReceiver(context, slave, RitualSpot.Cell)) return;
+                        sexToil.initAction();
+                        if (!IsCurrentPhase(context) || !HasActiveRitual() || !phaseSceneStarted) return;
+                    }
                 }
 #endif
                 SexTick(pawn, slave);
@@ -366,22 +357,14 @@ namespace SexSlaveCraft
             CompSexSlaveTraining training = slave.TryGetComp<CompSexSlaveTraining>();
             if (training?.bindingRitualLord != null && training.bindingRitualLord != ritualLord) return;
 
-            bool completedActivePhase = (phaseSceneStarted
-#if SSC_RW17
-                || emptyPhaseTicks >= 0
-#endif
-                ) && phaseRanToCompletion && HasActiveRitual();
+            bool completedActivePhase = phaseSceneStarted && phaseRanToCompletion && HasActiveRitual();
             try
             {
                 // 先解锁再执行外部结算和 End；迟到的旧驱动回调不能释放新阶段的位置锁。
                 if (phaseSceneStarted && pawn.jobs?.curDriver == this)
                     UapRitualCompatibilityUtility.ReleasePositionLocks(pawn, slave);
 
-                if (completedActivePhase && Sexprops?.pawn != null && Sexprops.partner != null
-#if SSC_RW17
-                    && emptyPhaseTicks < 0 && selectedParts != null
-#endif
-                    )
+                if (completedActivePhase && Sexprops?.pawn != null && Sexprops.partner != null)
                 {
                     try { SexUtility.ProcessSex(Sexprops); }
                     catch (Exception ex) { Log.Error($"[SSC] 结算冲突: {ex.Message}"); }
@@ -391,19 +374,14 @@ namespace SexSlaveCraft
 
                 if (phaseSceneStarted && Sexprops != null) base.End();
                 if (!IsCurrentPhase(context)) return;
-#if SSC_RW17
-                if (phaseSceneStarted || selectedParts != null)
-#endif
-                {
-                    OnaholeCompatibilityUtility.TryUnregisterOnaholePartner(slave, pawn);
-                    if (!IsCurrentPhase(context)) return;
+                OnaholeCompatibilityUtility.TryUnregisterOnaholePartner(slave, pawn);
+                if (!IsCurrentPhase(context)) return;
 
-                    CompRJW receiverComp = slave.GetCompRJW();
-                    if (receiverComp != null && receiverComp.drawNude)
-                    {
-                        receiverComp.drawNude = false;
-                        slave.Drawer.renderer.SetAllGraphicsDirty();
-                    }
+                CompRJW receiverComp = slave.GetCompRJW();
+                if (receiverComp != null && receiverComp.drawNude)
+                {
+                    receiverComp.drawNude = false;
+                    slave.Drawer.renderer.SetAllGraphicsDirty();
                 }
 
 #if SSC_RW17
@@ -418,7 +396,7 @@ namespace SexSlaveCraft
 
 #if SSC_RW17
                 // 阶段成功推进才保存合格接触；末阶段 memo 会同步结算整场，故必须先写入。
-                if (emptyPhaseTicks < 0 && selectedParts != null)
+                if (selectedParts != null)
                 {
                     var parts = restoredPhaseEvidence ?? SSCRestrictionJobGuard.TrainingParts(this, SSCInteractionKind.RitualTraining);
                     training.RecordRitualBodyPhase(ritualLord, phase, parts, Sexprops);
@@ -441,30 +419,18 @@ namespace SexSlaveCraft
         }
 
 #if SSC_RW17
-        private bool TickEmptyPhase()
-        {
-            if (emptyPhaseTicks > 0) emptyPhaseTicks--;
-            ticks_left = emptyPhaseTicks;
-            return emptyPhaseTicks == 0;
-        }
-
-        private void RestorePhase(Pawn slave)
+        private bool RestorePhase(Pawn slave)
         {
             restorePhaseOnTick = false;
             var props = Sexprops;
             if (props?.dictionaryKey == null || props.pawn != pawn || props.partner != slave || props.isReceiver)
-            {
-                if (emptyPhaseTicks < 0) emptyPhaseTicks = Math.Max(1, ticks_left);
-                selectedParts = null;
-                return;
-            }
+                return false;
 
-            if (emptyPhaseTicks < 0 && !TryRestoreSelectedParts(props))
+            if (!TryRestoreSelectedParts(props))
             {
-                emptyPhaseTicks = Math.Max(1, ticks_left);
                 selectedParts = null;
+                SSCRitualInteraction.ClearContact(props);
             }
-            if (emptyPhaseTicks >= 0) SSCRitualInteraction.ClearContact(props);
             props.isRevese = props.interaction.HasInteractionTag(SexInteractionTag.Reverse);
             if (slave.jobs?.curDriver is JobDriver_SexBaseReciever receiver && receiver.Partner == pawn &&
                 receiver.Sexprops is { } partnerProps && partnerProps.pawn == slave && partnerProps.partner == pawn &&
@@ -473,7 +439,8 @@ namespace SexSlaveCraft
                 partnerProps.resolved = props._resolved;
                 partnerProps.isRevese = props.isRevese;
             }
-            if (emptyPhaseTicks < 0) restoredPhaseEvidence = SSCOrdinarySexPartsUtility.Capture(props);
+            if (selectedParts != null) restoredPhaseEvidence = SSCOrdinarySexPartsUtility.Capture(props);
+            return true;
         }
 
         private bool TryRestoreSelectedParts(SexProps props)
