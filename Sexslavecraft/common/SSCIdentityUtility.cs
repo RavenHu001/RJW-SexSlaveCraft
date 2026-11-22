@@ -32,18 +32,25 @@ namespace SexSlaveCraft
             return pawn?.story?.traits?.GetTrait(SSCDefOf.SexSlaveTrait);
         }
 
+        /// <summary>供按阶段判定的功能使用，1.7 共读锁链和无主进度。SSC 主人返回零阶。</summary>
+        /// <remarks>调用方按用途检查身份、实际绑定或任务资格。单有 SSC 性奴身份可以处于零阶。</remarks>
         public static int GetSexSlaveStage(Pawn pawn)
         {
             if (IsMaster(pawn)) return 0;
 
+#if SSC_RW17
+            return TrainingOutcomeUtility.GetSexSlaveProgressStage(TrainingOutcomeUtility.GetSexSlaveProgress(pawn)).Stage;
+#else
             return GetSexSlaveStageFromChain(SSCBondUtility.GetChain(pawn));
+#endif
         }
 
-        /// <summary>从已经读取的锁链判定当前阶段，供同次查询复用；调用方负责角色身份门槛。</summary>
+        /// <summary>从调用方已捕获的实际锁链判定当前阶段，供绑定专属功能复用。</summary>
+        /// <remarks>始终从传入的链读取。提交方须自行确认原链、主人和身份仍有效。</remarks>
         internal static int GetSexSlaveStageFromChain(Hediff_ChainOfSexSlave chain)
         {
 #if SSC_RW17
-            return TrainingOutcomeUtility.GetChainStage(chain).Stage;
+            return TrainingOutcomeUtility.GetSexSlaveProgressStage(chain).Stage;
 #else
             // 将阶段边界集中保留在身份工具中；持有锁链的查询入口无需
             // 为了取得阶段再扫描一次 Hediff，也不另写一套严重度门槛。
@@ -163,12 +170,14 @@ namespace SexSlaveCraft
             return corruption != null && corruption.CurLevel > 0f;
         }
 
-        /// <summary>汇总原有绑定锁与1.7分化印记锁；供界面判断，实际提交还会核对目标身份。</summary>
+        /// <summary>供身份菜单和实际提交共用的绑定、印记及无主状态锁。</summary>
+        /// <remarks>无主锁按记录是否存在判定，覆盖低于一阶阈值的记录。没有这些锁时沿用普通身份选择资格。</remarks>
         public static bool IsIdentityLocked(Pawn pawn)
         {
             return
 #if SSC_RW17
                    SSCImprintUtility.GetImprintLockedIdentity(pawn) != PawnIdentity.Unset ||
+                   Hediff_SSCOwnerlessSlave.Find(pawn) != null ||
 #endif
                    SSCBondUtility.GetChain(pawn) != null ||
                    SSCBondUtility.GetBridle(pawn)?.ValidTargets.Any() == true;
@@ -366,6 +375,19 @@ namespace SexSlaveCraft
         }
 
 #if SSC_RW17
+        /// <summary>失去主人时，允许旧档从仍可核对的锁链补回缺失的受训身份。</summary>
+        internal static bool CanRecoverLegacySlaveForRelease(Pawn pawn, Pawn owner)
+        {
+            var comp = pawn?.TryGetComp<CompSexSlaveTraining>();
+            return comp?.pawnIdentity == PawnIdentity.Unset && comp.restrictionRestoreDepth == 0 &&
+                owner != pawn && SSCBondUtility.OwnerPermanentlyUnavailable(owner) &&
+                SSCBondUtility.GetBoundMaster(pawn) == owner && SSCBondUtility.GetBridle(pawn)?.ValidTargets.Any() != true &&
+                SSCImprintUtility.AllowsIdentity(pawn, PawnIdentity.Slave);
+        }
+
+        internal static bool TryRecoverLegacySlaveForRelease(Pawn pawn, Pawn owner)
+            => CanRecoverLegacySlaveForRelease(pawn, owner) && RestoreSlaveIdentity(pawn, pawn.TryGetComp<CompSexSlaveTraining>());
+
         /// <summary>原版复制只复制健康状态和需求。用继承的定型印记补齐新副本的正式身份。</summary>
         internal static bool TryRestoreCopiedSlaveIdentity(Pawn source, Pawn copy)
         {

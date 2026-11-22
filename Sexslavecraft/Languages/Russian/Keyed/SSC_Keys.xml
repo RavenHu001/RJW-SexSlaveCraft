@@ -3,6 +3,7 @@
   <SSC_PE_TargetBusy>Другой персонаж уже проводит извлечение личности у этой цели.</SSC_PE_TargetBusy>
   <SSC_DailyTrainingOutcome>[Ежедневная дрессировка] Оценка: {0} (уровень {1}) | Развращение: +{2}</SSC_DailyTrainingOutcome>
   <SSC_Ritual_MasterSlaveHeader>Господин {0} | Секс-раб: {1}</SSC_Ritual_MasterSlaveHeader>
+  <SSC_Ritual_OwnerlessTrainerHeader>Наставник {0} | Секс-раб {1}</SSC_Ritual_OwnerlessTrainerHeader>
   <SSC_Ritual_ScoreLevel>Оценка: {0} (уровень {1})</SSC_Ritual_ScoreLevel>
   <SSC_Ritual_CorruptionGain>Развращение: +{0}</SSC_Ritual_CorruptionGain>
   <SSC_Ritual_OutcomeHeader> Исход ритуала </SSC_Ritual_OutcomeHeader>
@@ -64,8 +65,8 @@
   <SSC_Setting_UseRJWOriginalEligibility_Desc>Вкл.: допустимость цели дрессировки/ритуала следует оригинальным правилам RJW can_be_fucked (рекомендуется).\nВыкл.: используются устаревшие проверки SSC (также требуют rape_enabled и дополнительный возрастной фильтр).</SSC_Setting_UseRJWOriginalEligibility_Desc>
   <SSC_Setting_EnableFullGelTint>Включить полную окраску gelatin-тела</SSC_Setting_EnableFullGelTint>
   <SSC_Setting_EnableFullGelTint_Desc>Если включено, полностью gelatinизированные персонажи сохраняют цвет головы, а тело окрашивается в бледно-фиолетовый полупрозрачный оттенок.</SSC_Setting_EnableFullGelTint_Desc>
-  <SSC_Setting_EnableRitualEnslavement>Разрешить ритуальное порабощение</SSC_Setting_EnableRitualEnslavement>
-  <SSC_Setting_EnableRitualEnslavement_Desc>Если включено, ритуал привязки может превратить цель в ванильного раба при выполнении условий. Если отключено, ритуал завершается нормально, но шаг порабощения пропускается.</SSC_Setting_EnableRitualEnslavement_Desc>
+  <SSC_Setting_EnableRitualEnslavement>Разрешить порабощение после дрессировки</SSC_Setting_EnableRitualEnslavement>
+  <SSC_Setting_EnableRitualEnslavement_Desc>Ритуал привязки или подходящий исход приступа покорности может привести к порабощению по правилам базовой игры.</SSC_Setting_EnableRitualEnslavement_Desc>
   <Tab_SexSlaveTraining>Дрессировка</Tab_SexSlaveTraining>
   <SSC_Ritual_GenitalDifference_Label>Совместимость размеров гениталий</SSC_Ritual_GenitalDifference_Label>
   <SSC_Ritual_Genital_Huge>Огромный (полностью заполнено)</SSC_Ritual_Genital_Huge>

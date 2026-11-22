@@ -27,12 +27,16 @@ namespace SexSlaveCraft
             var actor = SSCRomanceResolver.Resolve(initiator);
             // 两端独立解析；第一阶段的发起者也可能遇到第三阶段受控的接收者。
             var target = SSCRomanceResolver.Resolve(recipient);
+            int ownerlessStage = GetOwnerlessStage(initiator);
             result.InitiatorReason = actor.Reason;
             result.RecipientReason = target.Reason;
             bool command = authorization != null && authorization.IsCurrent(initiator, recipient, action);
             // 无效命令不能悄悄降为普通请求后继续；自然入口不提供授权对象。
             if (authorization != null && !command)
             { result.CanInitiate = false; result.InitiatorReason = SSCRomanceReason.InvalidAuthorization; }
+            // 无主阶段只限制本人发起。对方依然按自己的接收规则处理，无主作为接收方沿用原版。
+            else if (ownerlessStage > 0 && !CanOwnerlessInitiate(ownerlessStage, action))
+            { result.CanInitiate = false; result.InitiatorReason = SSCRomanceReason.RuleDenied; }
             else if (actor.Applicable && actor.Stage >= 2 && !command)
             {
                 // 先读本行为许可，再统一筛选对象；对象选中不能重新开放已经禁止的主动行为。
@@ -67,5 +71,27 @@ namespace SexSlaveCraft
             }
             return result;
         }
+
+        /// <summary>无主自然浪漫与只读界面共用资格。有主解析器继续负责保存偏好及主人命令。</summary>
+        internal static int GetOwnerlessStage(Pawn pawn)
+        {
+#if SSC_RW17
+            if (pawn?.health == null || pawn.def?.race?.Humanlike != true ||
+                pawn.Dead || pawn.Destroyed || pawn.Discarded || Scribe.mode != LoadSaveMode.Inactive ||
+                SSCPersonalityRuntimeUtility.IsMutating(pawn) ||
+                SSCMasterProgressionUtility.IsHollow(pawn)) return 0;
+            return Hediff_SSCOwnerlessSlave.GetActiveStage(pawn);
+#else
+            return 0;
+#endif
+        }
+
+        /// <summary>允许意味着继续检查原版关系和互动条件，界面将其显示为原版判定。</summary>
+        internal static bool CanOwnerlessInitiate(int stage, SSCRomanceAction action) => action switch
+        {
+            SSCRomanceAction.Proposal => stage < 2,
+            SSCRomanceAction.Romance => stage < 4,
+            _ => true
+        };
     }
 }

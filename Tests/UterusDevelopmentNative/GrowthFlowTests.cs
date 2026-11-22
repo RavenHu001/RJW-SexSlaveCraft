@@ -42,7 +42,9 @@ internal static partial class Program
         Patch(typeof(SexUtility), "ProcessSex", nameof(GrowthProcessBoundary));
         Patch(typeof(ConditioningUtility), "ExecuteOutcome", nameof(DailyOutcomeBoundary), new[] { typeof(Pawn), typeof(Pawn), typeof(float) });
         Patch(typeof(TrainingExpUtility), "ApplyExperienceFromScore", nameof(OldBodyBoundary));
-        Patch(typeof(ConditioningUtility), "ExecuteRitualOutcome", nameof(RitualOutcomeBoundary));
+        // 生产仪式会把开场捕获的进度传入结算，边界应拦截这条实际调用。
+        Patch(typeof(ConditioningUtility), nameof(ConditioningUtility.ExecuteRitualOutcome), nameof(RitualOutcomeBoundary),
+            new[] { typeof(Pawn), typeof(Pawn), typeof(float), typeof(ThoughtDef), typeof(CorruptionProgressionUtility.RitualChainProgress) });
         foreach (var m in AccessTools.GetDeclaredMethods(typeof(SpecializationTrainingProgressUtility)).Where(m => m.Name == "NotifyTrainingCompleted"))
             harmony.Patch(m, prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
         Patch(typeof(TrainerSpecializationProgressUtility), "NotifyProvidedTrainingCompleted", nameof(Skip));

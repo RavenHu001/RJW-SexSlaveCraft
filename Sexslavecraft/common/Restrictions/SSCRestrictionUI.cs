@@ -101,11 +101,12 @@ namespace SexSlaveCraft
             }
             if (!(SSCMod.settings?.enableSexSlaveProtectionRules ?? true))
                 listing.Label("SSC_Restrictions_Paused".Translate());
+            bool automatic = SSCRestrictionResolver.GetOwnerlessStage(pawn) > 0;
             bool applicable = SSCRestrictionResolver.IsApplicable(pawn);
             bool selfApplicable = SSCSelfTrainingEligibility.IsEligible(pawn);
             if (!applicable && !selfApplicable) listing.Label("SSC_Restrictions_NotApplicable".Translate());
             SSCRestrictionConfig config = pawn?.TryGetComp<CompSexSlaveTraining>()?.restrictionConfig;
-            if (config == null)
+            if (!automatic && config == null)
             {
                 listing.Label("SSC_Restrictions_Uninitialized".Translate());
                 if (applicable || selfApplicable)
@@ -132,7 +133,7 @@ namespace SexSlaveCraft
                             MessageTypeDefOf.RejectInput, false);
                 }
             }
-            if (!config.IsValid()) { listing.Label("SSC_Restrictions_InvalidConfig".Translate(config.version)); return; }
+            if (!automatic && !config.IsValid()) { listing.Label("SSC_Restrictions_InvalidConfig".Translate(config.version)); return; }
             var all = SSCRestrictionRules.All;
 #if SSC_RW17
             if (prepare != null)
@@ -171,16 +172,16 @@ namespace SexSlaveCraft
             {
                 // 未绑定角色只展示保留的个人选择，不把当前装备/特化标成正在生效的强制来源。
                 bool rowApplicable = rule == SSCRestrictionRule.SelfTraining ? selfApplicable : applicable;
-                SSCRestrictionResolution entry = rowApplicable ? SSCRestrictionResolver.Resolve(pawn, config.rules, rule) : null;
+                var rules = automatic ? null : config.rules;
+                SSCRestrictionResolution entry = rowApplicable ? SSCRestrictionResolver.Resolve(pawn, rules, rule) : null;
                 string extraTip = null;
                 if (rule == SSCRestrictionRule.ReceiveTraining)
                 {
                     Pawn forced = SSCRestrictionLifecycle.GetForcedTrainer(pawn);
                     if (forced != null) extraTip = "SSC_Restrictions_TrainerLocked".Translate(forced.LabelShort);
                 }
-                var rules = config.rules;
-                var saved = rules.Get(rule);
-                var savedTarget = rules.ConsensualTarget;
+                var saved = rules?.Get(rule) ?? SSCRestrictionValue.Unspecified;
+                var savedTarget = rules?.ConsensualTarget ?? SSCRestrictionValue.Unspecified;
                 // 提交闭包保留原保存值及对象范围，切换开关时沿用按下时记住的范围。
                 DrawChoice(target, rule, rules, rowApplicable, entry, value =>
                 {
@@ -188,7 +189,7 @@ namespace SexSlaveCraft
                         SSCRestrictionEditor.TrySetFromView(pawn, rule, value, config, rules, saved, savedTarget);
                     if (!changed)
                         Messages.Message("SSC_Restrictions_EditFailed".Translate(), MessageTypeDefOf.RejectInput, false);
-                }, extraTip, prepare);
+                }, extraTip, prepare, automatic);
             }
         }
 
@@ -232,20 +233,29 @@ namespace SexSlaveCraft
         /// <summary>绘制左文右勾叉；受强制影响时显示并锁住有效值，保存选择只用于无强制时的编辑及悬停说明。</summary>
         private static void DrawChoice(Listing_Standard listing, SSCRestrictionRule rule, SSCRestrictionRules rules,
             bool editable, SSCRestrictionResolution entry, Action<SSCRestrictionValue> apply, string extraTip = null,
-            Func<Rect, object, Action, Action> prepare = null)
+            Func<Rect, object, Action, Action> prepare = null, bool automatic = false)
         {
-            SSCRestrictionValue saved = rules.Get(rule);
+            SSCRestrictionValue saved = rules?.Get(rule) ?? SSCRestrictionValue.Unspecified;
             bool forced = entry != null && (entry.Source == SSCRestrictionSource.Equipment ||
                 entry.Source == SSCRestrictionSource.Specialization);
             // 只锁定本次解析实际命中的强制条目；关闭总限制或特化强制后由解析结果自然解除锁定。
             // 不将显示值写回角色，装备脱下或特化失效后仍恢复原先保存的个人选择。
-            bool canEdit = editable && !forced && (entry?.Valid ?? true);
-            SSCRestrictionValue displayed = forced && entry.Valid ? entry.Value : saved;
-            bool allowed = displayed != SSCRestrictionValue.Deny;
+            bool canEdit = editable && !automatic && !forced && (entry?.Valid ?? true);
+            SSCRestrictionValue displayed = automatic ? (entry?.Valid == true ? entry.Value : SSCRestrictionValue.Deny)
+                : forced && entry.Valid ? entry.Value : saved;
+            bool allowed = displayed != SSCRestrictionValue.Deny && !(automatic && displayed == SSCRestrictionValue.OwnerOnly);
             string label = ("SSC_Restrictions_Option_" + rule).Translate();
             string badge = OverrideBadge(entry);
             string tip = ("SSC_Restrictions_Tip_" + rule).Translate();
-            if (entry != null && (!entry.Valid || entry.Source != SSCRestrictionSource.Saved))
+            if (automatic)
+            {
+                tip += "\n\n" + "SSC_Ownerless_StageLocked".Translate();
+                if (entry != null) tip += "\n" + "SSC_Ownerless_RuleSummary".Translate(label,
+                    entry.Valid ? (displayed == SSCRestrictionValue.OwnerOnly
+                        ? "SSC_Ownerless_OwnerOnlyBlocked".Translate().ToString() : ValueLabel(displayed))
+                        : "SSC_Restrictions_InvalidValue".Translate().ToString(), SourceLabel(entry));
+            }
+            else if (entry != null && (!entry.Valid || entry.Source != SSCRestrictionSource.Saved))
                 tip += "\n\n" + "SSC_Restrictions_OverrideTip".Translate(ValueLabel(saved),
                     entry.Valid ? ValueLabel(entry.Value) : "SSC_Restrictions_InvalidValue".Translate().ToString(), SourceLabel(entry));
             if (forced) tip += "\n" + "SSC_Restrictions_ForcedLocked".Translate();
@@ -273,7 +283,7 @@ namespace SexSlaveCraft
             TextAnchor previousAnchor = Text.Anchor;
             bool changed = allowed;
             var next = allowed ? SSCRestrictionValue.Deny :
-                rule == SSCRestrictionRule.ConsensualInitiation ? rules.ConsensualTarget : SSCRestrictionValue.Allow;
+                rule == SSCRestrictionRule.ConsensualInitiation ? rules?.ConsensualTarget ?? SSCRestrictionValue.Allow : SSCRestrictionValue.Allow;
             Action submit = () => apply(next);
             if (prepare != null && previous && canEdit) submit = prepare(row, rule, submit);
             try
@@ -354,7 +364,8 @@ namespace SexSlaveCraft
             {
                 GUI.enabled = previous && editable && displayed != SSCRestrictionValue.Deny;
                 if (!GUI.enabled && prepare == null) GUI.color = previousColor * new Color(0.55f, 0.55f, 0.55f, 1f);
-                SSCRestrictionValue selected = displayed == SSCRestrictionValue.Deny ? rules.ConsensualTarget : displayed;
+                // 否决时只为可保存的规则展示记住的范围。无主的阶段规则没有保存范围。
+                SSCRestrictionValue selected = displayed == SSCRestrictionValue.Deny && rules != null ? rules.ConsensualTarget : displayed;
                 DrawTarget(first, owner, SSCRestrictionValue.OwnerOnly);
                 DrawTarget(second, anyone, SSCRestrictionValue.Allow);
 

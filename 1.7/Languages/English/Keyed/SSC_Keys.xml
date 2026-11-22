@@ -3,6 +3,7 @@
   <SSC_PE_TargetBusy>Another pawn is already performing personality excretion on this target.</SSC_PE_TargetBusy>
   <SSC_DailyTrainingOutcome>[Daily Training] Score: {0} (Level {1}) | Corruption: +{2}</SSC_DailyTrainingOutcome>
   <SSC_Ritual_MasterSlaveHeader>Master {0} | Sex Slave: {1}</SSC_Ritual_MasterSlaveHeader>
+  <SSC_Ritual_OwnerlessTrainerHeader>Trainer {0} | Sex Slave {1}</SSC_Ritual_OwnerlessTrainerHeader>
   <SSC_Ritual_ScoreLevel>Score: {0} (Level {1})</SSC_Ritual_ScoreLevel>
   <SSC_Ritual_CorruptionGain>Corruption: +{0}</SSC_Ritual_CorruptionGain>
   <SSC_Ritual_OutcomeHeader> Ritual Outcome </SSC_Ritual_OutcomeHeader>

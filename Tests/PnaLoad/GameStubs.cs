@@ -377,13 +377,21 @@ namespace SexSlaveCraft
     public class Hediff_ChainOfSexSlave : Verse.Hediff
     {
         public Verse.Pawn LinkedPawn;
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public static Hediff_ChainOfSexSlave AddToPawn(Verse.Pawn pawn, Verse.Pawn master)
+            => AddToPawnAtSeverity(pawn, master, null, out _);
+
+        // PNA 的真实补丁挂在普通和等进度挂链共用的入口上。
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static Hediff_ChainOfSexSlave AddToPawnAtSeverity(Verse.Pawn pawn, Verse.Pawn master,
+            float? initialSeverity, out Hediff_ChainOfSexSlave created)
         {
             var chain = pawn.health.hediffSet.hediffs.OfType<Hediff_ChainOfSexSlave>().FirstOrDefault();
+            created = null;
             if (chain == null)
             {
                 chain = new Hediff_ChainOfSexSlave { pawn = pawn, LinkedPawn = master, def = Program.ChainDef };
+                if (initialSeverity.HasValue) chain.Severity = initialSeverity.Value;
+                created = chain;
                 pawn.health.AddHediff(chain);
             }
             else chain.LinkedPawn = master;

@@ -137,6 +137,25 @@ internal static partial class Program
             p.health.hediffSet.hediffs.Clear(); p.needs.mood.thoughts.ThoughtInterval();
             Equal(-6f,MoodSum(p)); Equal(1,Mood(p).Single().CurStageIndex);
         });
+        Check("formal ownerless slaves count for personal, social and environment feedback", () =>
+        {
+            FeedbackContext();
+            var observer = Believer(new[] { "SexSlave_Sacred" });
+            var ownerless = Believer(new[] { "SexSlave_Envy" }, PawnIdentity.Slave);
+            var zeroStage = Believer(Array.Empty<string>(), PawnIdentity.Slave);
+            var def = new HediffDef { defName = "SSC_Hediff_OwnerlessSlave", hediffClass = typeof(Hediff_SSCOwnerlessSlave), maxSeverity = 1f };
+            DefDatabase<HediffDef>.Add(def);
+            ownerless.health.hediffSet.hediffs.Add(new Hediff_SSCOwnerlessSlave { def = def, pawn = ownerless, Severity = 0.1f });
+            zeroStage.health.hediffSet.hediffs.Add(new Hediff_SSCOwnerlessSlave { def = def, pawn = zeroStage, Severity = 0.05f });
+            MakeMap(observer, ownerless, zeroStage);
+
+            Equal(10f, MoodSum(ownerless));
+            Equal(1f, MoodSum(observer));
+            Equal(15, Opinion(observer, ownerless));
+            Equal(0, Opinion(observer, zeroStage));
+            Equal(1, SSCCulturePopulationUtility.CountManagedChained(new HashSet<Pawn>()));
+            Require(!SSCCultureStateUtility.TryGetActualMaster(ownerless, out _));
+        });
         string[] trainer = {"Hostile","Revulsion","Indifference","Reverence","SacredOffice"};
         int[] tm = {-8,-4,0,3,5}, ts = {-20,-10,0,5,10};
         for (int i = 0; i < trainer.Length; i++)

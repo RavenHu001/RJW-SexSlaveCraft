@@ -27,12 +27,15 @@ internal static partial class Program
         int originalTick = Find.TickManager.TicksGame;
         var spawned = AccessTools.PropertyGetter(typeof(Thing), "Spawned");
         var setup = AccessTools.Method(typeof(JobDriver_Sex), "SetupOrgasmTicks");
+        const string ownerlessName = "SSC_Hediff_OwnerlessSlave";
+        bool ownsOwnerlessDef = DefDatabase<HediffDef>.GetNamedSilentFail(ownerlessName) == null;
+        var ownerlessDef = ImprintBoundaryDef(ownerlessName, typeof(Hediff_SSCOwnerlessSlave));
         harmony.Patch(spawned, prefix: new HarmonyMethod(typeof(Program), nameof(PartnerFixtureSpawned)));
         harmony.Patch(setup, prefix: new HarmonyMethod(typeof(Program), nameof(PartnerFixtureReset)));
         ideology.SetValue(null, true);
         try
         {
-            Check("scene corruption reads the source precept and credits only the matching participant's own orgasm", () =>
+            Check("scene corruption accepts formal ownerless sources and credits only the matching participant's own orgasm", () =>
             {
                 var hub = PartnerPawn(); var source = PartnerPawn(); var target = PartnerPawn(Gender.Female);
                 var need = GelUseNeed(target); var receive = PartnerReceiver(hub, source);
@@ -40,13 +43,18 @@ internal static partial class Program
                 PartnerPrecept(target, "Unrestricted"); // 对象自己的启用档不能替施加者发放。
                 var sourceComp = AttachToggleTraining(source); sourceComp.pawnIdentity = PawnIdentity.Slave;
                 PartnerPrecept(source, "FemaleOnly"); GelFire(observed); Near(0, need.CurLevel);
-                PartnerChain(source);
+                var record = new Hediff_SSCOwnerlessSlave { def = ownerlessDef, pawn = source, Severity = .2f };
+                source.health.hediffSet.hediffs.Add(record);
                 PartnerPrecept(source, null); GelFire(observed); Near(0, need.CurLevel);
                 PartnerPrecept(source, "Off"); GelFire(observed); Near(0, need.CurLevel);
                 PartnerPrecept(source, "MaleOnly"); GelFire(observed); Near(0, need.CurLevel);
                 PartnerPrecept(source, "FemaleOnly");
                 GelFire(first); Near(0, need.CurLevel);
                 observed.sex_ticks = 100; observed.Orgasm(); Near(0, need.CurLevel);
+                // 原调用中替换的载体不能取得捕获时的资格，即使人物与阶段相同。
+                gelOrgasmCallback = () => source.health.hediffSet.hediffs[source.health.hediffSet.hediffs.IndexOf(record)] =
+                    new Hediff_SSCOwnerlessSlave { def = ownerlessDef, pawn = source, Severity = record.Severity };
+                GelFire(observed); Near(0, need.CurLevel);
                 // 两名发起者只共享接收端、没有互相配对，仍是同一活动场次。
                 GelFire(observed); Near(.005f, need.CurLevel);
             });
@@ -175,6 +183,8 @@ internal static partial class Program
             ideology.SetValue(null, originalIdeology); SetPartnerTick(originalTick);
             var remove = AccessTools.Method(typeof(DefDatabase<PreceptDef>), "Remove");
             foreach (var def in defs) remove.Invoke(null, new object[] { def });
+            // All 后续读取生产 XML。仅撤销本组登记的最小定义。
+            if (ownsOwnerlessDef) AccessTools.Method(typeof(DefDatabase<HediffDef>), "Remove").Invoke(null, new object[] { ownerlessDef });
             sceneFixturePawns.Clear(); gelOrgasmCallback = null;
             harmony.Unpatch(spawned, AccessTools.Method(typeof(Program), nameof(PartnerFixtureSpawned)));
             harmony.Unpatch(setup, AccessTools.Method(typeof(Program), nameof(PartnerFixtureReset)));

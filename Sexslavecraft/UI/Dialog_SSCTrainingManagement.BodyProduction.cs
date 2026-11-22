@@ -326,17 +326,17 @@ namespace SexSlaveCraft
             }
         }
 
-        /// <summary>下拉呈现保存档位，当前实际效果有差异时补充说明。</summary>
+        /// <summary>共用档位控件。正式无主显示对应阶段的锁定档位，有主显示原保存档位。</summary>
         private void AddSensitivitySection(SettingsColumn column, PageEdit edit, SSCOrgasmSensitivityContext context)
         {
-            // 降阶后保存档位和实际档位可不同，显示实际值不会回写保存值。
             var state = SSCOrgasmSensitivityUtility.GetState(edit.Pawn);
-            AddBodySetting(column, edit, "<b>" + "SSC_Sensitivity_Title".Translate() + "</b>", state.SavedLevel,
+            AddBodySetting(column, edit, "<b>" + "SSC_Sensitivity_Title".Translate() + "</b>",
+                state.OwnerlessStage > 0 ? state.EffectiveLevel : state.SavedLevel,
                 Enumerable.Range(0, 5), SSCOrgasmSensitivityPresentation.Level,
                 (int level, out string reason) => SSCOrgasmSensitivityUtility.CanSet(context, level, out reason),
                 (int level, out string reason) => SSCOrgasmSensitivityUtility.TrySet(context, level, out reason),
                 optionLabel: SSCOrgasmSensitivityPresentation.OptionLabel);
-            if (state.SavedLevel != state.EffectiveLevel)
+            if (state.OwnerlessStage == 0 && state.SavedLevel != state.EffectiveLevel)
                 column.AddLabel("SSC_Sensitivity_EffectiveLevel".Translate(SSCOrgasmSensitivityPresentation.Level(state.EffectiveLevel)),
                     column.Indent, state.InactiveReason?.Translate().ToString());
         }

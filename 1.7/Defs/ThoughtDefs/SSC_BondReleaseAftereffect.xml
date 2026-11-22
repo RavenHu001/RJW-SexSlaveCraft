@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThoughtDef>
+    <defName>SSC_BondReleaseAftereffect_Mood</defName>
+    <workerClass>ThoughtWorker_Hediff</workerClass>
+    <hediff>SSC_Hediff_BondReleaseAftereffect</hediff>
+    <validWhileDespawned>true</validWhileDespawned>
+    <stages>
+      <li>
+        <label>没了主人的空落</label>
+        <description>一直牵着我的那股力，没了。手脚没处放，心里空落落的，做什么都静不下心……</description>
+        <baseMoodEffect>-8</baseMoodEffect>
+      </li>
+    </stages>
+  </ThoughtDef>
+</Defs>

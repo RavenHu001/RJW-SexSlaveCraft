@@ -145,8 +145,8 @@ namespace SexSlaveCraft
                 && BindingRitualStateUtility.CanContinueOutcome(jobRitual, master, slave);
             if (!canContinue()) return;
 #if SSC_RW17
-            // 本场已领取一次性资格。算分组件和记忆回调都可能改动角色，须先捕获两名原参与者、
-            // 当前需求及原锁链。后续各环节通过同一捕获结果复查 Comp 和人格，沿用原场次与 Job 校验。
+            // 本场已领取一次性资格。先绑定结算上下文，再执行可能改变角色的算分、记忆和收益回调。
+            // 两套评分共用原参与者、需求、进度载体及主持分支，所有写入继续受本场 Lord 与阶段 Job 约束。
             var chainProgress = new CorruptionProgressionUtility.RitualChainProgress(master, slave, canContinue);
             canContinue = chainProgress.CanContinueSettlement;
 #endif

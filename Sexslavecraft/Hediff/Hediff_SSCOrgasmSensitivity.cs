@@ -1,4 +1,4 @@
-// AI 辅助生成：全身微械指令；Severity 只保存一至四枚举档位。
+// AI 辅助生成：全身微械指令；Severity 保存手动档位，零表示自动载体无手动选择。
 using Verse;
 using RimWorld;
 
@@ -25,6 +25,9 @@ namespace SexSlaveCraft
 
         /// <summary>索引随实际档位派生；关闭时保留非负索引约定，但 CurStage 单独返回中性阶段。</summary>
         public override int CurStageIndex => System.Math.Max(0, SSCOrgasmSensitivityUtility.GetState(pawn).EffectiveLevel - 1);
+
+        public override bool ShouldRemove => base.ShouldRemove &&
+            (Scribe.mode == LoadSaveMode.Inactive && Hediff_SSCOwnerlessSlave.GetActiveStage(pawn) == 0);
 
         /// <summary>只有当前唯一 owner 提供一次 RJW 脆弱度偏移；离体和重复实例返回中性阶段。</summary>
         public override HediffStage CurStage
@@ -77,8 +80,9 @@ namespace SexSlaveCraft
         protected override ThoughtState CurrentStateInternal(Pawn p)
         {
             var state = SSCOrgasmSensitivityUtility.GetState(p);
+            int stage = state.OwnerlessStage > 0 ? state.OwnerlessStage : state.ChainStage;
             return state.EffectiveLevel > 0 && SSCOrgasmSensitivityConfig.TryGetMood(def,
-                SSCOrgasmSensitivityConfig.Get(SSCOrgasmSensitivityUtility.Definition), state.ChainStage, state.EffectiveLevel, out int index)
+                SSCOrgasmSensitivityConfig.Get(SSCOrgasmSensitivityUtility.Definition), stage, state.EffectiveLevel, out int index)
                 ? ThoughtState.ActiveAtStage(index) : ThoughtState.Inactive;
         }
     }

@@ -25,6 +25,8 @@ namespace SexSlaveCraft
     public sealed class SSCRomanceView
     {
         public bool Saved { get; internal set; }
+        internal bool? AutomaticValue { get; set; }
+        internal bool DisplayValue => AutomaticValue ?? Saved;
         public bool Unlocked { get; internal set; }
         public bool CanChange { get; internal set; }
         public SSCRomanceReason Reason { get; internal set; }

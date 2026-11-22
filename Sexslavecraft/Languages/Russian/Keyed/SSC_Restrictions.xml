@@ -69,7 +69,7 @@
   <SSC_Restrictions_Reason_BindingTrainerNotAssigned>Цели не назначен наставник; назначьте хозяина для первого связывания на вкладке обучения цели</SSC_Restrictions_Reason_BindingTrainerNotAssigned>
   <SSC_Restrictions_Reason_BindingTrainerMismatch>Назначенный наставник цели — не текущий исполнитель; выберите назначенного наставника или измените назначение</SSC_Restrictions_Reason_BindingTrainerMismatch>
   <SSC_Restrictions_Reason_BindingInitiatorNotMaster>Текущему исполнителю не выбрана роль SSC «Хозяин»; одного права стать хозяином или назначения наставником недостаточно для первого связывания</SSC_Restrictions_Reason_BindingInitiatorNotMaster>
-  <SSC_Restrictions_Reason_SelfTrainingIneligible>Требуется SSC секс-рабыня с цепью</SSC_Restrictions_Reason_SelfTrainingIneligible>
+  <SSC_Restrictions_Reason_SelfTrainingIneligible>Требуется секс-рабыня SSC с цепью или без хозяина на первой стадии или выше</SSC_Restrictions_Reason_SelfTrainingIneligible>
   <SSC_Restrictions_EditInitiator>Изменить правила инициатора</SSC_Restrictions_EditInitiator>
   <SSC_Restrictions_EditReceiver>Изменить правила принимающего</SSC_Restrictions_EditReceiver>
   <SSC_Restrictions_None>Не выбран</SSC_Restrictions_None>

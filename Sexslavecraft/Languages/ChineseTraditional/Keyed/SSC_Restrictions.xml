@@ -69,7 +69,7 @@
   <SSC_Restrictions_Reason_BindingTrainerNotAssigned>目標尚未指定調教員；請先在目標的調教頁指定首次綁定的主人</SSC_Restrictions_Reason_BindingTrainerNotAssigned>
   <SSC_Restrictions_Reason_BindingTrainerMismatch>目標指定的調教員不是目前操作者；請改由指定者操作，或重新指定調教員</SSC_Restrictions_Reason_BindingTrainerMismatch>
   <SSC_Restrictions_Reason_BindingInitiatorNotMaster>目前操作者的 SSC 身分未設為「主人」；僅有主人資格或調教員任職不足以首次綁定</SSC_Restrictions_Reason_BindingInitiatorNotMaster>
-  <SSC_Restrictions_Reason_SelfTrainingIneligible>需要持有鎖鏈的 SSC 性奴身份</SSC_Restrictions_Reason_SelfTrainingIneligible>
+  <SSC_Restrictions_Reason_SelfTrainingIneligible>需要 SSC 性奴身分，且持有鎖鏈或達到無主一階</SSC_Restrictions_Reason_SelfTrainingIneligible>
   <SSC_Restrictions_EditInitiator>編輯發起者規則</SSC_Restrictions_EditInitiator>
   <SSC_Restrictions_EditReceiver>編輯接收者規則</SSC_Restrictions_EditReceiver>
   <SSC_Restrictions_None>未選擇</SSC_Restrictions_None>

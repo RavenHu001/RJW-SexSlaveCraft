@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SSC_Ownerless_PhaseRules>（無主性奴階段{0}）</SSC_Ownerless_PhaseRules>
+  <SSC_Ownerless_StageLocked>隨無主階段自動調整，無法手動修改。</SSC_Ownerless_StageLocked>
+  <SSC_Ownerless_RuleSummary>{0}：{1} · {2}</SSC_Ownerless_RuleSummary>
+  <SSC_Restrictions_Source_OwnerlessStage>階段規則</SSC_Restrictions_Source_OwnerlessStage>
+  <SSC_Ownerless_OwnerOnlyBlocked>僅限主人（目前無主）</SSC_Ownerless_OwnerOnlyBlocked>
+  <SSC_Ownerless_AutoSensitivity>階段脆弱度倍率 ×{0}</SSC_Ownerless_AutoSensitivity>
+  <SSC_Ownerless_RomanceReceptionVanilla>接收示愛和求婚由原版判定。</SSC_Ownerless_RomanceReceptionVanilla>
+  <SSC_Ownerless_Vanilla>原版判定</SSC_Ownerless_Vanilla>
+  <SSC_Ownerless_Denied>禁止</SSC_Ownerless_Denied>
+</LanguageData>

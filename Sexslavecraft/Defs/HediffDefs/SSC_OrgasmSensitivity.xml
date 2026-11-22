@@ -4,7 +4,7 @@
   <HediffDef>
     <defName>SSC_OrgasmSensitivity</defName>
     <label>Sexual sensitivity rewrite</label>
-    <description>How sexually sensitive a sex slave's micromachine-invaded body is rests entirely with its master.</description>
+    <description>A body altered by micromachines, so sensitive that the lightest touch makes it go weak and tremble. Higher settings make pleasure more intense and teasing harder to bear. Even a little teasing can set off one orgasm after another.</description>
     <hediffClass>SexSlaveCraft.Hediff_SSCOrgasmSensitivity</hediffClass>
     <isBad>false</isBad>
     <minSeverity>0</minSeverity>

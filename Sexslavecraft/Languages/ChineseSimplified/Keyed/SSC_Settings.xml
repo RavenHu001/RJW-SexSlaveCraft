@@ -19,8 +19,8 @@
 
   <SSC_Setting_EnableFullGelTint>启用完全凝胶化外观</SSC_Setting_EnableFullGelTint>
   <SSC_Setting_EnableFullGelTint_Desc>开启后，完全凝胶化角色的身体和头部皮肤使用凝胶外观。选中角色，通过“凝胶外观”指令设置个人颜色和不透明度；眼睛、五官与头发保持原外观。</SSC_Setting_EnableFullGelTint_Desc>
-  <SSC_Setting_EnableRitualEnslavement>允许绑定仪式转化为奴隶</SSC_Setting_EnableRitualEnslavement>
-  <SSC_Setting_EnableRitualEnslavement_Desc>开启后，满足恶堕、评分与意志条件的绑定仪式可将目标转化为原版奴隶。关闭只会禁用转奴判定，不影响仪式的其他收益。</SSC_Setting_EnableRitualEnslavement_Desc>
+  <SSC_Setting_EnableRitualEnslavement>允许调教结算转为奴隶</SSC_Setting_EnableRitualEnslavement>
+  <SSC_Setting_EnableRitualEnslavement_Desc>开启后，绑定仪式或符合条件的奴性爆发结算可以尝试将目标转为原版奴隶。</SSC_Setting_EnableRitualEnslavement_Desc>
   <SSC_Setting_EnableRimTalkSexDialogue>为 SSC 性行为触发 RimTalk 对话</SSC_Setting_EnableRimTalkSexDialogue>
   <SSC_Setting_EnableRimTalkSexDialogue_Desc>安装并启用 RimTalk 后，SSC 日常调教、绑定仪式阶段、人格排泄或公交车交易性行为会在场景开始且当前倍速允许时，为参与者加入 AI 对话请求。关闭后可避免这些额外的 AI 调用。</SSC_Setting_EnableRimTalkSexDialogue_Desc>
   <SSC_Setting_RimTalkMaxSpeed>RimTalk 调教对话最高发送倍速：{0}</SSC_Setting_RimTalkMaxSpeed>

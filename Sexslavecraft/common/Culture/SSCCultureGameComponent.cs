@@ -116,7 +116,7 @@ namespace SexSlaveCraft
 
         public bool TryGetManagedChainedCount(out int count)
         {
-            // 环境锁链人数独立准备，不因请求它而构建人物栏名册或个人绑定统计。
+            // 环境性奴人数独立准备，不因请求它而构建人物栏名册或个人绑定统计。
             count = 0;
             if (!BeginRead()) return false;
             if (!managedReady)

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <HediffDef>
+    <defName>SSC_Hediff_OwnerlessSlave</defName>
+    <hediffClass>SexSlaveCraft.Hediff_SSCOwnerlessSlave</hediffClass>
+    <label>无主性奴</label>
+    <description>已经成形、却还没有主人的性奴。淫穴被调教得随时发情，撅臀承欢早已成了本能，奴性深深刻进骨子里——没有主人，这具身子依旧一天天陷得更深，只等某个主人前来认领，日夜填满、贯穿到底。</description>
+    <isBad>false</isBad>
+    <!-- 阶段记录由 SSC 的成形或交接入口建立。原版复制不继承此记录。 -->
+    <duplicationAllowed>false</duplicationAllowed>
+    <!-- 20% 是新成形的默认进度。已有进度的交接应传入原严重度。 -->
+    <initialSeverity>0.2</initialSeverity>
+    <maxSeverity>1</maxSeverity>
+    <!-- 原版低于首个阈值时使用第一项。中性零阶让 10% 处正常触发健康刷新，四个正式阶段的本地化索引为 1 到 4。 -->
+    <!-- 能力 offset 是百分点偏移；市值和 RJW 脆弱度通过原版 statFactors 乘算，实际 Stat 读取仍取各自的后处理结果。 -->
+    <stages>
+      <li><minSeverity>0</minSeverity></li>
+      <li>
+        <minSeverity>0.1</minSeverity>
+        <label>见习性奴</label>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.05</offset></li>
+          <li><capacity>Talking</capacity><offset>-0.05</offset></li>
+        </capMods>
+        <statFactors>
+          <MarketValue>1.25</MarketValue>
+          <Vulnerability>1.5</Vulnerability>
+        </statFactors>
+      </li>
+      <li>
+        <minSeverity>0.3</minSeverity>
+        <label>性奴</label>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.1</offset></li>
+          <li><capacity>Talking</capacity><offset>-0.1</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.05</offset></li>
+        </capMods>
+        <statFactors>
+          <MarketValue>1.5</MarketValue>
+          <Vulnerability>2</Vulnerability>
+        </statFactors>
+      </li>
+      <li>
+        <minSeverity>0.5</minSeverity>
+        <label>屈服性奴</label>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.2</offset></li>
+          <li><capacity>Talking</capacity><offset>-0.2</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.1</offset></li>
+        </capMods>
+        <statFactors>
+          <MarketValue>1.75</MarketValue>
+          <Vulnerability>3</Vulnerability>
+        </statFactors>
+      </li>
+      <li>
+        <minSeverity>0.9</minSeverity>
+        <label>肉便器化</label>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.3</offset></li>
+          <li><capacity>Talking</capacity><offset>-0.3</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.2</offset></li>
+        </capMods>
+        <statFactors>
+          <MarketValue>2</MarketValue>
+          <Vulnerability>4.5</Vulnerability>
+        </statFactors>
+      </li>
+    </stages>
+  </HediffDef>
+</Defs>

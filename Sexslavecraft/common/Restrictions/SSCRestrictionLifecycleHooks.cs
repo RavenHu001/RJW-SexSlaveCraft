@@ -87,10 +87,10 @@ namespace SexSlaveCraft
         }
     }
 
-    [HarmonyPatch(typeof(Hediff_ChainOfSexSlave), nameof(Hediff_ChainOfSexSlave.AddToPawn))]
+    [HarmonyPatch(typeof(Hediff_ChainOfSexSlave), nameof(Hediff_ChainOfSexSlave.AddToPawnAtSeverity))]
     internal static class SSCRestrictionChainHook
     {
-        /// <summary>兼容直接建立旧锁链的入口，必须等目标引用写好后才判定首次适用。</summary>
+        /// <summary>普通挂链、等进度挂链和直接换主经过同一写入点。主人引用写好后再刷新实际许可。</summary>
         private static void Postfix(Hediff_ChainOfSexSlave __result)
         {
             SSCRestrictionGameComponent.Notify(__result?.pawn);

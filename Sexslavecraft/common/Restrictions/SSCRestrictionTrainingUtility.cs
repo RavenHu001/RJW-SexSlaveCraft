@@ -3,7 +3,7 @@
 namespace SexSlaveCraft
 {
     /// <summary>工作准入的失败类型；行为许可与身体、身份、指派条件保持分层。</summary>
-    internal enum SSCTrainingFailure { None, PermissionDenied, TrainerRequired, TargetInvalid, BindingMasterRequired, AssignmentRequired, TargetIdentityRequired }
+    internal enum SSCTrainingFailure { None, PermissionDenied, TrainerRequired, TargetInvalid, BindingMasterRequired, AssignmentRequired, TargetIdentityRequired, BindingCooldown }
 
     /// <summary>明确区分整体工作准入与限制系统许可，避免主人许可通过被误读为全部工作条件通过。</summary>
     internal sealed class SSCTrainingAdmission
@@ -11,12 +11,14 @@ namespace SexSlaveCraft
         public SSCRestrictionDecision Permission { get; }
         public SSCTrainingFailure Failure { get; }
         public bool Allowed => Failure == SSCTrainingFailure.None;
+        private readonly string detail;
 
         /// <summary>保留完整许可结果与工作失败类型；成功时无需构造任何本地化原因。</summary>
-        public SSCTrainingAdmission(SSCRestrictionDecision permission, SSCTrainingFailure failure)
+        public SSCTrainingAdmission(SSCRestrictionDecision permission, SSCTrainingFailure failure, string detail = null)
         {
             Permission = permission;
             Failure = failure;
+            this.detail = detail;
         }
 
         /// <summary>仅在调用者需要显示或记录时生成失败文字，不把翻译作为业务判断条件。</summary>
@@ -33,6 +35,7 @@ namespace SexSlaveCraft
                     case SSCTrainingFailure.TargetIdentityRequired: return "SSC_Training_TargetIdentityRequired".Translate();
                     case SSCTrainingFailure.BindingMasterRequired: return "SSC_Restrictions_BindingMasterRequired".Translate();
                     case SSCTrainingFailure.AssignmentRequired: return "SSC_Restrictions_TrainingAssignmentRequired".Translate();
+                    case SSCTrainingFailure.BindingCooldown: return "SSC_BondRelease_BindingCooldown".Translate(detail);
                     default: return null;
                 }
             }
@@ -46,18 +49,34 @@ namespace SexSlaveCraft
         public static Pawn GetForcedTrainer(Pawn pawn)
         {
             if (!(SSCMod.settings?.enableSexSlaveProtectionRules ?? true)) return null;
+#if SSC_RW17
+            // 拒绝接收且锁定为主人的协调只适用于实际绑定。无主名单独立于此刻的接收许可。
+            if (SSCRestrictionResolver.GetOwnerlessStage(pawn) > 0) return null;
+#endif
             SSCRestrictionConfig config = pawn?.TryGetComp<CompSexSlaveTraining>()?.restrictionConfig;
             if (!SSCRestrictionResolver.IsApplicable(pawn) || config?.IsValid() != true) return null;
             SSCRestrictionResolution rule = SSCRestrictionResolver.Resolve(pawn, config.rules, SSCRestrictionRule.ReceiveTraining);
             return rule.Valid && rule.Value == SSCRestrictionValue.Deny ? SSCBondUtility.GetBoundMaster(pawn) : null;
         }
 
-        /// <summary>未绑定目标沿用首次建绑准备；已绑定目标使用独立调教条目，不查询普通双人条目。</summary>
+        /// <summary>按任务用途选择准入规则，供选角、开场和训练任务共用。</summary>
+        /// <remarks>
+        /// 日常有无锁链都走 DailyTraining，由统一校验判断身份、许可和指派。
+        /// 主人为无链目标准备新绑定。训导官主持正式无主目标时，继续读取接收调教的实际生效条目。
+        /// 当前用途只决定后续检查，任职和指派均由 Evaluate 核验。零阶无链目标保留原先的建绑准入。
+        /// </remarks>
         public static SSCRestrictionRequest CreateRequest(Pawn actor, Pawn target, bool ritual)
         {
+#if SSC_RW17
+            SSCInteractionKind kind = !ritual ? SSCInteractionKind.DailyTraining
+                : SSCBondUtility.GetBoundMaster(target) != null ||
+                    (!SSCIdentityUtility.IsMaster(actor) && SSCRestrictionResolver.GetOwnerlessStage(target) > 0)
+                    ? SSCInteractionKind.RitualTraining : SSCInteractionKind.BindingPreparation;
+#else
             SSCInteractionKind kind = SSCBondUtility.GetBoundMaster(target) == null
                 ? SSCInteractionKind.BindingPreparation
                 : ritual ? SSCInteractionKind.RitualTraining : SSCInteractionKind.DailyTraining;
+#endif
             return new SSCRestrictionRequest(actor, target, kind, actor != null && target != null && actor != target);
         }
 
@@ -89,7 +108,7 @@ namespace SexSlaveCraft
         {
             SSCRestrictionDecision decision = SSCRestrictionPolicy.Evaluate(request);
             // 身份是工作资格，不受主人最高许可、总限制开关或强制命令豁免。
-            // 无锁链的性奴仍可首次建绑；不从成长、指派或原版身份推断 SSC 身份。
+            // SSC 身份独立于成长、指派、锁链和原版身份。
             if (IsTraining(request) && request.Receiver != null && !SSCIdentityUtility.IsSexSlave(request.Receiver))
                 return new SSCTrainingAdmission(decision, SSCTrainingFailure.TargetIdentityRequired);
             if (!decision.Allowed)
@@ -107,6 +126,19 @@ namespace SexSlaveCraft
             // 首次准备只能由指定且可建立所有权的主人完成；停用行为限制也不能授予新主人身份。
             if (request.Kind == SSCInteractionKind.BindingPreparation && !SSCIdentityUtility.IsMaster(actor))
                 return new SSCTrainingAdmission(decision, SSCTrainingFailure.BindingMasterRequired);
+#if SSC_RW17
+            if (request.Kind == SSCInteractionKind.BindingPreparation)
+            {
+                // 零阶沿用原首次建链算法，但由旧锁链解绑得到的零阶仍须完成冷却。
+                // 训导官的成长仪式使用 RitualTraining，因此不受再次建绑期限约束。
+                if (Hediff_SSCBondReleaseAftereffect.Active(target) is { } cooldown)
+                    return new SSCTrainingAdmission(decision, SSCTrainingFailure.BindingCooldown, cooldown.LabelInBrackets);
+                // 正式无主的绑定和爆发共用新绑定资格。零阶仪式仍保留原首次建链的其他检查。
+                if (SSCRestrictionResolver.GetOwnerlessStage(target) > 0 && !SSCBondUtility.CanBindNewWithProgress(actor, target))
+                    return new SSCTrainingAdmission(decision, SSCTrainingFailure.TargetInvalid);
+            }
+#endif
+            // 自动日常任务始终检查指派。手动发起时只有当前实际主人享有既有的指派豁免。
             if ((requireAssignment || decision.Reason != SSCRestrictionReason.BoundOwner) &&
 #if SSC_RW17 || SSC_TRAINER_WORK_TEST
                 (!TrainerAssignmentUtility.IsAssignedTrainer(target.TryGetComp<CompSexSlaveTraining>(), actor) || actor.Discarded))

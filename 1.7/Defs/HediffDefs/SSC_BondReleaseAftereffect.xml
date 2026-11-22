@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <HediffDef>
+    <defName>SSC_Hediff_BondReleaseAftereffect</defName>
+    <hediffClass>SexSlaveCraft.Hediff_SSCBondReleaseAftereffect</hediffClass>
+    <label>解绑后效</label>
+    <description>主奴之间的支配联系被切断。身子还在等着命令，手脚发沉，动作频频停顿，一时改不回没有主人的日子。</description>
+    <isBad>true</isBad>
+    <tendable>false</tendable>
+    <everCurableByItem>false</everCurableByItem>
+    <duplicationAllowed>false</duplicationAllowed>
+    <initialSeverity>1</initialSeverity>
+    <comps>
+      <li Class="HediffCompProperties_Disappears">
+        <disappearsAfterTicks>120000</disappearsAfterTicks>
+        <showRemainingTime>true</showRemainingTime>
+      </li>
+    </comps>
+    <stages>
+      <li><statFactors><WorkSpeedGlobal>0.75</WorkSpeedGlobal></statFactors></li>
+    </stages>
+  </HediffDef>
+</Defs>

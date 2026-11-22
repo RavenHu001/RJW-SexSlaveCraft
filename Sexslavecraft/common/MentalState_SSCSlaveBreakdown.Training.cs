@@ -13,59 +13,68 @@ namespace SexSlaveCraft
         // Waiting 只持有信件。Approved 已消费决定，等游戏 tick 派发。
         // Dispatched 只授权一个已记录 loadID 的发起 Job，训练预约仍由驱动取得。
         private enum RequestPhase { None, Waiting, Approved, Dispatched }
+        // 存档记录本次批准的业务结果。信件占位文字、调教员后来的任职变化均不能重选结果。
+        internal enum TrainingDecision { None, FormOwnerless, FormBound, BindOwnerless, AdvanceOwnerless, AdvanceBound }
+        // Success 先表示原任务已通过普通收益的完成判定，正式阶段和结果反馈由精神状态退出时提交。
         private enum EpisodeResult { None, Success, Failure }
         // 拒绝、失效和任务失败共用的重申请间隔，与训练组件的日常冷却独立。
         private const int RequestInterval = 3750;
         private const float RequestRadius = 15f;
         private RequestPhase requestPhase;
+        private TrainingDecision approvedDecision;
+        private float completedTrainingScore; // 复用原任务的基础分，退出时仅供符合资格的原版转奴使用。
         private EpisodeResult episodeResult;
         private Pawn requestTrainer;
         private object trainerPersonality; // 仅当前进程有效，用于识别同一身体中的人格替换。
         private int requestId = -1;
         private int trainingJobId = -1;
         private long nextRequestAt;
-        // 延时只给已经开场的这份批准。原期限用于决定窗口和撤销恢复，运行期限始终由 Hediff 提供。
-        private long originalDeadline = -1;
+        // 只记录本场批准是否加过一小时。实际的倒计时由原版组件独立保存。
+        private bool trainingExtended;
+        private long legacyOriginalDeadline = -1;
         private bool trainingStarted;
         private bool outcomeIssued;
-
-        /// <summary>
-        /// 供第 6 项接入。无链特批完成后，原受训者仍无链且当前实际恶堕满值时，依次传递受训者和调教员。
-        /// 事件随本场结局发布一次，正式身份与阶段由后续消费者处理。
-        /// </summary>
-        internal static event Action<Pawn, Pawn> UnboundTrainingCompletedAtFullCorruption;
 
         internal const string TrainingDefName = "SSC_BreakdownTraining";
         /// <summary>JobDef 划定特批路径。实际权限还需向当前发作核对受方、调教员和任务编号。</summary>
         internal static bool IsBreakdownTraining(Job job) => job?.def?.defName == TrainingDefName;
 
-        private long RequestDeadline => originalDeadline >= 0 ? originalDeadline : Deadline;
+        private int RequestRemainingTicks => RemainingTicks - (trainingExtended ? GenDate.TicksPerHour : 0);
         private bool TrainerIdentityCurrent => requestTrainer != null &&
             SSCPersonalityRuntimeUtility.IsCurrent(requestTrainer, trainerPersonality) &&
             !SSCPersonalityRuntimeUtility.IsMutating(requestTrainer);
 
         private void ExposeTrainingRequest()
         {
-            // 精神状态保存授权，原版信堆和任务跟踪器分别保存各自对象。存档只用 Pawn 引用和 ID 把三者接回。
-            // 第三步旧档缺少这些字段时按尚无申请处理，沿用原开场阶段。加载期间只恢复数据。
+            // 精神状态持有批准结果，原版信堆和任务跟踪器各自保存对象。读档按双方引用、信件 ID 和 Job loadID 恢复关联。
+            // 缺请求阶段的旧档视为尚未发信。若已有批准但缺结果字段，只有原主继续调教可以从既有绑定推断。
             Scribe_Values.Look(ref requestPhase, "sscBreakdownRequestPhase", RequestPhase.None);
+            Scribe_Values.Look(ref approvedDecision, "sscBreakdownTrainingDecision", TrainingDecision.None);
+            Scribe_Values.Look(ref completedTrainingScore, "sscBreakdownCompletedTrainingScore", 0f);
             Scribe_Values.Look(ref episodeResult, "sscBreakdownResult", EpisodeResult.None);
             Scribe_References.Look(ref requestTrainer, "sscBreakdownTrainer");
             Scribe_Values.Look(ref requestId, "sscBreakdownRequestId", -1);
             Scribe_Values.Look(ref trainingJobId, "sscBreakdownTrainingJobId", -1);
             Scribe_Values.Look(ref nextRequestAt, "sscBreakdownNextRequestAt", 0L);
-            Scribe_Values.Look(ref originalDeadline, "sscBreakdownOriginalDeadline", -1L);
+            Scribe_Values.Look(ref trainingExtended, "sscBreakdownTrainingExtended", false);
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+                Scribe_Values.Look(ref legacyOriginalDeadline, "sscBreakdownOriginalDeadline", -1L);
             Scribe_Values.Look(ref trainingStarted, "sscBreakdownTrainingStarted", false);
             Scribe_Values.Look(ref outcomeIssued, "sscBreakdownOutcomeIssued", false);
             // 交叉引用解析后才能取得当前进程的人格凭据。首次使用时仍须核对原信件或原任务，
             // 有链时还要核对精神状态保存的原链和实际主人。读档本身没有新的批准或派发。
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
                 trainerPersonality = SSCPersonalityRuntimeUtility.Capture(requestTrainer);
+                // 已有绑定的旧批准只有原主继续调教一种结果。无链旧批准交由派发守卫撤销。
+                if (boundEpisode && HasApprovedTraining && approvedDecision == TrainingDecision.None)
+                    approvedDecision = TrainingDecision.AdvanceBound;
+            }
         }
 
         // 延长的时间只给已经开场的任务，拒绝在原到期时间后批准或生成另一封请求。
         private bool CanRequestTraining => openingPhase == OpeningPhase.Wander &&
-            episodeResult == EpisodeResult.None && CanIssueBehavior && SSCSlaveBreakdown.Now < RequestDeadline;
+            episodeResult == EpisodeResult.None && CanIssueBehavior && RequestRemainingTicks > 0;
 
         // 从玩家决定起让出候选槽。等待选择的信件本身不占用发作小人或调教员。
         internal bool HasApprovedTraining => requestPhase is RequestPhase.Approved or RequestPhase.Dispatched;
@@ -113,33 +122,66 @@ namespace SexSlaveCraft
                 letter.Subject == pawn && CanRequestTraining && ActiveLetter == letter;
 
         /// <summary>界面绘制和实际提交共用一套接受准入，点击时重新查询可达性、预约和调教员占用。</summary>
-        internal bool CanApprove(ChoiceLetter_SSCBreakdownTraining letter)
-            => IsPendingDecision(letter) && TrainerIdentityCurrent &&
+        internal bool CanApprove(ChoiceLetter_SSCBreakdownTraining letter, TrainingDecision decision)
+            => IsPendingDecision(letter) && TrainerIdentityCurrent && CanUseDecision(decision) &&
                 (CanWaitForInvitedTrainer() || (CanApproach(requestTrainer) && AvailableToTeach(requestTrainer)));
+
+        /// <summary>按入场阶段及该封信调教员的当前身份提供选项。按钮可用性另由批准条件决定。</summary>
+        internal IEnumerable<TrainingDecision> TrainingChoices()
+        {
+            if (boundEpisode) { yield return TrainingDecision.AdvanceBound; yield break; }
+            if (SSCIdentityUtility.IsMaster(requestTrainer))
+                yield return startingOwnerlessStage > 0 ? TrainingDecision.BindOwnerless : TrainingDecision.FormBound;
+            yield return startingOwnerlessStage > 0 ? TrainingDecision.AdvanceOwnerless : TrainingDecision.FormOwnerless;
+        }
+
+        internal static bool IsBindingDecision(TrainingDecision decision)
+            => decision is TrainingDecision.FormBound or TrainingDecision.BindOwnerless;
+
+        // 每个阶段都重新核对当初选定的结果。零阶已成形时撤销首次选项，达到四阶时撤销发作中的绑定选项。
+        // 同一记录已被外部推进的成长任务仍可完成普通收益，额外进度由最终结算核对起始阶段。
+        private bool CanUseDecision(TrainingDecision decision)
+        {
+            // 再绑定冷却沿用统一建绑准入，只限制有主成形和等进度绑定。保持无主仍可照常批准及结算。
+            if (boundEpisode) return decision == TrainingDecision.AdvanceBound;
+            int stage = Hediff_SSCOwnerlessSlave.GetActiveStage(pawn);
+            return decision switch
+            {
+                TrainingDecision.FormOwnerless => startingOwnerlessStage == 0 && stage == 0,
+                TrainingDecision.FormBound => startingOwnerlessStage == 0 && stage == 0 &&
+                    SSCBondUtility.CanBindNewWithProgress(requestTrainer, pawn),
+                TrainingDecision.BindOwnerless => startingOwnerlessStage > 0 && stage is > 0 and < 4 &&
+                    SSCBondUtility.CanBindNewWithProgress(requestTrainer, pawn),
+                TrainingDecision.AdvanceOwnerless => startingOwnerlessStage > 0 && stage > 0,
+                _ => false
+            };
+        }
 
         // 如果调教员也是本场邀约的对象，可以先批准。邀约收尾后的完整可达性和预约检查仍在派发前执行。
         private bool CanWaitForInvitedTrainer() => invitation?.Partner == requestTrainer &&
             invitation?.OccupiesPartner(pawn) == true && TrainerEligible(requestTrainer) &&
             requestTrainer.Position.InHorDistOf(pawn.Position, RequestRadius);
 
-        internal void Decide(ChoiceLetter_SSCBreakdownTraining letter, bool accept)
+        internal void Decide(ChoiceLetter_SSCBreakdownTraining letter, TrainingDecision decision)
         {
             if (!IsPendingDecision(letter)) return;
-            if (!accept)
+            if (decision == TrainingDecision.None)
             {
                 CancelTrainingRequest();
                 return;
             }
-            if (!CanApprove(letter))
+            if (!CanUseDecision(decision)) return;
+            if (!CanApprove(letter, decision))
             {
                 // 主人暂时不可用时，已打开的旧对话也不能消费仍然有效的原请求。
                 // 无链分支沿用原有撤销规则，在申请间隔后重新寻找可用调教员。
                 if (!boundEpisode && IsPendingDecision(letter)) CancelTrainingRequest();
                 return;
             }
-            if (!IsPendingDecision(letter) || !TrainerIdentityCurrent) return;
+            if (!IsPendingDecision(letter) || !TrainerIdentityCurrent || !CanUseDecision(decision)) return;
             // 先消费这次按钮权限。关闭信件会触发原版回调，重复点击也不会启动第二个 Job。
             // 等下一个状态 tick 再派发，允许在游戏暂停时稳妥保存已批准的决定。
+            approvedDecision = decision;
             requestPhase = RequestPhase.Approved;
             try { Find.LetterStack.RemoveLetter(letter); }
             finally
@@ -159,7 +201,7 @@ namespace SexSlaveCraft
                 if (!OwnsTrainingJob(requestTrainer, requestTrainer?.CurJob) ||
                     requestTrainer.jobs.curDriver is not JobDriver_Training)
                     CancelTrainingRequest();
-                else ExtendStartedTraining(now);
+                else ExtendStartedTraining();
                 return;
             }
 
@@ -176,7 +218,7 @@ namespace SexSlaveCraft
             if (requestPhase == RequestPhase.Approved)
             {
                 // 发作小人或调教员可能仍在已开场的互动中。先等精确的原互动结束，再检查预约及任务占用。
-                if (!TrainerIdentityCurrent || !TrainerEligible(requestTrainer) ||
+                if (!TrainerIdentityCurrent || !CanUseDecision(approvedDecision) || !TrainerEligible(requestTrainer) ||
                     !requestTrainer.Position.InHorDistOf(pawn.Position, RequestRadius))
                 {
                     CancelTrainingRequest();
@@ -209,7 +251,7 @@ namespace SexSlaveCraft
                 def, new LookTargets(pawn, trainer));
             letter.Subject = pawn;
             letter.Trainer = trainer;
-            letter.disappearAtTick = (int)RequestDeadline;
+            letter.disappearAtTick = now + RequestRemainingTicks;
             // 先登记所属，再交信堆。收信侧的日志、UI 或兼容补丁可以同步查看当前申请。
             requestTrainer = trainer;
             trainerPersonality = SSCPersonalityRuntimeUtility.Capture(trainer);
@@ -224,7 +266,7 @@ namespace SexSlaveCraft
             Pawn trainer = requestTrainer;
             var def = DefDatabase<JobDef>.GetNamedSilentFail(TrainingDefName);
             if (def == null || !TrainingJobUtility.TryValidateTarget(pawn, false, "SSC_BREAKDOWN") ||
-                requestPhase != RequestPhase.Approved || !CanRequestTraining || !TrainerIdentityCurrent ||
+                requestPhase != RequestPhase.Approved || !CanRequestTraining || !TrainerIdentityCurrent || !CanUseDecision(approvedDecision) ||
                 !CanApproach(trainer) || !AvailableToTeach(trainer) || !CanReceiveBreakdownTraining)
             {
                 if (requestPhase == RequestPhase.Approved) CancelTrainingRequest();
@@ -232,7 +274,7 @@ namespace SexSlaveCraft
             }
             // 路径和预约查询可能调用外部补丁。仍须由原批准启动任务。
             if (requestPhase != RequestPhase.Approved || requestTrainer != trainer ||
-                !CanRequestTraining || !TrainerIdentityCurrent) return;
+                !CanRequestTraining || !TrainerIdentityCurrent || !CanUseDecision(approvedDecision)) return;
             Job job = JobMaker.MakeJob(def, pawn);
             // 原版 StartJob 同步预约并可能立即运行首个 Toil，必须提前登记 loadID。
             trainingJobId = job.loadID;
@@ -243,10 +285,13 @@ namespace SexSlaveCraft
         }
 
         /// <summary>核对当前发作、双方人格和实际任务归属。Job 对象可重用，因此以本次 loadID 为凭据。</summary>
+        /// <remarks>受方倒地前须已完成实际开场，才能沿原任务继续并结算。</remarks>
         internal bool OwnsTrainingJob(Pawn trainer, Job job)
             => requestPhase == RequestPhase.Dispatched && IsBreakdownTraining(job) && !job.playerForced && job.loadID == trainingJobId &&
                 job.targetA.Pawn == pawn && trainer == requestTrainer && TrainerIdentityCurrent && CanIssueBehavior &&
-                !pawn.Downed && !pawn.Drafted && TrainerEligible(trainer) && !BindingRitualStateUtility.HasActiveTargetRitual(pawn);
+                CanUseDecision(approvedDecision) &&
+                (!pawn.Downed || trainingStarted) && !pawn.Drafted && TrainerEligible(trainer) &&
+                !BindingRitualStateUtility.HasActiveTargetRitual(pawn);
 
         /// <summary>游荡行为树保留由本场训练驱动实际安装的当前接收 Job。</summary>
         internal bool HoldsTrainingReceiver(Job job)
@@ -258,29 +303,30 @@ namespace SexSlaveCraft
         {
             if (!OwnsTrainingJob(driver.pawn, driver.job)) return;
             trainingStarted = true;
-            ExtendStartedTraining(SSCSlaveBreakdown.Now);
+            ExtendStartedTraining();
         }
 
-        private void ExtendStartedTraining(int now)
+        private void ExtendStartedTraining()
         {
-            long deadline = Deadline;
-            if (!trainingStarted || originalDeadline >= 0 || now >= deadline ||
-                deadline - now > GenDate.TicksPerHour || !HasEffect()) return;
-            // 保留原决定期限。延长只用于完成已开场的任务，中断后恢复原到期点。
-            originalDeadline = deadline;
-            effect.ExpiresAt = deadline + GenDate.TicksPerHour;
+            if (!trainingStarted || trainingExtended || !HasEffect() ||
+                RemainingTicks is <= 0 or > GenDate.TicksPerHour) return;
+            // 总时长和剩余时间同时增加，已经过的整小时保持不变。
+            trainingExtended = true;
+            var timer = effect.Timer;
+            timer.disappearsAfterTicks += GenDate.TicksPerHour;
+            timer.ticksToDisappear += GenDate.TicksPerHour;
         }
 
         /// <summary>真实开场且当前仍是原获批任务，才可进入完成 Toil。</summary>
         internal bool CanSettleApprovedTraining(JobDriver_Training driver)
             => episodeResult == EpisodeResult.None && trainingStarted && OwnsTrainingJob(driver.pawn, driver.job);
 
-        internal bool ClaimTrainingSuccess(JobDriver_Training driver)
+        internal bool ClaimTrainingSuccess(JobDriver_Training driver, float score)
         {
             if (!CanSettleApprovedTraining(driver)) return false;
-            // 日常日期和冷却已经记账。先固定发作结果，再移交原版恢复；随后的清理保留正式身份。
+            // 普通收益、日期、日常冷却和经验已入账。记录原任务的完成事实和基础分，留待退出时提交正式结果。
             episodeResult = EpisodeResult.Success;
-            temporaryIdentity = false;
+            completedTrainingScore = score;
             return true;
         }
 
@@ -296,15 +342,20 @@ namespace SexSlaveCraft
             int jobId = trainingJobId;
             // 先撤销自己的引用，原版删信和清理 Job 的同步回调只能看到失效的授权。
             requestPhase = RequestPhase.None;
+            approvedDecision = TrainingDecision.None;
             requestId = trainingJobId = -1;
             if (!ending)
             {
                 nextRequestAt = (long)SSCSlaveBreakdown.Now + RequestInterval;
-                if (originalDeadline >= 0)
+                if (trainingExtended)
                 {
-                    // 在原版任务清理的回调之前恢复截止点。状态刷新会在本轮重新检查是否已经到期。
-                    if (HasEffect()) effect.ExpiresAt = originalDeadline;
-                    originalDeadline = -1;
+                    // 先收回额外时长再清理任务，允许本轮按原时长立即结束。
+                    if (HasEffect() && effect.Timer is { } timer)
+                    {
+                        timer.disappearsAfterTicks -= GenDate.TicksPerHour;
+                        timer.ticksToDisappear -= GenDate.TicksPerHour;
+                    }
+                    trainingExtended = false;
                 }
             }
             trainingStarted = false;
@@ -320,26 +371,80 @@ namespace SexSlaveCraft
                 trainer.jobs.EndCurrentJob(JobCondition.InterruptForced, startNewJob: false);
         }
 
-        /// <summary>普通调教收益入账后，只对本场原锁链应用额外进度，并读取实际写入结果。</summary>
-        private (int BeforeStage, int AfterStage, float Before, float After)? ApplyBoundChainProgress()
-        {
-            if (!SameCarrier() || pawn.Dead || pawn.Destroyed || requestTrainer == null ||
-                !TrainerIdentityCurrent || BoundOwner != requestTrainer) return null;
+        private const float InitialTrainingProgress = .2f;
 
-            Need_Corruption need = SSCSlaveBreakdown.GetNeed(pawn);
-            if (need == null) return null;
-            var stage = TrainingOutcomeUtility.GetChainStage(boundChain);
-            float before = boundChain.Severity;
-            // 用当前严重度和普通调教入账后的实际恶堕。起始阶段只用于确认本场的额外进度资格。
-            // 同一条链期间已换档时，本场只结算普通调教成功。
-            if (startingChainStage == stage.Stage && stage.Next.HasValue)
+        // 共享于写入前后，允许本场按批准结果交接原归属。来源 Hediff 与新链的核对由各个写入入口负责。
+        private bool SettlementParticipantsCurrent(Need_Corruption need)
+            => SameCarrier() && SSCSlaveBreakdown.IsEligibleSubject(pawn) && SSCIdentityUtility.IsSexSlave(pawn) &&
+                TrainerIdentityCurrent && TrainerEligible(requestTrainer) && SSCSlaveBreakdown.GetNeed(pawn) == need;
+
+        /// <summary>只提交玩家批准的结果。此时普通收益已经入账，退出流程仍持有原任务的凭据。</summary>
+        private Hediff ApplyTrainingDecision(Need_Corruption need, out int beforeStage, out float before)
+        {
+            beforeStage = 0;
+            before = 0f;
+            // 待派发的批准无法直接结算。先校验原进度载体，再核对参与者，最后复查可能被同步通知改动的归属。
+            if (need == null || requestPhase != RequestPhase.Dispatched || trainingJobId < 0 || !trainingStarted || !HasCurrentBinding() ||
+                !CanUseDecision(approvedDecision) || !SettlementParticipantsCurrent(need) || !HasCurrentBinding())
+                return null;
+
+            Hediff original = boundEpisode ? boundChain : startingOwnerless;
+            var stage = TrainingOutcomeUtility.GetSexSlaveProgressStage(original);
+            beforeStage = stage.Stage;
+            before = original?.Severity ?? 0f;
+            if (IsBindingDecision(approvedDecision))
+            {
+                float severity = approvedDecision == TrainingDecision.BindOwnerless ? before : InitialTrainingProgress;
+                // 新归属在提交中是预期变化。回调复核双方和原需求，链及来源由绑定服务另行核对。
+                return SSCBondUtility.BindNewWithProgress(requestTrainer, pawn, startingOwnerless, severity,
+                    () => SettlementParticipantsCurrent(need), out var linked) ? linked : null;
+            }
+            if (approvedDecision == TrainingDecision.FormOwnerless)
+            {
+                // 首次成形以获批任务的完成为准。零阶记录可以复用，新记录在挂载前写好起始严重度。
+                if (stage.Stage != 0) return null;
+                var ownerless = startingOwnerless;
+                bool adding = ownerless == null;
+                if (adding)
+                {
+                    var def = DefDatabase<HediffDef>.GetNamedSilentFail(Hediff_SSCOwnerlessSlave.DefName);
+                    if (def?.hediffClass != typeof(Hediff_SSCOwnerlessSlave)) return null;
+                    ownerless = (Hediff_SSCOwnerlessSlave)HediffMaker.MakeHediff(def, pawn);
+                }
+                ownerless.Severity = InitialTrainingProgress;
+                if (adding && SettlementParticipantsCurrent(need) && HasCurrentBinding()) health.AddHediff(ownerless);
+                return SameCarrier() && TrainingOutcomeUtility.GetSexSlaveProgress(pawn) == ownerless ? ownerless : null;
+            }
+
+            // 同一场的普通收益发生后才读取当前恶堕。若原载体已被外部推进跨阶，本场额外进度为零。
+            int startingStage = boundEpisode ? startingChainStage : startingOwnerlessStage;
+            if (original != null && stage.Stage == startingStage && stage.Next.HasValue)
             {
                 float next = CorruptionProgressionUtility.CalculateChainProgress(before, need.CurLevel, stage.Next);
-                if (next > before) boundChain.SetProgressSeverity(pawn, next);
+                if (next > before)
+                {
+                    if (original is Hediff_ChainOfSexSlave chain) chain.SetProgressSeverity(pawn, next);
+                    else original.Severity = next;
+                }
             }
-            // 写入可能触发换链或换人格，只用仍能确认的原链产生进度反馈。
-            if (!SameCarrier() || BoundOwner != requestTrainer || SSCSlaveBreakdown.GetNeed(pawn) != need) return null;
-            return (stage.Stage, TrainingOutcomeUtility.GetChainStage(boundChain).Stage, before, boundChain.Severity);
+            return SameCarrier() && HasCurrentBinding() && SSCSlaveBreakdown.GetNeed(pawn) == need ? original : null;
+        }
+
+        /// <summary>首次成形和等进度绑定可在 SSC 结果提交后尝试原版转奴。纯成长不消耗这次判定。</summary>
+        /// <remarks>共用仪式开关，爆发使用普通调教评分及非仪式概率。转奴结果只用于反馈。</remarks>
+        private string TryVanillaEnslavement(Need_Corruption need, Hediff written)
+        {
+            if (approvedDecision is TrainingDecision.AdvanceBound or TrainingDecision.AdvanceOwnerless ||
+                SSCMod.settings?.enableRitualEnslavement == false || !ModsConfig.IdeologyActive ||
+                !SettlementParticipantsCurrent(need) || TrainingOutcomeUtility.GetSexSlaveProgress(pawn) != written ||
+                pawn.IsSlave || pawn.guest == null || pawn.apparel == null || !pawn.IsColonist || need.CurLevel < .2f)
+                return null;
+            float chance = WillReductionUtility.CalculateEnslaveChance(pawn, completedTrainingScore, need.CurLevel,
+                isRitual: false, out _);
+            if (!SettlementParticipantsCurrent(need) || TrainingOutcomeUtility.GetSexSlaveProgress(pawn) != written ||
+                pawn.IsSlave || !pawn.IsColonist) return null;
+            bool converted = Rand.Chance(chance) && GenGuest.TryEnslavePrisoner(requestTrainer, pawn);
+            return converted && pawn.IsSlave ? "SSC_BreakdownSuccess_Enslaved" : "SSC_BreakdownSuccess_EnslaveFailed";
         }
 
         private void PublishEpisodeOutcome()
@@ -348,14 +453,24 @@ namespace SexSlaveCraft
             // 普通调教已认领成功。在写链、心情与信件之前先认领本次发布，防止同步回调重复发奖。
             // 整个退出流程还持有本场请求的原调教员，本方法返回后才释放相关字段。
             outcomeIssued = true;
-            bool success = episodeResult == EpisodeResult.Success;
-            var progress = success && boundEpisode ? ApplyBoundChainProgress() : null;
+            Need_Corruption need = SSCSlaveBreakdown.GetNeed(pawn);
+            int beforeStage = 0;
+            float before = 0f;
+            var progress = episodeResult == EpisodeResult.Success ? ApplyTrainingDecision(need, out beforeStage, out before) : null;
+            bool success = progress != null;
+            if (success) temporaryIdentity = false;
+            else episodeResult = EpisodeResult.Failure;
+            // 在原版转奴通知前记录实际完成的归属与阶段。原版身份变化不会改写本场 SSC 结果。
+            TaggedString progressText = success ? FormatProgress(progress, beforeStage, before) : default;
+            string ownerName = success && IsBindingDecision(approvedDecision) ? SSCBondUtility.GetBoundMaster(pawn)?.LabelShort : null;
+            string enslavement = success ? TryVanillaEnslavement(need, progress) : null;
+            // 原版转奴可能触发换人格。任何记忆仍只由原人格领取。
             var memories = SameCarrier() && !pawn.Dead ? pawn.needs?.mood?.thoughts?.memories : null;
             var mood = DefDatabase<ThoughtDef>.GetNamedSilentFail(success ? "SSC_BreakdownSuccess" : "SSC_BreakdownFailure");
             if (mood != null)
             {
                 // 原版刷新同一 ThoughtDef 的单条成功记忆，并切换到本场分支的描述。
-                if (success) memories?.TryGainMemoryFast(mood, boundEpisode ? 1 : 0);
+                if (success) memories?.TryGainMemoryFast(mood, startingOwnerlessStage > 0 || boundEpisode ? 1 : 0);
                 else memories?.TryGainMemory(mood);
             }
             if (success)
@@ -366,17 +481,13 @@ namespace SexSlaveCraft
                 if (LetterDefOf.PositiveEvent != null && Find.LetterStack != null)
                 {
                     string trainerName = requestTrainer?.LabelShort ?? "Unknown".Translate().ToString();
-                    TaggedString text = boundEpisode
-                        ? "SSC_BreakdownSuccess_BoundText".Translate(pawn.LabelShort, trainerName) +
-                            "\n\n" + FormatBoundProgress(progress)
-                        : "SSC_BreakdownSuccess_Text".Translate(pawn.LabelShort, trainerName);
+                    bool formed = approvedDecision is TrainingDecision.FormBound or TrainingDecision.FormOwnerless;
+                    TaggedString text = (formed ? "SSC_BreakdownSuccess_Text" : "SSC_BreakdownSuccess_BoundText")
+                        .Translate(pawn.LabelShort, trainerName) + "\n\n" + progressText;
+                    if (ownerName != null) text += "\n" + "SSC_BreakdownSuccess_NewOwner".Translate(ownerName);
+                    if (enslavement != null) text += "\n" + enslavement.Translate();
                     Find.LetterStack.ReceiveLetter("SSC_BreakdownSuccess_Label".Translate(), text, LetterDefOf.PositiveEvent, pawn);
                 }
-                // 收信回调之后复核实际恶堕、原人格和无链条件，再将完成事件交给未来的消费者。
-                var need = SSCSlaveBreakdown.GetNeed(pawn);
-                if (!boundEpisode && SameCarrier() && !pawn.Dead && HasCurrentBinding() &&
-                    TrainerIdentityCurrent && need != null && need.CurLevel == need.MaxLevel)
-                    UnboundTrainingCompletedAtFullCorruption?.Invoke(pawn, requestTrainer);
             }
             else if (LetterDefOf.NegativeEvent != null && Find.LetterStack != null)
             {
@@ -385,15 +496,14 @@ namespace SexSlaveCraft
             }
         }
 
-        // 同一封成功信显示跨阶、同阶增长或本场未推进。结果来自实际原链，写入计划只用于计算增量。
-        private static TaggedString FormatBoundProgress((int BeforeStage, int AfterStage, float Before, float After)? progress)
+        private TaggedString FormatProgress(Hediff progress, int beforeStage, float before)
         {
-            if (progress is not { } result) return "SSC_BreakdownSuccess_StageUnchanged".Translate();
-            if (result.AfterStage > result.BeforeStage)
-                return "SSC_BreakdownSuccess_StageAdvanced".Translate(result.BeforeStage, result.AfterStage);
-            if (result.After > result.Before)
-                return "SSC_BreakdownSuccess_ProgressAdvanced".Translate(result.AfterStage,
-                    result.Before.ToStringPercent(), result.After.ToStringPercent());
+            int stage = TrainingOutcomeUtility.GetSexSlaveProgressStage(progress).Stage;
+            float after = progress.Severity;
+            if (approvedDecision is TrainingDecision.FormBound or TrainingDecision.FormOwnerless or TrainingDecision.BindOwnerless)
+                return "SSC_BreakdownSuccess_CurrentProgress".Translate(stage, after.ToStringPercent());
+            if (stage > beforeStage) return "SSC_BreakdownSuccess_StageAdvanced".Translate(beforeStage, stage);
+            if (after > before) return "SSC_BreakdownSuccess_ProgressAdvanced".Translate(stage, before.ToStringPercent(), after.ToStringPercent());
             return "SSC_BreakdownSuccess_StageUnchanged".Translate();
         }
     }
@@ -418,12 +528,26 @@ namespace SexSlaveCraft
                     yield break;
                 }
                 // 点击时重新查当前状态，并用这封信的原 ID 复核。旧对话无法借用同 Pawn 的新发作。
-                var accept = new DiaOption("AcceptButton".Translate()) { resolveTree = true,
-                    action = () => MentalState_SSCSlaveBreakdown.CurrentFor(Subject)?.Decide(this, true) };
-                if (!state.CanApprove(this)) accept.Disable("SSC_BreakdownRequest_Unavailable".Translate());
-                yield return accept;
+                foreach (var decision in state.TrainingChoices())
+                {
+                    // 建绑选项显示这封信记录的调教员。实际授权仍按选项枚举和活信核对。
+                    bool createsBinding = MentalState_SSCSlaveBreakdown.IsBindingDecision(decision);
+                    string key = "SSC_BreakdownRequest_Dev_" + decision;
+                    var label = createsBinding ? key.Translate(Trainer.LabelShort) : key.Translate();
+                    var accept = new DiaOption(label) { resolveTree = true,
+                        action = () => MentalState_SSCSlaveBreakdown.CurrentFor(Subject)?.Decide(this, decision) };
+                    if (!state.CanApprove(this, decision))
+                    {
+                        var cooldown = Hediff_SSCBondReleaseAftereffect.Active(Subject);
+                        accept.Disable(createsBinding && cooldown != null
+                            ? "SSC_BondRelease_BindingCooldown".Translate(cooldown.LabelInBrackets)
+                            : "SSC_BreakdownRequest_Unavailable".Translate());
+                    }
+                    yield return accept;
+                }
                 yield return new DiaOption("RejectLetter".Translate()) { resolveTree = true,
-                    action = () => MentalState_SSCSlaveBreakdown.CurrentFor(Subject)?.Decide(this, false) };
+                    action = () => MentalState_SSCSlaveBreakdown.CurrentFor(Subject)?.Decide(this,
+                        MentalState_SSCSlaveBreakdown.TrainingDecision.None) };
                 yield return Option_Postpone;
             }
         }

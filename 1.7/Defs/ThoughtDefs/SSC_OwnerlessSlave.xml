@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThoughtDef>
+    <defName>SSC_OwnerlessSlave_Mood</defName>
+    <workerClass>SexSlaveCraft.ThoughtWorker_SSCOwnerlessSlave</workerClass>
+    <validWhileDespawned>true</validWhileDespawned>
+    <stages>
+      <li><label>无主烙印（抗拒）</label><description>小穴总没来由地湿着、发着痒，随时都像在等谁来用……越想抗拒，那股痒就越往骨头里钻。</description><baseMoodEffect>-5</baseMoodEffect></li>
+      <li><label>无主烙印（适应）</label><description>被按倒、被贯穿，身子自己就会迎合……只是偶尔回过神来，心里还有点发慌。</description><baseMoodEffect>-2</baseMoodEffect></li>
+      <li><label>无主烙印（熟悉）</label><description>撅起屁股等着，心里竟慢慢安定下来……被用过的身子软绵绵的，还想要更多。</description><baseMoodEffect>2</baseMoodEffect></li>
+      <li><label>对奴性彻底臣服</label><description>啊❤……谁按倒我，我就撅起屁股；谁贯穿我，我就攀上高潮……脑子融化了，只剩下好舒服的感觉❤</description><baseMoodEffect>6</baseMoodEffect></li>
+    </stages>
+  </ThoughtDef>
+</Defs>

@@ -33,7 +33,7 @@ namespace SexSlaveCraft
         public float corruptionDecayPerDay = 0.02f;
         public bool useOldScoring = false;
 #if SSC_RW17
-        private bool enableSlaveBreakdown;
+        private bool enableSlaveBreakdown = true;
 
         public bool EnableSlaveBreakdown
         {
@@ -72,7 +72,7 @@ namespace SexSlaveCraft
             ExposeMasterQualificationSettings();
             ExposeRestrictionSettings();
 #if SSC_RW17
-            Scribe_Values.Look(ref enableSlaveBreakdown, "enableSlaveBreakdown", false);
+            Scribe_Values.Look(ref enableSlaveBreakdown, "enableSlaveBreakdown", true);
             // 1.7 独立全局偏好，缺字段默认关闭；不参与原个人规则或能力字典的保存。
             ExposeUapGroupSettings();
 #endif

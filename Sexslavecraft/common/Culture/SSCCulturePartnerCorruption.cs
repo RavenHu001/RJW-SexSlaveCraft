@@ -23,7 +23,7 @@ namespace SexSlaveCraft
             internal readonly List<Source> Sources = new List<Source>(1);
         }
 
-        internal readonly record struct Source(SSCPartnerCorruptionScene.Member Member, Hediff_ChainOfSexSlave Chain,
+        internal readonly record struct Source(SSCPartnerCorruptionScene.Member Member, Hediff SlaveRecord,
             Ideo Ideo, PreceptDef Precept, object Personality);
 
         /// <summary>只认施加者自己的现行戒律；缺失、关闭或同组冲突都不启用。</summary>
@@ -62,16 +62,16 @@ namespace SexSlaveCraft
 
             void CaptureSource(Pawn other, List<Pawn> participants)
             {
-                // 对象不能给自己发放。文化只认锁链确定的实际性奴，不把用于途径预选的 ITab 身份当作资格。
+                // 按共用戒律口径捕获施加者当前的性奴记录，供原调用完成后复核。
                 if (other == target || other?.Ideo == null || !scene.TryGetMember(other, participants, out var member)) return;
-                var chain = SSCBondUtility.GetChain(other);
-                if (chain == null || SSCPersonalityRuntimeUtility.IsMutating(other)) return;
+                var slaveRecord = SSCCultureStateUtility.GetSexSlaveRecord(other);
+                if (slaveRecord == null || SSCPersonalityRuntimeUtility.IsMutating(other)) return;
                 var ideo = other.Ideo;
                 var precept = MatchingPrecept(ideo, gender);
                 if (precept == null) return;
                 // 只在第一名施加者满足条件时分配记录，并保留所有合格施加者供原调用完成后复核。
                 observation ??= new Observation { Scene = scene, Need = need, Gender = gender };
-                observation.Sources.Add(new Source(member, chain, ideo, precept, SSCPersonalityRuntimeUtility.Capture(other)));
+                observation.Sources.Add(new Source(member, slaveRecord, ideo, precept, SSCPersonalityRuntimeUtility.Capture(other)));
             }
         }
 
@@ -91,7 +91,8 @@ namespace SexSlaveCraft
                 // 仍须是同场、同一个已捕获的参与任务和施加资格；第一名离开不影响另一名原本有效的人。
                 Pawn other = source.Member.Pawn;
                 if (!source.Member.Current || !observation.Scene.TryGetMember(other, people, out var member) ||
-                    member.Driver != source.Member.Driver || other.Ideo != source.Ideo || SSCBondUtility.GetChain(other) != source.Chain ||
+                    member.Driver != source.Member.Driver || other.Ideo != source.Ideo ||
+                    !ReferenceEquals(SSCCultureStateUtility.GetSexSlaveRecord(other), source.SlaveRecord) ||
                     !SSCPersonalityRuntimeUtility.IsCurrent(other, source.Personality) || SSCPersonalityRuntimeUtility.IsMutating(other) ||
                     MatchingPrecept(source.Ideo, observation.Gender) != source.Precept) continue;
 

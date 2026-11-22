@@ -12,8 +12,7 @@ internal static partial class Program
     private static void Batch4SceneSaveTests()
     {
         var boundary = new Harmony("ssc.tests.romance.batch4.scene");
-        boundary.Patch(AccessTools.Method(typeof(SSCRestrictionGameComponent), nameof(SSCRestrictionGameComponent.AllPawns)),
-            prefix: new HarmonyMethod(typeof(Program), nameof(ScenePawnSnapshot)));
+        PatchScenePawnSnapshot(boundary);
         // 旧性行为模板在其既有专项中验证；这里隔离缺少完整 Def 库的旧初始化，保留浪漫完整恢复顺序。
         boundary.Patch(AccessTools.Method(typeof(SSCRestrictionLifecycle), nameof(SSCRestrictionLifecycle.Refresh)), prefix: new HarmonyMethod(typeof(Program), nameof(SceneLegacyRefresh)));
         boundary.CreateClassProcessor(production.GetType("SexSlaveCraft.SSCRestrictionCloneHook")).Patch();
@@ -60,9 +59,10 @@ internal static partial class Program
                 {
                     CommandReset(); var (a, b) = CommandPair(SSCRomanceAction.Romance); PutOnTransferMap(a); Comp(a).romanceConfig = Denied();
                     Require(SSCRomanceCommandUtility.TrySubmit(SSCRomanceCommandUtility.Capture(a, b), out var record, out _));
+                    Pawn master = SSCBondUtility.GetBoundMaster(a);
                     ExtractForTransfer(a, sceneEntry); var raw = transferProduct;
                     new Recipe_PSTagWorker { recipe = new RecipeDef { defName = "RomanceTransferRecipe" } }.Notify_IterationCompleted(a, new() { raw });
-                    var saved = new Batch4Scene(a, b, SSCBondUtility.GetBoundMaster(a)) { Gel = transferProduct.TryGetComp<CompPersonalityStore>() };
+                    var saved = new Batch4Scene(a, b, master) { Gel = transferProduct.TryGetComp<CompPersonalityStore>() };
                     var restored = LoadBatch4Scene(SaveBatch4Scene(saved));
                     Equal(SSCRomanceCommandStatus.Cancelled, restored.Store.Records.Single().Status);
                     var receiver = SocialSlave(); Require(ExcretionUtility.InheritEverything(receiver, restored.Gel));
@@ -145,9 +145,24 @@ internal static partial class Program
         }
         finally { batch4RestoredPawns = null; boundary.UnpatchAll(boundary.Id); }
     }
+    private static void PatchScenePawnSnapshot(Harmony boundary)
+    {
+        boundary.Patch(AccessTools.Method(typeof(SSCRestrictionGameComponent), nameof(SSCRestrictionGameComponent.AllPawns)),
+            prefix: new HarmonyMethod(typeof(Program), nameof(ScenePawnSnapshot)));
+        boundary.Patch(AccessTools.Method(production.GetType("SexSlaveCraft.SSCBondOverviewWorld"), "CollectCandidates"),
+            prefix: new HarmonyMethod(typeof(Program), nameof(SceneWorldPawnSnapshot)));
+    }
+
     /// <summary>提供明确的容器角色快照边界；不在宿主伪造地图、旅队或重力船引擎。</summary>
     private static bool ScenePawnSnapshot(ref List<Pawn> __result)
     { if (batch4RestoredPawns == null) return true; __result = batch4RestoredPawns; return false; }
+    /// <summary>解绑迁移遍历同一批重建角色，地图和跨容器枚举留给游戏宿主。</summary>
+    private static bool SceneWorldPawnSnapshot(Action<Pawn> add)
+    {
+        if (batch4RestoredPawns == null) return true;
+        foreach (var pawn in batch4RestoredPawns) add(pawn);
+        return false;
+    }
     /// <summary>仅隔离旧性行为模板初始化，不替换浪漫恢复或任务认领。</summary>
     private static bool SceneLegacyRefresh(out SSCRestrictionResolution error, ref bool __result)
     { error = null; __result = false; return false; }

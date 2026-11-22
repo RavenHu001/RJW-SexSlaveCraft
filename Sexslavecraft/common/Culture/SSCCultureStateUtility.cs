@@ -9,8 +9,22 @@ namespace SexSlaveCraft
         public static bool IsLiving(Pawn pawn)
             => pawn != null && !pawn.Dead && !pawn.Destroyed && !pawn.Discarded;
 
-        /// <summary>锁链表示文化中的实际性奴，ITab 的途径预选不参与这个判断。</summary>
+        /// <summary>查询实际锁链。</summary>
         public static bool HasChain(Pawn pawn) => SSCBondUtility.GetChain(pawn) != null;
+
+        /// <summary>文化戒律承认原有锁链和一至四阶的正式无主性奴。</summary>
+        public static bool IsSexSlave(Pawn pawn) => GetSexSlaveRecord(pawn) != null;
+
+        internal static Hediff GetSexSlaveRecord(Pawn pawn)
+        {
+            // 交接重叠时锁链优先，沿用既有绑定及旧锁链低于一阶阈值时的文化资格。
+            var chain = SSCBondUtility.GetChain(pawn);
+            if (chain != null) return chain;
+
+            // 身份预选和解绑保留的零阶进度都还未达到正式无主阶段。
+            var ownerless = SSCIdentityUtility.IsSexSlave(pawn) ? Hediff_SSCOwnerlessSlave.Find(pawn) : null;
+            return TrainingOutcomeUtility.GetSexSlaveProgressStage(ownerless).Stage > 0 ? ownerless : null;
+        }
 
         // 主人身份与有效训导官沿用既有入口，避免文化层另存身份或复制任职资格规则。
         public static bool IsMaster(Pawn pawn) => SSCIdentityUtility.IsMaster(pawn);

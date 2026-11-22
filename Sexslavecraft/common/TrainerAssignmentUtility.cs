@@ -220,6 +220,8 @@ namespace SexSlaveCraft
         {
             reason = null;
 #if SSC_RW17
+            if (!forced && targetPawn?.Downed == true) return false;
+
             // 发作暂时赋予正式身份，仍需暂停日常调教。自动查询、手动提交和准备中的驱动共用此门槛。
             if (MentalState_SSCSlaveBreakdown.CurrentFor(targetPawn) != null)
             {

@@ -205,7 +205,7 @@ namespace SexSlaveCraft
             if (!(parent is Pawn pawn)) return;
 
 #if SSC_RW17
-            // 读档初始化通常已迁移，死亡时产生的记录等角色复活后再挂到健康列表。
+            // 为尚未迁移的旧档组件字段保留重试入口。
             MigrateSlaveBreakdownCooldown();
 #endif
             // 旧终极狗保存的普通 Hediff 没有授予组件；按真实成果维护技能，保留已有实例及冷却。
@@ -416,10 +416,10 @@ namespace SexSlaveCraft
 #if SSC_RW17
             if (SSCSlaveBreakdown.IsEligiblePawn(pawn))
             {
-                long remaining = SlaveBreakdownCooldownUntil - SSCSlaveBreakdown.Now;
+                int remaining = SlaveBreakdownCooldownRemainingTicks;
                 string description = "SSC_SlaveBreakdown_DebugStartDesc".Translate();
                 if (remaining > 0)
-                    description += "\n\n" + "SSC_SlaveBreakdown_DebugCooldown".Translate(((int)remaining).ToStringTicksToPeriod());
+                    description += "\n\n" + "SSC_SlaveBreakdown_DebugCooldown".Translate(remaining.ToStringTicksToPeriod());
                 yield return new Command_Action
                 {
                     defaultLabel = "SSC_SlaveBreakdown_DebugStart".Translate(),
@@ -469,13 +469,34 @@ namespace SexSlaveCraft
                 defaultDesc = "Bind this pawn to the marked master, add bridle/chain, and raise corruption to 10% for chain-rule testing.",
                 action = delegate
                 {
-                    if (debugSelectedMaster == null || debugSelectedMaster.DestroyedOrNull())
+                    Pawn master = debugSelectedMaster;
+                    if (master == null || master.DestroyedOrNull())
                     {
                         Messages.Message("[SSC DEV] No debug master selected.", pawn, MessageTypeDefOf.RejectInput, false);
                         return;
                     }
 
-                    SSCBondUtility.Bind(debugSelectedMaster, pawn, true);
+                    bool bound;
+#if SSC_RW17
+                    if (SSCBondUtility.GetChain(pawn) == null)
+                    {
+                        // 首次绑定和正式无主交接走同一个提交入口。已有阶段时传入原始严重度，
+                        // 由共用事务清理旧载体，否则开发按钮会留下两份进度并使后续解绑失败。
+                        var source = Hediff_SSCOwnerlessSlave.Find(pawn);
+                        float severity = TrainingOutcomeUtility.GetSexSlaveProgressStage(source).Stage > 0
+                            ? source.Severity : SSCDefOf.ChainOfSexSlave?.initialSeverity ?? .2f;
+                        bound = SSCBondUtility.BindNewWithProgress(master, pawn, source, severity, () => true, out _);
+                    }
+                    else
+#endif
+                    {
+                        bound = SSCBondUtility.Bind(master, pawn, true);
+                    }
+                    if (!bound)
+                    {
+                        Messages.Message("[SSC DEV] Binding rejected.", pawn, MessageTypeDefOf.RejectInput, false);
+                        return;
+                    }
 
                     Need_Corruption corruptionNeed = pawn.needs?.TryGetNeed<Need_Corruption>();
                     if (corruptionNeed != null && corruptionNeed.CurLevel < 0.10f)
@@ -483,7 +504,7 @@ namespace SexSlaveCraft
                         corruptionNeed.SetCorruption(0.10f);
                     }
 
-                    Messages.Message($"[SSC DEV] {pawn.LabelShort} bound to {debugSelectedMaster.LabelShort} (10% corruption floor)", pawn, MessageTypeDefOf.PositiveEvent, false);
+                    Messages.Message($"[SSC DEV] {pawn.LabelShort} bound to {master.LabelShort} (10% corruption floor)", pawn, MessageTypeDefOf.PositiveEvent, false);
                 }
             };
 

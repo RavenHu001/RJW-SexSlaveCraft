@@ -19,6 +19,7 @@ namespace SexSlaveCraft
             public CompSexSlaveTraining SlaveComp;
             public int TrainerRevision;
             public Pawn Owner;
+            public bool BindingCooldown;
 #endif
         }
         private sealed class Operation
@@ -255,6 +256,8 @@ namespace SexSlaveCraft
             var slaveComp = slave?.TryGetComp<CompSexSlaveTraining>();
             int trainerRevision = slaveComp?.TrainerAssignmentRevision ?? 0;
             Pawn owner = SSCBondUtility.GetBoundMaster(slave);
+            // 选角缓存随冷却准入状态失效，无需记录倒计时数值。
+            bool bindingCooldown = Hediff_SSCBondReleaseAftereffect.Active(slave) != null;
 #endif
             // UI 交换会经过暂时只有一个角色的中间状态；已验证的最终组合覆盖该操作内的子集。
             if (operation?.Assignments == assignments)
@@ -263,7 +266,8 @@ namespace SexSlaveCraft
                     if (cached.Target.Equals(target) && cached.Allowed &&
 #if SSC_RW17
                         (slave == null || ReferenceEquals(cached.SlaveComp, slaveComp) &&
-                            cached.TrainerRevision == trainerRevision && ReferenceEquals(cached.Owner, owner)) &&
+                            cached.TrainerRevision == trainerRevision && ReferenceEquals(cached.Owner, owner) &&
+                            cached.BindingCooldown == bindingCooldown) &&
 #endif
                         (master == null || cached.Master == master) && (slave == null || cached.Slave == slave))
                         return true;
@@ -276,7 +280,7 @@ namespace SexSlaveCraft
                 {
                     Master = master, Slave = slave, Target = target, Allowed = allowed,
 #if SSC_RW17
-                    SlaveComp = slaveComp, TrainerRevision = trainerRevision, Owner = owner
+                    SlaveComp = slaveComp, TrainerRevision = trainerRevision, Owner = owner, BindingCooldown = bindingCooldown
 #endif
                 });
             return allowed;

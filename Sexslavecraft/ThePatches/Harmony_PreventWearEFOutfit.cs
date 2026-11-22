@@ -21,7 +21,7 @@ namespace SexSlaveCraft
                 return true; // 不是目标衣服，放行
             }
 
-            // 2. The final outfit follows the authoritative chain health stage.
+            // 2. The final outfit follows the shared progression stage.
             if (SSCIdentityUtility.GetSexSlaveStage(pawn) < 4)
             {
                 // 3. 设置 UI 上的反馈信息（当玩家右键点击衣服时会显示这个原因）

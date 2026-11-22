@@ -211,7 +211,7 @@ namespace SexSlaveCraft
         }
         public static void SyncSexSlaveTraitFromHighestCorruption(Pawn pawn) { }
         public static int GetSexSlaveStage(Pawn pawn) => GetSexSlaveStageFromChain(SSCBondUtility.GetChain(pawn));
-        public static int GetSexSlaveStageFromChain(Hediff_ChainOfSexSlave chain) => TrainingOutcomeUtility.GetChainStage(chain).Stage;
+        public static int GetSexSlaveStageFromChain(Hediff_ChainOfSexSlave chain) => TrainingOutcomeUtility.GetSexSlaveProgressStage(chain).Stage;
     }
     public static class SSCPersonalityRuntimeUtility
     {

@@ -48,7 +48,8 @@ namespace SexSlaveCraft
             if (pawn == null || pawn.Dead || !(SSCMod.settings?.enableSexSlaveProtectionRules ?? true) ||
                 !SSCSelfTrainingEligibility.IsEligible(pawn)) return false;
             SSCRestrictionConfig config = pawn.TryGetComp<CompSexSlaveTraining>()?.restrictionConfig;
-            if (config?.IsValid() != true) return false;
+            // 正式无主直接读派生规则，即使个人偏好缺失也能得到许可心情。
+            if (SSCRestrictionResolver.GetOwnerlessStage(pawn) == 0 && config?.IsValid() != true) return false;
 
             var masturbation = SSCRestrictionPolicy.Evaluate(new SSCRestrictionRequest(
                 pawn, pawn, SSCInteractionKind.Masturbation, true));
