@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-  <!-- 第五批开发占位文案，仅供实机识别。正式版另行定稿。 -->
   <HediffDef>
     <defName>SSC_Hediff_BondReleaseAftereffect</defName>
     <hediffClass>SexSlaveCraft.Hediff_SSCBondReleaseAftereffect</hediffClass>
-    <label>[开发] 解绑后效</label>
-    <description>手脚发沉，平常熟练的动作也频频停顿。</description>
+    <label>解绑后效</label>
+    <description>主奴之间的支配联系被切断。身子还在等着命令，手脚发沉，动作频频停顿，一时改不回没有主人的日子。</description>
     <isBad>true</isBad>
     <tendable>false</tendable>
     <everCurableByItem>false</everCurableByItem>

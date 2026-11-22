@@ -4,12 +4,11 @@
     <defName>SSC_OwnerlessSlave_Mood</defName>
     <workerClass>SexSlaveCraft.ThoughtWorker_SSCOwnerlessSlave</workerClass>
     <validWhileDespawned>true</validWhileDespawned>
-    <!-- 标题与描述仅供开发实机测试，正式版另行定稿。索引 0 到 3 对应一至四阶。 -->
     <stages>
-      <li><label>[开发] 无主性奴一阶 · 茫然</label><description>现在的身份让我有些无所适从。</description><baseMoodEffect>-5</baseMoodEffect></li>
-      <li><label>[开发] 无主性奴二阶 · 不安</label><description>我正在习惯现在的生活，偶尔还是会感到不安。</description><baseMoodEffect>-2</baseMoodEffect></li>
-      <li><label>[开发] 无主性奴三阶 · 坦然</label><description>我已经渐渐适应了这份身份。</description><baseMoodEffect>2</baseMoodEffect></li>
-      <li><label>[开发] 无主性奴四阶 · 满足</label><description>即使没有主人，我也能安心接受现在的自己。</description><baseMoodEffect>6</baseMoodEffect></li>
+      <li><label>无主烙印（抗拒）</label><description>小穴总没来由地湿着、发着痒，随时都像在等谁来用……越想抗拒，那股痒就越往骨头里钻。</description><baseMoodEffect>-5</baseMoodEffect></li>
+      <li><label>无主烙印（适应）</label><description>被按倒、被贯穿，身子自己就会迎合……只是偶尔回过神来，心里还有点发慌。</description><baseMoodEffect>-2</baseMoodEffect></li>
+      <li><label>无主烙印（熟悉）</label><description>撅起屁股等着，心里竟慢慢安定下来……被用过的身子软绵绵的，还想要更多。</description><baseMoodEffect>2</baseMoodEffect></li>
+      <li><label>对奴性彻底臣服</label><description>啊❤……谁按倒我，我就撅起屁股；谁贯穿我，我就攀上高潮……脑子融化了，只剩下好舒服的感觉❤</description><baseMoodEffect>6</baseMoodEffect></li>
     </stages>
   </ThoughtDef>
 </Defs>

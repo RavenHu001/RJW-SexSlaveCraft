@@ -11,12 +11,11 @@
   <SSC_BreakdownSuccess_StageAdvanced>Sex-slave progression advanced from stage {0} to {1}.</SSC_BreakdownSuccess_StageAdvanced>
   <SSC_BreakdownSuccess_ProgressAdvanced>At stage {0}, progression increased from {1} to {2}.</SSC_BreakdownSuccess_ProgressAdvanced>
   <SSC_BreakdownSuccess_StageUnchanged>This session did not advance progression.</SSC_BreakdownSuccess_StageUnchanged>
-  <!-- Development placeholders for approval choices. Replace before release. -->
-  <SSC_BreakdownRequest_Dev_FormOwnerless>[DEV] Form as an ownerless sex slave</SSC_BreakdownRequest_Dev_FormOwnerless>
-  <SSC_BreakdownRequest_Dev_FormBound>[DEV] Form as a bound sex slave</SSC_BreakdownRequest_Dev_FormBound>
-  <SSC_BreakdownRequest_Dev_BindOwnerless>[DEV] Bind at current progress</SSC_BreakdownRequest_Dev_BindOwnerless>
-  <SSC_BreakdownRequest_Dev_AdvanceOwnerless>[DEV] Continue ownerless training</SSC_BreakdownRequest_Dev_AdvanceOwnerless>
-  <SSC_BreakdownRequest_Dev_AdvanceBound>[DEV] Continue bound training</SSC_BreakdownRequest_Dev_AdvanceBound>
+  <SSC_BreakdownRequest_Dev_FormOwnerless>Train them as an ownerless sex slave</SSC_BreakdownRequest_Dev_FormOwnerless>
+  <SSC_BreakdownRequest_Dev_FormBound>Train them as a sex slave for {0}</SSC_BreakdownRequest_Dev_FormBound>
+  <SSC_BreakdownRequest_Dev_BindOwnerless>Have {0} take them as a sex slave</SSC_BreakdownRequest_Dev_BindOwnerless>
+  <SSC_BreakdownRequest_Dev_AdvanceOwnerless>Keep training them and let them sink deeper</SSC_BreakdownRequest_Dev_AdvanceOwnerless>
+  <SSC_BreakdownRequest_Dev_AdvanceBound>Keep training them and let them sink deeper</SSC_BreakdownRequest_Dev_AdvanceBound>
   <SSC_BreakdownSuccess_CurrentProgress>Current stage is {0} with progress at {1}.</SSC_BreakdownSuccess_CurrentProgress>
   <SSC_BreakdownSuccess_NewOwner>Bound to {0}.</SSC_BreakdownSuccess_NewOwner>
   <SSC_BreakdownSuccess_Enslaved>The target became a vanilla slave.</SSC_BreakdownSuccess_Enslaved>

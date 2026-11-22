@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <!-- 第五批开发占位文案，仅供实机识别。正式版另行定稿。 -->
   <SSC_BondRelease_Action>Разорвать связь</SSC_BondRelease_Action>
-  <SSC_BondRelease_Confirm>[DEV] Разорвать связь с {0}? Стадия {1} и прогресс {2} сохранятся. {3}\nВ течение двух дней новая связь недоступна, общая скорость работы ×0.75, настроение −8.</SSC_BondRelease_Confirm>
+  <SSC_BondRelease_Confirm>Разорвать связь с {0} и перейти в статус «Секс-раб без хозяина»? Стадия {1} и прогресс {2} сохранятся. {3}\nУстановить новую связь можно будет через два дня.</SSC_BondRelease_Confirm>
   <SSC_BondRelease_StageRules>Начнут действовать правила поведения и романтики для стадии {0} без хозяина. Чувствительность регулируется автоматически по стадии.</SSC_BondRelease_StageRules>
   <SSC_BondRelease_ZeroRules>Прогресс нулевой стадии сохранится. Эффекты стадий действуют с первой стадии.</SSC_BondRelease_ZeroRules>
-  <SSC_BondRelease_Rejected>[DEV] Связь или прогресс изменились. Откройте окно подтверждения заново.</SSC_BondRelease_Rejected>
-  <SSC_BondRelease_DeathNotice>[DEV] {0} погибает. Теперь без хозяина: {1}.</SSC_BondRelease_DeathNotice>
-  <SSC_BondRelease_BindingCooldown>[DEV] До установления новой связи осталось {0}.</SSC_BondRelease_BindingCooldown>
+  <SSC_BondRelease_Rejected>Связь или прогресс изменились. Подтвердите разрыв связи ещё раз.</SSC_BondRelease_Rejected>
+  <SSC_BondRelease_DeathNotice>{0} погибает. Следующие подчинённые остались без хозяина: {1}.</SSC_BondRelease_DeathNotice>
+  <SSC_BondRelease_BindingCooldown>До установления новой связи осталось {0}.</SSC_BondRelease_BindingCooldown>
 </LanguageData>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <!-- 第五批开发占位文案，仅供实机识别。正式版另行定稿。 -->
-  <SSC_BondReleaseAftereffect_Mood.stages.0.label>[開發] 解綁後效：失落</SSC_BondReleaseAftereffect_Mood.stages.0.label>
-  <SSC_BondReleaseAftereffect_Mood.stages.0.description>熟悉的聯繫突然斷了。我做著手頭的事，心裡還是空落落的。</SSC_BondReleaseAftereffect_Mood.stages.0.description>
+  <SSC_BondReleaseAftereffect_Mood.stages.0.label>沒了主人的空落</SSC_BondReleaseAftereffect_Mood.stages.0.label>
+  <SSC_BondReleaseAftereffect_Mood.stages.0.description>一直牽著我的那股力，沒了。手腳沒處放，心裡空落落的，做什麼都靜不下心……</SSC_BondReleaseAftereffect_Mood.stages.0.description>
 </LanguageData>

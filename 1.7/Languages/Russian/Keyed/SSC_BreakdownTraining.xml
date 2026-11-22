@@ -11,12 +11,11 @@
   <SSC_BreakdownSuccess_StageAdvanced>Стадия подчинения повысилась с {0} до {1}.</SSC_BreakdownSuccess_StageAdvanced>
   <SSC_BreakdownSuccess_ProgressAdvanced>На стадии {0} прогресс вырос с {1} до {2}.</SSC_BreakdownSuccess_ProgressAdvanced>
   <SSC_BreakdownSuccess_StageUnchanged>Дрессировка не продвинула подчинение.</SSC_BreakdownSuccess_StageUnchanged>
-  <!-- Development placeholders for approval choices. Replace before release. -->
-  <SSC_BreakdownRequest_Dev_FormOwnerless>[DEV] Получить статус без хозяина</SSC_BreakdownRequest_Dev_FormOwnerless>
-  <SSC_BreakdownRequest_Dev_FormBound>[DEV] Получить статус с хозяином</SSC_BreakdownRequest_Dev_FormBound>
-  <SSC_BreakdownRequest_Dev_BindOwnerless>[DEV] Привязать с сохранением прогресса</SSC_BreakdownRequest_Dev_BindOwnerless>
-  <SSC_BreakdownRequest_Dev_AdvanceOwnerless>[DEV] Продолжить дрессировку без хозяина</SSC_BreakdownRequest_Dev_AdvanceOwnerless>
-  <SSC_BreakdownRequest_Dev_AdvanceBound>[DEV] Продолжить дрессировку с хозяином</SSC_BreakdownRequest_Dev_AdvanceBound>
+  <SSC_BreakdownRequest_Dev_FormOwnerless>Выдрессировать секс-раба без хозяина</SSC_BreakdownRequest_Dev_FormOwnerless>
+  <SSC_BreakdownRequest_Dev_FormBound>Выдрессировать секс-раба для {0}</SSC_BreakdownRequest_Dev_FormBound>
+  <SSC_BreakdownRequest_Dev_BindOwnerless>Передать {0} в качестве секс-раба</SSC_BreakdownRequest_Dev_BindOwnerless>
+  <SSC_BreakdownRequest_Dev_AdvanceOwnerless>Продолжить дрессировку и усилить покорность</SSC_BreakdownRequest_Dev_AdvanceOwnerless>
+  <SSC_BreakdownRequest_Dev_AdvanceBound>Продолжить дрессировку и усилить покорность</SSC_BreakdownRequest_Dev_AdvanceBound>
   <SSC_BreakdownSuccess_CurrentProgress>Текущая стадия {0}, прогресс {1}.</SSC_BreakdownSuccess_CurrentProgress>
   <SSC_BreakdownSuccess_NewOwner>Хозяин после привязки — {0}.</SSC_BreakdownSuccess_NewOwner>
   <SSC_BreakdownSuccess_Enslaved>Цель стала рабом по правилам базовой игры.</SSC_BreakdownSuccess_Enslaved>

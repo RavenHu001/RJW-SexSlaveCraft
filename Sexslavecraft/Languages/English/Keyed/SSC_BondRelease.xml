@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <!-- 第五批开发占位文案，仅供实机识别。正式版另行定稿。 -->
   <SSC_BondRelease_Action>Release bond</SSC_BondRelease_Action>
-  <SSC_BondRelease_Confirm>[DEV] Release the bond with {0}? Stage {1} and {2} progress will be kept. {3}\nFor two days, rebinding is unavailable, global work speed is ×0.75, and mood is −8.</SSC_BondRelease_Confirm>
+  <SSC_BondRelease_Confirm>Release the bond with {0} and become an ownerless sex slave? Stage {1} and progress of {2} will be preserved. {3}\nRebinding is unavailable for two days.</SSC_BondRelease_Confirm>
   <SSC_BondRelease_StageRules>Unbound stage {0} behavior and romance rules will take effect, with sensitivity set automatically by stage.</SSC_BondRelease_StageRules>
   <SSC_BondRelease_ZeroRules>Stage zero progress will be kept. Stage effects begin at stage one.</SSC_BondRelease_ZeroRules>
-  <SSC_BondRelease_Rejected>[DEV] The bond or progress has changed. Open the confirmation again.</SSC_BondRelease_Rejected>
-  <SSC_BondRelease_DeathNotice>[DEV] {0} has died. These followers are now unbound: {1}.</SSC_BondRelease_DeathNotice>
-  <SSC_BondRelease_BindingCooldown>[DEV] Wait {0} before rebinding.</SSC_BondRelease_BindingCooldown>
+  <SSC_BondRelease_Rejected>The current bond or progress has changed. Please confirm again.</SSC_BondRelease_Rejected>
+  <SSC_BondRelease_DeathNotice>{0} has died. The following followers are now ownerless: {1}.</SSC_BondRelease_DeathNotice>
+  <SSC_BondRelease_BindingCooldown>Wait another {0} before rebinding.</SSC_BondRelease_BindingCooldown>
 </LanguageData>

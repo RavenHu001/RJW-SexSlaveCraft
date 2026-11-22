@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
-  <!-- 第五批开发占位文案，仅供实机识别。正式版另行定稿。 -->
   <ThoughtDef>
     <defName>SSC_BondReleaseAftereffect_Mood</defName>
     <workerClass>ThoughtWorker_Hediff</workerClass>
@@ -8,8 +7,8 @@
     <validWhileDespawned>true</validWhileDespawned>
     <stages>
       <li>
-        <label>[开发] 解绑后效：失落</label>
-        <description>熟悉的联系突然断了。我做着手头的事，心里还是空落落的。</description>
+        <label>没了主人的空落</label>
+        <description>一直牵着我的那股力，没了。手脚没处放，心里空落落的，做什么都静不下心……</description>
         <baseMoodEffect>-8</baseMoodEffect>
       </li>
     </stages>

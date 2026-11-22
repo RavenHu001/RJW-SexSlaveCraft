@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <!-- Development placeholder copy. Replace for release. -->
-  <SSC_OwnerlessSlave_Mood.stages.0.label>[DEV] Без хозяина I · Растерянность</SSC_OwnerlessSlave_Mood.stages.0.label>
-  <SSC_OwnerlessSlave_Mood.stages.0.description>Мне пока трудно понять, как жить в этой новой роли.</SSC_OwnerlessSlave_Mood.stages.0.description>
-  <SSC_OwnerlessSlave_Mood.stages.1.label>[DEV] Без хозяина II · Тревога</SSC_OwnerlessSlave_Mood.stages.1.label>
-  <SSC_OwnerlessSlave_Mood.stages.1.description>Я привыкаю к новой жизни, хотя иногда всё ещё тревожусь.</SSC_OwnerlessSlave_Mood.stages.1.description>
-  <SSC_OwnerlessSlave_Mood.stages.2.label>[DEV] Без хозяина III · Спокойствие</SSC_OwnerlessSlave_Mood.stages.2.label>
-  <SSC_OwnerlessSlave_Mood.stages.2.description>Я постепенно свыкаюсь со своей ролью.</SSC_OwnerlessSlave_Mood.stages.2.description>
-  <SSC_OwnerlessSlave_Mood.stages.3.label>[DEV] Без хозяина IV · Удовлетворение</SSC_OwnerlessSlave_Mood.stages.3.label>
-  <SSC_OwnerlessSlave_Mood.stages.3.description>Даже без хозяина я спокойно принимаю себя.</SSC_OwnerlessSlave_Mood.stages.3.description>
+  <SSC_OwnerlessSlave_Mood.stages.0.label>Клеймо без хозяина (Сопротивление)</SSC_OwnerlessSlave_Mood.stages.0.label>
+  <SSC_OwnerlessSlave_Mood.stages.0.description>Внизу всё время мокро и зудит без причины, как будто моё тело ждёт, чтобы им кто-нибудь воспользовался… Чем сильнее сопротивляюсь, тем глубже этот зуд пробирается в кости.</SSC_OwnerlessSlave_Mood.stages.0.description>
+  <SSC_OwnerlessSlave_Mood.stages.1.label>Клеймо без хозяина (Привыкание)</SSC_OwnerlessSlave_Mood.stages.1.label>
+  <SSC_OwnerlessSlave_Mood.stages.1.description>Когда меня прижимают и входят в меня, тело само подаётся навстречу… Только иногда прихожу в себя, и становится немного страшно.</SSC_OwnerlessSlave_Mood.stages.1.description>
+  <SSC_OwnerlessSlave_Mood.stages.2.label>Клеймо без хозяина (Привычка)</SSC_OwnerlessSlave_Mood.stages.2.label>
+  <SSC_OwnerlessSlave_Mood.stages.2.description>Подставляю зад и жду, и на душе почему-то становится всё спокойнее… После того как мной воспользуются, тело обмякает, а всё равно хочется ещё.</SSC_OwnerlessSlave_Mood.stages.2.description>
+  <SSC_OwnerlessSlave_Mood.stages.3.label>Полное подчинение</SSC_OwnerlessSlave_Mood.stages.3.label>
+  <SSC_OwnerlessSlave_Mood.stages.3.description>А-а❤… Кто бы меня ни прижал, я подставлю зад. Кто бы ни вошёл в меня, я кончу… Мысли тают, остаётся только то, как мне хорошо❤</SSC_OwnerlessSlave_Mood.stages.3.description>
 </LanguageData>

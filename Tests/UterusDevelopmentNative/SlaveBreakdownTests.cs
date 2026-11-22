@@ -618,12 +618,15 @@ internal static partial class Program
             {
                 var (pawn, need) = BreakdownPawn(PawnIdentity.Slave);
                 var (trainer, _) = BreakdownPawn(PawnIdentity.Master);
+                trainer.Name = new NameSingle("Binding Trainer");
                 var def = DefDatabase<HediffDef>.GetNamed(Hediff_SSCOwnerlessSlave.DefName);
                 pawn.health.AddHediff(def).Severity = .8f;
                 reachableBreakdownTrainer = trainer;
                 var state = StartWanderingBreakdown(pawn, need);
                 var letter = InstallBreakdownRequest(state, pawn, trainer, requestDef);
                 Require(state.TrainingChoices().SequenceEqual(new[] { TrainingDecision.BindOwnerless, TrainingDecision.AdvanceOwnerless }));
+                var bindingLabel = (string)AccessTools.Field(typeof(DiaOption), "text").GetValue(letter.Choices.First());
+                Require(bindingLabel.Contains(trainer.LabelShort));
                 state.Decide(letter, TrainingDecision.BindOwnerless);
                 string path = SaveBreakdown(new SlaveBreakdownSaveFixture(pawn, SSCMod.settings));
                 var (loaded, loadedNeed) = BreakdownPawn(PawnIdentity.Slave);

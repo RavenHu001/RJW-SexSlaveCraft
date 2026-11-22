@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <!-- 第五批开发占位文案，仅供实机识别。正式版另行定稿。 -->
-  <SSC_Hediff_BondReleaseAftereffect.label>[DEV] Bond release aftereffect</SSC_Hediff_BondReleaseAftereffect.label>
-  <SSC_Hediff_BondReleaseAftereffect.description>Heavy limbs interrupt even practiced movements.</SSC_Hediff_BondReleaseAftereffect.description>
+  <SSC_Hediff_BondReleaseAftereffect.label>Bond release aftereffect</SSC_Hediff_BondReleaseAftereffect.label>
+  <SSC_Hediff_BondReleaseAftereffect.description>The bond of control between master and slave has been severed. The body still waits for orders. Limbs feel heavy and movements keep faltering. It takes time to get used to life without a master again.</SSC_Hediff_BondReleaseAftereffect.description>
 </LanguageData>

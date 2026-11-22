@@ -11,12 +11,11 @@
   <SSC_BreakdownSuccess_StageAdvanced>性奴化階段從 {0} 階升至 {1} 階。</SSC_BreakdownSuccess_StageAdvanced>
   <SSC_BreakdownSuccess_ProgressAdvanced>目前為 {0} 階，性奴化進度從 {1} 提高到 {2}。</SSC_BreakdownSuccess_ProgressAdvanced>
   <SSC_BreakdownSuccess_StageUnchanged>本場沒有推進性奴化進度。</SSC_BreakdownSuccess_StageUnchanged>
-  <!-- Development placeholders for approval choices. Replace before release. -->
-  <SSC_BreakdownRequest_Dev_FormOwnerless>[開發] 成為無主性奴</SSC_BreakdownRequest_Dev_FormOwnerless>
-  <SSC_BreakdownRequest_Dev_FormBound>[開發] 成為有主性奴</SSC_BreakdownRequest_Dev_FormBound>
-  <SSC_BreakdownRequest_Dev_BindOwnerless>[開發] 按原進度繫結</SSC_BreakdownRequest_Dev_BindOwnerless>
-  <SSC_BreakdownRequest_Dev_AdvanceOwnerless>[開發] 繼續無主調教</SSC_BreakdownRequest_Dev_AdvanceOwnerless>
-  <SSC_BreakdownRequest_Dev_AdvanceBound>[開發] 繼續有主調教</SSC_BreakdownRequest_Dev_AdvanceBound>
+  <SSC_BreakdownRequest_Dev_FormOwnerless>調教成無主性奴</SSC_BreakdownRequest_Dev_FormOwnerless>
+  <SSC_BreakdownRequest_Dev_FormBound>調教成{0}的性奴</SSC_BreakdownRequest_Dev_FormBound>
+  <SSC_BreakdownRequest_Dev_BindOwnerless>由{0}收做性奴</SSC_BreakdownRequest_Dev_BindOwnerless>
+  <SSC_BreakdownRequest_Dev_AdvanceOwnerless>繼續調教，讓對方陷得更深</SSC_BreakdownRequest_Dev_AdvanceOwnerless>
+  <SSC_BreakdownRequest_Dev_AdvanceBound>繼續調教，讓對方陷得更深</SSC_BreakdownRequest_Dev_AdvanceBound>
   <SSC_BreakdownSuccess_CurrentProgress>目前為 {0} 階，性奴化進度為 {1}。</SSC_BreakdownSuccess_CurrentProgress>
   <SSC_BreakdownSuccess_NewOwner>本場繫結的主人為 {0}。</SSC_BreakdownSuccess_NewOwner>
   <SSC_BreakdownSuccess_Enslaved>目標已成為原版奴隸。</SSC_BreakdownSuccess_Enslaved>

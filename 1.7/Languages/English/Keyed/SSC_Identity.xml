@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
-  <SSC_Identity_BoundTip>An existing master-slave bond prevents role changes. Bound sex slaves and masters with bound sex slaves must keep their current role.</SSC_Identity_BoundTip>
+  <SSC_Identity_BoundTip>A master-slave bond or ownerless sex slave status prevents role changes.</SSC_Identity_BoundTip>
   <SSC_Identity_MasterQualificationRequired>Master qualification required</SSC_Identity_MasterQualificationRequired>
   <SSC_Identity_SelectionUnavailable>Cannot switch to Master now. Check Master qualification and existing bonds.</SSC_Identity_SelectionUnavailable>
   <SSC_Setting_AllowDirectMasterSelection>Allow direct Master selection</SSC_Setting_AllowDirectMasterSelection>

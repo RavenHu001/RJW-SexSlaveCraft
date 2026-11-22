@@ -528,13 +528,16 @@ namespace SexSlaveCraft
                 // 点击时重新查当前状态，并用这封信的原 ID 复核。旧对话无法借用同 Pawn 的新发作。
                 foreach (var decision in state.TrainingChoices())
                 {
-                    // 开发环境占位，定稿前替换资源文案。实际授权只保存枚举。
-                    var accept = new DiaOption(("SSC_BreakdownRequest_Dev_" + decision).Translate()) { resolveTree = true,
+                    // 建绑选项显示这封信记录的调教员。实际授权仍按选项枚举和活信核对。
+                    bool createsBinding = MentalState_SSCSlaveBreakdown.IsBindingDecision(decision);
+                    string key = "SSC_BreakdownRequest_Dev_" + decision;
+                    var label = createsBinding ? key.Translate(Trainer.LabelShort) : key.Translate();
+                    var accept = new DiaOption(label) { resolveTree = true,
                         action = () => MentalState_SSCSlaveBreakdown.CurrentFor(Subject)?.Decide(this, decision) };
                     if (!state.CanApprove(this, decision))
                     {
                         var cooldown = Hediff_SSCBondReleaseAftereffect.Active(Subject);
-                        accept.Disable(MentalState_SSCSlaveBreakdown.IsBindingDecision(decision) && cooldown != null
+                        accept.Disable(createsBinding && cooldown != null
                             ? "SSC_BondRelease_BindingCooldown".Translate(cooldown.LabelInBrackets)
                             : "SSC_BreakdownRequest_Unavailable".Translate());
                     }
