@@ -22,6 +22,7 @@ internal static partial class Program
     private static Map dailyGrowthMap;
     private static JobDriver_RitualTraining tickingRitual;
     private static bool ritualToilReady;
+    private static bool runRitualSettlement;
 
     /// <summary>在同一个真实生产程序集宿主中执行场景、成长及存档测试。</summary>
     private static void GrowthFlowTests(string repo, Harmony harmony)
@@ -45,9 +46,11 @@ internal static partial class Program
         Patch(typeof(SexUtility), "ProcessSex", nameof(GrowthProcessBoundary));
         Patch(typeof(ConditioningUtility), "ExecuteOutcome", nameof(DailyOutcomeBoundary), new[] { typeof(Pawn), typeof(Pawn), typeof(float) });
         Patch(typeof(TrainingExpUtility), "ApplyExperienceFromScore", nameof(OldBodyBoundary));
+        // 这个无胸部的夹具不需要初始化 RJW 的全套游戏 Def 来查询胸部。
+        Patch(typeof(Genital_Helper), nameof(Genital_Helper.get_breastsBPR), nameof(RitualBreastLookupBoundary));
         // 生产仪式会把开场捕获的进度传入结算，边界应拦截这条实际调用。
         Patch(typeof(ConditioningUtility), nameof(ConditioningUtility.ExecuteRitualOutcome), nameof(RitualOutcomeBoundary),
-            new[] { typeof(Pawn), typeof(Pawn), typeof(float), typeof(ThoughtDef), typeof(CorruptionProgressionUtility.RitualChainProgress), typeof(bool) });
+            new[] { typeof(Pawn), typeof(Pawn), typeof(float), typeof(ThoughtDef), typeof(CorruptionProgressionUtility.RitualChainProgress) });
         foreach (var m in AccessTools.GetDeclaredMethods(typeof(SpecializationTrainingProgressUtility)).Where(m => m.Name == "NotifyTrainingCompleted"))
             harmony.Patch(m, prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
         Patch(typeof(TrainerSpecializationProgressUtility), "NotifyProvidedTrainingCompleted", nameof(Skip));
@@ -135,9 +138,22 @@ internal static partial class Program
     /// <summary>记录顺序，保留旧部位的实际判定与写入，便于比较两份成长。</summary>
     private static bool OldBodyBoundary()
     { oldBodyCalls++; growthOrder.Add("old body"); return true; }
-    /// <summary>保留整场旧结果调用位置，隔离原有六部位、心情和意志后果。</summary>
+    /// <summary>空接触回归执行完整结算，其余用例在整场结算入口注入所需的回调。</summary>
     private static bool RitualOutcomeBoundary(ref string __result)
-    { ritualOutcomes++; __result = ""; growthAfterRitual?.Invoke(); return false; }
+    {
+        ritualOutcomes++;
+        if (runRitualSettlement) return true;
+        __result = "";
+        growthAfterRitual?.Invoke();
+        return false;
+    }
+
+    private static bool RitualBreastLookupBoundary(ref BodyPartRecord __result)
+    {
+        if (!runRitualSettlement) return true;
+        __result = null;
+        return false;
+    }
     /// <summary>隔离地图所在地日期，日常训练完成及冷却写入继续使用生产实现。</summary>
     private static bool LocalDayBoundary(ref int __result) { __result = 0; return false; }
 
@@ -457,26 +473,30 @@ internal static partial class Program
     private static bool EmptyBreakdown(ref string __result) { __result = ""; return false; }
     /// <summary>信件占位文本无需语言设备；格式化后的原文不参与成长计算。</summary>
     private static bool FormattedBoundary(string __0, ref TaggedString __result) { __result = __0; return false; }
-    /// <summary>整场完成只用已完成阶段的部位凭据，阶段中断与过期仪式不发放。</summary>
+    /// <summary>整场完成按原规则奖励全身开发，阶段中断与过期仪式不发放。</summary>
     private static void RitualGrowthTests()
     {
-        Check("ritual vaginal participation without penetration pays body and uterus once", () =>
+        Check("ritual without vaginal penetration pays uterus once using 75q", () =>
         {
             ResetGrowthFlow(); var f = new GrowthRitual();
             for (int i = 0; i < 6; i++) f.Phase(contact: false);
             Near(.02875f, Progress(f.Scene.Target)); Equal(1, f.Memos); Equal(1, ritualOutcomes);
-            float genitalExperience = f.Scene.Target.health.hediffSet.hediffs.Single(h => h.def.defName == "SSC_Exp_Genitals").Severity;
-            Near(.25f, genitalExperience);
             f.Worker.Apply(1, new(), f.Job); Near(.02875f, Progress(f.Scene.Target)); Equal(1, ritualOutcomes);
-            Near(genitalExperience, f.Scene.Target.health.hediffSet.hediffs.Single(h => h.def.defName == "SSC_Exp_Genitals").Severity);
         });
-        Check("six empty ritual fallback stages tick and process RJW without body rewards", () =>
+        Check("six empty ritual fallback stages tick RJW and pay the original full-body rewards once", () =>
         {
             ResetGrowthFlow(); var f = new GrowthRitual();
-            for (int i = 0; i < BindingRitualStateUtility.PhaseCount; i++) f.Phase(empty: true);
+            runRitualSettlement = true;
+            try
+            {
+                for (int i = 0; i < BindingRitualStateUtility.PhaseCount; i++) f.Phase(empty: true);
+                f.Worker.Apply(1, new(), f.Job);
+            }
+            finally { runRitualSettlement = false; }
             Equal(6, f.Comp.ritualPhase); Equal(1, f.Memos); Equal(1, ritualOutcomes); Equal(6, sexProcessCalls);
-            Near(.01f, Progress(f.Scene.Target));
-            Require(!f.Scene.Target.health.hediffSet.hediffs.Any(h => h.def.defName.StartsWith("SSC_Exp_")));
+            Equal(6, oldBodyCalls);
+            Near(.25f, f.Scene.Target.health.hediffSet.hediffs.Single(h => h.def.defName == "SSC_Exp_Genitals").Severity);
+            Near(.02875f, Progress(f.Scene.Target));
         });
         Check("ritual selector filters by trainee part and prefers actual trainer genitals", () =>
         {

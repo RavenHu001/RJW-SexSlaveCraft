@@ -21,7 +21,6 @@ namespace SexSlaveCraft
 #if SSC_RW17
         private SSCRitualInteractionParts selectedParts;
         private bool restorePhaseOnTick;
-        private SSCOrdinarySexPartsSnapshot restoredPhaseEvidence;
 #endif
 
         /// <summary>读取当前仪式任务 A 目标所指向的接收角色。</summary>
@@ -384,9 +383,6 @@ namespace SexSlaveCraft
                     slave.Drawer.renderer.SetAllGraphicsDirty();
                 }
 
-#if SSC_RW17
-                int phase = training?.ritualPhase ?? -1;
-#endif
                 if (!completedActivePhase || !HasActiveRitual()
                     || !BindingRitualStateUtility.TryCompletePhase(pawn, slave, ritualLord))
                 {
@@ -395,13 +391,9 @@ namespace SexSlaveCraft
                 }
 
 #if SSC_RW17
-                // 阶段成功推进才保存合格接触；末阶段 memo 会同步结算整场，故必须先写入。
-                if (selectedParts != null)
-                {
-                    var parts = restoredPhaseEvidence ?? SSCRestrictionJobGuard.TrainingParts(this, SSCInteractionKind.RitualTraining);
-                    training.RecordRitualBodyPhase(ritualLord, phase, parts, Sexprops);
-                    training.RecordStomachRitualPhase(ritualLord, parts, Sexprops);
-                }
+                // 末阶段 memo 会同步结算，先记录胃部开发所需的合格接触。
+                var parts = SSCRestrictionJobGuard.TrainingParts(this, SSCInteractionKind.RitualTraining);
+                training.RecordStomachRitualPhase(ritualLord, parts, Sexprops);
 #endif
                 int completedPhases = training.ritualPhase;
                 SSCLog.Verbose($"[SSC Ritual] 阶段完成: {completedPhases}/{BindingRitualStateUtility.PhaseCount}");
@@ -439,7 +431,6 @@ namespace SexSlaveCraft
                 partnerProps.resolved = props._resolved;
                 partnerProps.isRevese = props.isRevese;
             }
-            if (selectedParts != null) restoredPhaseEvidence = SSCOrdinarySexPartsUtility.Capture(props);
             return true;
         }
 
