@@ -501,6 +501,8 @@ internal static partial class Program
         Check("ritual selector filters by trainee part and prefers actual trainer genitals", () =>
         {
             var scene = new GrowthScene();
+            scene.Props.interaction.Extension.recipientRequirement = new SexInteractionRequirement
+                { partFamilies = new() { VanillaPartFamily.Hand } };
             var trainerHand = new VanillaLewdablePart(scene.Source, scene.Source.RaceProps.body.corePart, LewdablePartFamily.Hand);
             var traineeHand = new VanillaLewdablePart(scene.Target, scene.Target.RaceProps.body.corePart, LewdablePartFamily.Hand);
             SexInteractionResolved Candidate(ILewdablePart first, ILewdablePart second) => new()
@@ -514,6 +516,39 @@ internal static partial class Program
             Require(SSCRitualInteraction.Choose(new[] { wrongOwner }, scene.Source, scene.Target, 0) == null);
             Require(ReferenceEquals(handOnly, SSCRitualInteraction.Choose(new[] { wrongOwner, handOnly }, scene.Source, scene.Target, 0)));
             Require(ReferenceEquals(preferred, SSCRitualInteraction.Choose(new[] { handOnly, preferred }, scene.Source, scene.Target, 0)));
+        });
+        Check("ritual anal and vaginal stages reject a generic tag match without contact", () =>
+        {
+            var scene = new GrowthScene();
+            var trainerVagina = new VanillaLewdablePart(scene.Source, scene.Source.RaceProps.body.corePart, LewdablePartFamily.Vagina);
+            var trainerTongue = new VanillaLewdablePart(scene.Source, scene.Source.RaceProps.body.corePart, LewdablePartFamily.Tongue);
+            var traineeAnus = new VanillaLewdablePart(scene.Target, scene.Target.RaceProps.body.corePart, LewdablePartFamily.Anus);
+            var generic = new SexInteractionRequirement { genitalTags = new() { GenitalTag.CanPenetrate, GenitalTag.CanBePenetrated } };
+
+            SexInteractionResolved Candidate(string name, ILewdablePart first, ILewdablePart second,
+                SexInteractionRequirement requirement, SexInteractionTag tag) => new()
+            {
+                Initiator = scene.Source, Recipient = scene.Target,
+                Interaction = new SexInteraction(new InteractionDef
+                {
+                    defName = name,
+                    modExtensions = new() { new SexInteractionExtension { recipientRequirement = requirement, tags = new() { tag } } }
+                }),
+                InitiatorParts = new() { first }, RecipientParts = new() { second }, Penetrations = new()
+            };
+
+            var genericWithAnus = Candidate("Sex_MutualMasturbation", trainerVagina, traineeAnus, generic, SexInteractionTag.NonPenetrative);
+            var genericWithVagina = Candidate("Sex_MutualMasturbation", trainerVagina, scene.Vagina, generic, SexInteractionTag.NonPenetrative);
+            var rimming = Candidate("Sex_Reverse_Rimming", trainerTongue, traineeAnus,
+                new SexInteractionRequirement { genitalFamilies = new() { GenitalFamily.Anus } }, SexInteractionTag.Reverse);
+            rimming.Penetrations.Add(Tuple.Create<ILewdablePart, ILewdablePart>(trainerTongue, traineeAnus));
+            var scissoring = Candidate("Sex_Scissoring", trainerVagina, scene.Vagina,
+                new SexInteractionRequirement { genitalFamilies = new() { GenitalFamily.Vagina } }, SexInteractionTag.Consensual);
+
+            Require(SSCRitualInteraction.Choose(new[] { genericWithAnus }, scene.Source, scene.Target, 4) == null);
+            Require(SSCRitualInteraction.Choose(new[] { genericWithVagina }, scene.Source, scene.Target, 5) == null);
+            Require(ReferenceEquals(rimming, SSCRitualInteraction.Choose(new[] { genericWithAnus, rimming }, scene.Source, scene.Target, 4)));
+            Require(ReferenceEquals(scissoring, SSCRitualInteraction.Choose(new[] { genericWithVagina, scissoring }, scene.Source, scene.Target, 5)));
         });
         Check("ritual unmatched foot stage uses the original Def with an empty contact record", () =>
         {

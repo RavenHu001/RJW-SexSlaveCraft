@@ -48,6 +48,14 @@ namespace SexSlaveCraft
 
             props.resolved = chosen;
             props.isRevese = chosen.Interaction.HasInteractionTag(SexInteractionTag.Reverse);
+            if (SSCLog.VerboseEnabled)
+            {
+                var trainerParts = string.Join(",", chosen.InitiatorParts.Select(part => part.Family));
+                var traineeParts = string.Join(",", chosen.RecipientParts.Select(part => part.Family));
+                var contacts = string.Join(",", chosen.Penetrations.Select(pair =>
+                    $"{(pair.Item1.Owner == trainer ? "trainer" : "trainee")}:{pair.Item1.Family}->{pair.Item2.Family}"));
+                SSCLog.Verbose($"[SSC_RITUAL] Selected phase {phase + 1}: {props.dictionaryKey.defName}, trainerParts=[{trainerParts}], traineeParts=[{traineeParts}], contacts=[{contacts}]");
+            }
             return true;
         }
 
@@ -74,16 +82,23 @@ namespace SexSlaveCraft
                 candidate.RecipientParts.Any(part => !UsableBy(part, trainee))) return false;
 
             bool Target(ILewdablePart part) => part.Owner == trainee && IsTargetPart(phase, part.Family);
-            bool participates = candidate.RecipientParts.Any(Target);
+            bool hasTargetContact = false;
             foreach (var pair in candidate.Penetrations)
             {
                 if (pair?.Item1 == null || pair.Item2 == null ||
                     !((UsableBy(pair.Item1, trainer) && UsableBy(pair.Item2, trainee)) ||
                       (UsableBy(pair.Item1, trainee) && UsableBy(pair.Item2, trainer)))) return false;
                 if ((phase is 4 or 5) && Target(pair.Item1)) return false;
-                participates |= Target(pair.Item1) || Target(pair.Item2);
+                hasTargetContact |= Target(pair.Item1) || Target(pair.Item2);
             }
-            return participates;
+            if (hasTargetContact) return true;
+
+            // RJW can put any organ matching a generic capability tag in the permutation.
+            // Without a contact pair, require the interaction to specify the trainee's part family.
+            var requirement = candidate.Interaction.Extension?.recipientRequirement;
+            return candidate.RecipientParts.Any(part => Target(part) &&
+                (requirement?.genitalFamilies?.Any(family => family.AsLewdPartFamily() == part.Family) == true ||
+                 requirement?.partFamilies?.Any(family => family.AsLewdPartFamily() == part.Family) == true));
         }
 
         private static bool UsableBy(ILewdablePart part, Pawn owner)

@@ -4,6 +4,8 @@
 
 本机 RimWorld 1.7.5014、RJW 6.2.2 的女女组合实测完成了现有六阶段。第 3 阶段启动动画，其余五个阶段未找到匹配动画。第 6 阶段保留 `Sex_Vaginal` 进入 RJW 流程，RJW Menstruation 按交互类型处理体液，日志记录了 33 条 `0 fluid` 警告。这是现行实现的排查依据。 [阶段映射及空接触路径](../../Sexslavecraft/common/RitualTrainingUtility.cs)
 
+加入动作筛选后的女女存档交互记录依次是 `Sex_Fingering`、`Sex_Footjob`、`Sex_Cunnilingus`、`Sex_Breastjob`，以及连续两次 `Sex_MutualMasturbation`。后两段的通用部位标签产生了肛部和阴部候选，解析结果缺少接触，定义也未指定对应部位。筛选按下述规则排除这类候选。
+
 ## 六阶段筛选
 
 **性奴的目标部位参与是自动筛选的硬条件，调教员的阴部参与是排序偏好。** SSC 保留调教员主持、性奴受训的仪式角色及原有准入检查。每阶段维护性奴侧的部位规则，候选动作由 RJW 提供。调教员以任何能通过 RJW 校验并参与本次交互的部位配合。自动筛选无结果时，强制采用该阶段原有的固定动作保底。
@@ -20,7 +22,7 @@
 ### 选取与部位归属
 
 1. 在阶段启动前用本场双方及交互情境调用 `SexInteractionFinder.FindInteractions`。每条 `SexInteractionResolved` 提供一个具体交互及双方的一组可用部位。同一 Def 可能有多个部位组合。先过滤每条结果，再进行排序和选取。
-2. 用 `Initiator`、`Recipient`、部位的 `Owner` 和 `Family` 核对性奴侧是否参与了目标部位。有 `Penetrations` 时按各端点的实际归属和方向判断。没有插入的候选可由双方明确的参与部位支持。多部位候选的目标参与无法从解析结果确认时，继续检查下一项。
+2. 用 `Initiator`、`Recipient`、部位的 `Owner` 和 `Family` 核对性奴侧是否参与了目标部位。有 `Penetrations` 时按各端点的实际归属和方向判断。若目标部位只出现在参与列表里，还须由该动作的接收方部位类别要求明确指定。例如 `Sex_Scissoring` 明确要求双方的 `Vagina`。只靠 `CanPenetrate` 或 `CanBePenetrated` 一类通用标签枚举出来的部位，需要实际接触配对才能证明参与。SSC 详细日志会打印自动选中的 Def、双方参与部位及接触方向。
 3. 在合格候选中，优先选择调教员的阴部也实际参与的组合。调教员侧使用其他部位的合格组合继续可选。阴部偏好按实际部位类别判断，RJW 的通用 `CouldBePenetrator()` 也接受手，因此仅这个判定不足以认定阴部参与。同优先级取 RJW 返回的首个候选。
 4. 采用选中的具体 Def 和同一份 `resolved`，保留交互的 `Reverse` 标记及其 RJW 语义。SSC 的筛选依据是本场角色和部位归属。例如 `Sex_Fingering` 用到性奴的手，可用于手部阶段。其反向版本用到性奴的 `Vagina`，可用于阴部阶段。两者都继续遵守本场许可。 [现有交互字段校验](../../Sexslavecraft/common/RJWSexPropsUtility.cs) · [部位和接触归属](../../Sexslavecraft/common/SSCOrdinarySexPartsUtility.cs)
 5. 没有通过阶段规则的候选时，复用 `RitualTrainingUtility.GetPhaseData` 的原有指定动作映射，以该 Def 强制启动保底。用本场双方解析这个固定动作。解析成功时使用实际结果，解析不到时沿用 `allowEmptyParts` 记录当前 Def、当前双方及空接触。保底仍须通过仪式原有许可和归属复查，缺少固定 Def 或初始化失败沿原失败清理流程处理。 [原有阶段保底映射](../../Sexslavecraft/common/RitualTrainingUtility.cs)
@@ -53,6 +55,6 @@
 
 ## 本轮自动验证
 
-RimWorld **1.7.5014 rev1195**、RJW **6.2.2** 隔离构建通过，生产候选和原生测试宿主均为零警告、零错误。`UterusDevelopmentNative` **767／767**，覆盖部位筛选与排序、固定 Def 保底、部位与接触方向保存恢复。六阶段空接触回归执行实际 `SexTick` 并观测 `ProcessSex` 入口，验证整场只结算一次，发起六类普通部位发放，并按原资格写入实际部位与子宫进度。旧档回归经原生 Scribe 恢复后检查 RJW 时钟和原交互 Def。宿主隔离地图切换、图形及第三方结算副作用。
+RimWorld **1.7.5014 rev1195**、RJW **6.2.2** 隔离构建通过，生产候选和原生测试宿主均为零警告、零错误。`UterusDevelopmentNative` **768／768**，含肛部和阴部阶段排除仅有通用标签的空接触候选，保留有接触或明确指定部位的动作。六阶段空接触保底回归执行实际 `SexTick` 并观测 `ProcessSex` 入口，验证整场只结算一次，发起六类普通部位发放，并按原资格写入实际部位与子宫进度。旧档回归经原生 Scribe 恢复后检查 RJW 时钟和原交互 Def。宿主隔离地图切换、图形及第三方结算副作用。
 
-本次相关回归通过 `RitualLifecycle` **226／226**、`RitualProgression` **38／38** 和 `TrainingExperience` **71／71**。恢复结算后的完整游戏内重跑待验收。
+恢复结算时的相关回归通过 `RitualLifecycle` **226／226**、`RitualProgression` **38／38** 和 `TrainingExperience` **71／71**。修正筛选后的完整游戏内重跑待验收。
