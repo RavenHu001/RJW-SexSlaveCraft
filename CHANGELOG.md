@@ -1,5 +1,17 @@
 # 更新日志 / Changelog — SexSlaveCraft（TieJin 接续版 / TieJin continuation）
 
+## [2.5.3] — 2026-11-21 — 开发版 / Unreleased — 无主性奴与解绑 / Unbound Slaves and Bond Release
+
+以 2.5.2 登记提交 `7e5d17a9` 为界，归入其后至 `0114c376` 的 39 个非合并提交、1 个合并提交和 204 个净变更路径，新增面向 RimWorld 1.7。[双语说明](Docs/Releases/2.5.3/2.5.3发布说明.md) · [开发归并](Docs/Releases/2.5.3/2.5.3开发归并核对.md) · [验证记录](Docs/Releases/2.5.3/2.5.3版本验证.md)
+
+- **正式无主性奴。** 无主与有主共用四阶进度，接通阶段属性、长期心情、市值、敏感度、行为许可、相关特化及文化判定。
+- **爆发与仪式绑定。** 爆发改为缺省开启，持续满恶堕通过准入和冷却检查后触发。特批调教可首次成形、等进度绑定或继续培养。无主仪式按 SSC 主人与训导官分别结算绑定或成长。日常调教结算普通收益。
+- **解绑与凝胶往返。** 主动解绑、确认主人死亡或恢复时发现原主人失效，保留精确进度转为无主。两天后效包含工作速度 ×0.75、心情 −8 和新绑定冷却；剩余后效随人格凝胶保存，离体暂停、植入续计。
+- **修复与四语。** 修正阶段市值和开发绑定交接、文化识别、自动调教与救援循环，以及爆发调教中受方倒地中断。爆发和相关后效改用原版健康组件计时，完成无主、解绑和请求选项的四语定稿。
+- **验证归属。** PR #48 合并前开发候选整仓 All 52 套、6007／6007 和资源镜像 2／2 通过。分批实机按原候选登记，正式构建及安装包结果待发布阶段记录。
+
+SSC 2.5.3 groups development after the 2.5.2 registration commit. It introduces formal unbound-slave stages, exact-progress binding and release, Personality Gel recovery of remaining release effects, culture integration, downed Training fixes and finalized four-language text. PR #48 passed a development-candidate All run of 52 suites and 6007/6007 cases. Scoped in-game results and pending formal release preparation are documented in the validation record.
+
 ## [2.5.2] — 2026-11-19 — 开发版 / Unreleased — 恶堕成长与奴性爆发 / Corruption and Submission Breakdown
 
 纳入 `v2.5.1` 后至 `1ada9192` 的 66 个非合并提交、3 个合并提交和 332 个净变更路径，新增面向 RimWorld 1.7。[双语说明](Docs/Releases/2.5.2/2.5.2发布说明.md) · [开发归并](Docs/Releases/2.5.2/2.5.2开发归并核对.md) · [验证记录](Docs/Releases/2.5.2/2.5.2版本验证.md)

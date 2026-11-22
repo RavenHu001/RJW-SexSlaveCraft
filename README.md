@@ -1,6 +1,8 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
-**2.5.2 开发版（2026-11-19 登记）。** 纳入无主性奴与解绑、恶堕与锁链解耦、奴性爆发、淫堕传道与堕落凝胶统一结算，以及四语和测试维护。[版本说明](Docs/Releases/2.5.2/2.5.2发布说明.md) · [归并核对](Docs/Releases/2.5.2/2.5.2开发归并核对.md) · [验证记录](Docs/Releases/2.5.2/2.5.2版本验证.md)
+**2.5.3 开发版（2026-11-21 登记）。** 纳入正式无主性奴、精确进度绑定与解绑、凝胶后效续计、文化适配及倒地调教修复。[版本说明](Docs/Releases/2.5.3/2.5.3发布说明.md) · [归并核对](Docs/Releases/2.5.3/2.5.3开发归并核对.md) · [验证记录](Docs/Releases/2.5.3/2.5.3版本验证.md)
+
+**2.5.2 开发版（2026-11-19 登记）。** 恶堕与锁链解耦、奴性爆发初版、文化与凝胶结算的原登记范围见[版本说明](Docs/Releases/2.5.2/2.5.2发布说明.md)。
 
 **SSC 2.5.1 正式版。** 纳入 PNA 雾气系列、主从关系命令栏修复、启动兼容修复与诊断窗口更新。 [下载 2.5.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.1) · [2.5.1 版本说明](Docs/Releases/2.5.1/2.5.1发布说明.md) · [归并核对](Docs/Releases/2.5.1/2.5.1开发归并核对.md) · [验证记录](Docs/Releases/2.5.1/2.5.1版本验证.md)
 
@@ -124,7 +126,7 @@
 | 用途 | 阅读顺序 |
 | --- | --- |
 | 了解与游玩 | [模组介绍](Docs/模组介绍.md) → [玩家阅读入口](Docs/Players/README.md) → 快速入门 → 完整机制 |
-| 查看版本变化 | [2.5.2 开发说明](Docs/Releases/2.5.2/2.5.2发布说明.md) → [提交归并](Docs/Releases/2.5.2/2.5.2开发归并核对.md) → [验证记录](Docs/Releases/2.5.2/2.5.2版本验证.md)；公开安装包从上方 2.5.1 入口下载 |
+| 查看版本变化 | [2.5.3 开发说明](Docs/Releases/2.5.3/2.5.3发布说明.md) → [提交归并](Docs/Releases/2.5.3/2.5.3开发归并核对.md) → [验证记录](Docs/Releases/2.5.3/2.5.3版本验证.md)；公开安装包从上方 2.5.1 入口下载 |
 | 接手开发 | [开发协作约定](AGENTS.md) → [开发资料入口](Docs/Development/README.md) → [已交付记录](Docs/Development/Completed/README.md) → [专项待验收](Docs/Development/Verification/README.md) → [当前规划](Docs/Design/README.md) |
 | 新增个人能力开关 | 先读[现行接入规范](Docs/Development/Reference/个人能力开关接入规范.md)，复用能力注册、原载体后端、状态查询与上下文提交；UI 行及跨 ITab 复用边界见规范 |
 | 编译、测试、打包 | [维护入口](Docs/Maintenance/README.md) → [测试说明](Tests/README.md) → [发布与打包](Docs/Maintenance/发布与打包.md) |
@@ -136,6 +138,8 @@
 问题反馈请附模组／游戏版本、加载顺序、复现步骤、日志及新旧档情况。项目署名：Someone、Hajimi、TieJin。
 
 ## English overview
+
+**SSC 2.5.3 is in development for RimWorld 1.7.** It adds formal unbound-slave progression, binding and release, personality-gel timer recovery, culture integration and downed Training fixes. [2.5.3 notes](Docs/Releases/2.5.3/2.5.3发布说明.md#english)
 
 **SSC 2.5.2 is in development for RimWorld 1.7.** It includes unbound slaves and bond release, Corruption and Chain decoupling, Submission Breakdown, and shared event bookkeeping for Preaching Corruption and Depravity Gel. Scoped validation and release preparation are recorded with the milestone. [2.5.2 notes](Docs/Releases/2.5.2/2.5.2发布说明.md#english)
 
