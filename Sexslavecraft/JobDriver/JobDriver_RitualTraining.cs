@@ -19,6 +19,7 @@ namespace SexSlaveCraft
         private bool phaseFinishHandled;
         private Lord ritualLord;
 #if SSC_RW17
+        // 原选部位随当前阶段 Job 保存。恢复标记在加载后使用一次，等双方驱动都完成引用恢复。
         private SSCRitualInteractionParts selectedParts;
         private bool restorePhaseOnTick;
 #endif
@@ -82,6 +83,7 @@ namespace SexSlaveCraft
         private bool IsCurrentPhase(TrainingJobUtility.JobContext context)
             => context.IsCurrent && context.Target.Thing == Slave;
 
+        /// <summary>为当前阶段建立或重新接入接收任务，再核对原 Job 及仪式归属。</summary>
         private bool TryStartPhaseReceiver(TrainingJobUtility.JobContext context, Pawn slave, IntVec3 spot)
         {
             // 接收启动允许重入；新阶段或其他工作接管后，不再运行旧阶段的中止清理。
@@ -110,7 +112,8 @@ namespace SexSlaveCraft
         protected override IEnumerable<Toil> MakeNewToils()
         {
 #if SSC_RW17
-            // JobDriver.ExposeData 在 PostLoadInit 重建 Toil。此时 RJW 的计时已从存档读取。
+            // JobDriver.ExposeData 在 PostLoadInit 重建 Toil。此时 RJW 的计时已从存档读取，
+            // 所以重建时只补回 RJW 的中止条件。新阶段才由 setup_ticks 生成时长和节奏。
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 foreach (var condition in ConditionsToAbortSex()) AddFailCondition(condition);
@@ -194,6 +197,7 @@ namespace SexSlaveCraft
                 }
 
 #if SSC_RW17
+                // 捕获本阶段的原部位供读档恢复。没有可保存部位的固定动作仍交给接收任务和 RJW Start。
                 var parts = SSCRitualInteractionParts.Capture(chosenProps._resolved);
                 if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
                 Sexprops = chosenProps;
@@ -306,6 +310,7 @@ namespace SexSlaveCraft
 #if SSC_RW17
                 if (restorePhaseOnTick)
                 {
+                    // 首次 tick 恢复已保存动作的部位。新一轮候选筛选从下一阶段准备开始。
                     bool restored = RestorePhase(slave);
                     if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
                     if (!restored)
@@ -322,6 +327,7 @@ namespace SexSlaveCraft
                     }
                 }
 #endif
+                // RJW 的逐 tick 推进同时更新执行方和接收方。固定保底及缺少动画的阶段走同一路径。
                 SexTick(pawn, slave);
                 if (!IsCurrentPhase(context) || !HasActiveRitual()) return;
                 SexUtility.reduce_rest(slave);
@@ -363,6 +369,7 @@ namespace SexSlaveCraft
                 if (phaseSceneStarted && pawn.jobs?.curDriver == this)
                     UapRitualCompatibilityUtility.ReleasePositionLocks(pawn, slave);
 
+                // 完整执行的阶段按原流程调用 RJW 结算，阶段推进依赖原 Job 和 Lord 的归属。
                 if (completedActivePhase && Sexprops?.pawn != null && Sexprops.partner != null)
                 {
                     try { SexUtility.ProcessSex(Sexprops); }
@@ -411,6 +418,7 @@ namespace SexSlaveCraft
         }
 
 #if SSC_RW17
+        /// <summary>恢复仍属于这对角色的原动作。部位失效时以原 Def 和显式空接触继续。</summary>
         private bool RestorePhase(Pawn slave)
         {
             restorePhaseOnTick = false;
@@ -424,6 +432,7 @@ namespace SexSlaveCraft
                 SSCRitualInteraction.ClearContact(props);
             }
             props.isRevese = props.interaction.HasInteractionTag(SexInteractionTag.Reverse);
+            // 仅同步同一动作的对应接收驱动。两份 SexProps 从各自角色视角引用同一组部位与配对。
             if (slave.jobs?.curDriver is JobDriver_SexBaseReciever receiver && receiver.Partner == pawn &&
                 receiver.Sexprops is { } partnerProps && partnerProps.pawn == slave && partnerProps.partner == pawn &&
                 partnerProps.isReceiver && partnerProps.dictionaryKey == props.dictionaryKey)

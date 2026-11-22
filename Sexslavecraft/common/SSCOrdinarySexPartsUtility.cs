@@ -80,6 +80,7 @@ namespace SexSlaveCraft
             return true;
         }
 
+        /// <summary>提取普通场景凭据及仪式恢复共用的原身体定位信息。RJW 器官以 Hediff 引用区分。</summary>
         internal static SSCOrdinarySexPartsSnapshot.Part DescribePart(ILewdablePart part)
         {
             if (part?.Owner == null || part.BodyPart?.def == null) return null;
