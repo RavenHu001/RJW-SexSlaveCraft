@@ -116,7 +116,8 @@ try {
     [IO.File]::WriteAllText((Join-Path $fixture 'VERSION'), $fixtureVersion, [Text.UTF8Encoding]::new($false))
     # 仅提供发布资源预检所需真实四语文件；不需要执行机制宿主。
     $preflightKeyedFiles = @('SSC_Restrictions.xml', 'SSC_RomanceMood.xml', 'SSC_Romance.xml',
-        'SSC_BodyManagement.xml', 'SSC_UterusDevelopment.xml', 'SSC_Cosmetic.xml', 'SSC_Keys.xml')
+        'SSC_BodyManagement.xml', 'SSC_UterusDevelopment.xml', 'SSC_Cosmetic.xml', 'SSC_Keys.xml',
+        'SSC_HediffFertility.xml', 'SSC_MasterProgression.xml')
     foreach ($language in @('English', 'ChineseSimplified', 'ChineseTraditional', 'Russian')) {
         foreach ($keyedFile in $preflightKeyedFiles) {
             $relative = "Languages/$language/Keyed/$keyedFile"
@@ -125,6 +126,12 @@ try {
                 [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($destination)) | Out-Null
                 Copy-Item -LiteralPath (Join-Path $repo ($prefix + $relative)) -Destination $destination
             }
+        }
+        $cultureRelative = "Languages/$language/DefInjected/MemeDef/SSC_Culture.xml"
+        foreach ($prefix in @('1.7/', 'Sexslavecraft/')) {
+            $destination = Join-Path $fixture ($prefix + $cultureRelative)
+            [IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($destination)) | Out-Null
+            Copy-Item -LiteralPath (Join-Path $repo ($prefix + $cultureRelative)) -Destination $destination
         }
     }
     # 语言镜像要求完整对应，另加含中文文件名的词条用于差异、缺失与手动同步场景。
@@ -135,7 +142,7 @@ try {
     foreach ($path in @($languageSource, $languageMirror)) {
         [IO.File]::WriteAllText($path, $languageText, [Text.UTF8Encoding]::new($false))
     }
-    $languageFileCount = $preflightKeyedFiles.Count * 4 + 1
+    $languageFileCount = $preflightKeyedFiles.Count * 4 + 4 + 1
     # Use each real project name, but no production code or game runtime in this fixture.
     foreach ($project in Get-ChildItem -LiteralPath (Join-Path $repo 'Tests') -Recurse -Filter '*.csproj') {
         $relative = [IO.Path]::GetRelativePath($repo, $project.FullName)
