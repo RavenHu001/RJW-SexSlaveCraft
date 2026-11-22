@@ -75,3 +75,5 @@ RimWorld **1.7.5014 rev1195**、RJW **6.2.2** 隔离构建通过，生产候选�
 | 6 阴部 | `Sex_Scissoring` | 自动选中，双方阴部参与。 | 已启动 |
 
 第 5、6 阶段的目标部位均由动作定义明确指定，并出现在对应角色的解析结果中。`contacts=[]` 表示 RJW 未生成插入配对。最后一场逐阶段记录了 `Start ritual scene` 和完成状态，最终达到 `6/6` 并记录 `Binding Ritual finished`。
+
+在途旧档的胃部开发凭据保留已通过实机复测。 [两批读档修复验收](未来内容开发规划.md#ssc-training-save-recovery-verification)
