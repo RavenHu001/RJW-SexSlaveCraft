@@ -1,6 +1,6 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
-**2.5.2 开发版（2026-11-19 登记）。** 纳入恶堕与锁链解耦、奴性爆发、淫堕传道与堕落凝胶统一结算，以及四语和测试维护。[版本说明](Docs/Releases/2.5.2/2.5.2发布说明.md) · [归并核对](Docs/Releases/2.5.2/2.5.2开发归并核对.md) · [验证记录](Docs/Releases/2.5.2/2.5.2版本验证.md)
+**2.5.2 开发版（2026-11-19 登记）。** 纳入无主性奴与解绑、恶堕与锁链解耦、奴性爆发、淫堕传道与堕落凝胶统一结算，以及四语和测试维护。[版本说明](Docs/Releases/2.5.2/2.5.2发布说明.md) · [归并核对](Docs/Releases/2.5.2/2.5.2开发归并核对.md) · [验证记录](Docs/Releases/2.5.2/2.5.2版本验证.md)
 
 **SSC 2.5.1 正式版。** 纳入 PNA 雾气系列、主从关系命令栏修复、启动兼容修复与诊断窗口更新。 [下载 2.5.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.1) · [2.5.1 版本说明](Docs/Releases/2.5.1/2.5.1发布说明.md) · [归并核对](Docs/Releases/2.5.1/2.5.1开发归并核对.md) · [验证记录](Docs/Releases/2.5.1/2.5.1版本验证.md)
 
@@ -137,7 +137,7 @@
 
 ## English overview
 
-**SSC 2.5.2 is in development for RimWorld 1.7.** It groups Corruption and Chain decoupling, Submission Breakdown, Preaching Corruption and Depravity Gel event bookkeeping. Scoped validation and release preparation are recorded with the milestone. [2.5.2 notes](Docs/Releases/2.5.2/2.5.2发布说明.md#english)
+**SSC 2.5.2 is in development for RimWorld 1.7.** It includes unbound slaves and bond release, Corruption and Chain decoupling, Submission Breakdown, and shared event bookkeeping for Preaching Corruption and Depravity Gel. Scoped validation and release preparation are recorded with the milestone. [2.5.2 notes](Docs/Releases/2.5.2/2.5.2发布说明.md#english)
 
 **SSC 2.5.1 for RimWorld 1.7.** It adds the PNA mist series and improves relationship commands, startup compatibility and diagnostics. [2.5.1 notes](Docs/Releases/2.5.1/2.5.1发布说明.md#english) · [Download 2.5.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.1)
 

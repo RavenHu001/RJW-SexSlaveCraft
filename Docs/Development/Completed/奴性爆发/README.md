@@ -2,6 +2,8 @@
 
 2026-11-18，1.7 机制完成分批实机验收，随 PR #47 合入 `main`（`21fa009e`）。现行准入、计时、邀约和结算以已交付设计的摘要为入口。 [现行规则](../../../Design/Archive/第7项奴性爆发开发方案.md#ssc-slave-breakdown-current-rules) · [总体规划第 7 项](../../../Design/未来内容开发规划.md#7-奴性爆发)
 
+2026-11-21，默认开启、持续满值触发、无主调教分支及原版计时随第 6 项合入。 [第 6 项实施与验收](../无主性奴/README.md) · [原版计时实机验证](../../../Design/Archive/第7项奴性爆发开发方案.md#ssc-slave-breakdown-native-timers)
+
 ## 实施与验收
 
 | 批次 | 记录 |
@@ -28,4 +30,3 @@
 
 - 简中、繁中、英语和俄语的游戏内逐语显示仍在[待验收专项](../../Verification/README.md#其他专项)。
 - [调教员换人格后旧信的读档边界](../../../Design/Archive/第7项奴性爆发开发方案.md#ssc-slave-breakdown-deferred-trainer-save-edge)已复现并暂缓处理。早期同格等待反馈及其调查结果保留在[最终邀约验收](../../../Design/Archive/第7项奴性爆发开发方案.md#ssc-slave-breakdown-invited-use-cooldown-acceptance)。
-- 无主性奴的正式状态与生成逻辑由[第 6 项](../../../Design/未来内容开发规划.md#6-拆分主奴绑定与性奴化调教支持无主性奴)继续跟踪。
