@@ -23,6 +23,7 @@ internal static partial class Program
     private static JobDriver_RitualTraining tickingRitual;
     private static bool ritualToilReady;
     private static bool runRitualSettlement;
+    private static DailyFallbackProbe dailyFallbackProbe;
 
     /// <summary>在同一个真实生产程序集宿主中执行场景、成长及存档测试。</summary>
     private static void GrowthFlowTests(string repo, Harmony harmony)
@@ -84,6 +85,7 @@ internal static partial class Program
         if (DefDatabase<InteractionDef>.GetNamedSilentFail("AnimalSexChat") == null)
             DefDatabase<InteractionDef>.Add(new InteractionDef { defName = "AnimalSexChat" });
         DailyGrowthTests();
+        DailyFallbackTests(harmony);
         InfestationGrowthTests();
         RitualGrowthTests();
         GrowthSaveTests(harmony);
@@ -194,7 +196,7 @@ internal static partial class Program
     }
 
     /// <summary>枚举真实日常 Toil，并直接执行原有最终完成闭包验证整场认领。</summary>
-    private static (GrowthScene scene, JobDriver_Training driver, Toil payout) DailyGrowth(bool contact = true, bool begun = true, bool oral = false)
+    private static (GrowthScene scene, JobDriver_Training driver, Toil payout, Toil prepareScene) DailyGrowth(bool contact = true, bool begun = true, bool oral = false)
     {
         ResetGrowthFlow(); var s = new GrowthScene(contact: contact, oral: oral); var driver = InstallDriver<JobDriver_Training>(s);
         dailyGrowthPawns.Clear();
@@ -208,8 +210,149 @@ internal static partial class Program
             MarkStarted(driver);
             AccessTools.Field(typeof(JobDriver_Training), "sceneStarted").SetValue(driver, true);
         }
-        return (s, driver, toils.Last());
+        return (s, driver, toils.Last(), toils[^2]);
     }
+
+    private sealed class DailyFallbackProbe
+    {
+        internal JobDriver_Training Driver;
+        internal Func<SexProps> SelectFallback;
+        internal int SelectionCalls;
+        internal JobCondition? EndedWith;
+        internal SexProps StartedWith;
+        internal readonly List<string> Logs = new();
+    }
+
+    private static void DailyFallbackTests(Harmony harmony)
+    {
+        void Patch(Type type, string method, string prefix, Type[] signature = null)
+            => harmony.Patch(AccessTools.Method(type, method, signature), prefix: new HarmonyMethod(typeof(Program), prefix));
+        // 提供可控的自动候选，隔离地图及 Start 的副作用。指定动作的部位验证由真实 RJW 执行。
+        Patch(typeof(SexUtility), nameof(SexUtility.SelectSextype), nameof(DailyFallbackSelectBoundary));
+        Patch(typeof(TrainingJobUtility), nameof(TrainingJobUtility.SyncPartnerPosition), nameof(DailyFallbackMapBoundary),
+            new[] { typeof(Pawn), typeof(Pawn), typeof(IntVec3?) });
+        Patch(typeof(TrainingJobUtility), nameof(TrainingJobUtility.TryValidateStartOrAbort), nameof(DailyFallbackMapBoundary));
+        Patch(typeof(JobDriver_Training), "CheckLifecycleBeforeScene", nameof(DailyFallbackLifecycleBoundary));
+        Patch(typeof(JobDriver_SexBaseInitiator), "Start", nameof(DailyFallbackStartBoundary));
+        Patch(typeof(Pawn_JobTracker), nameof(Pawn_JobTracker.EndCurrentJob), nameof(DailyFallbackEndBoundary));
+        Patch(typeof(SSCLog), nameof(SSCLog.Important), nameof(DailyFallbackLogBoundary));
+        Patch(typeof(SSCLog), nameof(SSCLog.WarningImportant), nameof(DailyFallbackLogBoundary));
+
+        if (DefDatabase<InteractionDef>.GetNamedSilentFail("Sex_Anal") == null)
+            DefDatabase<InteractionDef>.Add(new InteractionDef
+            {
+                defName = "Sex_Anal",
+                modExtensions = new()
+                {
+                    new SexInteractionExtension
+                    {
+                        rjwSextype = "Anal", tags = new() { SexInteractionTag.Consensual },
+                        initiatorRequirement = new SexInteractionRequirement { genitalFamilies = new() { GenitalFamily.Penis } },
+                        recipientRequirement = new SexInteractionRequirement { genitalFamilies = new() { GenitalFamily.Anus } }
+                    }
+                }
+            });
+
+        foreach (string outcome in new[] { "Started", "NoUsableAutomaticAct", "AbortedBeforeStart" })
+            Check("daily automatic fallback " + outcome, () =>
+            {
+                var s = DailyGrowth(begun: false);
+                var comp = s.scene.Target.TryGetComp<CompSexSlaveTraining>();
+                comp.selectedMode = TrainingActType.Anal;
+                int priorFailure = comp.lastFailedTrainingValidationTick;
+                s.driver.Sexprops = null;
+                var probe = new DailyFallbackProbe
+                {
+                    Driver = s.driver,
+                    SelectFallback = () =>
+                    {
+                        // 改编号模拟同一 Job 对象被复用，检验旧回调是否停止。RJW 无候选时仍可返回空 SexProps。
+                        if (outcome == "AbortedBeforeStart") s.driver.job.loadID++;
+                        return outcome == "NoUsableAutomaticAct" ? new SexProps(s.scene.Source, s.scene.Target) : s.scene.Props;
+                    }
+                };
+                dailyFallbackProbe = probe;
+                try
+                {
+                    s.prepareScene.initAction();
+                    s.payout.initAction();
+                    Equal(2, probe.SelectionCalls);
+                    Equal(TrainingActType.Anal, comp.selectedMode);
+                    string log = probe.Logs.Single();
+                    Require(log.Contains("requestedDef=Sex_Anal") && log.Contains("reason=NoCompatibleParts") &&
+                        log.Contains("fallback=Auto") && log.Contains("result=" + outcome));
+                    if (outcome == "Started")
+                    {
+                        Equal(s.scene.Props, probe.StartedWith);
+                        Require(log.Contains("automaticDef=" + s.scene.Props.dictionaryKey.defName));
+                        Require(probe.EndedWith == null);
+                        Equal(priorFailure, comp.lastFailedTrainingValidationTick);
+                        Equal(1, sexProcessCalls); Equal(1, dailyOutcomes); Near(.035f, Progress(s.scene.Target));
+                    }
+                    else
+                    {
+                        Require(probe.StartedWith == null && log.Contains("automaticDef=none"));
+                        Equal(0, sexProcessCalls); Equal(0, dailyOutcomes);
+                        if (outcome == "NoUsableAutomaticAct")
+                        {
+                            Equal(JobCondition.Incompletable, probe.EndedWith.Value);
+                            Equal(Find.TickManager.TicksGame, comp.lastFailedTrainingValidationTick);
+                        }
+                        else
+                        {
+                            Require(probe.EndedWith == null);
+                            Equal(priorFailure, comp.lastFailedTrainingValidationTick);
+                        }
+                    }
+                }
+                finally { dailyFallbackProbe = null; }
+            });
+    }
+
+    private static bool DailyFallbackSelectBoundary(Pawn pawn, Pawn partner, ref SexProps __result)
+    {
+        var probe = dailyFallbackProbe;
+        if (probe?.Driver.pawn != pawn) return true;
+        __result = ++probe.SelectionCalls == 1 ? new SexProps(pawn, partner) : probe.SelectFallback();
+        return false;
+    }
+
+    private static bool DailyFallbackMapBoundary(Pawn actor, ref bool __result)
+    {
+        if (dailyFallbackProbe?.Driver.pawn != actor) return true;
+        __result = true;
+        return false;
+    }
+
+    private static bool DailyFallbackLifecycleBoundary(JobDriver_Training __instance, ref bool __result)
+    {
+        if (dailyFallbackProbe?.Driver != __instance) return true;
+        __result = true;
+        return false;
+    }
+
+    private static bool DailyFallbackStartBoundary(JobDriver_SexBaseInitiator __instance)
+    {
+        if (dailyFallbackProbe?.Driver != __instance) return true;
+        dailyFallbackProbe.StartedWith = __instance.Sexprops;
+        MarkStarted(__instance);
+        return false;
+    }
+
+    private static bool DailyFallbackEndBoundary(Pawn_JobTracker __instance, JobCondition condition)
+    {
+        if (dailyFallbackProbe?.Driver.pawn.jobs != __instance) return true;
+        dailyFallbackProbe.EndedWith = condition;
+        return false;
+    }
+
+    private static bool DailyFallbackLogBoundary(string message)
+    {
+        if (dailyFallbackProbe == null || !message.StartsWith("[SSC_TRAIN_ACT]")) return true;
+        dailyFallbackProbe.Logs.Add(message);
+        return false;
+    }
+
     /// <summary>验证实际日常闭包与旧部位使用相同动作分类，完整结算只领一次。</summary>
     private static void DailyGrowthTests()
     {
