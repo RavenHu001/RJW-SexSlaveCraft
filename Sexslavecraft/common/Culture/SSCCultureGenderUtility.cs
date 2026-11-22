@@ -58,14 +58,14 @@ namespace SexSlaveCraft
                 && pawn.DevelopmentalStage == DevelopmentalStage.Adult && pawn.GetAgeCategory() == AgeCategory.Adult;
         }
 
-        // 限定不合规只评价实际成年性奴；无链的另一性别普通成员不因其性别受到此项惩罚。
+        // 限定不合规只评价实际成年性奴。
         public static bool IsViolation(Pawn target, SSCCultureGenderPolicy policy)
-            => !Accepts(policy, target?.gender ?? Gender.None) && IsAdult(target) && SSCCultureStateUtility.HasChain(target);
+            => !Accepts(policy, target?.gender ?? Gender.None) && IsAdult(target) && SSCCultureStateUtility.IsSexSlave(target);
 
-        // 先短路当前主人和已有链，避免对已豁免/已履行者重复执行成年查询；不检查途径资格。
+        // 先排除已经豁免的主人和已履行义务的性奴，再查询成年条件。
         public static bool IsDutyCandidate(Pawn pawn)
             => SSCCultureStateUtility.IsLiving(pawn) && !SSCCultureStateUtility.IsMaster(pawn)
-                && !SSCCultureStateUtility.HasChain(pawn) && IsAdult(pawn);
+                && !SSCCultureStateUtility.IsSexSlave(pawn) && IsAdult(pawn);
 
         public static bool HasUnfulfilledDuty(Pawn pawn, SSCCultureGenderPolicy policy)
         {
@@ -87,7 +87,7 @@ namespace SexSlaveCraft
         {
             count = 0;
             SSCCultureGenderPolicy policy = Policy(observer);
-            // 新负向环境允许主人和实际性奴接收；不能复用旧环境的“本人无链”前提。
+            // 新负向环境允许主人和实际性奴接收；不能复用旧环境的“本人尚未成为性奴”前提。
             if (duty ? !RequiresAny(policy) : (policy == SSCCultureGenderPolicy.Unrestricted
                 || policy == SSCCultureGenderPolicy.NonMasterRequired)) return false;
             if (!IsAdult(observer) || observer.Faction?.def?.isPlayer != true) return false;

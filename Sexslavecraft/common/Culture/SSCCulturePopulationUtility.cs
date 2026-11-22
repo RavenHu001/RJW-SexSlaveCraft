@@ -77,11 +77,11 @@ namespace SexSlaveCraft
             foreach (Pawn pawn in PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive)
             {
                 if (!SSCCultureStateUtility.IsLiving(pawn) || pawn.IsQuestLodger()) continue;
-                // 先确认玩家实际管理关系，再以锁链判定性奴；ITab 的途径预选不影响人数。
+                // 先确认玩家实际管理关系，再按共用戒律口径判定性奴。
                 bool managed = pawn.IsPrisonerOfColony || pawn.IsSlaveOfColony
                     || (pawn.Faction == player && !pawn.IsPrisoner
                         && (pawn.HostFaction == null || pawn.HostFaction == player));
-                if (managed && SSCBondUtility.GetChain(pawn) != null) result.Add(pawn);
+                if (managed && SSCCultureStateUtility.IsSexSlave(pawn)) result.Add(pawn);
             }
         }
 

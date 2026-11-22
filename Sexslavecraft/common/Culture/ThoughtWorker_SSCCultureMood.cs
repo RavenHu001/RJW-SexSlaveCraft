@@ -15,13 +15,13 @@ namespace SexSlaveCraft
             switch (config.condition)
             {
                 case SSCCultureThoughtCondition.ChainedSelf:
-                    return SSCCultureStateUtility.HasChain(p) && (!config.requireAcceptedSlaveGender
+                    return SSCCultureStateUtility.IsSexSlave(p) && (!config.requireAcceptedSlaveGender
                         || SSCCultureGenderUtility.Accepts(SSCCultureGenderUtility.Policy(p), p.gender));
                 case SSCCultureThoughtCondition.EnvySelf:
-                    // 一条 thought 切换阶段：链优先，+10 与 -6 不可能同时存在；资格和途径预选不参与。
+                    // 一条 thought 切换阶段：性奴状态优先，+10 与 -6 不可能同时存在；资格和途径预选不参与。
                     var policy = SSCCultureGenderUtility.Policy(p);
                     if (!SSCCultureGenderUtility.Accepts(policy, p.gender)) return ThoughtState.Inactive;
-                    if (SSCCultureStateUtility.HasChain(p)) return ThoughtState.ActiveAtStage(0);
+                    if (SSCCultureStateUtility.IsSexSlave(p)) return ThoughtState.ActiveAtStage(0);
                     // 新义务使用自身普通/艳羡互斥阶段，只有实际适用且入册时才替代旧愿望 -6。
                     return SSCCultureStateUtility.IsMaster(p) || SSCCultureGenderUtility.HasUnfulfilledDuty(p, policy)
                         ? ThoughtState.Inactive : ThoughtState.ActiveAtStage(1);
@@ -83,7 +83,7 @@ namespace SexSlaveCraft
             // 固定个人反馈不查询组件；环境读取完整人数，不应用数量戒律的三人超额封顶。
             if (!quantity && config?.condition != SSCCultureThoughtCondition.ManagedChainedEnvironment && config?.IsGenderEnvironment != true)
                 return 1f;
-            // 原版缓存可能尚未重算；再次核对挂载和本人链，避免改宗/取得链后继续给出旧环境效果。
+            // 原版缓存可能尚未重算；再次核对挂载，并在环境查询中读取本人当前性奴状态。
             if (!ModsConfig.IdeologyActive || p?.Ideo == null || !p.Ideo.cachedPossibleSituationalThoughts.Contains(def)) return 0f;
             if (config.IsGenderEnvironment)
             {
@@ -113,7 +113,7 @@ namespace SexSlaveCraft
             count = 0;
             // 先做个人短路：持链者只获本人项；无效/非玩家对象不触发人口收集。
             if (!SSCCultureStateUtility.IsLiving(p) || p.Faction != Faction.OfPlayer
-                || SSCCultureStateUtility.HasChain(p)) return false;
+                || SSCCultureStateUtility.IsSexSlave(p)) return false;
             var cache = Current.Game?.GetComponent<SSCCultureGameComponent>();
             // 接收者用成员名册，计数对象用管理持链集合；后者包含囚犯，不能被前者替代。
             if (cache == null || !cache.TryIsMember(p, out bool member) || !member) return false;

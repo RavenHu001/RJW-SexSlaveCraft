@@ -32,7 +32,7 @@ internal static partial class Program
         ideology.SetValue(null, true);
         try
         {
-            Check("scene corruption reads the source precept and credits only the matching participant's own orgasm", () =>
+            Check("scene corruption accepts formal ownerless sources and credits only the matching participant's own orgasm", () =>
             {
                 var hub = PartnerPawn(); var source = PartnerPawn(); var target = PartnerPawn(Gender.Female);
                 var need = GelUseNeed(target); var receive = PartnerReceiver(hub, source);
@@ -40,13 +40,19 @@ internal static partial class Program
                 PartnerPrecept(target, "Unrestricted"); // 对象自己的启用档不能替施加者发放。
                 var sourceComp = AttachToggleTraining(source); sourceComp.pawnIdentity = PawnIdentity.Slave;
                 PartnerPrecept(source, "FemaleOnly"); GelFire(observed); Near(0, need.CurLevel);
-                PartnerChain(source);
+                var ownerlessDef = ImprintBoundaryDef("SSC_Hediff_OwnerlessSlave", typeof(Hediff_SSCOwnerlessSlave));
+                var record = new Hediff_SSCOwnerlessSlave { def = ownerlessDef, pawn = source, Severity = .2f };
+                source.health.hediffSet.hediffs.Add(record);
                 PartnerPrecept(source, null); GelFire(observed); Near(0, need.CurLevel);
                 PartnerPrecept(source, "Off"); GelFire(observed); Near(0, need.CurLevel);
                 PartnerPrecept(source, "MaleOnly"); GelFire(observed); Near(0, need.CurLevel);
                 PartnerPrecept(source, "FemaleOnly");
                 GelFire(first); Near(0, need.CurLevel);
                 observed.sex_ticks = 100; observed.Orgasm(); Near(0, need.CurLevel);
+                // 原调用中替换的载体不能取得捕获时的资格，即使人物与阶段相同。
+                gelOrgasmCallback = () => source.health.hediffSet.hediffs[source.health.hediffSet.hediffs.IndexOf(record)] =
+                    new Hediff_SSCOwnerlessSlave { def = ownerlessDef, pawn = source, Severity = record.Severity };
+                GelFire(observed); Near(0, need.CurLevel);
                 // 两名发起者只共享接收端、没有互相配对，仍是同一活动场次。
                 GelFire(observed); Near(.005f, need.CurLevel);
             });

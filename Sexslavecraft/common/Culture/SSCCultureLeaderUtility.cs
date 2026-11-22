@@ -48,10 +48,10 @@ namespace SexSlaveCraft
                     found = pawn;
                 }
             }
-            // 先完成原版任职资格再分类；SSC 性奴以实际锁链为准，途径预选不改变领袖状态。
+            // 先核对原版任职资格，再按共用戒律口径识别 SSC 性奴。
             // 身份互斥：持链领袖单独归入性奴，不构造“性奴同时是 SSC 主人”的文化状态。
             if (found == null) return default;
-            var state = SSCCultureStateUtility.HasChain(found) ? SSCCultureLeaderState.SexSlave
+            var state = SSCCultureStateUtility.IsSexSlave(found) ? SSCCultureLeaderState.SexSlave
                 : SSCIdentityUtility.IsMaster(found) ? SSCCultureLeaderState.Master : SSCCultureLeaderState.NonMaster;
             return new SSCCultureLeaderResult(found, state);
         }
