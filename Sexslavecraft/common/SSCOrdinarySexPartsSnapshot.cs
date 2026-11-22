@@ -60,12 +60,13 @@ namespace SexSlaveCraft
             => SSCOrdinarySexPartsUtility.IsCurrentReceivingPenileOral(this, boundProps, evidence);
 #endif
 
-        internal bool Matches(SexProps props)
+        internal bool Matches(SexProps props, SexInteractionResolved legacyEmptyResolution = null)
         {
             if (props == null || props != boundProps || props.initiator != Initiator || props.recipient != Recipient ||
                 props.dictionaryKey != Interaction || Interaction == null || Parts == null) return false;
-            // 读档后尚无缓存时使用保存的原凭据；若原生已重解析，则只允许相同参与部位，绝不补进新候选。
-            return props._resolved == null || SSCOrdinarySexPartsUtility.SameCachedParts(this, props);
+            // 旧仪式恢复时指定的空缓存等同于缺少原生解析。若 RJW 后来另行解析，仍按实际缓存核对原部位。
+            return props._resolved == null || ReferenceEquals(props._resolved, legacyEmptyResolution) ||
+                SSCOrdinarySexPartsUtility.SameCachedParts(this, props);
         }
 
         public void ExposeData()

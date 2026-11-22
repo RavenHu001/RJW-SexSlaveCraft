@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using RimWorld;
 using rjw;
+#if SSC_RW17
+using rjw.Modules.Interactions;
+#endif
 using Verse;
 using Verse.AI;
 
@@ -273,13 +276,13 @@ namespace SexSlaveCraft
 #if SSC_RW17
         /// <summary>只读取得当前调教 Job 首次 Start 保存的部位；不为旧档、替换任务或新 SexProps 补造。</summary>
         internal static SSCOrdinarySexPartsSnapshot TrainingParts(JobDriver_SexBaseInitiator driver,
-            SSCInteractionKind kind)
+            SSCInteractionKind kind, SexInteractionResolved legacyEmptyResolution = null)
         {
             if (Scribe.mode != LoadSaveMode.Inactive || driver == null || driver.pawn?.jobs?.curDriver != driver ||
                 driver.job == null || (kind != SSCInteractionKind.DailyTraining && kind != SSCInteractionKind.RitualTraining)) return null;
             SceneState state = State(driver);
             if (!state.Started || state.Rejected || state.Kind != kind || state.Initiator != driver.pawn ||
-                state.Receiver != driver.Partner || state.Parts?.Matches(driver.Sexprops) != true) return null;
+                state.Receiver != driver.Partner || state.Parts?.Matches(driver.Sexprops, legacyEmptyResolution) != true) return null;
             return state.Parts;
         }
 #endif

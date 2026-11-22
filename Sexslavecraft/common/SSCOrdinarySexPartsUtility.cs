@@ -73,15 +73,22 @@ namespace SexSlaveCraft
         /// <summary>按原器官与身体引用合并参与条目，方向标记在接触端点遍历中单独写入。</summary>
         private static bool Add(SSCOrdinarySexPartsSnapshot snapshot, ILewdablePart part, Pawn owner)
         {
-            if (part == null || part.Owner != owner) return false;
-            var rjwPart = part as RJWLewdablePart;
-            Hediff organ = rjwPart?.SexPart?.AsHediff;
-            var record = new SSCOrdinarySexPartsSnapshot.Part { Owner = owner, BodyPart = part.BodyPart,
-                PartDef = part.BodyPart?.def, Family = part.Family, Organ = organ, HadOrgan = rjwPart != null };
-            if (record.BodyPart == null || record.PartDef == null || (record.HadOrgan && organ == null)) return false;
+            var record = DescribePart(part);
+            if (record == null || record.Owner != owner) return false;
             // 原始列表与接触端点可能重复；不同原器官保留为独立支持凭据，预算阶段再按开发记录去重。
             if (!snapshot.Parts.Exists(record.Same)) snapshot.Parts.Add(record);
             return true;
+        }
+
+        /// <summary>提取普通场景凭据及仪式恢复共用的原身体定位信息。RJW 器官以 Hediff 引用区分。</summary>
+        internal static SSCOrdinarySexPartsSnapshot.Part DescribePart(ILewdablePart part)
+        {
+            if (part?.Owner == null || part.BodyPart?.def == null) return null;
+            var rjwPart = part as RJWLewdablePart;
+            Hediff organ = rjwPart?.SexPart?.AsHediff;
+            if (rjwPart != null && organ == null) return null;
+            return new SSCOrdinarySexPartsSnapshot.Part { Owner = part.Owner, BodyPart = part.BodyPart,
+                PartDef = part.BodyPart?.def, Family = part.Family, Organ = organ, HadOrgan = rjwPart != null };
         }
 
 #if SSC_RW17
@@ -98,12 +105,12 @@ namespace SexSlaveCraft
 
         /// <summary>验证保存的严格口交口腔条目；已有缓存时额外核对方向，读档无缓存时不重新解析。</summary>
         internal static bool IsCurrentReceivingPenileOral(SSCOrdinarySexPartsSnapshot snapshot, SexProps props,
-            SSCOrdinarySexPartsSnapshot.Part evidence)
+            SSCOrdinarySexPartsSnapshot.Part evidence, SexInteractionResolved legacyEmptyResolution = null)
         {
             if (snapshot == null || evidence == null || !evidence.ReceivedPenileOralPenetration ||
                 evidence.Family != LewdablePartFamily.Mouth || !evidence.IsAttached() ||
-                snapshot.Parts?.Contains(evidence) != true || !snapshot.Matches(props)) return false;
-            if (props._resolved == null) return true;
+                snapshot.Parts?.Contains(evidence) != true || !snapshot.Matches(props, legacyEmptyResolution)) return false;
+            if (props._resolved == null || ReferenceEquals(props._resolved, legacyEmptyResolution)) return true;
             try
             {
                 var current = ReadCached(props);

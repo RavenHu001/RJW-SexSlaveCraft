@@ -1,6 +1,7 @@
 // AI 辅助生成
 using System.Collections.Generic;
 using rjw;
+using rjw.Modules.Interactions;
 using Verse;
 using Verse.AI.Group;
 
@@ -16,15 +17,16 @@ namespace SexSlaveCraft
             => Scribe_Collections.Look(ref stomachRitualEvidence, "stomachRitualEvidence", LookMode.Deep);
 
         /// <summary>阶段成功推进后记录被插入条目；最后阶段必须在完成 memo 同步派发结果之前调用。</summary>
-        internal void RecordStomachRitualPhase(Lord owner, SSCOrdinarySexPartsSnapshot parts, SexProps props)
+        internal void RecordStomachRitualPhase(Lord owner, SSCOrdinarySexPartsSnapshot parts, SexProps props,
+            SexInteractionResolved legacyEmptyResolution = null)
         {
             if (Scribe.mode != LoadSaveMode.Inactive || owner == null || bindingRitualLord != owner ||
-                !isRitualTraining || parts?.Matches(props) != true) return;
+                !isRitualTraining || parts?.Matches(props, legacyEmptyResolution) != true) return;
             Pawn target = parent as Pawn;
             foreach (var evidence in parts.Parts)
             {
                 if (!SSCStomachDevelopmentGrowthUtility.IsEvidenceFor(evidence, target) ||
-                    !SSCOrdinarySexPartsUtility.IsCurrentReceivingPenileOral(parts, props, evidence)) continue;
+                    !SSCOrdinarySexPartsUtility.IsCurrentReceivingPenileOral(parts, props, evidence, legacyEmptyResolution)) continue;
                 stomachRitualEvidence ??= new List<SSCOrdinarySexPartsSnapshot.Part>();
                 if (!stomachRitualEvidence.Exists(evidence.Same)) stomachRitualEvidence.Add(evidence);
             }

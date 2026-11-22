@@ -102,6 +102,19 @@ internal static class Program
             Assert(RJWSexPropsUtility.ApplyTrainingAct(props, A, B, TrainingActType.Oral), "口交映射被拒");
             Assert(props.sexType == xxx.rjwSextype.Oral && props.resolved.Interaction.Def.defName == "Sex_Fellatio", "原分类或实际动作改变");
         });
+        Run("空部位才标记可自动回退", () =>
+        {
+            var props = Old();
+            Assert(!RJWSexPropsUtility.ApplyTrainingAct(props, A, B, TrainingActType.Anal, out bool missingParts) &&
+                !missingParts, "将缺少 Def 当作部位失配");
+            Add("Sex_Anal", xxx.rjwSextype.Anal);
+            SexInteractionHelper.Resolver = _ => null;
+            Assert(!RJWSexPropsUtility.ApplyTrainingAct(props, A, B, TrainingActType.Anal, out missingParts) &&
+                missingParts, "未识别部位失配");
+            SexInteractionHelper.Resolver = p => { p.partner = Other; return null; };
+            Assert(!RJWSexPropsUtility.ApplyTrainingAct(props, A, B, TrainingActType.Anal, out missingParts) &&
+                !missingParts, "将角色被替换当作部位失配");
+        });
         Run("阶段切换在下一动作开始前重新解析", () =>
         {
             var props = Old(); Add("Sex_Anal", xxx.rjwSextype.Anal); Add("Sex_Vaginal", xxx.rjwSextype.Vaginal);

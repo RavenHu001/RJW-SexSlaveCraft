@@ -3,6 +3,7 @@ using HarmonyLib;
 using System.Reflection;
 using RimWorld;
 using rjw;
+using rjw.Modules.Interactions;
 using SexSlaveCraft;
 using Verse;
 using Verse.AI;
@@ -19,6 +20,10 @@ internal static partial class Program
     private static readonly Dictionary<LordJob_Ritual, GrowthRitual> growthRituals = new();
     private static readonly HashSet<Pawn> dailyGrowthPawns = new();
     private static Map dailyGrowthMap;
+    private static JobDriver_RitualTraining tickingRitual;
+    private static bool ritualToilReady;
+    private static bool runRitualSettlement;
+    private static DailyFallbackProbe dailyFallbackProbe;
 
     /// <summary>在同一个真实生产程序集宿主中执行场景、成长及存档测试。</summary>
     private static void GrowthFlowTests(string repo, Harmony harmony)
@@ -42,6 +47,8 @@ internal static partial class Program
         Patch(typeof(SexUtility), "ProcessSex", nameof(GrowthProcessBoundary));
         Patch(typeof(ConditioningUtility), "ExecuteOutcome", nameof(DailyOutcomeBoundary), new[] { typeof(Pawn), typeof(Pawn), typeof(float) });
         Patch(typeof(TrainingExpUtility), "ApplyExperienceFromScore", nameof(OldBodyBoundary));
+        // 这个无胸部的夹具不需要初始化 RJW 的全套游戏 Def 来查询胸部。
+        Patch(typeof(Genital_Helper), nameof(Genital_Helper.get_breastsBPR), nameof(RitualBreastLookupBoundary));
         // 生产仪式会把开场捕获的进度传入结算，边界应拦截这条实际调用。
         Patch(typeof(ConditioningUtility), nameof(ConditioningUtility.ExecuteRitualOutcome), nameof(RitualOutcomeBoundary),
             new[] { typeof(Pawn), typeof(Pawn), typeof(float), typeof(ThoughtDef), typeof(CorruptionProgressionUtility.RitualChainProgress) });
@@ -54,6 +61,7 @@ internal static partial class Program
         harmony.Patch(AccessTools.PropertyGetter(typeof(CompSexSlaveTraining), "CurrentLocalDay"), prefix: new HarmonyMethod(typeof(Program), nameof(LocalDayBoundary)));
         Patch(typeof(JobDriver_Sex), "setup_ticks", nameof(Skip));
         Patch(typeof(JobDriver_SexBaseInitiator), "End", nameof(Skip));
+        Patch(typeof(JobDriver), nameof(JobDriver.ReadyForNextToil), nameof(RitualReadyBoundary));
         Patch(growthType.Assembly.GetType("SexSlaveCraft.UapRitualCompatibilityUtility"), "ReleasePositionLocks", nameof(Skip));
         Patch(typeof(OnaholeCompatibilityUtility), "TryUnregisterOnaholePartner", nameof(Skip));
         Patch(typeof(BindingRitualStateUtility), "IsBindingRitual", nameof(BindingRitualBoundary));
@@ -73,11 +81,37 @@ internal static partial class Program
         // 旧部位定义和研究正常可用，确保新旧两份开发预算都真实执行。
         foreach (var name in new[] { "Hand", "Foot", "Oral", "Breast", "Genitals", "Anus" })
             DefDatabase<HediffDef>.Add(new HediffDef { defName = "SSC_Exp_" + name, hediffClass = typeof(Hediff), maxSeverity = 1 });
+        LoadRitualPartLookupDefs();
+        if (DefDatabase<InteractionDef>.GetNamedSilentFail("AnimalSexChat") == null)
+            DefDatabase<InteractionDef>.Add(new InteractionDef { defName = "AnimalSexChat" });
         DailyGrowthTests();
+        DailyFallbackTests(harmony);
         InfestationGrowthTests();
         RitualGrowthTests();
         GrowthSaveTests(harmony);
         dailyGrowthPawns.Clear();
+    }
+
+    // The headless host omits these DefOf bindings. Leave the real RJW part query in place.
+    private static void LoadRitualPartLookupDefs()
+    {
+        foreach (string fieldName in new[] { "EatingSource", "Tongue", "ManipulationLimbCore", "ManipulationLimbSegment", "ManipulationLimbDigit" })
+        {
+            var field = AccessTools.Field(typeof(RimWorld.BodyPartTagDefOf), fieldName);
+            if (field.GetValue(null) == null)
+                field.SetValue(null, new BodyPartTagDef { defName = fieldName });
+        }
+        void BindParts(Type type, params string[] fields)
+        {
+            foreach (string fieldName in fields)
+            {
+                var field = AccessTools.Field(type, fieldName);
+                if (field.GetValue(null) == null)
+                    field.SetValue(null, new BodyPartDef { defName = fieldName });
+            }
+        }
+        BindParts(typeof(BodyPartDefOf), "Hand", "Arm", "Shoulder");
+        BindParts(typeof(RJWBodyPartDefOf), "AnimalJaw", "Tail", "Foot", "Paw", "Leg");
     }
 
     private static bool DailyGrowthMap(Thing __instance, ref Map __result)
@@ -106,11 +140,39 @@ internal static partial class Program
     /// <summary>记录顺序，保留旧部位的实际判定与写入，便于比较两份成长。</summary>
     private static bool OldBodyBoundary()
     { oldBodyCalls++; growthOrder.Add("old body"); return true; }
-    /// <summary>保留整场旧结果调用位置，隔离原有六部位、心情和意志后果。</summary>
+    /// <summary>空接触回归执行完整结算，其余用例在整场结算入口注入所需的回调。</summary>
     private static bool RitualOutcomeBoundary(ref string __result)
-    { ritualOutcomes++; __result = ""; growthAfterRitual?.Invoke(); return false; }
+    {
+        ritualOutcomes++;
+        if (runRitualSettlement) return true;
+        __result = "";
+        growthAfterRitual?.Invoke();
+        return false;
+    }
+
+    private static bool RitualBreastLookupBoundary(ref BodyPartRecord __result)
+    {
+        if (!runRitualSettlement) return true;
+        __result = null;
+        return false;
+    }
     /// <summary>隔离地图所在地日期，日常训练完成及冷却写入继续使用生产实现。</summary>
     private static bool LocalDayBoundary(ref int __result) { __result = 0; return false; }
+
+    private static bool RitualReadyBoundary(JobDriver __instance)
+    {
+        if (__instance != tickingRitual) return true;
+        ritualToilReady = true;
+        return false;
+    }
+
+    private static bool TickRitualToil(JobDriver_RitualTraining driver, Toil scene)
+    {
+        tickingRitual = driver;
+        ritualToilReady = false;
+        try { scene.tickAction(); return ritualToilReady; }
+        finally { tickingRitual = null; }
+    }
 
     /// <summary>为真实原生 Job 安装双向引用；任务与 loadID 的判断仍由生产守卫完成。</summary>
     private static T InstallDriver<T>(GrowthScene scene) where T : JobDriver_SexBaseInitiator, new()
@@ -134,7 +196,7 @@ internal static partial class Program
     }
 
     /// <summary>枚举真实日常 Toil，并直接执行原有最终完成闭包验证整场认领。</summary>
-    private static (GrowthScene scene, JobDriver_Training driver, Toil payout) DailyGrowth(bool contact = true, bool begun = true, bool oral = false)
+    private static (GrowthScene scene, JobDriver_Training driver, Toil payout, Toil prepareScene) DailyGrowth(bool contact = true, bool begun = true, bool oral = false)
     {
         ResetGrowthFlow(); var s = new GrowthScene(contact: contact, oral: oral); var driver = InstallDriver<JobDriver_Training>(s);
         dailyGrowthPawns.Clear();
@@ -148,15 +210,155 @@ internal static partial class Program
             MarkStarted(driver);
             AccessTools.Field(typeof(JobDriver_Training), "sceneStarted").SetValue(driver, true);
         }
-        return (s, driver, toils.Last());
+        return (s, driver, toils.Last(), toils[^2]);
     }
+
+    private sealed class DailyFallbackProbe
+    {
+        internal JobDriver_Training Driver;
+        internal Func<SexProps> SelectFallback;
+        internal int SelectionCalls;
+        internal JobCondition? EndedWith;
+        internal SexProps StartedWith;
+        internal readonly List<string> Logs = new();
+    }
+
+    private static void DailyFallbackTests(Harmony harmony)
+    {
+        void Patch(Type type, string method, string prefix, Type[] signature = null)
+            => harmony.Patch(AccessTools.Method(type, method, signature), prefix: new HarmonyMethod(typeof(Program), prefix));
+        // 提供可控的自动候选，隔离地图及 Start 的副作用。指定动作的部位验证由真实 RJW 执行。
+        Patch(typeof(SexUtility), nameof(SexUtility.SelectSextype), nameof(DailyFallbackSelectBoundary));
+        Patch(typeof(TrainingJobUtility), nameof(TrainingJobUtility.SyncPartnerPosition), nameof(DailyFallbackMapBoundary),
+            new[] { typeof(Pawn), typeof(Pawn), typeof(IntVec3?) });
+        Patch(typeof(TrainingJobUtility), nameof(TrainingJobUtility.TryValidateStartOrAbort), nameof(DailyFallbackMapBoundary));
+        Patch(typeof(JobDriver_Training), "CheckLifecycleBeforeScene", nameof(DailyFallbackLifecycleBoundary));
+        Patch(typeof(JobDriver_SexBaseInitiator), "Start", nameof(DailyFallbackStartBoundary));
+        Patch(typeof(Pawn_JobTracker), nameof(Pawn_JobTracker.EndCurrentJob), nameof(DailyFallbackEndBoundary));
+        Patch(typeof(SSCLog), nameof(SSCLog.Important), nameof(DailyFallbackLogBoundary));
+        Patch(typeof(SSCLog), nameof(SSCLog.WarningImportant), nameof(DailyFallbackLogBoundary));
+
+        if (DefDatabase<InteractionDef>.GetNamedSilentFail("Sex_Anal") == null)
+            DefDatabase<InteractionDef>.Add(new InteractionDef
+            {
+                defName = "Sex_Anal",
+                modExtensions = new()
+                {
+                    new SexInteractionExtension
+                    {
+                        rjwSextype = "Anal", tags = new() { SexInteractionTag.Consensual },
+                        initiatorRequirement = new SexInteractionRequirement { genitalFamilies = new() { GenitalFamily.Penis } },
+                        recipientRequirement = new SexInteractionRequirement { genitalFamilies = new() { GenitalFamily.Anus } }
+                    }
+                }
+            });
+
+        foreach (string outcome in new[] { "Started", "NoUsableAutomaticAct", "AbortedBeforeStart" })
+            Check("daily automatic fallback " + outcome, () =>
+            {
+                var s = DailyGrowth(begun: false);
+                var comp = s.scene.Target.TryGetComp<CompSexSlaveTraining>();
+                comp.selectedMode = TrainingActType.Anal;
+                int priorFailure = comp.lastFailedTrainingValidationTick;
+                s.driver.Sexprops = null;
+                var probe = new DailyFallbackProbe
+                {
+                    Driver = s.driver,
+                    SelectFallback = () =>
+                    {
+                        // 改编号模拟同一 Job 对象被复用，检验旧回调是否停止。RJW 无候选时仍可返回空 SexProps。
+                        if (outcome == "AbortedBeforeStart") s.driver.job.loadID++;
+                        return outcome == "NoUsableAutomaticAct" ? new SexProps(s.scene.Source, s.scene.Target) : s.scene.Props;
+                    }
+                };
+                dailyFallbackProbe = probe;
+                try
+                {
+                    s.prepareScene.initAction();
+                    s.payout.initAction();
+                    Equal(2, probe.SelectionCalls);
+                    Equal(TrainingActType.Anal, comp.selectedMode);
+                    string log = probe.Logs.Single();
+                    Require(log.Contains("requestedDef=Sex_Anal") && log.Contains("reason=NoCompatibleParts") &&
+                        log.Contains("fallback=Auto") && log.Contains("result=" + outcome));
+                    if (outcome == "Started")
+                    {
+                        Equal(s.scene.Props, probe.StartedWith);
+                        Require(log.Contains("automaticDef=" + s.scene.Props.dictionaryKey.defName));
+                        Require(probe.EndedWith == null);
+                        Equal(priorFailure, comp.lastFailedTrainingValidationTick);
+                        Equal(1, sexProcessCalls); Equal(1, dailyOutcomes); Near(.035f, Progress(s.scene.Target));
+                    }
+                    else
+                    {
+                        Require(probe.StartedWith == null && log.Contains("automaticDef=none"));
+                        Equal(0, sexProcessCalls); Equal(0, dailyOutcomes);
+                        if (outcome == "NoUsableAutomaticAct")
+                        {
+                            Equal(JobCondition.Incompletable, probe.EndedWith.Value);
+                            Equal(Find.TickManager.TicksGame, comp.lastFailedTrainingValidationTick);
+                        }
+                        else
+                        {
+                            Require(probe.EndedWith == null);
+                            Equal(priorFailure, comp.lastFailedTrainingValidationTick);
+                        }
+                    }
+                }
+                finally { dailyFallbackProbe = null; }
+            });
+    }
+
+    private static bool DailyFallbackSelectBoundary(Pawn pawn, Pawn partner, ref SexProps __result)
+    {
+        var probe = dailyFallbackProbe;
+        if (probe?.Driver.pawn != pawn) return true;
+        __result = ++probe.SelectionCalls == 1 ? new SexProps(pawn, partner) : probe.SelectFallback();
+        return false;
+    }
+
+    private static bool DailyFallbackMapBoundary(Pawn actor, ref bool __result)
+    {
+        if (dailyFallbackProbe?.Driver.pawn != actor) return true;
+        __result = true;
+        return false;
+    }
+
+    private static bool DailyFallbackLifecycleBoundary(JobDriver_Training __instance, ref bool __result)
+    {
+        if (dailyFallbackProbe?.Driver != __instance) return true;
+        __result = true;
+        return false;
+    }
+
+    private static bool DailyFallbackStartBoundary(JobDriver_SexBaseInitiator __instance)
+    {
+        if (dailyFallbackProbe?.Driver != __instance) return true;
+        dailyFallbackProbe.StartedWith = __instance.Sexprops;
+        MarkStarted(__instance);
+        return false;
+    }
+
+    private static bool DailyFallbackEndBoundary(Pawn_JobTracker __instance, JobCondition condition)
+    {
+        if (dailyFallbackProbe?.Driver.pawn.jobs != __instance) return true;
+        dailyFallbackProbe.EndedWith = condition;
+        return false;
+    }
+
+    private static bool DailyFallbackLogBoundary(string message)
+    {
+        if (dailyFallbackProbe == null || !message.StartsWith("[SSC_TRAIN_ACT]")) return true;
+        dailyFallbackProbe.Logs.Add(message);
+        return false;
+    }
+
     /// <summary>验证实际日常闭包与旧部位使用相同动作分类，完整结算只领一次。</summary>
     private static void DailyGrowthTests()
     {
         Check("batch3 missing driver never creates training evidence", () =>
         {
-            var kind = growthType.Assembly.GetType("SexSlaveCraft.SSCInteractionKind");
-            Require(Hidden(guardType, null, "TrainingParts", null, Enum.Parse(kind, "DailyTraining")) == null);
+            Require(SSCRestrictionJobGuard.TrainingParts(null, SSCInteractionKind.DailyTraining) == null);
         });
         Check("batch3 actual daily completion grows once after ProcessSex and original body reward", () =>
         {
@@ -346,15 +548,35 @@ internal static partial class Program
             Require(BindingRitualStateUtility.TryBeginPhase(Scene.Source, Scene.Target, Lord));
         }
         /// <summary>执行生产阶段完成回调；开始与计时完成事实由夹具显式设置，原始快照仍由守卫捕获。</summary>
-        internal void Phase(bool contact = true, bool completed = true)
+        internal void Phase(bool contact = true, bool completed = true, bool empty = false)
         {
             Scene.Props._resolved.Penetrations.Clear();
             if (contact) Scene.Props._resolved.Penetrations.Add(Tuple.Create(Scene.Penetrator, Scene.Vagina));
             var driver = InstallDriver<JobDriver_RitualTraining>(Scene);
             AccessTools.Field(typeof(JobDriver_RitualTraining), "ritualLord").SetValue(driver, Lord);
+            if (empty)
+            {
+                driver.Sexprops = new SexProps(Scene.Source, Scene.Target) { dictionaryKey = Scene.Props.dictionaryKey };
+                SSCRitualInteraction.ClearContact(driver.Sexprops);
+            }
+            else
+            {
+                AccessTools.Field(typeof(JobDriver_RitualTraining), "selectedParts").SetValue(driver,
+                    SSCRitualInteractionParts.Capture(driver.Sexprops._resolved));
+            }
             AccessTools.Field(typeof(JobDriver_RitualTraining), "phaseSceneStarted").SetValue(driver, true);
-            AccessTools.Field(typeof(JobDriver_RitualTraining), "phaseRanToCompletion").SetValue(driver, completed);
             MarkStarted(driver);
+            if (empty)
+            {
+                var sceneToil = ((IEnumerable<Toil>)Hidden(typeof(JobDriver_RitualTraining), driver, "MakeNewToils")).Last();
+                driver.ticks_left = 2;
+                driver.sex_ticks = 1000;
+                Require(!TickRitualToil(driver, sceneToil));
+                Equal(1, driver.ticks_left);
+                Require(TickRitualToil(driver, sceneToil));
+                Equal(998, driver.sex_ticks);
+            }
+            else AccessTools.Field(typeof(JobDriver_RitualTraining), "phaseRanToCompletion").SetValue(driver, completed);
             var contextType = typeof(TrainingJobUtility).GetNestedType("JobContext", BindingFlags.NonPublic);
             object context = Activator.CreateInstance(contextType, BindingFlags.Instance | BindingFlags.NonPublic, null, new object[] { driver }, null);
             Hidden(typeof(JobDriver_RitualTraining), driver, "OnPhaseComplete", context);
@@ -393,15 +615,103 @@ internal static partial class Program
     private static bool EmptyBreakdown(ref string __result) { __result = ""; return false; }
     /// <summary>信件占位文本无需语言设备；格式化后的原文不参与成长计算。</summary>
     private static bool FormattedBoundary(string __0, ref TaggedString __result) { __result = __0; return false; }
-    /// <summary>整场完成按全身奖励结算，阶段中断与过期仪式不发放。</summary>
+    /// <summary>整场完成按原规则奖励全身开发，阶段中断与过期仪式不发放。</summary>
     private static void RitualGrowthTests()
     {
-        Check("ritual without vaginal contacts pays uterus once using 75q", () =>
+        Check("ritual without vaginal penetration pays uterus once using 75q", () =>
         {
             ResetGrowthFlow(); var f = new GrowthRitual();
             for (int i = 0; i < 6; i++) f.Phase(contact: false);
             Near(.02875f, Progress(f.Scene.Target)); Equal(1, f.Memos); Equal(1, ritualOutcomes);
             f.Worker.Apply(1, new(), f.Job); Near(.02875f, Progress(f.Scene.Target)); Equal(1, ritualOutcomes);
+        });
+        Check("six empty ritual fallback stages tick RJW and pay the original full-body rewards once", () =>
+        {
+            ResetGrowthFlow(); var f = new GrowthRitual();
+            runRitualSettlement = true;
+            try
+            {
+                for (int i = 0; i < BindingRitualStateUtility.PhaseCount; i++) f.Phase(empty: true);
+                f.Worker.Apply(1, new(), f.Job);
+            }
+            finally { runRitualSettlement = false; }
+            Equal(6, f.Comp.ritualPhase); Equal(1, f.Memos); Equal(1, ritualOutcomes); Equal(6, sexProcessCalls);
+            Equal(6, oldBodyCalls);
+            Near(.25f, f.Scene.Target.health.hediffSet.hediffs.Single(h => h.def.defName == "SSC_Exp_Genitals").Severity);
+            Near(.02875f, Progress(f.Scene.Target));
+        });
+        Check("ritual selector filters by trainee part and prefers actual trainer genitals", () =>
+        {
+            var scene = new GrowthScene();
+            scene.Props.interaction.Extension.recipientRequirement = new SexInteractionRequirement
+                { partFamilies = new() { VanillaPartFamily.Hand } };
+            var trainerHand = new VanillaLewdablePart(scene.Source, scene.Source.RaceProps.body.corePart, LewdablePartFamily.Hand);
+            var traineeHand = new VanillaLewdablePart(scene.Target, scene.Target.RaceProps.body.corePart, LewdablePartFamily.Hand);
+            SexInteractionResolved Candidate(ILewdablePart first, ILewdablePart second) => new()
+            {
+                Initiator = scene.Source, Recipient = scene.Target, Interaction = scene.Props.interaction,
+                InitiatorParts = new() { first }, RecipientParts = new() { second }, Penetrations = new()
+            };
+            var wrongOwner = Candidate(trainerHand, scene.Vagina);
+            var handOnly = Candidate(trainerHand, traineeHand);
+            var preferred = Candidate(scene.Penetrator, traineeHand);
+            Require(SSCRitualInteraction.Choose(new[] { wrongOwner }, scene.Source, scene.Target, 0) == null);
+            Require(ReferenceEquals(handOnly, SSCRitualInteraction.Choose(new[] { wrongOwner, handOnly }, scene.Source, scene.Target, 0)));
+            Require(ReferenceEquals(preferred, SSCRitualInteraction.Choose(new[] { handOnly, preferred }, scene.Source, scene.Target, 0)));
+        });
+        Check("ritual anal and vaginal stages reject a generic tag match without contact", () =>
+        {
+            var scene = new GrowthScene();
+            var trainerVagina = new VanillaLewdablePart(scene.Source, scene.Source.RaceProps.body.corePart, LewdablePartFamily.Vagina);
+            var trainerTongue = new VanillaLewdablePart(scene.Source, scene.Source.RaceProps.body.corePart, LewdablePartFamily.Tongue);
+            var traineeAnus = new VanillaLewdablePart(scene.Target, scene.Target.RaceProps.body.corePart, LewdablePartFamily.Anus);
+            var generic = new SexInteractionRequirement { genitalTags = new() { GenitalTag.CanPenetrate, GenitalTag.CanBePenetrated } };
+
+            SexInteractionResolved Candidate(string name, ILewdablePart first, ILewdablePart second,
+                SexInteractionRequirement requirement, SexInteractionTag tag) => new()
+            {
+                Initiator = scene.Source, Recipient = scene.Target,
+                Interaction = new SexInteraction(new InteractionDef
+                {
+                    defName = name,
+                    modExtensions = new() { new SexInteractionExtension { recipientRequirement = requirement, tags = new() { tag } } }
+                }),
+                InitiatorParts = new() { first }, RecipientParts = new() { second }, Penetrations = new()
+            };
+
+            var genericWithAnus = Candidate("Sex_MutualMasturbation", trainerVagina, traineeAnus, generic, SexInteractionTag.NonPenetrative);
+            var genericWithVagina = Candidate("Sex_MutualMasturbation", trainerVagina, scene.Vagina, generic, SexInteractionTag.NonPenetrative);
+            var rimming = Candidate("Sex_Reverse_Rimming", trainerTongue, traineeAnus,
+                new SexInteractionRequirement { genitalFamilies = new() { GenitalFamily.Anus } }, SexInteractionTag.Reverse);
+            rimming.Penetrations.Add(Tuple.Create<ILewdablePart, ILewdablePart>(trainerTongue, traineeAnus));
+            var scissoring = Candidate("Sex_Scissoring", trainerVagina, scene.Vagina,
+                new SexInteractionRequirement { genitalFamilies = new() { GenitalFamily.Vagina } }, SexInteractionTag.Consensual);
+
+            Require(SSCRitualInteraction.Choose(new[] { genericWithAnus }, scene.Source, scene.Target, 4) == null);
+            Require(SSCRitualInteraction.Choose(new[] { genericWithVagina }, scene.Source, scene.Target, 5) == null);
+            Require(ReferenceEquals(rimming, SSCRitualInteraction.Choose(new[] { genericWithAnus, rimming }, scene.Source, scene.Target, 4)));
+            Require(ReferenceEquals(scissoring, SSCRitualInteraction.Choose(new[] { genericWithVagina, scissoring }, scene.Source, scene.Target, 5)));
+        });
+        Check("ritual unmatched foot stage uses the original Def with an empty contact record", () =>
+        {
+            var scene = new GrowthScene();
+            var def = new InteractionDef
+            {
+                defName = "Sex_Footjob",
+                modExtensions = new()
+                {
+                    new SexInteractionExtension
+                    {
+                        rjwSextype = "Footjob", tags = new() { SexInteractionTag.Consensual },
+                        initiatorRequirement = new SexInteractionRequirement { genitalTags = new() { GenitalTag.CanPenetrate } },
+                        recipientRequirement = new SexInteractionRequirement { partFamilies = new() { VanillaPartFamily.Foot } }
+                    }
+                }
+            };
+            DefDatabase<InteractionDef>.Add(def);
+            Require(SSCRitualInteraction.TryChoose(scene.Source, scene.Target, 1, out var props));
+            Equal(def, props.dictionaryKey); Equal(xxx.rjwSextype.Footjob, props.sexType);
+            Require(!SSCRitualInteraction.HasContact(props._resolved));
         });
         Check("batch3 interrupted ritual phase neither advances nor grants growth", () =>
         {
