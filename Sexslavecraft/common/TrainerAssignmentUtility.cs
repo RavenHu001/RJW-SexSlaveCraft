@@ -197,6 +197,9 @@ namespace SexSlaveCraft
             // 自动工作避让实际课程成员；手动命令不受此兼容规则影响。
             if (ProgressionEducationCompatibility.ShouldDeferAutomaticTraining(targetPawn, forced)) return false;
 
+#if SSC_RW17
+            if (!CanTrainOutsideCombat(targetPawn, trainer, out reason)) return false;
+#endif
             // 先修复已结束仪式的残留占用，再判断调教资格；自动和强制命令共用此入口。
             RecoverTrainingTargetState(targetPawn);
 #if SSC_RW17
@@ -215,11 +218,25 @@ namespace SexSlaveCraft
             => trainer != null && target != null && trainer.Map != null && target.Map == trainer.Map &&
                 trainer.CanReserve(target, 1, 0);
 
+#if SSC_RW17
+        internal static bool IsAvailableForDailyTraining(Pawn pawn)
+            => pawn != null && !pawn.Drafted && !pawn.IsFighting();
+
+        private static bool CanTrainOutsideCombat(Pawn target, Pawn trainer, out string reason)
+        {
+            bool available = IsAvailableForDailyTraining(trainer) && IsAvailableForDailyTraining(target);
+            reason = available ? null : "SSC_Train_Reason_Combat".Translate().ToString();
+            return available;
+        }
+#endif
+
         // 预约与首个 Toil 共用的只读检查。身体兼容准备只由 WorkGiver 路径执行。
         internal static bool CanStartDailyTraining(Pawn targetPawn, Pawn trainer, bool forced, out string reason)
         {
             reason = null;
 #if SSC_RW17
+            // 中止会立刻触发原版找工。先拒绝会被首个 Toil 中止的配对，避免同 tick 重派。
+            if (!CanTrainOutsideCombat(targetPawn, trainer, out reason)) return false;
             if (!forced && targetPawn?.Downed == true) return false;
 
             // 发作暂时赋予正式身份，仍需暂停日常调教。自动查询、手动提交和准备中的驱动共用此门槛。

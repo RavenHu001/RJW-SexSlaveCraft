@@ -4,6 +4,7 @@
   <SSC_Train_Reason_DeadOrSelf>目標目前無法接受調教。</SSC_Train_Reason_DeadOrSelf>
   <SSC_Train_Reason_InvalidFaction>目標必須是己方殖民者、奴隸或囚犯。</SSC_Train_Reason_InvalidFaction>
   <SSC_Train_Reason_NotEnabled>該目標未啟用調教。</SSC_Train_Reason_NotEnabled>
+  <SSC_Train_Reason_Combat>調教雙方都必須解除徵召並退出戰鬥。</SSC_Train_Reason_Combat>
   <SSC_Train_Reason_RitualBusy>該目標正在進行綁定儀式。</SSC_Train_Reason_RitualBusy>
   <SSC_Train_Reason_ValidationCooldown>該目標剛剛驗證失敗，請稍後再試。</SSC_Train_Reason_ValidationCooldown>
   <SSC_Train_Reason_AlreadyBeingTrained>該目標正在接受調教。</SSC_Train_Reason_AlreadyBeingTrained>

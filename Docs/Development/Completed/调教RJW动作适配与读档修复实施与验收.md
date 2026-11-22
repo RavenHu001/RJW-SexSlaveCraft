@@ -60,4 +60,14 @@ RimWorld **1.7.5014 rev1195**、RJW **6.2.2** 隔离构建通过，生产候选�
 | `ForcedSexProps` | 29／29 |
 | `RitualLifecycle` | 226／226 |
 
-征召后的重复派工仍暂缓处理。
+<a id="ssc-daily-training-draft-reassignment"></a>
+
+## 征召后重复派工修复
+
+1.7 实机日志记录了 UAP 在征召后结束日常调教场景，原版同步找工在同一 tick 内连续创建指向同一受训者的调教 Job。新 Job 能通过派工和预约，随后被驱动的战斗状态检查立即结束，再次触发找工。
+
+日常调教现在在自动派工、玩家命令及预约时共用双方的征召和战斗状态检查。任务开始后同样检查双方，沿现有收尾释放本场占用和接收任务。解除征召并退出战斗后按现有排程恢复派工。 [日常调教准入](../../../Sexslavecraft/common/TrainerAssignmentUtility.cs) · [调教驱动](../../../Sexslavecraft/JobDriver/JobDriver_Train.cs)
+
+2026-11-22，RimWorld 1.7.5014 rev1195、RJW 6.2.2 下，分别征召调教员和受训者的原生回归均通过。旧 DLL 在两项用例中均重现同 tick 创建新任务。三套专项共 **966／966**。 [自动回归](../../../Tests/TrainingDownedNative/README.md)
+
+候选已同步到本机 1.7，安装 DLL 与受测候选的 SHA-256 均为 `efaa32b17275d66b932568d6b3c248f8d3eca0306966f6bafa0d2525f05d3cea`。维护者确认本机实测未发现问题。

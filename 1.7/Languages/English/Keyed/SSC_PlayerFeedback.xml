@@ -4,6 +4,7 @@
   <SSC_Train_Reason_DeadOrSelf>The target cannot receive training right now.</SSC_Train_Reason_DeadOrSelf>
   <SSC_Train_Reason_InvalidFaction>The target must be one of your colonists, slaves, or prisoners.</SSC_Train_Reason_InvalidFaction>
   <SSC_Train_Reason_NotEnabled>Training is disabled for this target.</SSC_Train_Reason_NotEnabled>
+  <SSC_Train_Reason_Combat>Both participants must be undrafted and out of combat before training.</SSC_Train_Reason_Combat>
   <SSC_Train_Reason_RitualBusy>The target is taking part in a Binding Ritual.</SSC_Train_Reason_RitualBusy>
   <SSC_Train_Reason_ValidationCooldown>The target failed a recent eligibility check. Try again later.</SSC_Train_Reason_ValidationCooldown>
   <SSC_Train_Reason_AlreadyBeingTrained>The target is already receiving training.</SSC_Train_Reason_AlreadyBeingTrained>

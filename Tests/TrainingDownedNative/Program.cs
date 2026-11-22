@@ -68,7 +68,7 @@ internal static partial class Program
         Patch(typeof(MaterialPool), "MatFrom", nameof(NoMaterial));
         AccessTools.Field(typeof(UnityData), "mainThreadId").SetValue(null, Environment.CurrentManagedThreadId);
         Getter(typeof(Thing), "Spawned", nameof(True)); Getter(typeof(Thing), "Map", nameof(Map));
-        Getter(typeof(Pawn), "InMentalState", nameof(False)); Getter(typeof(Pawn), "Drafted", nameof(False));
+        Getter(typeof(Pawn), "InMentalState", nameof(False));
         Patch(typeof(Pawn), "DropAndForbidEverything", nameof(Skip));
         Patch(typeof(RestUtility), "InBed", nameof(False));
         Patch(typeof(RestUtility), "IsLayingForJobCleanup", nameof(False));
@@ -106,7 +106,7 @@ internal static partial class Program
         foreach (var assembly in new[] { typeof(Pawn).Assembly, typeof(xxx).Assembly, typeof(SSCBondUtility).Assembly })
             Console.WriteLine($"ASSEMBLY: {assembly.Location} MVID={assembly.ManifestModule.ModuleVersionId:N} SHA256={Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(assembly.Location))).ToLowerInvariant()}");
         bootstrap = false; errors.Clear();
-        try { Checks(repo); DailyTrainingOccupancyChecks(); TrainerRitualSelectionChecks(); }
+        try { Checks(repo); DailyTrainingOccupancyChecks(); DailyTrainingCombatChecks(); TrainerRitualSelectionChecks(); }
         finally { environment.UnpatchAll(environment.Id); Current.Game = null; }
         Console.WriteLine($"RESULT: {passed}/{passed + failed} passed"); return failed == 0 ? 0 : 1;
     }

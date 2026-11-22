@@ -11,9 +11,12 @@ namespace SexSlaveCraft
         public override ThingRequest PotentialWorkThingRequest => ThingRequest.ForGroup(ThingRequestGroup.Pawn);
         public override PathEndMode PathEndMode => PathEndMode.Touch;
 
-        /// <summary>基础调教研究未完成时跳过整个工作类别，之后沿用原版扫描器条件。</summary>
+        /// <summary>在遍历候选前检查调教员是否可工作、研究是否完成。</summary>
         public override bool ShouldSkip(Pawn pawn, bool forced = false)
         {
+#if SSC_RW17
+            if (!TrainerAssignmentUtility.IsAvailableForDailyTraining(pawn)) return true;
+#endif
             return !ResearchUtils.IsResearchFinished(SSCDefOf.SSC_BasicTraining) || base.ShouldSkip(pawn, forced);
         }
 

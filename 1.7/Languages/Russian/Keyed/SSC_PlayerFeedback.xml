@@ -4,6 +4,7 @@
   <SSC_Train_Reason_DeadOrSelf>Сейчас цель не может проходить дрессировку.</SSC_Train_Reason_DeadOrSelf>
   <SSC_Train_Reason_InvalidFaction>Цель должна быть вашим колонистом, рабом или заключённым.</SSC_Train_Reason_InvalidFaction>
   <SSC_Train_Reason_NotEnabled>Для этой цели дрессировка отключена.</SSC_Train_Reason_NotEnabled>
+  <SSC_Train_Reason_Combat>Для дрессировки оба участника должны быть вне боевого режима и не участвовать в бою.</SSC_Train_Reason_Combat>
   <SSC_Train_Reason_RitualBusy>Цель участвует в ритуале привязки.</SSC_Train_Reason_RitualBusy>
   <SSC_Train_Reason_ValidationCooldown>Цель недавно не прошла проверку. Повторите попытку позже.</SSC_Train_Reason_ValidationCooldown>
   <SSC_Train_Reason_AlreadyBeingTrained>Цель уже проходит дрессировку.</SSC_Train_Reason_AlreadyBeingTrained>

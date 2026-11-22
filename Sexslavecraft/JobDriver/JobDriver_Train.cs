@@ -92,14 +92,17 @@ namespace SexSlaveCraft
             this.FailOnDespawnedNullOrForbidden(iTarget);
             // SSC 受训身份属于持续资格，已开始和旧档恢复的场景也必须满足。
             this.FailOn(() => ownsToils() && !SSCIdentityUtility.IsSexSlave(originalTarget));
-            this.FailOn(() => pawn.Drafted || pawn.IsFighting());
-            this.FailOn(() => Partner.IsFighting());
 #if SSC_RW17
+            // 两人在预约或场景进行期间仍可能进入征召或战斗。中止后由派工资格阻止同一配对重派。
+            this.FailOn(() => !TrainerAssignmentUtility.IsAvailableForDailyTraining(pawn) ||
+                !TrainerAssignmentUtility.IsAvailableForDailyTraining(Partner));
             this.FailOn(() => preparedTrainingTarget != null && dailyOccupancy?.IsCurrent != true);
             this.FailOn(() => dailyOccupancy?.IsHeld != true && !TrainerAssignmentUtility.CanReserveDailyTraining(pawn, Partner));
             // 发作结束或批准失效时，发起 Job 通过原有训练清理释放自己的接收方和占用。
             this.FailOn(() => IsBreakdownTraining && BreakdownEpisode?.OwnsTrainingJob(pawn, job) != true);
 #else
+            this.FailOn(() => pawn.Drafted || pawn.IsFighting());
+            this.FailOn(() => Partner.IsFighting());
             this.FailOn(() => !pawn.CanReserve(Partner, 1, 0));
 #endif
             // 候选选定后可能开课；在途及执行阶段重新检查，退出时沿用现有占用清理。
