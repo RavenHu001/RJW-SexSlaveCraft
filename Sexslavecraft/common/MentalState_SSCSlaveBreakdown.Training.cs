@@ -285,11 +285,13 @@ namespace SexSlaveCraft
         }
 
         /// <summary>核对当前发作、双方人格和实际任务归属。Job 对象可重用，因此以本次 loadID 为凭据。</summary>
+        /// <remarks>受方倒地前须已完成实际开场，才能沿原任务继续并结算。</remarks>
         internal bool OwnsTrainingJob(Pawn trainer, Job job)
             => requestPhase == RequestPhase.Dispatched && IsBreakdownTraining(job) && !job.playerForced && job.loadID == trainingJobId &&
                 job.targetA.Pawn == pawn && trainer == requestTrainer && TrainerIdentityCurrent && CanIssueBehavior &&
                 CanUseDecision(approvedDecision) &&
-                !pawn.Downed && !pawn.Drafted && TrainerEligible(trainer) && !BindingRitualStateUtility.HasActiveTargetRitual(pawn);
+                (!pawn.Downed || trainingStarted) && !pawn.Drafted && TrainerEligible(trainer) &&
+                !BindingRitualStateUtility.HasActiveTargetRitual(pawn);
 
         /// <summary>游荡行为树保留由本场训练驱动实际安装的当前接收 Job。</summary>
         internal bool HoldsTrainingReceiver(Job job)

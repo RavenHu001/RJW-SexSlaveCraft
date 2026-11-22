@@ -482,7 +482,7 @@ internal static partial class Program
                     thought.def.defName == "SSC_BreakdownFailure") == 1);
             });
 
-            Case("approved training extends only when started and can claim success once", () =>
+            Case("only started training continues when its receiver is downed and settles once", () =>
             {
                 var (pawn, need) = BreakdownPawn();
                 var (trainer, _) = BreakdownPawn(PawnIdentity.Master);
@@ -500,17 +500,39 @@ internal static partial class Program
                 var effect = pawn.health.hediffSet.hediffs.OfType<Hediff_SSCSlaveBreakdown>().Single();
                 Equal(2500, effect.Timer.ticksToDisappear);
                 Require(!state.ClaimTrainingSuccess(driver, 5f));
+                // 原版倒地时保留接收任务由 TrainingDownedNative 验证。此处隔离健康转换，只跑爆发本身的任务与结算检查。
+                var healthState = AccessTools.Field(typeof(Pawn_HealthTracker), "healthState");
+                healthState.SetValue(pawn.health, PawnHealthState.Down);
+                Require(pawn.Downed && !state.OwnsTrainingJob(trainer, job) && !state.CanReceiveBreakdownTraining);
+                state.MarkApprovedTrainingStarted(driver);
+                Equal(2500, effect.Timer.ticksToDisappear);
+                healthState.SetValue(pawn.health, PawnHealthState.Mobile);
+
+                trainer.jobs.curJob = job;
+                trainer.jobs.curDriver = driver;
                 state.MarkApprovedTrainingStarted(driver);
                 Equal(5000, effect.Timer.ticksToDisappear);
                 Equal(5000.ToStringTicksToPeriod(shortForm: true, canUseDecimalsShortForm: true), effect.LabelInBrackets);
                 state.MarkApprovedTrainingStarted(driver);
                 Equal(5000, effect.Timer.ticksToDisappear);
                 var wrongJob = JobMaker.MakeJob(trainingDef, pawn);
+                healthState.SetValue(pawn.health, PawnHealthState.Down);
+                state.MentalStateTick(1);
+                Require(trainer.CurJob == job && state.OwnsTrainingJob(trainer, job));
+                Equal(5000, effect.Timer.ticksToDisappear);
                 Require(!state.OwnsTrainingJob(trainer, wrongJob));
+                // 撤去该调教员的环境替身，以生产准入验证施教者倒地。
+                reachableBreakdownTrainer = null;
+                healthState.SetValue(trainer.health, PawnHealthState.Down);
+                Require(!state.OwnsTrainingJob(trainer, job) && !state.CanSettleApprovedTraining(driver));
+                healthState.SetValue(trainer.health, PawnHealthState.Mobile);
+                reachableBreakdownTrainer = trainer;
                 Require(state.ClaimTrainingSuccess(driver, 5f) && !state.ClaimTrainingSuccess(driver, 5f));
                 need.SetCorruption(.97f);
                 state.FinishSuccessfulTraining();
                 state.FinishSuccessfulTraining();
+                trainer.jobs.curJob = null;
+                trainer.jobs.curDriver = null;
                 Near(.2f, Hediff_SSCOwnerlessSlave.Find(pawn).Severity);
                 Require(!pawn.InMentalState && !pawn.health.hediffSet.hediffs.Contains(effect) &&
                     breakdownFailureLetters.Count == 0);
