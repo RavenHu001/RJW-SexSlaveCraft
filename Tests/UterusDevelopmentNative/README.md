@@ -1,5 +1,7 @@
 # 子宫开发第 1～5 批原生专项
 
+2026-11-22，1.7 绑定仪式部位适配新增 4 项 Core，本宿主 **766／766**。覆盖按性奴侧部位筛选、调教员阴部排序、固定 Def 保底、空接触六阶段结算及原部位和方向的 Scribe 恢复。 [本轮验证](../../Docs/Design/绑定仪式RJW行为与动画部位适配规划.md#ssc-binding-anatomy-validation)
+
 第 6 项第五批在 `--imprint` 新增 7 项 Core，提交前复核 **115／115**。覆盖精确解绑进度和后效去重、离体回调后的后续推进、死亡回调与旧档、再绑定到期边界，以及凝胶往返的期限和原主人资格。实机另验。 [第五批验证](../../Docs/Development/Completed/无主性奴/无主性奴实施与验收.md#ssc-ownerless-release-batch5)
 
 第 6 项第四批在 `--imprint` 新增 5 项 Core，提交前复核 **108／108**。覆盖主人仪式等进度绑定、临时挂链时撤销指派并保留原进度、训导官仪式的升阶及反馈、旧结算上下文失效，以及原版转奴开关与 SSC 结果。 [第四批验证](../../Docs/Development/Completed/无主性奴/无主性奴实施与验收.md#ssc-ownerless-ritual-batch4)

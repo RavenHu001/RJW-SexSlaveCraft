@@ -3,6 +3,7 @@ using System;
 using rjw;
 using rjw.Modules.Interactions;
 using Verse;
+using Verse.AI.Group;
 
 namespace SexSlaveCraft
 {
@@ -48,6 +49,9 @@ namespace SexSlaveCraft
         /// <summary>日常与完整仪式复用阴道开发的动作分类和当前身体部位判断。</summary>
         internal static Plan CaptureTraining(Pawn target, xxx.rjwSextype sexType, float score)
             => Capture(target, score, () => TrainingExpUtility.CanTrainGenitals(target, sexType));
+
+        internal static Plan CaptureRitual(Pawn target, Lord owner, float score)
+            => Capture(target, score, () => target.TryGetComp<CompSexSlaveTraining>()?.HasRitualGenitalEvidence(owner) == true);
 
         private static Plan Capture(Pawn target, float score, Func<bool> canGrow)
         {

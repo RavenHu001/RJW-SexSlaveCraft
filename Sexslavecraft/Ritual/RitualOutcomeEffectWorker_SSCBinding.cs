@@ -207,20 +207,23 @@ namespace SexSlaveCraft
             if (!canContinue()) return;
             string sscDetails = ConditioningUtility.ExecuteRitualOutcome(master, slave, quality, outcome.memory
 #if SSC_RW17
-                , chainProgress
+                , chainProgress, awardFullBody: false
 #endif
             );
             if (!canContinue()) return;
 
 #if SSC_RW17
-            // 与阴道开发一样随整场全身奖励判定，子宫评分沿用 75q。
-            var uterus = SSCUterusDevelopmentGrowthUtility.CaptureTraining(slave, rjw.xxx.rjwSextype.Vaginal,
+            var training = slave.TryGetComp<CompSexSlaveTraining>();
+            training?.ApplyRitualBodyExperience(jobRitual.lord, quality, canContinue);
+            if (!canContinue()) return;
+            // 本场阴部必须确实参与，子宫评分沿用 75q。
+            var uterus = SSCUterusDevelopmentGrowthUtility.CaptureRitual(slave, jobRitual.lord,
                 SpecializationTrainingProgressUtility.RitualScore(quality));
             uterus?.Apply(canContinue);
             if (!canContinue()) return;
             // 胃部只领取整场一份奖励；证据来自成功完成的阶段，包含末阶段同步通知前的记录。
             var stomach = SSCStomachDevelopmentGrowthUtility.Capture(slave,
-                slave.TryGetComp<CompSexSlaveTraining>()?.stomachRitualEvidence,
+                training?.stomachRitualEvidence,
                 SpecializationTrainingProgressUtility.RitualScore(quality));
             stomach?.Apply(canContinue);
             if (!canContinue()) return;

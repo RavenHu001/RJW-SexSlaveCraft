@@ -90,7 +90,7 @@ namespace SexSlaveCraft
                 new CorruptionProgressionUtility.RitualChainProgress(master, sexSlave, null));
 
         internal static string ExecuteRitualOutcome(Pawn master, Pawn sexSlave, float quality, ThoughtDef ritualOutcomeMemory,
-            CorruptionProgressionUtility.RitualChainProgress progress)
+            CorruptionProgressionUtility.RitualChainProgress progress, bool awardFullBody = true)
 #endif
         {
             if (sexSlave == null || master == null) return "";
@@ -105,7 +105,7 @@ namespace SexSlaveCraft
             {
                 return ExecuteRitualOutcome_Legacy(master, sexSlave, quality, ritualOutcomeMemory
 #if SSC_RW17
-                    , progress
+                    , progress, awardFullBody
 #endif
                 );
             }
@@ -144,15 +144,10 @@ namespace SexSlaveCraft
 #if SSC_RW17
             if (!progress.CanContinueSettlement()) return "";
 #endif
-            float virtualScore = quality * 1000f;
-            float expMultiplier = 0.5f;
-
-            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Handjob, virtualScore, expMultiplier);
-            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Footjob, virtualScore, expMultiplier);
-            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Oral, virtualScore, expMultiplier);
-            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Boobjob, virtualScore, expMultiplier);
-            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Anal, virtualScore, expMultiplier);
-            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Vaginal, virtualScore, expMultiplier);
+#if SSC_RW17
+            if (awardFullBody)
+#endif
+                ApplyFullBodyExperience(sexSlave, quality);
 
             StringBuilder sb = new StringBuilder();
             sb.AppendLine();
@@ -163,7 +158,10 @@ namespace SexSlaveCraft
 #endif
             sb.AppendLine(Strings.Ritual_ScoreLevel(finalScore.ToString("F1"), finalLevel));
             sb.AppendLine(Strings.Ritual_CorruptionGain(corruptionGain.ToString("P1")));
-            sb.AppendLine(Strings.Ritual_FullBodyTraining(sexSlave.LabelShort));
+#if SSC_RW17
+            if (awardFullBody)
+#endif
+                sb.AppendLine(Strings.Ritual_FullBodyTraining(sexSlave.LabelShort));
 
             if (!string.IsNullOrEmpty(progressionMsg))
             {
@@ -178,9 +176,22 @@ namespace SexSlaveCraft
             return sb.ToString();
         }
 
+        private static void ApplyFullBodyExperience(Pawn sexSlave, float quality)
+        {
+            float virtualScore = quality * 1000f;
+            const float expMultiplier = 0.5f;
+
+            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Handjob, virtualScore, expMultiplier);
+            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Footjob, virtualScore, expMultiplier);
+            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Oral, virtualScore, expMultiplier);
+            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Boobjob, virtualScore, expMultiplier);
+            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Anal, virtualScore, expMultiplier);
+            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Vaginal, virtualScore, expMultiplier);
+        }
+
         private static string ExecuteRitualOutcome_Legacy(Pawn master, Pawn sexSlave, float quality, ThoughtDef ritualOutcomeMemory
 #if SSC_RW17
-            , CorruptionProgressionUtility.RitualChainProgress progress
+            , CorruptionProgressionUtility.RitualChainProgress progress, bool awardFullBody
 #endif
         )
         {
@@ -217,14 +228,10 @@ namespace SexSlaveCraft
 #if SSC_RW17
             if (!progress.CanContinueSettlement()) return "";
 #endif
-            float virtualScore = quality * 1000f;
-            float expMultiplier = 0.5f;
-            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Handjob, virtualScore, expMultiplier);
-            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Footjob, virtualScore, expMultiplier);
-            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Oral, virtualScore, expMultiplier);
-            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Boobjob, virtualScore, expMultiplier);
-            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Anal, virtualScore, expMultiplier);
-            TrainingExpUtility.ApplyExperienceFromScore(sexSlave, xxx.rjwSextype.Vaginal, virtualScore, expMultiplier);
+#if SSC_RW17
+            if (awardFullBody)
+#endif
+                ApplyFullBodyExperience(sexSlave, quality);
 
             StringBuilder sb = new StringBuilder();
             sb.AppendLine();
@@ -235,7 +242,10 @@ namespace SexSlaveCraft
 #endif
             sb.AppendLine(Strings.Ritual_ScoreLevel(finalScore.ToString("F1"), finalLevel));
             sb.AppendLine(Strings.Ritual_CorruptionGain(corruptionGain.ToString("P1")));
-            sb.AppendLine(Strings.Ritual_FullBodyTraining(sexSlave.LabelShort));
+#if SSC_RW17
+            if (awardFullBody)
+#endif
+                sb.AppendLine(Strings.Ritual_FullBodyTraining(sexSlave.LabelShort));
 
             if (!string.IsNullOrEmpty(progressionMsg))
             {

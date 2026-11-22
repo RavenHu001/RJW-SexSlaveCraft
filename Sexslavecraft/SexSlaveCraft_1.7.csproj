@@ -113,6 +113,7 @@
     <Compile Include="ThePatches/Harmony_MasterAttraction.cs" />
     <!-- 仅保留SSC调教受方的倒地接收，不改变普通工作或其他RJW场景。 -->
     <Compile Include="common/SSCTrainingDownedUtility.cs" />
+    <Compile Include="common/SSCRitualInteraction.cs" />
     <Compile Include="ThePatches/Harmony_TrainingDowned.cs" />
     <Reference Include="Assembly-CSharp">
       <HintPath>$(GameRoot)/Assembly-CSharp.dll</HintPath>

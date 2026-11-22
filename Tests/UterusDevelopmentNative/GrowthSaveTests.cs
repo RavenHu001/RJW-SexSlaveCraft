@@ -4,6 +4,8 @@ using System.Xml.Linq;
 using HarmonyLib;
 using SexSlaveCraft;
 using rjw;
+using rjw.Modules.Interactions;
+using RimWorld;
 using Verse;
 using Verse.AI;
 
@@ -106,6 +108,40 @@ internal static partial class Program
                 doc.Descendants("scene").Single().Add(new XElement("uterusRitualEvidence", new XElement("li"))), f.Comp);
             for (int i = 1; i < 6; i++) f.Phase(contact: false);
             Near(.02875f, Progress(f.Scene.Target)); Equal(1, ritualOutcomes);
+        });
+        Check("ritual Scribe restores selected part references and contact direction", () =>
+        {
+            ResetGrowthFlow();
+            var f = new GrowthRitual();
+            var scene = f.Scene;
+            var handDef = new BodyPartDef { defName = "RitualSaveHand", label = "hand", hitPoints = 10 };
+            DefDatabase<BodyPartDef>.Add(handDef);
+            var torso = new BodyPartRecord { def = BodyPartDefOf.Torso };
+            var hand = new BodyPartRecord { def = handDef, parent = torso };
+            torso.parts.Add(hand);
+            var body = new BodyDef { defName = "RitualSaveTrainerBody", corePart = torso };
+            body.ResolveReferences(); DefDatabase<BodyDef>.Add(body);
+            scene.Source.def.race.body = body;
+            scene.Source.health.Notify_HediffChanged(null);
+            var nativeHand = new LewdParts(scene.Source, populateAll: true).Hands.Single();
+            var nativeVagina = new LewdParts(scene.Target, populateAll: true).Vaginas.Single(p => p.SexPart.AsHediff == scene.Organ);
+            var resolved = scene.Props._resolved;
+            resolved.InitiatorParts = new() { nativeHand }; resolved.RecipientParts = new() { nativeVagina };
+            resolved.Penetrations = new() { Tuple.Create((ILewdablePart)nativeHand, (ILewdablePart)nativeVagina) };
+            scene.Props.dictionaryKey.GetModExtension<SexInteractionExtension>().tags.Add(SexInteractionTag.Reverse);
+            var original = InstallDriver<JobDriver_RitualTraining>(scene);
+            AccessTools.Field(typeof(JobDriver_RitualTraining), "ritualLord").SetValue(original, f.Lord);
+            AccessTools.Field(typeof(JobDriver_RitualTraining), "phaseSceneStarted").SetValue(original, true);
+            AccessTools.Field(typeof(JobDriver_RitualTraining), "selectedParts").SetValue(original, SSCRitualInteractionParts.Capture(resolved));
+            original.ticks_left = 17;
+            var restored = RestoreDriver<JobDriver_RitualTraining>(original);
+            RoundTripGrowth(original, restored, scene, training: f.Comp);
+            Require(restored.Sexprops._resolved == null);
+            Hidden(typeof(JobDriver_RitualTraining), restored, "RestorePhase", scene.Target);
+            var pair = restored.Sexprops._resolved.Penetrations.Single();
+            Equal(hand, pair.Item1.BodyPart); Equal(scene.Source, pair.Item1.Owner);
+            Equal(scene.Target, pair.Item2.Owner); Equal(scene.Organ, ((RJWLewdablePart)pair.Item2).SexPart.AsHediff);
+            Require(restored.Sexprops.isRevese); Equal(17, restored.ticks_left);
         });
     }
 

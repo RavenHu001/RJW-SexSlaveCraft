@@ -73,15 +73,21 @@ namespace SexSlaveCraft
         /// <summary>按原器官与身体引用合并参与条目，方向标记在接触端点遍历中单独写入。</summary>
         private static bool Add(SSCOrdinarySexPartsSnapshot snapshot, ILewdablePart part, Pawn owner)
         {
-            if (part == null || part.Owner != owner) return false;
-            var rjwPart = part as RJWLewdablePart;
-            Hediff organ = rjwPart?.SexPart?.AsHediff;
-            var record = new SSCOrdinarySexPartsSnapshot.Part { Owner = owner, BodyPart = part.BodyPart,
-                PartDef = part.BodyPart?.def, Family = part.Family, Organ = organ, HadOrgan = rjwPart != null };
-            if (record.BodyPart == null || record.PartDef == null || (record.HadOrgan && organ == null)) return false;
+            var record = DescribePart(part);
+            if (record == null || record.Owner != owner) return false;
             // 原始列表与接触端点可能重复；不同原器官保留为独立支持凭据，预算阶段再按开发记录去重。
             if (!snapshot.Parts.Exists(record.Same)) snapshot.Parts.Add(record);
             return true;
+        }
+
+        internal static SSCOrdinarySexPartsSnapshot.Part DescribePart(ILewdablePart part)
+        {
+            if (part?.Owner == null || part.BodyPart?.def == null) return null;
+            var rjwPart = part as RJWLewdablePart;
+            Hediff organ = rjwPart?.SexPart?.AsHediff;
+            if (rjwPart != null && organ == null) return null;
+            return new SSCOrdinarySexPartsSnapshot.Part { Owner = part.Owner, BodyPart = part.BodyPart,
+                PartDef = part.BodyPart?.def, Family = part.Family, Organ = organ, HadOrgan = rjwPart != null };
         }
 
 #if SSC_RW17
