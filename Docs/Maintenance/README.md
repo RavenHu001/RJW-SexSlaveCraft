@@ -1,26 +1,10 @@
 # 开发维护入口
 
-**2.5.3 于 2026-11-21 正式发布。** 完整门禁通过 52 套、6007/6007 项。 [下载 2.5.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.3) · [正式发布归档](../Releases/2.5.3/2.5.3版本验证.md#ssc-253-release)
+当前维护基线为 **SSC 2.5.3 正式版**，1.6／Common 保留 SSC 2.4.1。正式构建、完整回归、安装包和附件回执见[发布归档](../Releases/2.5.3/2.5.3版本验证.md#ssc-253-release)。
 
-**2.5.1 于 2026-11-15 正式发布。** 完整门禁通过 52 套、6350/6350 项。 [下载 2.5.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.1) · [正式发布归档](../Releases/2.5.1/2.5.1版本验证.md#ssc-251-release)
+[文档总索引](../README.md) · [开发资料](../Development/README.md) · [发布索引](../Releases/README.md) · [文档维护约定](文档维护约定.md)
 
-**2.5.0 于 2026-11-12 正式发布。** 完整门禁通过 52 套、6544/6544 项。 [下载 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0) · [正式发布归档](../Releases/2.5.0/2.5.0版本验证.md#ssc-250-release)
-
-**2.4.10 修订版于 2026-11-09 发布。** 完整门禁通过 52 套、6535/6535 项。 [下载修订版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2) · [发布归档](../Releases/2.4.10/2.4.10版本验证.md#2410-修订版发布归档)
-
-**2.4.9 — 2026-11-02正式发布。** [下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9)。完整All **52套／6535项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未变。标签源码`2b288569`，ZIP及SHA-256已上传并复核为最新稳定版；本轮未启动新游戏或同步安装目录。下方开发／登记记录保留原日期与范围。
-
-2026-10-31：**2.4.8已正式发布**，[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8)。完整All **50套／6429项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未改。源码标签`411e1ce8`，ZIP及SHA-256已上传并复核为最新稳定版；本轮没有启动新游戏或同步安装目录。原分批／登记状态与计数保留原时点。
-
-2026-10-28：**2.4.7已正式发布**，[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7)。完整All **50套／6333项全部通过**，资源2／2、编排56项及浪漫隔离75项通过；532份冻结文件未变。源码标签`e567e1b1`，ZIP与SHA-256已上传并复核；本轮没有再启动游戏或同步安装目录。旧分批／登记数字按原日期阅读。
-
-**2.4.8 — 2026-10-31。** 孕母、三态人格印记、频率属性、空壳需求与调教员便捷操作；[下载v2.4.8](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8)。新增仅1.7，1.6／Common冻结2.4.1；About、源码版本属性与重编运行产物对齐2.4.8。分批实机认可、正式门禁与上传回执分别记录，历史独立待验收范围保留。
-
-[文档总索引](../README.md) · [开发资料](../Development/README.md) · [发布索引](../Releases/README.md)
-
-当前公开下载为 2.5.3，1.6 使用 SSC 2.4.1。[构建、门禁与附件](../Releases/2.5.3/2.5.3版本验证.md#ssc-253-release)
-
-2.4.2 已交付的身体视觉采用原生 Shader，维护者确认深紫色与 0.85 不透明度效果可保留；本次不改动产物，见[验收记录](../Development/Completed/1.7全身凝胶化身体视觉调整与验收.md)。
+较早的发布状态与维护入口说明已移至[导航沿革](../Development/Reference/History/索引沿革/文档导航历史摘录.md)，当前索引只提供用途和流程入口。
 
 ## 推荐阅读顺序
 

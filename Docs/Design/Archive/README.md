@@ -1,5 +1,7 @@
 # 已交付设计与历史方案
 
+当前归档基线为 **SSC 2.5.3 正式版**。第 6／6.1 项无主与解绑、2.5.2 里程碑的恶堕解耦、奴性爆发及文化结算均已交付；先读[本版完成索引](../../Development/Completed/README.md#ssc-253-completed)和[2.5.2 完成索引](../../Development/Completed/README.md#ssc-252-completed)，再查本目录设计原稿。剩余需求统一从[当前规划](../README.md#当前专项规划)进入，明确待验收场景见[待验收索引](../../Development/Verification/README.md#当前专项)。
+
 先从[完成索引](../../Development/Completed/README.md)查实施与验收，再从本页查设计原稿。历次版本的设计归属和原时点更新摘录见[已交付开发索引与历史更新](已交付开发索引与历史更新.md)。
 
 2026-11-21，第 6 项无主性奴与第 6.1 项解绑随 PR #48 合入 `main`。 [已交付设计](第6项无主性奴设计方案.md) · [实施与验收](../../Development/Completed/无主性奴/README.md)

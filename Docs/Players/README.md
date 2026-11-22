@@ -1,30 +1,10 @@
 # 玩家阅读入口 / Player documentation
 
-**2.5.3 玩家入口。** 无主性奴、解绑及相关修复见[双语说明](../Releases/2.5.3/2.5.3发布说明.md)。[下载 2.5.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.3)
+当前指南适用于 **SSC 2.5.3 正式版 / RimWorld 1.7**。同一安装包为 RimWorld 1.6 提供 SSC 2.4.1。2.5.2 的恶堕成长、印记、奴性爆发与文化结算已随 2.5.3 交付。
 
-**2.5.2 开发里程碑。** 恶堕成长、奴性爆发与文化结算已随 2.5.3 安装包交付，原范围见[开发说明](../Releases/2.5.2/2.5.2发布说明.md)。
+These guides cover **SSC 2.5.3 for RimWorld 1.7**. The same package includes SSC 2.4.1 for RimWorld 1.6, and the 2.5.2 development milestone is included in 2.5.3.
 
-**2.5.1 玩家入口。** PNA 雾气系列、关系命令栏和兼容改动见[双语版本说明](../Releases/2.5.1/2.5.1发布说明.md)。[下载 2.5.1 正式版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.1)
-
-**2.5.0 玩家入口。** 调教管理窗口和多调教员指派见[中文入门](../../读我，玩法介绍.md#ssc-250)、[完整规则](../../机制详解.md#ssc-250)、[English quick start](../../QUICK_START_EN.md#ssc-250) 和 [English player guide](../../PLAYER_GUIDE_EN.md#ssc-250)。 [下载 2.5.0 正式版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0)
-
-**2.4.10 修订版。** 纳入子宫开发成长判定修正。 新增宠物兔家政和宠物狐科研医疗，面向 RimWorld 1.7。安装包为 1.6 提供 SSC 2.4.1。[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2) · [双语发布说明](../Releases/2.4.10/2.4.10发布说明.md)
-
-**2.4.9 — 2026-11-02正式发布。** [下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.9)。完整All **52套／6535项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未变。标签源码`2b288569`，ZIP及SHA-256已上传并复核为最新稳定版；本轮未启动新游戏或同步安装目录。下方开发／登记记录保留原日期与范围。
-
-2026-10-31：**2.4.8已正式发布**，[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8)。完整All **50套／6429项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未改。源码标签`411e1ce8`，ZIP及SHA-256已上传并复核为最新稳定版；本轮没有启动新游戏或同步安装目录。原分批／登记状态与计数保留原时点。
-
-2026-10-28：**2.4.7已正式发布**，[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7)。完整All **50套／6333项全部通过**，资源2／2、编排56项及浪漫隔离75项通过；532份冻结文件未变。源码标签`e567e1b1`，ZIP与SHA-256已上传并复核；本轮没有再启动游戏或同步安装目录。旧分批／登记数字按原日期阅读。
-
-**2.4.8 — 2026-10-31。** 孕母、三态人格印记、频率属性、空壳需求与调教员便捷操作；[下载v2.4.8](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8)。新增仅1.7，1.6／Common冻结2.4.1；About、源码版本属性与重编运行产物对齐2.4.8。分批实机认可、正式门禁与上传回执分别记录，历史独立待验收范围保留。
-
-[项目首页](../../README.md) · [文档总索引](../README.md) · [双语模组介绍](../模组介绍.md) · [版本索引](../Releases/README.md)
-
-2.4.8先查[新增玩法](../../读我，玩法介绍.md#ssc-248)与[完整规则](../../机制详解.md#ssc-248)，本版包含这些新增，较早v2.4.7不含这些功能。2.4.7内容查[新增玩法](../../读我，玩法介绍.md#ssc-247)与[完整规则](../../机制详解.md#ssc-247)，该2.4.7版本包含其对应新增，较早2.4.6包不含这些功能。已发布2.4.6内容查[能力与浪漫控制入门](../../读我，玩法介绍.md#24-246-个人能力与浪漫控制仅-17未发布)与[完整规则](../../机制详解.md#27-246-个人能力与浪漫控制仅-17未发布)。继承的2.4.5内容查[身体开发入门](../../读我，玩法介绍.md#23-245-身体开发与维护调整仅-17未发布)与[完整规则](../../机制详解.md#26-245-身体开发与生育控制仅-17未发布)。此前已发布内容可直接查[文化与医美入门](../../读我，玩法介绍.md#22-244-文化与医美仅-17-开发版)，数值与条件查[完整规则](../../机制详解.md#25-244-文化仪式与医美仅-17-开发版)。
-
-2.4.9开发内容先读[发烟器／补给入门](../../读我，玩法介绍.md#ssc-249)，再按需查[完整规则](../../机制详解.md#ssc-249)与[验证边界](../Releases/2.4.9/2.4.9版本验证.md)。本版2.4.9包含这些新增，较早2.4.8包不含。
-
-**2.4.10 玩家入口。** 兔、狐与猫狗调整见[中文入门](../../读我，玩法介绍.md#ssc-2410)及[完整规则](../../机制详解.md#ssc-2410)。英文见 [Quick start](../../QUICK_START_EN.md#ssc-2410) 和 [Player guide](../../PLAYER_GUIDE_EN.md#ssc-2410)。[下载 2.4.10 修订版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2)
+[项目首页](../../README.md) · [文档总索引](../README.md) · [双语模组介绍](../模组介绍.md) · [下载 / Download 2.5.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.3)
 
 ## 中文阅读顺序
 
@@ -40,6 +20,9 @@
 
 | 问题 | 入门 | 完整规则 |
 | --- | --- | --- |
+| 无主性奴、绑定与解绑（2.5.3） | [入门](../../读我，玩法介绍.md#ssc-253) | [完整规则](../../机制详解.md#ssc-253) |
+| 恶堕成长、印记与奴性爆发（2.5.2 里程碑，随本版交付） | [本版入门](../../读我，玩法介绍.md#ssc-253) | [成长规则](../../机制详解.md#6-恶堕需求衰减与锁链) · [印记](../../机制详解.md#三态印记与主人排泄禁令) |
+| 调教管理窗口与多调教员（2.5.0） | [入门](../../读我，玩法介绍.md#ssc-250) | [完整规则](../../机制详解.md#ssc-250) |
 | PNA 雾气炮弹、陷阱与发烟器（2.5.1，1.7） | [入门](../../读我，玩法介绍.md#ssc-pna-mist) | [规则与消耗](../../机制详解.md#ssc-pna-mist) |
 | 2.4.10 宠物兔／宠物狐与猫狗调整 | [入门](../../读我，玩法介绍.md#ssc-2410) | [规则](../../机制详解.md#ssc-2410) |
 | 2.4.9堕落凝胶 | [入门](../../读我，玩法介绍.md#ssc-249-gel) | [规则](../../机制详解.md#ssc-249-gel) |
@@ -61,12 +44,6 @@
 
 For 2.5.3, start with [unbound slaves and binding](../../QUICK_START_EN.md#ssc-253) and the [full guide](../../PLAYER_GUIDE_EN.md#ssc-253).
 
-For PNA mist equipment in SSC 2.5.1 on RimWorld 1.7, use the [quick start](../../QUICK_START_EN.md#ssc-pna-mist) or the [full rules and operating costs](../../PLAYER_GUIDE_EN.md#ssc-pna-mist).
-
-Development 2.4.9 also adds [Depravity Gel](../../QUICK_START_EN.md#ssc-249-gel), with [full rules](../../PLAYER_GUIDE_EN.md#ssc-249-gel), alongside [emitters and PNA maintenance](../../QUICK_START_EN.md#ssc-249), with [full rules](../../PLAYER_GUIDE_EN.md#ssc-249). These additions are included in 2.4.9 and were not in the earlier public v2.4.8 package.
-
-The released sections cover **2.4.8** and earlier features on 1.7; 1.6 remains at 2.4.1. Start with [2.4.8 additions](../../QUICK_START_EN.md#ssc-248) and [full rules](../../PLAYER_GUIDE_EN.md#ssc-248), which are new to 2.4.8 and were not in public v2.4.7. Earlier controls are in the [new controls](../../QUICK_START_EN.md#ssc-247) and [full rules](../../PLAYER_GUIDE_EN.md#ssc-247). Those earlier sensitivity/control features are included in v2.4.7 and were not in v2.4.6. For the earlier released features, see [ability/romance controls](../../QUICK_START_EN.md#24-246-personal-abilities-and-romance-controls-17-unreleased), the [full rules](../../PLAYER_GUIDE_EN.md#27-246-personal-abilities-and-romance-controls-17-unreleased) and the inherited [body-development guide](../../QUICK_START_EN.md#23-245-body-development-and-maintenance-17-unreleased). The public 2.4.6 package includes those earlier ability, romance and body-development features. For already released features, use the [2.4.4 scope](../Releases/2.4.4/2.4.4发布说明.md#english), [culture/cosmetics quick start](../../QUICK_START_EN.md#22-244-culture-and-cosmetic-reshaping-17-development-only) and [full rules](../../PLAYER_GUIDE_EN.md#25-244-culture-rituals-and-cosmetic-reshaping-17-development-only).
-
 1. Read the [mod overview](../模组介绍.md#english).
 2. Follow [Getting Started](../../QUICK_START_EN.md#2-getting-started) for research, qualification, identities and trainers.
 3. Read [Corruption and the Bond](../../QUICK_START_EN.md#4-corruption-and-the-bond), then [Binding Ritual](../../QUICK_START_EN.md#5-binding-ritual).
@@ -77,17 +54,12 @@ Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portr
 
 ## 升级要点 / Upgrade essentials
 
-**2.4.4 已发布。** 开发版新增文化、可选演化点、医美和人格排泄修复；以下旧发射器、武器和剂量规则保留 2.4.3 的升级边界。2.4.4 is released; the launcher, weapon and dose notes below retain their 2.4.3 introduction.
+升级前备份存档，再完整替换旧模组文件夹；保留 1.6、1.7 目录及 LoadFolders.xml，由游戏选择对应内容。较早章节的版本号表示功能引入版本，具体规则结合本版说明阅读。
 
-- **旧枪移除：** 1.7 不再加载旧简易发射器、弹丸、配方及专属研究，不提供旧定义存档迁移；1.6 内容保留。
-- **武器规则：** 六把涂覆武器保留真实伤口；太空主攻击对有效链目标无伤吸收并修复，护盾／掩体仍拦截。原版品质影响伤害／穿甲，不放大药效／修复。
-- **恩赐剂量：** 身体产液能力折算 3～100 点，参考产量 20 对应 8 点，普通产出者仍为 2 点。
-- **继承功能：** 资格、当前身份、研究与成长仍分别管理；2.4.2 的凝胶外观继续保留，较早章节版本号不改为本版新增。
-
-**1.7 saves referencing the removed launcher have no migration path.** Coated weapons retain wounds; spacer main attacks protect eligible bodies, while shields/cover still matter. Quality affects physical damage/penetration, not PNA or repair. Bestow Bliss now derives 3–100 load points from body output; normal producers still supply 2 points.
+Back up saves and replace the old mod folder completely. Keep the 1.6 and 1.7 folders and LoadFolders.xml. Earlier version numbers identify when a feature was introduced; read those sections alongside the current release notes.
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南适用于 2.5.3。[下载 2.5.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.3)。各批实机反馈与正式发布门禁按版本查阅。[2.5.0 正式发布归档](../Releases/2.5.0/2.5.0版本验证.md#ssc-250-release) · [2.4.10 修订版归档](../Releases/2.4.10/2.4.10版本验证.md#2410-修订版发布归档)
+本版功能变化见[2.5.3 说明](../Releases/2.5.3/2.5.3发布说明.md)，正式构建与安装包验证见[发布归档](../Releases/2.5.3/2.5.3版本验证.md#ssc-253-release)。旧版升级说明按[版本索引](../Releases/README.md)查阅，旧入口摘录在[导航沿革](../Development/Reference/History/索引沿革/文档导航历史摘录.md)。
 
-These guides cover SSC 2.5.0. Earlier features are listed under the versions that introduced them. [2.5.0 release notes](../Releases/2.5.0/2.5.0发布说明.md#english)
+For changes, read the [2.5.3 release notes](../Releases/2.5.3/2.5.3发布说明.md#english). Build and package checks are recorded in the [release archive](../Releases/2.5.3/2.5.3版本验证.md#ssc-253-release). Earlier versions and their upgrade notes remain in the [version index](../Releases/README.md).

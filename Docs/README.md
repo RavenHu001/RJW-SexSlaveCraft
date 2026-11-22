@@ -4,21 +4,15 @@
 
 ## 当前正式版本
 
-**2.5.3 于 2026-11-21 正式发布。** 完整门禁通过 52 套、6007/6007 项。 [下载 2.5.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.3) · [版本说明](Releases/2.5.3/2.5.3发布说明.md) · [发布归档](Releases/2.5.3/2.5.3版本验证.md#ssc-253-release) · [完成索引](Development/Completed/README.md#ssc-253-completed)
+**SSC 2.5.3 于 2026-11-21 正式发布，面向 RimWorld 1.7。** 同一安装包为 RimWorld 1.6 提供 SSC 2.4.1。2.5.2 开发里程碑的实现随本包交付。
 
-## 上一正式版本
-
-**2.5.1 于 2026-11-15 正式发布。** 完整门禁通过 52 套、6350/6350 项。 [下载 2.5.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.1) · [版本说明](Releases/2.5.1/2.5.1发布说明.md) · [发布归档](Releases/2.5.1/2.5.1版本验证.md#ssc-251-release) · [完成索引](Development/Completed/README.md#ssc-251-completed)
-
-## 更早正式版本
-
-**2.5.0 于 2026-11-12 正式发布。** 完整门禁通过 52 套、6544/6544 项。 [下载 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0) · [发布归档](Releases/2.5.0/2.5.0版本验证.md#ssc-250-release) · [完成索引](Development/Completed/README.md#ssc-250-completed)
+[下载 2.5.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.3) · [版本说明](Releases/2.5.3/2.5.3发布说明.md) · [正式发布验证](Releases/2.5.3/2.5.3版本验证.md#ssc-253-release) · [完成索引](Development/Completed/README.md#ssc-253-completed) · [历史版本](Releases/README.md)
 
 ## 按用途选择入口
 
 | 用途 | 入口 | 推荐阅读顺序 |
 | --- | --- | --- |
-| 了解功能、准备发布页面 | [双语模组介绍](模组介绍.md) | English 在前、中文在后；先看当前版本与功能范围 |
+| 了解功能、维护发布流程页面 | [双语模组介绍](模组介绍.md) | English 在前、中文在后；先看当前版本与功能范围 |
 | 安装和游玩 | [玩家阅读入口](Players/README.md) | 简介 → 快速入门 → 按需查机制与常见问题 |
 | 了解版本归属 | [发布与验证索引](Releases/README.md) | 版本说明 → 开发归并 → 版本验证；已发布版本从验证页进入正式发布归档 |
 | 接手已完成功能 | [已交付开发记录](Development/Completed/README.md) | 主题完成核对 → 对应阶段 → 历史设计 |
@@ -35,7 +29,7 @@
 
 - **新玩家**：[模组介绍](模组介绍.md) → [快速入门](../读我，玩法介绍.md) → [机制详解](../机制详解.md)。英文路线见 [English reading order](Players/README.md#english-reading-order)。
 - **接手开发**：[开发协作约定](../AGENTS.md) → [开发规范与历史参考](Development/Reference/README.md) → [2.5.3 接手顺序](Development/README.md#ssc-253-reading-order)。实施与验收见[完成记录](Development/Completed/README.md#ssc-253-completed)，独立复测见[待验收](Development/Verification/README.md)，未完需求见[当前规划](Design/README.md#当前专项规划)。
-- **准备发布**：[2.5.3 版本验证](Releases/2.5.3/2.5.3版本验证.md) → [构建与打包](Maintenance/发布与打包.md) → [测试索引](../Tests/README.md)。
+- **维护发布流程**：[2.5.3 版本验证](Releases/2.5.3/2.5.3版本验证.md) → [构建与打包](Maintenance/发布与打包.md) → [测试索引](../Tests/README.md)。本次只整理文档时按[文档维护约定](Maintenance/文档维护约定.md#移动与链接检查)检查。
 
 ## 目录与状态
 
@@ -52,6 +46,7 @@ Docs/
   Development/
     开发更新记录.md            按日期追溯
     Completed/                 实现、修复与已关闭批次
+      无主性奴/                 第 6／6.1 项完成索引、五批实现与验收
       奴性爆发/                 第 7 项分批实机验收与文件定位
       调教管理/                 窗口重做与多调教员的实施及验收
       宠物特化/                 兔家政与狐狸科研医疗的分批验收
@@ -62,35 +57,13 @@ Docs/
     Reviews/                   代码和机制复盘
     Reference/                 现行规范、心情分支表与文案依据
       History/                 已使用的交接、提示词和定稿底稿
+        索引沿革/              从现行入口移出的历史导航与状态摘录
   Releases/<版本>/             版本说明、归并核对、验证与历史公告
   Maintenance/                 构建发布和文档维护
   Art/                         原稿、资源表、提示词与备份
   设定/                        叙事设定与文案基准
 ```
 
-根目录四份玩家指南保留固定路径。已完成内容、明确待验证事项、未来提案分别维护；版本登记不等于已发布，历史测试计数不等于当前结果。工业和太空武器的设计已移入 Archive，完成状态先查各自汇总；鞭子后续声音等需求只留未来规划。
+根目录四份玩家指南保留固定路径。已完成内容、明确待验收事项和未来提案分别维护；开发里程碑登记、分批实机与正式发布门禁分别记录。旧版导航与分批状态见[索引沿革](Development/Reference/History/索引沿革/README.md)，当前文档归属与维护方法见[维护约定](Maintenance/文档维护约定.md)。
 
-2026-10-24，通用能力开关框架三批均获维护者整体实机认可，[专项按约定范围完成](Development/Completed/通用能力开关框架完成核对.md)，第 28 项收尾。[三批规划](Design/Archive/ITab个人能力开关通用框架开发规划.md)归入 Archive，第三批记录归入 Completed，接入规范保留在Reference；当时目录描述保留历史范围，当前归属见上方目录和规划索引。子宫／胃部及历史已交付内容保持原归档，废案身份不变；本次不发布，不改历史验证或已测试运行产物。
-
-源码旁的专用说明：[旧 RimTalk 归档](../Archive/RimTalk/README.md) · [Shader 源码与工具](../Sexslavecraft/ShaderSources/README.md)。
-
-
-独立工具从[Tools](../Tools/README.md)进入，旧实现与调查脚本从[根目录Archive](../Archive/README.md)追溯；全仓文件归属见[维护约定](Maintenance/文档维护约定.md#仓库文件归属)。
-
-## 历史索引摘录
-
-以下保留各版本整理时的状态。
-
-2026-10-31：**2.4.8已正式发布**，[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8)。完整All **50套／6429项全部通过**，资源2／2、发布编排56及文案隔离75项通过；532份冻结文件未改。源码标签`411e1ce8`，ZIP及SHA-256已上传并复核为最新稳定版；本轮没有启动新游戏或同步安装目录。原分批／登记状态与计数保留原时点。
-
-2026-10-31：v2.4.7后截至`ba2d1e22`的52个非合并提交、269个变更路径统一归入 **2.4.8开发版（未发布）**。先读[双语说明](Releases/2.4.8/2.4.8发布说明.md) → [归并核对](Releases/2.4.8/2.4.8开发归并核对.md) → [验证边界](Releases/2.4.8/2.4.8版本验证.md)。当前50套runner未执行本版完整All，2.4.7的6333项保留历史时点；下面按日期的实现／同步／验收文字仍按原轮次阅读。
-
-2026-10-28：**2.4.7已正式发布**，[下载](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.7)。完整All **50套／6333项全部通过**，资源2／2、编排56项及浪漫隔离75项通过；532份冻结文件未变。源码标签`e567e1b1`，ZIP与SHA-256已上传并复核；本轮没有再启动游戏或同步安装目录。旧分批／登记数字按原日期阅读。
-
-2026-10-27按2.4.6与发布后维护整理目录：已关闭实施记录进入Completed，已交付设计进入Design/Archive，现行规则表与规范在Reference，历史交接在Reference/History；[叙事设定](设定/README.md)、[独立工具](../Tools/README.md)和[旧实现／调查](../Archive/README.md)分别查阅。原发布日期、计数及未验收范围保持。
-
-2026-10-26：当前正式版本为 **2.4.6（2026-10-26）**，范围与状态先读[中英说明](Releases/2.4.6/2.4.6发布说明.md)、[52项提交归并](Releases/2.4.6/2.4.6开发归并核对.md)及[验证边界](Releases/2.4.6/2.4.6版本验证.md)。个人能力框架、浪漫控制／综合心情／日志、个人恢复默认、四语文案及PNA引导纳入本版。简中已实机，繁英俄已审阅待部署／实机，PNA引导已同步，并于2026-10-27确认有效。以下按日期的旧状态保留原时点，当前待验收以专项表为准。
-
-2026-10-24：[浪漫控制第四批](Development/Completed/性奴浪漫控制第四批实现与验证.md)完成外部空壳双向撤权、中断清理及人格／凝胶／克隆／场景保存联测，原生 **403／403**。点名命令一次下令、打断即结束；前四批仍待实际组合及第五批整机验收，未部署。下列第三批条目保留历史时点。
-
-**2.4.8 — 2026-10-31。** 孕母、三态人格印记、频率属性、空壳需求与调教员便捷操作；[下载v2.4.8](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.8)。新增仅1.7，1.6／Common冻结2.4.1；About、源码版本属性与重编运行产物对齐2.4.8。分批实机认可、正式门禁与上传回执分别记录，历史独立待验收范围保留。
+源码旁的专用说明：[旧 RimTalk 归档](../Archive/RimTalk/README.md) · [Shader 源码与工具](../Sexslavecraft/ShaderSources/README.md)。独立工具从 [Tools](../Tools/README.md)进入，旧实现与调查脚本从[根目录 Archive](../Archive/README.md)追溯。
