@@ -105,12 +105,12 @@ namespace SexSlaveCraft
 
         /// <summary>验证保存的严格口交口腔条目；已有缓存时额外核对方向，读档无缓存时不重新解析。</summary>
         internal static bool IsCurrentReceivingPenileOral(SSCOrdinarySexPartsSnapshot snapshot, SexProps props,
-            SSCOrdinarySexPartsSnapshot.Part evidence)
+            SSCOrdinarySexPartsSnapshot.Part evidence, SexInteractionResolved legacyEmptyResolution = null)
         {
             if (snapshot == null || evidence == null || !evidence.ReceivedPenileOralPenetration ||
                 evidence.Family != LewdablePartFamily.Mouth || !evidence.IsAttached() ||
-                snapshot.Parts?.Contains(evidence) != true || !snapshot.Matches(props)) return false;
-            if (props._resolved == null) return true;
+                snapshot.Parts?.Contains(evidence) != true || !snapshot.Matches(props, legacyEmptyResolution)) return false;
+            if (props._resolved == null || ReferenceEquals(props._resolved, legacyEmptyResolution)) return true;
             try
             {
                 var current = ReadCached(props);

@@ -99,6 +99,42 @@ internal static partial class Program
             var toils = ((IEnumerable<Toil>)Hidden(typeof(JobDriver_Training), restored, "MakeNewToils")).ToArray();
             toils.Last().initAction(); Near(.035f, Progress(s.scene.Target)); Equal(1, dailyOutcomes);
         });
+        Check("daily Scribe restores the reverse automatic act for both participants", () =>
+        {
+            var receiverDef = SSCDefOf.SSC_TrainingReceiver;
+            SSCDefOf.SSC_TrainingReceiver ??= new JobDef { defName = "GrowthSaveReceiver", driverClass = typeof(JobDriver_TrainingReceiver) };
+            try
+            {
+                var s = DailyGrowth();
+                var props = s.scene.Props;
+                props.dictionaryKey.GetModExtension<SexInteractionExtension>().tags.Add(SexInteractionTag.Reverse);
+                Require(RJWSexPropsUtility.TryPrepareAutomaticTrainingAct(props, s.scene.Source, s.scene.Target));
+                Require(props.isRevese);
+                Pawn target = s.scene.Target;
+                var receiver = new JobDriver_TrainingReceiver
+                {
+                    pawn = target, Sexprops = props.GetForPartner(),
+                    job = new Job { def = SSCDefOf.SSC_TrainingReceiver, targetA = s.scene.Source, loadID = ++nextId }
+                };
+                target.jobs.curJob = receiver.job;
+                target.jobs.curDriver = receiver;
+
+                var restored = RestoreDriver<JobDriver_Training>(s.driver);
+                RoundTripGrowth(s.driver, restored, s.scene);
+                Equal(props.dictionaryKey, restored.Sexprops.dictionaryKey);
+                Require(restored.Sexprops.isRevese);
+                Require(restored.Sexprops._resolved == null);
+
+                var loadedReceiver = new JobDriver_TrainingReceiver { pawn = target, job = receiver.job };
+                target.jobs.curDriver = loadedReceiver;
+                RoundTripGrowth(receiver, loadedReceiver, s.scene);
+                Require(!loadedReceiver.Sexprops.isRevese); // 原生接收驱动的 SexProps 也未保存方向。
+                SSCDailyTrainingOccupancy.ReconcileAfterLoad(new[] { s.scene.Source, target });
+                Require(restored.HasDailyReceiver(target) && loadedReceiver.Sexprops.isRevese);
+                Require(loadedReceiver.Sexprops._resolved == null);
+            }
+            finally { SSCDefOf.SSC_TrainingReceiver = receiverDef; }
+        });
         Check("ritual restored mid-session ignores legacy uterus phase evidence", () =>
         {
             ResetGrowthFlow(); var f = new GrowthRitual(); f.Phase(contact: false);
@@ -143,6 +179,50 @@ internal static partial class Program
             Equal(scene.Target, pair.Item2.Owner); Equal(scene.Organ, ((RJWLewdablePart)pair.Item2).SexPart.AsHediff);
             Require(restored.Sexprops.isRevese); Equal(17, restored.ticks_left);
         });
+        foreach (bool lostSelection in new[] { false, true })
+            Check("ritual Scribe preserves legacy oral evidence through stage completion: lost selection=" + lostSelection, () =>
+            {
+                ResetGrowthFlow();
+                var f = new GrowthRitual(new GrowthScene(oral: true));
+                var scene = f.Scene;
+                var original = InstallDriver<JobDriver_RitualTraining>(scene);
+                AccessTools.Field(typeof(JobDriver_RitualTraining), "ritualLord").SetValue(original, f.Lord);
+                AccessTools.Field(typeof(JobDriver_RitualTraining), "phaseSceneStarted").SetValue(original, true);
+                MarkStarted(original);
+                var evidence = SSCRestrictionJobGuard.TrainingParts(original, SSCInteractionKind.RitualTraining);
+                Require(evidence?.Parts.Exists(part => SSCStomachDevelopmentGrowthUtility.IsEvidenceFor(part, scene.Target)) == true);
+                if (lostSelection)
+                {
+                    var selection = SSCRitualInteractionParts.Capture(scene.Props._resolved);
+                    AccessTools.Field(typeof(SSCRitualInteractionParts), "initiatorCount").SetValue(selection, 0);
+                    AccessTools.Field(typeof(JobDriver_RitualTraining), "selectedParts").SetValue(original, selection);
+                }
+                original.ticks_left = 1;
+                original.sex_ticks = 1000;
+                // 该测试运行原生 tick，但无图形夹具，无需在这一 tick 进入旋转与动画。
+                AccessTools.Field(typeof(JobDriver_Sex), "ticks_between_thrusts").SetValue(original, int.MaxValue);
+
+                var restored = RestoreDriver<JobDriver_RitualTraining>(original);
+                RoundTripGrowth(original, restored, scene, training: f.Comp);
+                Require((bool)Hidden(typeof(JobDriver_RitualTraining), restored, "RestorePhase", scene.Target));
+                Require(!SSCRitualInteraction.HasContact(restored.Sexprops._resolved));
+                Equal(0, f.Comp.ritualPhase);
+                Require(f.Comp.stomachRitualEvidence == null);
+
+                // 在阶段结束前再存档一次。已经失效的新快照不可在第二次恢复被当成旧档。
+                var reloaded = RestoreDriver<JobDriver_RitualTraining>(restored);
+                RoundTripGrowth(restored, reloaded, scene, training: f.Comp);
+                var sceneToil = ((IEnumerable<Toil>)Hidden(typeof(JobDriver_RitualTraining), reloaded, "MakeNewToils")).Last();
+                Require(TickRitualToil(reloaded, sceneToil));
+                Require(!SSCRitualInteraction.HasContact(reloaded.Sexprops._resolved));
+                var context = new TrainingJobUtility.JobContext(reloaded);
+                Hidden(typeof(JobDriver_RitualTraining), reloaded, "OnPhaseComplete", context);
+                Equal(1, f.Comp.ritualPhase);
+                Equal(lostSelection ? 0 : 1, f.Comp.stomachRitualEvidence?.Count ?? 0);
+                for (int i = 1; i < BindingRitualStateUtility.PhaseCount; i++) f.Phase(contact: false);
+                Near(lostSelection ? .01f : .02875f, StomachProgress(scene.Target));
+                Equal(1, f.Memos);
+            });
         Check("ritual Scribe resumes legacy empty fallback on the RJW clock", () =>
         {
             var f = new GrowthRitual();

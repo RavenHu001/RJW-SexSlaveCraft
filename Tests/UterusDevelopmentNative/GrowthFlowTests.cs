@@ -358,8 +358,7 @@ internal static partial class Program
     {
         Check("batch3 missing driver never creates training evidence", () =>
         {
-            var kind = growthType.Assembly.GetType("SexSlaveCraft.SSCInteractionKind");
-            Require(Hidden(guardType, null, "TrainingParts", null, Enum.Parse(kind, "DailyTraining")) == null);
+            Require(SSCRestrictionJobGuard.TrainingParts(null, SSCInteractionKind.DailyTraining) == null);
         });
         Check("batch3 actual daily completion grows once after ProcessSex and original body reward", () =>
         {

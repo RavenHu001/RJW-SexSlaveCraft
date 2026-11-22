@@ -52,6 +52,13 @@ namespace SexSlaveCraft
             {
                 if (!hasSceneRecord && legacySceneProgress) sceneStarted = true;
                 hasSceneRecord = true;
+#if SSC_RW17
+                // RJW 保存了实际动作 Def。依它恢复方向，涵盖已有的自动回退存档。
+                if (!ended && Sexprops is { isReceiver: false } props && props.pawn == pawn &&
+                    props.partner != null && props.partner == Partner &&
+                    props.dictionaryKey?.GetModExtension<SexInteractionExtension>() is { } extension)
+                    props.isRevese = extension.tags?.Contains(SexInteractionTag.Reverse) == true;
+#endif
             }
 #if !SSC_RW17
             // 升级旧档时任务目标仍属于本日常 Job；仅补领已有占用，不创建训练状态。
@@ -574,9 +581,18 @@ namespace SexSlaveCraft
             if (IsBreakdownTraining && BreakdownEpisode?.OwnsTrainingJob(pawn, job) != true) return;
             var context = new TrainingJobUtility.JobContext(this);
             if (dailyOccupancy?.IsCurrentFor(context) == true) return;
-            dailyOccupancy = SSCDailyTrainingOccupancy.TryClaim(Partner, context);
+            Pawn target = Partner;
+            dailyOccupancy = SSCDailyTrainingOccupancy.TryClaim(target, context);
             // 冲突 Job 在首次运行检查中退出，仅保留已认领任务的接收器。
-            preparedTrainingTarget = Partner;
+            preparedTrainingTarget = target;
+            // 地图恢复占用时双方引用均已加载。只同步同一场动作的接收方，家具常驻任务也走此归属校验。
+            if (dailyOccupancy?.IsCurrentFor(context) == true && HasDailyReceiver(target) &&
+                Sexprops is { isReceiver: false } props && props.pawn == pawn && props.partner == target &&
+                props.dictionaryKey != null &&
+                dailyReceiver.Driver is JobDriver_SexBaseReciever receiver &&
+                receiver.Sexprops is { isReceiver: true } partnerProps &&
+                partnerProps.pawn == target && partnerProps.partner == pawn && partnerProps.dictionaryKey == props.dictionaryKey)
+                partnerProps.isRevese = props.isRevese;
         }
 
         internal bool HasDailyTrainingOccupancy => dailyOccupancy?.IsCurrent == true;

@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using Verse;
 using Verse.AI;
 using Verse.AI.Group;
+#if SSC_RW17
+using rjw.Modules.Interactions;
+#endif
 
 // EN: This file drives the Binding Ritual from the initiator side.
 // EN: It keeps the master and sex slave at the ritual spot, swaps ritual phases, and decides when the Binding Ritual is truly finished.
@@ -22,6 +25,8 @@ namespace SexSlaveCraft
         // 原选部位随当前阶段 Job 保存。恢复标记在加载后使用一次，等双方驱动都完成引用恢复。
         private SSCRitualInteractionParts selectedParts;
         private bool restorePhaseOnTick;
+        private bool selectedPartsLostOnLoad;
+        private SexInteractionResolved legacyEmptyResolution;
 #endif
 
         /// <summary>读取当前仪式任务 A 目标所指向的接收角色。</summary>
@@ -46,6 +51,7 @@ namespace SexSlaveCraft
             Scribe_References.Look(ref ritualLord, "sscRitualLord");
 #if SSC_RW17
             Scribe_Deep.Look(ref selectedParts, "sscRitualSelectedParts");
+            Scribe_Values.Look(ref selectedPartsLostOnLoad, "sscRitualSelectedPartsLostOnLoad");
             if (Scribe.mode == LoadSaveMode.PostLoadInit) restorePhaseOnTick = !phaseFinishHandled;
 #endif
             SSCRestrictionJobGuard.RestoreRitualScene(this, phaseSceneStarted);
@@ -399,8 +405,9 @@ namespace SexSlaveCraft
 
 #if SSC_RW17
                 // 末阶段 memo 会同步结算，先记录胃部开发所需的合格接触。
-                var parts = SSCRestrictionJobGuard.TrainingParts(this, SSCInteractionKind.RitualTraining);
-                training.RecordStomachRitualPhase(ritualLord, parts, Sexprops);
+                var emptyResolution = SSCRitualInteraction.HasContact(legacyEmptyResolution) ? null : legacyEmptyResolution;
+                var parts = SSCRestrictionJobGuard.TrainingParts(this, SSCInteractionKind.RitualTraining, emptyResolution);
+                training.RecordStomachRitualPhase(ritualLord, parts, Sexprops, emptyResolution);
 #endif
                 int completedPhases = training.ritualPhase;
                 SSCLog.Verbose($"[SSC Ritual] 阶段完成: {completedPhases}/{BindingRitualStateUtility.PhaseCount}");
@@ -422,14 +429,20 @@ namespace SexSlaveCraft
         private bool RestorePhase(Pawn slave)
         {
             restorePhaseOnTick = false;
+            legacyEmptyResolution = null;
             var props = Sexprops;
             if (props?.dictionaryKey == null || props.pawn != pawn || props.partner != slave || props.isReceiver)
                 return false;
 
             if (!TryRestoreSelectedParts(props))
             {
+                // 持久区分旧档缺少阶段快照与新档原部位已失效的情况，重复读档也遵守这一区别。
+                selectedPartsLostOnLoad |= selectedParts != null;
                 selectedParts = null;
                 SSCRitualInteraction.ClearContact(props);
+                // 旧档仍可用开场时保存的 SSC 口部凭据。记住这个空缓存，供阶段完成时复查原场次。
+                if (phaseSceneStarted && !selectedPartsLostOnLoad)
+                    legacyEmptyResolution = props._resolved;
             }
             props.isRevese = props.interaction.HasInteractionTag(SexInteractionTag.Reverse);
             // 仅同步同一动作的对应接收驱动。两份 SexProps 从各自角色视角引用同一组部位与配对。

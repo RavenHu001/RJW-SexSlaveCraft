@@ -36,7 +36,7 @@
 | 解析出实际部位 | 执行自动选中或固定保底的 RJW 交互，沿场景时钟推进。 |
 | 固定保底动作没有解析出部位 | 保留原动作 Def，正常启动接收任务并执行 RJW `Start`、`SexTick`、`ProcessSex` 和 `End`。沿 RJW 时钟推进，兼容模组仍可能记录 `0 fluid` 等黄色警告。 |
 
-阶段切换后按当前身体重新筛选。已开始阶段沿用已选交互及 RJW 阶段时钟，读档恢复本场角色、所选部位或保底空接触状态及相应进度。仍由同一仪式 `Lord` 及当前阶段 Job 认领阶段推进和完成资格。许可失效、角色变化、取消或中断沿原有清理流程处理。旧档缺部位凭据或原身体引用失效时，保留动作和 RJW 剩余时间，按空接触继续执行。旧版已经进入等待阶段的存档若尚未启动 RJW 场景，在恢复首 tick 时启动原场景。 [阶段 Job 与恢复](../../Sexslavecraft/JobDriver/JobDriver_RitualTraining.cs) · [仪式生命周期](../../Sexslavecraft/common/BindingRitualStateUtility.cs)
+阶段切换后按当前身体重新筛选。已开始阶段沿用已选交互及 RJW 阶段时钟，读档恢复本场角色、所选部位或保底空接触状态及相应进度。仍由同一仪式 `Lord` 及当前阶段 Job 认领阶段推进和完成资格。许可失效、角色变化、取消或中断沿原有清理流程处理。缺少完整阶段部位快照或原身体引用失效时，保留动作和 RJW 剩余时间，按空接触继续执行。旧档若已保存开场时的合格胃部开发凭据，正常完成阶段时仍按原角色、动作及器官附着情况复查该凭据。新版部位快照失效后的空接触状态会跨再次读档保留。旧版已经进入等待阶段的存档若尚未启动 RJW 场景，在恢复首 tick 时启动原场景。 [阶段 Job 与恢复](../../Sexslavecraft/JobDriver/JobDriver_RitualTraining.cs) · [仪式生命周期](../../Sexslavecraft/common/BindingRitualStateUtility.cs)
 
 ## 开发与整场结算
 
