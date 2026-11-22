@@ -1,10 +1,25 @@
 # RJW-SexSlaveCraft Complete Player Guide
 
-**SSC 2.5.1 guide for RimWorld 1.7.** The package includes SSC 2.4.1 for RimWorld 1.6. [Download 2.5.1](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.1)
+**SSC 2.5.3 guide for RimWorld 1.7.** The package includes SSC 2.4.1 for RimWorld 1.6. [Download 2.5.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.3)
 
-[2.5.1 PNA mist](#ssc-pna-mist) · [2.5.1 release notes](Docs/Releases/2.5.1/2.5.1发布说明.md#english) · [2.5.0 Training Management](#ssc-250) · [2.5.0 notes](Docs/Releases/2.5.0/2.5.0发布说明.md#english) · [2.4.10 pet paths](#ssc-2410) · [2.4.10 release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
+[2.5.3 unbound slaves](#ssc-253) · [2.5.1 PNA mist](#ssc-pna-mist) · [2.5.1 release notes](Docs/Releases/2.5.1/2.5.1发布说明.md#english) · [2.5.0 Training Management](#ssc-250) · [2.5.0 notes](Docs/Releases/2.5.0/2.5.0发布说明.md#english) · [2.4.10 pet paths](#ssc-2410) · [2.4.10 release notes](Docs/Releases/2.4.10/2.4.10发布说明.md#english)
 
 
+
+<a id="ssc-253"></a>
+
+## Unbound slaves and binding in 2.5.3
+
+These rules apply to RimWorld 1.7. The package also includes the Corruption, imprint, Submission Breakdown and culture work registered under 2.5.2.
+
+- Corruption can reach 100% at any stage. Bound and unbound pawns share four stages, with stage minimums of 10%, 30%, 50% and 90%. Completed progression events can advance at most one stage.
+- Submission Breakdown is enabled by default when no preference has been saved. Eligible pawns at full Corruption can enter it after cooldown. Its request letter lets you approve the applicable initial formation, binding or progression result for that single Training job. Eligible SSC Masters and Training Officers offer different outcomes.
+- An SSC Master can bind an unbound pawn through an approved breakdown request or Binding Ritual at the pawn's existing progress. Daily Training grants ordinary rewards without creating a new bond.
+- Manual release and confirmed Master death convert the pawn to an unbound state at the same progress. Release applies two days of work speed ×0.75, mood −8 and a rebinding cooldown.
+- Personality Gel preserves unbound progression and remaining release-effect time. The effect pauses in gel and resumes after implantation. A saved former Master is checked when the personality is implanted.
+- Formal unbound pawns use automatic stage behavior and sensitivity, and participate in the relevant culture checks. Automatic Training skips already downed targets so rescue can proceed.
+
+[2.5.3 release notes](Docs/Releases/2.5.3/2.5.3发布说明.md#english) · [Full implementation and acceptance](Docs/Development/Completed/无主性奴/README.md)
 
 <a id="ssc-250"></a>
 

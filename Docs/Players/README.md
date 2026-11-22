@@ -1,6 +1,6 @@
 # 玩家阅读入口 / Player documentation
 
-**2.5.3 开发预览。** 无主性奴、解绑、凝胶往返和相关修复见[双语说明](../Releases/2.5.3/2.5.3发布说明.md)。
+**2.5.3 玩家入口。** 无主性奴、解绑及相关修复见[双语说明](../Releases/2.5.3/2.5.3发布说明.md)。[下载 2.5.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.3)
 
 **2.5.2 开发预览。** 恶堕成长、奴性爆发和文化结算见[双语版本说明](../Releases/2.5.2/2.5.2发布说明.md)。
 
@@ -27,6 +27,8 @@
 **2.4.10 玩家入口。** 兔、狐与猫狗调整见[中文入门](../../读我，玩法介绍.md#ssc-2410)及[完整规则](../../机制详解.md#ssc-2410)。英文见 [Quick start](../../QUICK_START_EN.md#ssc-2410) 和 [Player guide](../../PLAYER_GUIDE_EN.md#ssc-2410)。[下载 2.4.10 修订版](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.4.10-r2)
 
 ## 中文阅读顺序
+
+本版新增规则先读[无主性奴与绑定](../../读我，玩法介绍.md#ssc-253)，完整记录见[机制详解](../../机制详解.md#ssc-253)。
 
 1. [模组介绍](../模组介绍.md#中文)：先了解玩法与版本范围。
 2. [快速入门](../../读我，玩法介绍.md#2-第一次游玩怎么开始)：研究、主人资格、身份和调教员设置。
@@ -57,6 +59,8 @@
 
 ## English reading order
 
+For 2.5.3, start with [unbound slaves and binding](../../QUICK_START_EN.md#ssc-253) and the [full guide](../../PLAYER_GUIDE_EN.md#ssc-253).
+
 For PNA mist equipment in SSC 2.5.1 on RimWorld 1.7, use the [quick start](../../QUICK_START_EN.md#ssc-pna-mist) or the [full rules and operating costs](../../PLAYER_GUIDE_EN.md#ssc-pna-mist).
 
 Development 2.4.9 also adds [Depravity Gel](../../QUICK_START_EN.md#ssc-249-gel), with [full rules](../../PLAYER_GUIDE_EN.md#ssc-249-gel), alongside [emitters and PNA maintenance](../../QUICK_START_EN.md#ssc-249), with [full rules](../../PLAYER_GUIDE_EN.md#ssc-249). These additions are included in 2.4.9 and were not in the earlier public v2.4.8 package.
@@ -84,6 +88,6 @@ Use [Bond Overview](../../QUICK_START_EN.md#bond-overview-243-17-only) for portr
 
 ## 版本与资料用途 / Versions and document roles
 
-当前指南适用于 2.5.0。[下载 2.5.0](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.0)。各批实机反馈与正式发布门禁按版本查阅。[2.5.0 正式发布归档](../Releases/2.5.0/2.5.0版本验证.md#ssc-250-release) · [2.4.10 修订版归档](../Releases/2.4.10/2.4.10版本验证.md#2410-修订版发布归档)
+当前指南适用于 2.5.3。[下载 2.5.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.3)。各批实机反馈与正式发布门禁按版本查阅。[2.5.0 正式发布归档](../Releases/2.5.0/2.5.0版本验证.md#ssc-250-release) · [2.4.10 修订版归档](../Releases/2.4.10/2.4.10版本验证.md#2410-修订版发布归档)
 
 These guides cover SSC 2.5.0. Earlier features are listed under the versions that introduced them. [2.5.0 release notes](../Releases/2.5.0/2.5.0发布说明.md#english)

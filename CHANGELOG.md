@@ -1,6 +1,6 @@
 # 更新日志 / Changelog — SexSlaveCraft（TieJin 接续版 / TieJin continuation）
 
-## [2.5.3] — 2026-11-21 — 开发版 / Unreleased — 无主性奴与解绑 / Unbound Slaves and Bond Release
+## [2.5.3] — 2026-11-21 — 正式版 / Release — 无主性奴与解绑 / Unbound Slaves and Bond Release
 
 以 2.5.2 登记提交 `7e5d17a9` 为界，归入其后至 `0114c376` 的 39 个非合并提交、1 个合并提交和 204 个净变更路径，新增面向 RimWorld 1.7。[双语说明](Docs/Releases/2.5.3/2.5.3发布说明.md) · [开发归并](Docs/Releases/2.5.3/2.5.3开发归并核对.md) · [验证记录](Docs/Releases/2.5.3/2.5.3版本验证.md)
 

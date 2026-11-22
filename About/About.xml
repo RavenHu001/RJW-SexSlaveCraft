@@ -7,11 +7,13 @@
 		<li>1.7</li>
 	</supportedVersions>
 	<packageId>rjw.sexslavecraft.TieJinVer</packageId>
-    <description>SexSlaveCraft 2.5.1 (TieJin Modify)
-新增 PNA 雾气迫击炮弹、IED 和可调半径及档位的发烟器。修复 WOWGAG 复用命令列表时的闪烁及选择按钮。补丁加载可跳过注册失败项，日常调教在必要钩子缺失时暂停派发，设置中可查看跳过与回退原因。
+    <description>SexSlaveCraft 2.5.3 (TieJin Modify)
+无主和有主性奴共用四阶进度。可通过奴性爆发或绑定仪式按原进度建立绑定，主动解绑或主人死亡后保留进度转为无主；两日解绑后效随人格凝胶暂停并在植入后续计。
+本版包含恶堕与锁链阶段解耦、奴性爆发、淫堕传道及凝胶统一结算，并修复倒地调教与救援循环。
 新内容面向 RimWorld 1.7。1.6 使用 SSC 2.4.1。Harmony 和 RJW 先于 SSC，文化与仪式需要 Ideology。
 
-Adds PNA mist mortar shells, IEDs and an emitter with adjustable radius and mode. Fixes command flicker and selection when WOWGAG reuses the command list. SSC continues loading when a patch fails to register and blocks affected Daily Training jobs when required hooks are missing. Diagnostics shows why patches were skipped or fell back.
+Unbound and bound slaves share four stages. Submission Breakdown and Binding Rituals can establish a bond at the pawn's existing progress. Manual release or Master death preserves that progress as an unbound state. The two-day release effect pauses in Personality Gel and resumes after implantation.
+Includes Corruption and Chain decoupling, Submission Breakdown, Preaching Corruption and shared Depravity Gel bookkeeping, plus fixes for downed Training and rescue loops.
 New content targets RimWorld 1.7. The 1.6 component uses SSC 2.4.1. Load Harmony and RJW before SSC. Culture and rituals require Ideology.
 
 [AI 辅助生成 / Partly AI-assisted]</description>

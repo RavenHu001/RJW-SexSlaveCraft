@@ -1,6 +1,6 @@
 # RJW-SexSlaveCraft · TieJin Modify
 
-**2.5.3 开发版（2026-11-21 登记）。** 纳入正式无主性奴、精确进度绑定与解绑、凝胶后效续计、文化适配及倒地调教修复。[版本说明](Docs/Releases/2.5.3/2.5.3发布说明.md) · [归并核对](Docs/Releases/2.5.3/2.5.3开发归并核对.md) · [验证记录](Docs/Releases/2.5.3/2.5.3版本验证.md)
+**SSC 2.5.3。** 无主性奴、绑定与解绑、凝胶后效及相关修复面向 RimWorld 1.7，安装包一并包含 2.5.2 已登记的恶堕、印记和文化更新。[下载 2.5.3](https://github.com/RavenHu001/RJW-SexSlaveCraft/releases/tag/v2.5.3) · [版本说明](Docs/Releases/2.5.3/2.5.3发布说明.md) · [验证记录](Docs/Releases/2.5.3/2.5.3版本验证.md)
 
 **2.5.2 开发版（2026-11-19 登记）。** 恶堕与锁链解耦、奴性爆发初版、文化与凝胶结算的原登记范围见[版本说明](Docs/Releases/2.5.2/2.5.2发布说明.md)。
 
@@ -139,7 +139,7 @@
 
 ## English overview
 
-**SSC 2.5.3 is in development for RimWorld 1.7.** It adds formal unbound-slave progression, binding and release, personality-gel timer recovery, culture integration and downed Training fixes. [2.5.3 notes](Docs/Releases/2.5.3/2.5.3发布说明.md#english)
+**SSC 2.5.3 for RimWorld 1.7.** It adds formal unbound-slave progression, binding and release, personality-gel timer recovery, culture integration and downed Training fixes. [2.5.3 notes](Docs/Releases/2.5.3/2.5.3发布说明.md#english)
 
 **SSC 2.5.2 is in development for RimWorld 1.7.** It includes unbound slaves and bond release, Corruption and Chain decoupling, Submission Breakdown, and shared event bookkeeping for Preaching Corruption and Depravity Gel. Scoped validation and release preparation are recorded with the milestone. [2.5.2 notes](Docs/Releases/2.5.2/2.5.2发布说明.md#english)
 
