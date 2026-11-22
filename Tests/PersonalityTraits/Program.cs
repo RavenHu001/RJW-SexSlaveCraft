@@ -70,7 +70,6 @@ internal static partial class Program
     private static void Run(string name, Action test)
     {
         if (!SscTestProfile.ShouldRun(name)) return;
-        SSCBondUtility.TestBoundMasters.Clear();
         SSCBondUtility.AllowBondRestore = false;
         Log.Errors.Clear();
         Scribe.mode = LoadSaveMode.Inactive;

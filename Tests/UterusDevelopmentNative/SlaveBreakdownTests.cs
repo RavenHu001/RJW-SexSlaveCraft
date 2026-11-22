@@ -2013,7 +2013,7 @@ internal static partial class Program
                 }
             });
 
-            Case("first binding during the same crossing sends the imprint letter and excludes the newly chained pawn", () =>
+            Case("first binding retires the original crossing before any new full-value refresh", () =>
             {
                 foreach (bool retry in new[] { false, true })
                 {
@@ -2027,14 +2027,20 @@ internal static partial class Program
                     ConditioningUtility.ExecuteRitualOutcome(master, pawn, 1f);
                     Require(SSCBondUtility.IsBoundTo(pawn, master) && need.CurLevel == 1f);
                     runtime.GameComponentTick();
+                    Require(pawn.MentalState == null && !runtime.HasFullRequest(pawn), "Binding must retire the original crossing.");
+                    // 印记重试使用正常需求刷新。绑定尚未到四阶时，该次刷新可以独立触发有主爆发。
+                    bool startsOnRefresh = retry && SSCIdentityUtility.GetSexSlaveStage(pawn) < 4;
                     if (retry)
                     {
                         Equal(0, breakdownLetters.Count);
                         need.NeedInterval();
                         runtime.GameComponentTick();
                     }
-                    Require(pawn.MentalState == null && !runtime.HasFullRequest(pawn));
-                    Require(breakdownLetters.SequenceEqual(new[] { (pawn, "imprint", SSCImprintKind.Slave, false) }));
+                    Require(!runtime.HasFullRequest(pawn));
+                    Equal(startsOnRefresh, pawn.MentalState is MentalState_SSCSlaveBreakdown);
+                    Require(breakdownLetters.SequenceEqual(startsOnRefresh
+                        ? new[] { (pawn, "imprint", SSCImprintKind.Slave, false), (pawn, "breakdown", SSCImprintKind.Slave, true) }
+                        : new[] { (pawn, "imprint", SSCImprintKind.Slave, false) }));
                 }
             });
 

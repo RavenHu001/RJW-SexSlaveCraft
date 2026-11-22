@@ -280,12 +280,40 @@ namespace SexSlaveCraft
         internal static (int Stage, float Floor, float Previous, float? Next) GetSexSlaveProgressStage(Hediff progress)
         {
             if (progress == null) return (0, 0f, 0f, null);
-            List<float> thresholds = GetChainStageThresholds(progress);
+            float severity = progress.Severity;
+            var stages = progress.def?.stages;
             int stage = 0;
-            while (stage < thresholds.Count && progress.Severity >= thresholds[stage]) stage++;
-            return (stage, stage > 0 ? thresholds[stage - 1] : 0f,
-                stage > 1 ? thresholds[stage - 2] : 0f,
-                stage < thresholds.Count ? thresholds[stage] : null);
+            float floor = 0f, previous = 0f, lastThreshold = 0f;
+            float? next = null;
+            // 敏感度每次推进都会查询阶段。对按顺序加载的 Def 直接扫描，仅在阈值乱序时保留兼容排序。
+            if (stages != null)
+            {
+                foreach (var entry in stages)
+                {
+                    float threshold = Mathf.Clamp01(entry.minSeverity);
+                    if (!(threshold > 0f) || threshold == lastThreshold) continue;
+                    if (threshold < lastThreshold) return ResolveSorted(severity, GetChainStageThresholds(progress));
+                    lastThreshold = threshold;
+                    if (severity >= threshold)
+                    {
+                        previous = floor;
+                        floor = threshold;
+                        stage++;
+                    }
+                    else next ??= threshold;
+                }
+            }
+
+            return lastThreshold > 0f ? (stage, floor, previous, next) : ResolveSorted(severity, FallbackChainStageThresholds);
+
+            static (int Stage, float Floor, float Previous, float? Next) ResolveSorted(float severity, IReadOnlyList<float> thresholds)
+            {
+                int stage = 0;
+                while (stage < thresholds.Count && severity >= thresholds[stage]) stage++;
+                return (stage, stage > 0 ? thresholds[stage - 1] : 0f,
+                    stage > 1 ? thresholds[stage - 2] : 0f,
+                    stage < thresholds.Count ? thresholds[stage] : null);
+            }
         }
 
         private static float GetCurrentChainStageFloor(Hediff chain) => GetSexSlaveProgressStage(chain).Floor;

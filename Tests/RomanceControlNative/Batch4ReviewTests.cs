@@ -137,7 +137,7 @@ internal static partial class Program
             var saving = new Harmony("ssc.tests.romance.batch4.review-cleanup-save");
             saving.Patch(AccessTools.Method(typeof(JobDriver), nameof(JobDriver.Cleanup)), prefix: new HarmonyMethod(typeof(Program), nameof(ReviewDuringCleanup)));
             saving.Patch(AccessTools.Method(typeof(Pawn), nameof(Verse.Pawn.ClearReservationsForJob)), prefix: new HarmonyMethod(typeof(Program), nameof(Skip)));
-            saving.Patch(AccessTools.Method(typeof(SSCRestrictionGameComponent), nameof(SSCRestrictionGameComponent.AllPawns)), prefix: new HarmonyMethod(typeof(Program), nameof(ScenePawnSnapshot)));
+            PatchScenePawnSnapshot(saving);
             saving.Patch(AccessTools.Method(typeof(SSCRestrictionLifecycle), nameof(SSCRestrictionLifecycle.Refresh)), prefix: new HarmonyMethod(typeof(Program), nameof(SceneLegacyRefresh)));
             try
             {

@@ -27,6 +27,9 @@ internal static partial class Program
         int originalTick = Find.TickManager.TicksGame;
         var spawned = AccessTools.PropertyGetter(typeof(Thing), "Spawned");
         var setup = AccessTools.Method(typeof(JobDriver_Sex), "SetupOrgasmTicks");
+        const string ownerlessName = "SSC_Hediff_OwnerlessSlave";
+        bool ownsOwnerlessDef = DefDatabase<HediffDef>.GetNamedSilentFail(ownerlessName) == null;
+        var ownerlessDef = ImprintBoundaryDef(ownerlessName, typeof(Hediff_SSCOwnerlessSlave));
         harmony.Patch(spawned, prefix: new HarmonyMethod(typeof(Program), nameof(PartnerFixtureSpawned)));
         harmony.Patch(setup, prefix: new HarmonyMethod(typeof(Program), nameof(PartnerFixtureReset)));
         ideology.SetValue(null, true);
@@ -40,7 +43,6 @@ internal static partial class Program
                 PartnerPrecept(target, "Unrestricted"); // 对象自己的启用档不能替施加者发放。
                 var sourceComp = AttachToggleTraining(source); sourceComp.pawnIdentity = PawnIdentity.Slave;
                 PartnerPrecept(source, "FemaleOnly"); GelFire(observed); Near(0, need.CurLevel);
-                var ownerlessDef = ImprintBoundaryDef("SSC_Hediff_OwnerlessSlave", typeof(Hediff_SSCOwnerlessSlave));
                 var record = new Hediff_SSCOwnerlessSlave { def = ownerlessDef, pawn = source, Severity = .2f };
                 source.health.hediffSet.hediffs.Add(record);
                 PartnerPrecept(source, null); GelFire(observed); Near(0, need.CurLevel);
@@ -181,6 +183,8 @@ internal static partial class Program
             ideology.SetValue(null, originalIdeology); SetPartnerTick(originalTick);
             var remove = AccessTools.Method(typeof(DefDatabase<PreceptDef>), "Remove");
             foreach (var def in defs) remove.Invoke(null, new object[] { def });
+            // All 后续读取生产 XML。仅撤销本组登记的最小定义。
+            if (ownsOwnerlessDef) AccessTools.Method(typeof(DefDatabase<HediffDef>), "Remove").Invoke(null, new object[] { ownerlessDef });
             sceneFixturePawns.Clear(); gelOrgasmCallback = null;
             harmony.Unpatch(spawned, AccessTools.Method(typeof(Program), nameof(PartnerFixtureSpawned)));
             harmony.Unpatch(setup, AccessTools.Method(typeof(Program), nameof(PartnerFixtureReset)));

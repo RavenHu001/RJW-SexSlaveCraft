@@ -176,16 +176,31 @@ internal static partial class Program
             SaveLoad();
             SurgeryTests(repo, game, harmony.Value);
             UterusStartupLanguageTests(repo);
-            GrowthTests(repo, harmony.Value);
-            TrainerAssignmentSaveTests();
-            PregnancyTests(repo, game, harmony.Value);
-            BodyManagementLifecycleTests(harmony.Value);
-            BodyManagementLanguageTests(repo);
-            HediffFertilityDisplayTests(repo, harmony.Value);
-            LactationFertilityControlTests(repo);
-            UterusDescriptionTests(repo);
-            UterusDefInjectedTests(repo);
-            StomachDevelopmentTests(repo, game, harmony.Value);
+            // 子宫和胃成长共用评分、场景及存档夹具。进入其他分区前撤掉替身，以便其运行真实结算和信件。
+            var growthBoundary = new Harmony(harmony.Value.Id + ".growth-flow");
+            var letterStack = AccessTools.Field(typeof(Game), "letterStack");
+            var previousLetters = letterStack.GetValue(Current.Game);
+            try
+            {
+                GrowthTests(repo, growthBoundary);
+                TrainerAssignmentSaveTests();
+                PregnancyTests(repo, game, harmony.Value);
+                BodyManagementLifecycleTests(harmony.Value);
+                BodyManagementLanguageTests(repo);
+                // 展示分区会撤下自身的翻译替身，也需要关闭成长分区的单参数格式化边界。
+                growthBoundary.Unpatch(AccessTools.Method(typeof(GrammarResolverSimpleStringExtensions), "Formatted",
+                    new[] { typeof(string), typeof(NamedArgument) }), HarmonyPatchType.Prefix, growthBoundary.Id);
+                HediffFertilityDisplayTests(repo, harmony.Value);
+                LactationFertilityControlTests(repo);
+                UterusDescriptionTests(repo);
+                UterusDefInjectedTests(repo);
+                StomachDevelopmentTests(repo, game, harmony.Value);
+            }
+            finally
+            {
+                growthBoundary.UnpatchAll(growthBoundary.Id);
+                letterStack.SetValue(Current.Game, previousLetters);
+            }
             // 局部 XML 加载发生在 DefOf 初始化之后；为开关后端绑定真实已加载定义，避免空 Def 夹具假通过。
             SSCDefOf.SSC_Lactating_SubState = DefDatabase<HediffDef>.GetNamed(Harmony_LactationFertilityControl.LactationDefName);
             AbilityToggleAdapterTests();

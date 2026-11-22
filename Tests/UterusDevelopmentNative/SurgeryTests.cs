@@ -456,7 +456,13 @@ internal static partial class Program
     /// <summary>记录成功事迹请求，不初始化全套故事系统。</summary>
     private static bool TaleBoundary() { tales++; return false; }
     /// <summary>为原版研究成本查询提供当前玩家阵营。</summary>
-    private static bool SurgeryPlayer(ref Faction __result) { __result = surgeryPlayer; return false; }
+    private static bool SurgeryPlayer(ref Faction __result)
+    {
+        // 其他分区可能为真实殖民者准入装好玩家阵营，不让手术的无地图替身覆盖它。
+        if (Find.World?.factionManager?.OfPlayer != null) return true;
+        __result = surgeryPlayer;
+        return false;
+    }
     /// <summary>观察材料消费入口，继续执行原版行为。</summary>
     private static void ObserveConsumption() => consumedStacks++;
     /// <summary>仅将原版实际接单结果传给生产后置补丁，不复制准入逻辑。</summary>

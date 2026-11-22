@@ -254,7 +254,7 @@ namespace Verse
         public Map Map = new Map();
         public object Position;
         public StoryTracker story;
-        public HealthTracker health = new HealthTracker();
+        public Pawn_HealthTracker health = new Pawn_HealthTracker();
         public NeedsTracker needs;
         public SkillsTracker skills;
         public RelationsTracker relations;
@@ -319,7 +319,7 @@ namespace Verse
         public Hediff GetFirstHediffOfDef(HediffDef def) => hediffs.FirstOrDefault(x => x.def == def);
     }
 
-    public class HealthTracker
+    public class Pawn_HealthTracker
     {
         public HediffSet hediffSet = new HediffSet();
         public int ChangeNotifications;
@@ -859,10 +859,50 @@ namespace SexSlaveCraft
         }
     }
 
-    public class Hediff_ChainOfSexSlave : Hediff
+    public class Hediff_ChainOfSexSlave : HediffWithTarget
     {
-        public Pawn LinkedPawn;
+        public Pawn LinkedPawn { get => target as Pawn; set => target = value; }
     }
+
+#if SSC_RW17
+    // 此宿主只提供人格恢复所需的载体和引用。阶段、计时、成形及发作撤权由原生宿主验证。
+    public sealed class Hediff_SSCOwnerlessSlave : Hediff
+    {
+        public const string DefName = "SSC_Hediff_OwnerlessSlave";
+        public static Hediff_SSCOwnerlessSlave GetPersonalityProgress(Pawn pawn)
+            => pawn.health.hediffSet.hediffs.OfType<Hediff_SSCOwnerlessSlave>().FirstOrDefault();
+        public static int GetActiveStage(Pawn pawn) => GetPersonalityProgress(pawn)?.CurStageIndex ?? 0;
+    }
+
+    public sealed class Hediff_SSCBondReleaseAftereffect : HediffWithComps
+    {
+        public const string DefName = "SSC_Hediff_BondReleaseAftereffect";
+        private readonly HediffComp_Disappears timer = new() { ticksToDisappear = 120000 };
+        public static HediffDef Definition => DefDatabase<HediffDef>.GetNamedSilentFail(DefName);
+        public static Hediff_SSCBondReleaseAftereffect Find(Pawn pawn)
+            => pawn.health.hediffSet.hediffs.OfType<Hediff_SSCBondReleaseAftereffect>().FirstOrDefault();
+        public static Hediff_SSCBondReleaseAftereffect Active(Pawn pawn) => Find(pawn) is { ShouldRemove: false } effect ? effect : null;
+        public T GetComp<T>() where T : class => timer as T;
+        public override bool ShouldRemove => timer.ticksToDisappear <= 0;
+    }
+
+    public sealed class Hediff_BridleOfSexSlave : Hediff
+    {
+        public readonly HashSet<Pawn> targets = new();
+    }
+
+    public static class TrainingOutcomeUtility
+    {
+        public static Hediff GetSexSlaveProgress(Pawn pawn)
+            => (Hediff)SSCBondUtility.GetChain(pawn) ?? Hediff_SSCOwnerlessSlave.GetPersonalityProgress(pawn);
+    }
+
+    public class MentalState_SSCSlaveBreakdown
+    {
+        public static MentalState_SSCSlaveBreakdown CurrentFor(Pawn pawn) => null;
+        public void InvalidatePersonality() { }
+    }
+#endif
 
     public partial class CompSexSlaveTraining : ThingComp
     {
@@ -942,24 +982,55 @@ namespace SexSlaveCraft
     public static partial class SSCBondUtility
     {
         // 仅为人格场景提供恢复成功/失败的引擎边界；真实 Bind、解绑和锁链回调另由 BondRelations 验证。
-        public static readonly Dictionary<Pawn, Pawn> TestBoundMasters = new Dictionary<Pawn, Pawn>();
         public static bool AllowBondRestore;
-        public static Pawn GetBoundMaster(Pawn pawn) => pawn != null && TestBoundMasters.TryGetValue(pawn, out var master) ? master : null;
+        public static Hediff_ChainOfSexSlave GetChain(Pawn pawn) => pawn?.health.hediffSet.hediffs.OfType<Hediff_ChainOfSexSlave>().FirstOrDefault();
+        public static Pawn GetBoundMaster(Pawn pawn) => GetChain(pawn)?.LinkedPawn;
         /// <summary>清除测试身体的绑定引用；实际锁链生命周期由 BondRelations 执行生产源码。</summary>
-        public static void Unbind(Pawn p) { TestBoundMasters.Remove(p); }
+        public static void Unbind(Pawn p)
+        {
+            var chain = GetChain(p);
+            if (chain == null) return;
+#if SSC_RW17
+            GetBridle(chain.LinkedPawn)?.targets.Remove(p);
+#endif
+            p.health.RemoveHediff(chain);
+        }
 
         /// <summary>由场景决定绑定恢复成功或失败，供真实人格入口验证后续关系过滤。</summary>
-        public static bool Bind(Pawn m, Pawn p, bool b)
+        public static bool Bind(Pawn master, Pawn subject, bool replaceExisting)
         {
             if (!AllowBondRestore) return false;
-            TestBoundMasters[p] = m; return true;
+            SeedBinding(master, subject);
+            return true;
+        }
+
+        public static Hediff_ChainOfSexSlave SeedBinding(Pawn master, Pawn subject, float severity = 0f)
+        {
+            var chain = new Hediff_ChainOfSexSlave { def = new HediffDef { defName = "Hediff_ChainOfSexSlave" },
+                pawn = subject, LinkedPawn = master, Severity = severity };
+            subject.health.AddHediff(chain);
+            return chain;
         }
 #if SSC_RW17
-        /// <summary>旧关系恢复沿用本宿主的绑定结果边界，不模拟新印记分化。</summary>
-        public static bool RestorePersonalityBinding(Pawn m, Pawn p) => Bind(m, p, true);
+        public static bool CanRestorePersonalityMaster(Pawn master, Pawn subject) => SSCIdentityUtility.IsMaster(master) && !master.Dead;
+        public static Hediff_BridleOfSexSlave GetBridle(Pawn p) => p?.health.hediffSet.hediffs.OfType<Hediff_BridleOfSexSlave>().FirstOrDefault();
+
+        public static bool RestorePersonalityBindingAtSeverity(Pawn master, Pawn subject, float severity,
+            Func<bool> isCurrent, out Hediff_ChainOfSexSlave chain)
+        {
+            chain = null;
+            if (!isCurrent() || !AllowBondRestore) return false;
+            chain = SeedBinding(master, subject, severity);
+            var bridle = GetBridle(master);
+            if (bridle == null)
+            {
+                bridle = new Hediff_BridleOfSexSlave { def = new HediffDef { defName = "Hediff_BridleOfSexSlave" }, pawn = master };
+                master.health.AddHediff(bridle);
+            }
+            bridle.targets.Add(subject);
+            return true;
+        }
 #endif
-        /// <summary>提供边界绑定状态，不模拟生产锁链严重度及生命周期。</summary>
-        public static Hediff_ChainOfSexSlave GetChain(Pawn p) => GetBoundMaster(p) is Pawn master ? new Hediff_ChainOfSexSlave { LinkedPawn = master } : null;
     }
 
     public static class SSCIdentityUtility

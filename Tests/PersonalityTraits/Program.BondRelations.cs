@@ -10,12 +10,22 @@ internal static partial class Program
     /// <summary>运行完整生产植入流程，仅由边界控制锁链能否恢复，关系过滤执行生产规则。</summary>
     private static void RunBondRelationTransferCases()
     {
+#if SSC_RW17
+        DefDatabase<HediffDef>.AllDefs.Add(new HediffDef { defName = Hediff_SSCOwnerlessSlave.DefName,
+            hediffClass = typeof(Hediff_SSCOwnerlessSlave), maxSeverity = 1f });
+        DefDatabase<HediffDef>.AllDefs.Add(new HediffDef { defName = Hediff_SSCBondReleaseAftereffect.DefName,
+            hediffClass = typeof(Hediff_SSCBondReleaseAftereffect) });
+#endif
         // 同一份旧凝胶同时包含正确主人、错误主人和普通关系。
-        // 绑定恢复成功时只保留正确奖励；恢复失败时两份主人关系都必须过滤。
+        // 主人有效时只保留正确奖励；失效时两份主人关系都必须过滤。
         foreach (bool restoreBond in new[] { false, true })
             Run("人格植入按实际恢复锁链过滤主人关系；绑定成功=" + restoreBond, () =>
             {
                 Pawn master = Body("Master"); Training(master).pawnIdentity = PawnIdentity.Master;
+#if SSC_RW17
+                // 主人已死亡时进入无主恢复。有效主人的提交失败则中止植入，语义不同。
+                master.Dead = !restoreBond;
+#endif
                 Pawn stale = Body("FalseMaster"); Pawn friend = Body("Friend"); Pawn receiver = Body("Receiver");
                 Training(receiver); receiver.relations = new RelationsTracker();
                 var friendDef = new PawnRelationDef();
@@ -39,7 +49,7 @@ internal static partial class Program
         Run("主人人格移植不复制仍属于原身体的主从社交关系", () =>
         {
             Pawn original = Body("OriginalMaster"); Pawn slave = Body("Slave"); Pawn receiver = Body("Receiver");
-            Training(receiver); receiver.relations = new RelationsTracker(); SSCBondUtility.TestBoundMasters[slave] = original;
+            Training(receiver); receiver.relations = new RelationsTracker(); SSCBondUtility.SeedBinding(original, slave);
             var gel = Gel(); gel.sscIdentity = PawnIdentity.Master;
             gel.storedRelations = new List<StoredRelationData> { new StoredRelationData { def = SSCDefOf.SSC_FlawedLovers, otherPawn = slave } };
             Assert(ExcretionUtility.InheritEverything(receiver, gel), "主人人格恢复应成功");

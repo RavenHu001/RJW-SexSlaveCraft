@@ -21,8 +21,9 @@ internal static partial class Program
     /// <summary>在既有身体夹具之后安装实际计时适配，分别验证数学、实际桥接、生命周期与深存。</summary>
     private static void OrgasmAdvanceTests(string repo, string game, Harmony harmony)
     {
-        // 旧成长专项隔离了原版 JobDriver.ExposeData；本批恢复该层，真实执行 SetupToils 与完整加载屏障。
-        harmony.Unpatch(AccessTools.Method(typeof(JobDriver), nameof(JobDriver.ExposeData)), AccessTools.Method(typeof(Program), nameof(Skip)));
+        // 此分区执行原生 JobDriver.ExposeData，单独注册 Scribe 所需的 RJW 类型映射。
+        harmony.Patch(AccessTools.Method(typeof(GenTypes), nameof(GenTypes.GetTypeInAnyAssembly)),
+            prefix: new HarmonyMethod(typeof(Program), nameof(RjwScribeTypeBoundary)));
         // 前面绑定专项允许只设置 DefOf 夹具；真实 Scribe 必须让 DefOf 与 DefDatabase 指向同一定义。
         var chainDef = SSCDefOf.ChainOfSexSlave;
         var registeredChain = DefDatabase<HediffDef>.GetNamedSilentFail(chainDef.defName);

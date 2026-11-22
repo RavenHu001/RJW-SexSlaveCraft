@@ -78,6 +78,12 @@ internal static partial class Program
             SSCDefOf.ChainOfSexSlave = new HediffDef { defName = "Hediff_ChainOfSexSlave", hediffClass = typeof(Hediff_ChainOfSexSlave),
                 maxSeverity = 1, stages = new List<HediffStage> { new() { minSeverity = .1f }, new() { minSeverity = .3f }, new() { minSeverity = .5f }, new() { minSeverity = .9f } } };
             DefDatabase<HediffDef>.Add(SSCDefOf.ChainOfSexSlave);
+            // 人格植入会预检旧锁链可用的两种去向，原生宿主需注册相应的健康定义。
+            DefDatabase<HediffDef>.Add(new HediffDef { defName = "SSC_Hediff_OwnerlessSlave", maxSeverity = 1f,
+                hediffClass = typeof(Hediff_SSCOwnerlessSlave) });
+            DefDatabase<HediffDef>.Add(new HediffDef { defName = "SSC_Hediff_BondReleaseAftereffect", initialSeverity = 1f,
+                hediffClass = typeof(Hediff_SSCBondReleaseAftereffect), comps = new() {
+                    new HediffCompProperties_Disappears { disappearsAfterTicks = new IntRange(120000, 120000) } } });
             SSCDefOf.SSC_Hediff_Bus = new HediffDef { defName = "SSC_Hediff_Bus" };
             SSCDefOf.SSC_Hediff_Bus_Final = new HediffDef { defName = "SSC_Hediff_Bus_Final" };
             SSCDefOf.SSC_Hediff_Cow = new HediffDef { defName = "SSC_Hediff_Cow" };
