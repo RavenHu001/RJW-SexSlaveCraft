@@ -9,7 +9,7 @@
 | 任务 | 入口与阅读顺序 |
 | --- | --- |
 | 维护现有功能 | [完成索引](Completed/README.md#ssc-253-completed) → 主题完成核对 → 实施／验收记录 → [已交付设计](../Design/Archive/README.md) |
-| 设计后续开发 | [当前规划](../Design/README.md#当前专项规划) → [总体状态台账](../Design/未来内容开发规划.md#完成状态速览) → 尚未完成的专项方案 |
+| 设计后续开发 | [未来开发清单](../Design/README.md#当前专项规划) → 对应专项方案 → [需求编号与开发沿革](../Design/未来内容开发规划.md) |
 | 继续明确的实机核查 | [待验收](Verification/README.md#当前专项) → 对应候选与已确认范围 → 本次验证步骤 |
 | 接入能力或公共规则 | [现行开发规范](Reference/README.md) → 原载体与上下文契约 → 相关源码与必要回归 |
 | 追溯实现与文档沿革 | [开发日志](开发更新记录.md) → [代码复盘](Reviews/README.md)／[历史交接](Reference/History/README.md)；旧入口摘录见[索引沿革](Reference/History/索引沿革/README.md) |

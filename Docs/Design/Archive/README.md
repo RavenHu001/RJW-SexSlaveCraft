@@ -2,7 +2,7 @@
 
 当前归档基线为 **SSC 2.5.3 正式版**。第 6／6.1 项无主与解绑、2.5.2 里程碑的恶堕解耦、奴性爆发及文化结算均已交付；先读[本版完成索引](../../Development/Completed/README.md#ssc-253-completed)和[2.5.2 完成索引](../../Development/Completed/README.md#ssc-252-completed)，再查本目录设计原稿。剩余需求统一从[当前规划](../README.md#当前专项规划)进入，明确待验收场景见[待验收索引](../../Development/Verification/README.md#当前专项)。
 
-先从[完成索引](../../Development/Completed/README.md)查实施与验收，再从本页查设计原稿。历次版本的设计归属和原时点更新摘录见[已交付开发索引与历史更新](已交付开发索引与历史更新.md)。
+按需求编号查[已完成需求清单](已交付开发索引与历史更新.md#ssc-completed-requirements)，按版本查[实施与验收](../../Development/Completed/README.md)。历次设计归属和原时点更新摘录见[已交付开发索引与历史更新](已交付开发索引与历史更新.md)。
 
 2026-11-22，第 23.1 项随 PR #49 合入 `main`。 [绑定仪式部位适配设计](绑定仪式RJW行为与动画部位适配规划.md) · [实施与验收](../../Development/Completed/调教RJW动作适配与读档修复实施与验收.md)
 

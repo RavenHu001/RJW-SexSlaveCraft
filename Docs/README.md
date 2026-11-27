@@ -18,7 +18,8 @@
 | 接手已完成功能 | [已交付开发记录](Development/Completed/README.md) | 主题完成核对 → 对应阶段 → 历史设计 |
 | 新增个人能力开关 | [现行接入规范](Development/Reference/个人能力开关接入规范.md) | [开发协作约定](../AGENTS.md) → 保存源与适用边界 → 原载体后端 → 公共查询、UI 与提交 → 生命周期验收 |
 | 查明确的验证缺口 | [待验收事项](Development/Verification/README.md) | 尚待确认范围 → 实现依据 → 实机步骤 |
-| 继续设计 | [当前规划索引](Design/README.md) | 总体状态 → 未完成需求 → 关联历史；已完成方案在 [Archive](Design/Archive/README.md) |
+| 继续设计 | [未来开发清单](Design/README.md#当前专项规划) | 未完范围 → 对应专项方案 → 编号原文 |
+| 按编号查已完成需求 | [已完成需求清单](Design/Archive/已交付开发索引与历史更新.md#ssc-completed-requirements) | 交付范围 → 实施与验收 → 设计原稿 |
 | 查叙事与文案基准 | [设定索引](设定/README.md) | 已交付机制／分支表 → 叙事设定 → 实际定稿 |
 | 查开发规范与追溯交接 | [开发规范与历史参考](Development/Reference/README.md) · [开发日志](Development/开发更新记录.md) · [代码复盘](Development/Reviews/README.md) | 现行接入规范用于后续开发；历史交接按日期／基线查，旧待办保留当时语境 |
 | 编译、测试、发布和文档维护 | [维护入口](Maintenance/README.md) | [发布与打包](Maintenance/发布与打包.md) → [测试说明](../Tests/README.md) → 版本检查 |
@@ -38,8 +39,8 @@ Docs/
   模组介绍.md                  当前正式版本双语简介
   Players/                     玩家入口和阅读顺序
   Design/                      当前需求与未完成设计
-    README.md                  规划入口与状态索引
-    未来内容开发规划.md        未完成需求及历史编号
+    README.md                  未来开发清单及暂缓事项
+    未来内容开发规划.md        原需求编号、正文与开发沿革
     性能测量与定点优化首批规划.md  暂缓方案留存
     浪漫控制后续社交关系与浪漫事件拓展规划.md  未开发方向
     Archive/                   已交付设计及历史版本更新摘录
